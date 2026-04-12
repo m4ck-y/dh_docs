@@ -25,4 +25,4 @@ Este documento es el centro de control para todas las tareas del proyecto.
 - [ ] Generación automática de reportes PDF para pacientes.
 
 ---
-*Para ver el análisis de lo que falta, consulta el [Análisis de Brechas](file:///home/m4cky/Documents/dev_me/my_projects/digital_hospital/docs/tasks/gap_analysis_core_api.md).*
+*Para ver el análisis de lo que falta, consulta el [Análisis de Brechas](gap_analysis_core_api.md).*

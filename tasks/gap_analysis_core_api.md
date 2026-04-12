@@ -6,7 +6,7 @@ Este tablero muestra el estado de alineación de cada módulo de `api_core` resp
 
 | Módulo | Estado | Nivel de Alineación | Documento de Propuesta |
 | :--- | :--- | :--- | :--- |
-| **Auth (JWT/Auth)** | 🔴 Pendiente | 0% | [propuesta-001-auth.md](file:///home/m4cky/Documents/dev_me/my_projects/digital_hospital/docs/ideas/propuesta-001-auth.md) |
+| **Auth (JWT/Auth)** | 🔴 Pendiente | 0% | [propuesta-001-auth.md](../ideas/propuesta-001-auth.md) |
 | **Security (RBAC)** | 🔴 Pendiente | 10% | TBD |
 | **Account** | 🟡 Parcial | 40% | TBD |
 | **Person** | 🟡 Parcial | 60% | TBD |
