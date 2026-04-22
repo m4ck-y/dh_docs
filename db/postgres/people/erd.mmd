@@ -1,0 +1,232 @@
+erDiagram
+    %% PEOPLE SCHEMA
+    %% Tablas relacionadas con datos demograficos y contacto de personas
+
+    %% RELACIONES PRINCIPALES
+    person ||--o{ email : "has"
+    person ||--o{ phone : "has"
+    person ||--o{ address : "has"
+    person ||--o{ social_links : "has"
+    person ||--o{ profile : "has"
+    person ||--|| birth : "has_birth_info"
+    person ||--|| sociocultural_identity : "has_sociocultural_identity"
+    person ||--|| legal_info : "has_legal_info"
+    person ||--o{ personal_identifier : "has"
+    person ||--|| user : "has"
+
+    %% RELACIONES SECUNDARIAS
+    social_platform ||--o{ social_links : "has"
+    identifier_type ||--o{ personal_identifier : "has"
+
+    %% ENUMS
+    %% EVerificationStatus: estado de verificacion (REJECTED, PENDING, APPROVED)
+    %% EGenderIdentity: identidad de genero (NO_ESPECIFICADO=0, MASCULINO=1, FEMENINO=2, TRANSGENERO=3, TRANSEXUAL=4, TRAVESTI=5, INTERSEXUAL=6, OTRO=88)
+    %% ESocialPlatform: plataformas sociales (twitter, linkedin, github, facebook, instagram, youtube, tiktok, personal_website, other)
+    %% EIdentifierType: tipos de identificador (NATIONAL_ID=1, FISCAL_ID=2, SOCIAL_SECURITY_ID=3)
+    %% EAddressType: tipos de direccion (HOME=1, WORK=2, BUSINESS=3, OTHER=10)
+    %% EEmailType: tipos de email (PERSONAL=2, WORK=3, BUSINESS=4, OTHER=10)
+    %% EPhoneType: tipos de telefono (MOBILE=1, WORK=2, HOME=3, BUSINESS=4, OTHER=10)
+    EVerificationStatus {
+        String REJECTED "REJECTED"
+        String PENDING "PENDING"
+        String APPROVED "APPROVED"
+    }
+
+    EGenderIdentity {
+        Integer NO_ESPECIFICADO "0"
+        Integer MASCULINO "1"
+        Integer FEMENINO "2"
+        Integer TRANSGENERO "3"
+        Integer TRANSEXUAL "4"
+        Integer TRAVESTI "5"
+        Integer INTERSEXUAL "6"
+        Integer OTRO "88"
+    }
+
+    ESocialPlatform {
+        String TWITTER "twitter"
+        String LINKEDIN "linkedin"
+        String GITHUB "github"
+        String FACEBOOK "facebook"
+        String INSTAGRAM "instagram"
+        String YOUTUBE "youtube"
+        String TIKTOK "tiktok"
+        String PERSONAL_WEBSITE "personal_website"
+        String OTHER "other"
+    }
+
+    EIdentifierType {
+        Integer NATIONAL_ID "1"
+        Integer FISCAL_ID "2"
+        Integer SOCIAL_SECURITY_ID "3"
+    }
+
+    EAddressType {
+        Integer HOME "1"
+        Integer WORK "2"
+        Integer BUSINESS "3"
+        Integer OTHER "10"
+    }
+
+    EEmailType {
+        Integer PERSONAL "2"
+        Integer WORK "3"
+        Integer BUSINESS "4"
+        Integer OTHER "10"
+    }
+
+    EPhoneType {
+        Integer MOBILE "1"
+        Integer WORK "2"
+        Integer HOME "3"
+        Integer BUSINESS "4"
+        Integer OTHER "10"
+    }
+
+    %% ENTIDADES
+    %% person: tabla central con datos demograficos
+    %% verification_status: estado de verificacion del perfil
+    %% type_gender: identidad de genero
+    person {
+        Enum(EVerificationStatus) verification_status "default: PENDING"
+        String url_photo
+        String first_name
+        String last_name
+        String second_last_name
+        Enum(EGenderIdentity) type_gender "default: NO_ESPECIFICADO"
+    }
+
+    %% email: correos electronicos de contacto
+    %% type_email: tipo de correo (PERSONAL, WORK, BUSINESS, OTHER)
+    email {
+        UUID id PK
+        UUID id_person FK
+        String email
+        Enum(EEmailType) type_email
+    }
+
+    %% phone: telefonos de contacto
+    %% code: codigo de pais + lada (ej: +52)
+    %% number: numero sin codigo
+    phone {
+        UUID id PK
+        UUID id_person FK
+        String code
+        String number
+        Enum(EPhoneType) type_phone
+    }
+
+    %% address: direcciones geograficas
+    %% type_address: tipo de direccion (HOME, WORK, BUSINESS, OTHER)
+    %% key_country/state/municipality/colony: claves geograficas (catalog)
+    address {
+        UUID id PK
+        UUID id_person FK
+        Enum(EAddressType) type_address
+        String(20) key_country FK
+        String(20) key_state FK
+        String(20) key_municipality FK
+        String(20) key_colony FK
+        String(191) address
+        String(191) address_complement
+        String(10) postal_code
+        Float latitude
+        Float longitude
+    }
+
+    %% social_platform: catalogo de plataformas sociales
+    %% name: tipo de plataforma (enum)
+    social_platform {
+        UUID id PK
+        Enum(ESocialPlatform) name
+        String url_icon
+        Boolean is_active
+    }
+
+    %% social_links: enlaces a redes sociales por persona
+    %% id_platform: tipo de plataforma (enum)
+    %% order_display: orden de prioridad para mostrar
+    social_links {
+        UUID id PK
+        UUID id_person FK
+        Enum(ESocialPlatform) id_platform FK
+        String url_profile
+        Boolean is_verified
+        Integer order_display
+    }
+
+    %% profile: perfil profesional/laboral
+    %% known_as: apodo o nombre artistico
+    profile {
+        UUID id PK
+        UUID id_person FK
+        String occupation
+        String known_as
+        Text about_me
+    }
+
+    %% birth: informacion de nacimiento
+    %% key_birth_country/state: claves geograficas de origen
+    birth {
+        UUID id PK
+        UUID id_person FK
+        String(20) key_birth_country FK
+        String(20) key_state_birth FK
+        Date birth_date
+        String birth_date_timezone
+    }
+
+    %% sociocultural_identity: identidad sociocultural
+    %% self_considers_indigenous: si se considera indigena (si/no)
+    %% key_indigenous_language: idioma indigena (catalog)
+    %% self_considers_migrant: si es migrante (si/no)
+    sociocultural_identity {
+        UUID id PK
+        UUID id_person FK
+        Boolean self_considers_indigenous
+        String(20) key_indigenous_language FK
+        Boolean self_considers_migrant
+        String(20) key_country_origin FK
+        String(20) key_religion FK
+    }
+
+    %% legal_info: informacion legal
+    %% key_nationality: clave de nacionalidad (catalog)
+    legal_info {
+        UUID id PK
+        UUID id_person FK
+        String type_national_id_sex
+        String type_civil_status
+        String(20) key_nationality FK
+    }
+
+    %% personal_identifier: identificadores oficiales (CURP, RFC, NSS, pasaporte, etc)
+    %% id_identifier_type: tipo de identificador (enum)
+    %% id_document: documento de respaldo (FK a document, nullable)
+    personal_identifier {
+        UUID id PK
+        Enum(EIdentifierType) id_identifier_type FK
+        UUID id_person FK
+        String identifier_value
+        UUID id_document FK
+    }
+
+    %% identifier_type: catalogo de tipos de identificador
+    %% type_identifier: tipo como enum (NATIONAL_ID, FISCAL_ID, SOCIAL_SECURITY_ID)
+    identifier_type {
+        UUID id PK
+        Enum(EIdentifierType) type_identifier
+        String name
+        String abbreviation
+        String(5) country_code
+    }
+
+    %% user: cuenta de usuario del sistema
+    %% 1:1 con person
+    user {
+        UUID id PK
+        UUID id_person FK
+        String username
+        String password_hash
+        Boolean is_active
+    }
