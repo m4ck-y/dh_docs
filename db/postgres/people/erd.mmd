@@ -17,6 +17,7 @@ erDiagram
     %% RELACIONES SECUNDARIAS
     social_platform ||--o{ social_links : "has"
     identifier_type ||--o{ personal_identifier : "has"
+    person ||--o{ emergency_contact : "has_emergency"
 
     %% ENUMS
     %% EVerificationStatus: estado de verificacion (REJECTED, PENDING, APPROVED)
@@ -25,62 +26,23 @@ erDiagram
     %% EIdentifierType: tipos de identificador (NATIONAL_ID=1, FISCAL_ID=2, SOCIAL_SECURITY_ID=3)
     %% EAddressType: tipos de direccion (HOME=1, WORK=2, BUSINESS=3, OTHER=10)
     %% EEmailType: tipos de email (PERSONAL=2, WORK=3, BUSINESS=4, OTHER=10)
-    %% EPhoneType: tipos de telefono (MOBILE=1, WORK=2, HOME=3, BUSINESS=4, OTHER=10)
-    EVerificationStatus {
-        String REJECTED "REJECTED"
-        String PENDING "PENDING"
-        String APPROVED "APPROVED"
-    }
-
-    EGenderIdentity {
-        Integer NO_ESPECIFICADO "0"
-        Integer MASCULINO "1"
-        Integer FEMENINO "2"
-        Integer TRANSGENERO "3"
-        Integer TRANSEXUAL "4"
-        Integer TRAVESTI "5"
-        Integer INTERSEXUAL "6"
-        Integer OTRO "88"
-    }
-
-    ESocialPlatform {
-        String TWITTER "twitter"
-        String LINKEDIN "linkedin"
-        String GITHUB "github"
-        String FACEBOOK "facebook"
-        String INSTAGRAM "instagram"
-        String YOUTUBE "youtube"
-        String TIKTOK "tiktok"
-        String PERSONAL_WEBSITE "personal_website"
-        String OTHER "other"
-    }
-
-    EIdentifierType {
-        Integer NATIONAL_ID "1"
-        Integer FISCAL_ID "2"
-        Integer SOCIAL_SECURITY_ID "3"
-    }
-
-    EAddressType {
-        Integer HOME "1"
-        Integer WORK "2"
-        Integer BUSINESS "3"
-        Integer OTHER "10"
-    }
-
-    EEmailType {
-        Integer PERSONAL "2"
-        Integer WORK "3"
-        Integer BUSINESS "4"
-        Integer OTHER "10"
-    }
-
+%% EPhoneType: tipos de telefono (MOBILE=1, WORK=2, HOME=3, BUSINESS=4, OTHER=10)
+    %% ERelationshipContact: tipo de relacion de contacto (SPOUSE, PARENT, SIBLING, CHILD, FRIEND, OTHER)
     EPhoneType {
         Integer MOBILE "1"
         Integer WORK "2"
         Integer HOME "3"
         Integer BUSINESS "4"
         Integer OTHER "10"
+    }
+
+    ERelationshipContact {
+        String SPOUSE "SPOUSE"
+        String PARENT "PARENT"
+        String SIBLING "SIBLING"
+        String CHILD "CHILD"
+        String FRIEND "FRIEND"
+        String OTHER "OTHER"
     }
 
     %% ENTIDADES
@@ -219,6 +181,23 @@ erDiagram
         String name
         String abbreviation
         String(5) country_code
+    }
+
+    %% emergency_contact: contactos de emergencia
+    %% id_user_owner: usuario propietario del contacto
+    %% id_contact_user: si existe, FK a user (nullable)
+    %% first_name/last_name: snapshot del contacto (nullable si es user)
+    %% relationship_type: tipo de relacion (enum)
+    emergency_contact {
+        UUID id PK
+        UUID id_user_owner FK
+        UUID id_contact_user FK
+        String first_name
+        String last_name
+        String phone_number
+        String email
+        Enum(ERelationshipContact) relationship_type
+        Text notes
     }
 
     %% user: cuenta de usuario del sistema

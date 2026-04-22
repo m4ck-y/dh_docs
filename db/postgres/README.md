@@ -4,6 +4,7 @@ Cada carpeta representa un schema de PostgreSQL.
 
 | Schema | Descripcion |
 |--------|-----------|
+| care | Relaciones de cuidado (responsable/cuidado) |
 | catalog | Catalogos (paises, estados, municipios, colonias, idiomas, religiones, etc) |
 | expedient | Documentos e identificadores |
 | people | Datos demograficos y contacto |

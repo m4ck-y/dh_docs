@@ -1,0 +1,37 @@
+erDiagram
+    %% CARE SCHEMA
+    %% Relaciones de responsable/cuidado
+
+    %% RELACIONES
+    person ||--o{ person_responsible : "is_dependent"
+    person ||--o{ person_responsible : "is_responsible"
+
+    %% ENUMS
+    %% ERelationship: tipo de relacion (MOTHER, FATHER, CAREGIVER, LEGAL_GUARDIAN, OTHER)
+    %% ECareRole: rol del cuidador (LIVES_WITH_AND_CARES, CARES_NOT_LIVING_WITH, ADMINISTRATIVE_SUPPORT_ONLY)
+    ERelationship {
+        String MOTHER "MOTHER"
+        String FATHER "FATHER"
+        String CAREGIVER "CAREGIVER"
+        String LEGAL_GUARDIAN "LEGAL_GUARDIAN"
+        String OTHER "OTHER"
+    }
+
+    ECareRole {
+        String LIVES_WITH_AND_CARES "LIVES_WITH_AND_CARES"
+        String CARES_NOT_LIVING_WITH "CARES_NOT_LIVING_WITH"
+        String ADMINISTRATIVE_SUPPORT_ONLY "ADMINISTRATIVE_SUPPORT_ONLY"
+    }
+
+    %% ENTIDADES
+    %% person_responsible: vinculacion responsable-dependiente
+    %% id_dependent: persona que depende (paciente)
+    %% id_responsible: responsable o tutor
+    person_responsible {
+        UUID id PK
+        UUID id_dependent FK
+        UUID id_responsible FK
+        Enum(ERelationship) type_relationship
+        Enum(ECareRole) care_role
+        String(100) other_relationship
+    }

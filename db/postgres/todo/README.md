@@ -1,0 +1,1 @@
+esta carpeta conditne los #TODOS: pendientes por acomodar
