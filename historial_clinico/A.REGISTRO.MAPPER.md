@@ -32,7 +32,7 @@ El tutor es una `person` en la DB. Sus datos se recogen igual que los del usuari
   - 1.1.2.3 Cuidador(a) → 🟢 `care.person_responsible.type_relationship` = `CAREGIVER`
   - 1.1.2.4 Tutor legal → 🟢 `care.person_responsible.type_relationship` = `LEGAL_GUARDIAN`
   - 1.1.2.6 Otro → 🟢 `care.person_responsible.type_relationship` = `OTHER`
-    - 1.1.2.6.1 _Especifique_ → 🟢 `care.person_responsible.other_relationship`
+    - 1.1.2.6.1 _Especifique_ → 🟢 `care.person_responsible.relationship_other`
 
 - **1.1.3 ¿Cuál es su relación en el cuidado y vida diaria del paciente?** _(condicional)_
   - 1.1.3.1 Vive con el usuario y participa en su cuidado → 🟢 `care.person_responsible.care_role` = `LIVES_WITH_AND_CARES`
@@ -72,12 +72,10 @@ El tutor es una `person` en la DB. Sus datos se recogen igual que los del usuari
   - 🟢 `people.email.email` con `type_email` = `PERSONAL`
 
 - **1.1.10 Sexo al nacer** _(condicional)_
-  - 1.1.10.1 Femenino → 🟡 `people.person` — `EGenderIdentity` tiene `FEMENINO` pero es identidad de género, no sexo biológico al nacer
-  - 1.1.10.2 Masculino → 🟡 `people.person` — misma situación
-  - 1.1.10.3 Intersexual → 🟡 `people.person` — `EGenderIdentity` tiene `INTERSEXUAL`
-  - 1.1.10.4 Prefiere no decirlo → 🔴 — no hay opción explícita de "prefiere no decirlo" en el enum
-
-  > ⚠️ El campo `people.person.type_gender` modela identidad de género (`EGenderIdentity`), no sexo al nacer. Se necesita una columna separada `sex_at_birth` o un enum dedicado.
+  - 1.1.10.1 Femenino → 🟢 `health_profile.biological_profile.type_biological_sex` = `MUJER`
+  - 1.1.10.2 Masculino → 🟢 `health_profile.biological_profile.type_biological_sex` = `HOMBRE`
+  - 1.1.10.3 Intersexual → 🟢 `health_profile.biological_profile.type_biological_sex` = `INTERSEXUAL`
+  - 1.1.10.4 Prefiere no decirlo → 🟢 `health_profile.biological_profile.type_biological_sex` = `NULL`
 
 - **1.1.11 Edad**
   - 🟢 calculada desde `people.birth.birth_date` (no se almacena)
@@ -86,51 +84,52 @@ El tutor es una `person` en la DB. Sus datos se recogen igual que los del usuari
   - 1.1.12.1 Católica → 🟡 `people.sociocultural_identity.key_religion` — existe la FK al catálogo
   - 1.1.12.2 Cristiana → 🟡 `people.sociocultural_identity.key_religion`
   - 1.1.12.3 Otra religión → 🟡 `people.sociocultural_identity.key_religion`
-    - 1.1.12.3.1 _Especifique_ → 🔴 — no hay campo de texto libre para religión personalizada
+    - 1.1.12.3.1 _Especifique_ → 🟢 `people.sociocultural_identity.religion_other`
   - 1.1.12.4 Ninguna → 🟡 `people.sociocultural_identity.key_religion` — depende del catálogo
-  - 1.1.12.5 Prefiere no decirlo → 🔴 — no modelado
+  - 1.1.12.5 Prefiere no decirlo → 🟢 `people.sociocultural_identity.key_religion` = `NULL`
 
 - **1.1.13 Escolaridad**
-  - 1.1.13.1 Sin estudios → 🔴
-  - 1.1.13.2 Educación primaria → 🔴
-  - 1.1.13.3 Educación secundaria → 🔴
-  - 1.1.13.4 Educación media superior → 🔴
-  - 1.1.13.5 Educación superior → 🔴
-  - 1.1.13.6 Posgrado → 🔴
-  - 1.1.13.6 Prefiere no decirlo → 🔴
-
-  > ⚠️ No existe entidad/columna de escolaridad en ningún schema.
+  - 1.1.13.1 Sin estudios → 🟢 `people.profile.education_level` = `NO_STUDIES`
+  - 1.1.13.2 Educación primaria → 🟢 `people.profile.education_level` = `PRIMARY`
+  - 1.1.13.3 Educación secundaria → 🟢 `people.profile.education_level` = `SECONDARY`
+  - 1.1.13.4 Educación media superior → 🟢 `people.profile.education_level` = `HIGH_SCHOOL`
+  - 1.1.13.5 Educación superior → 🟢 `people.profile.education_level` = `UNIVERSITY`
+  - 1.1.13.6 Posgrado → 🟢 `people.profile.education_level` = `POSTGRADUATE`
+  - 1.1.13.6 Prefiere no decirlo → 🟢 `people.profile.education_level` = `PREFERS_NOT_TO_SAY`
 
 - **1.1.14 Estado civil** _(condicional)_
-  - 1.1.14.1 Soltero/a → 🟡 `people.legal_info.type_civil_status` — columna existe como `String`, sin enum definido
-  - 1.1.14.2 Casado/a → 🟡 `people.legal_info.type_civil_status`
-  - 1.1.14.3 Unión libre / convivencia → 🟡 `people.legal_info.type_civil_status`
-  - 1.1.14.4 Separado/a → 🟡 `people.legal_info.type_civil_status`
-  - 1.1.14.5 Divorciado/a → 🟡 `people.legal_info.type_civil_status`
-  - 1.1.14.6 Viudo/a → 🟡 `people.legal_info.type_civil_status`
-  - 1.1.14.7 Prefiere no decirlo → 🔴 — `type_civil_status` es `String` libre, sin enum que lo contemple
+  - 1.1.14.1 Soltero/a → 🟢 `people.legal_info.civil_status` = `SINGLE`
+  - 1.1.14.2 Casado/a → 🟢 `people.legal_info.civil_status` = `MARRIED`
+  - 1.1.14.3 Unión libre / convivencia → 🟢 `people.legal_info.civil_status` = `COMMON_LAW`
+  - 1.1.14.4 Separado/a → 🟢 `people.legal_info.civil_status` = `SEPARATED`
+  - 1.1.14.5 Divorciado/a → 🟢 `people.legal_info.civil_status` = `DIVORCED`
+  - 1.1.14.6 Viudo/a → 🟢 `people.legal_info.civil_status` = `WIDOWED`
+  - 1.1.14.7 Prefiere no decirlo → 🟢 `people.legal_info.civil_status` = `NULL`
 
 - **1.1.17 ¿El usuario depende económicamente de usted?**
-  - 1.1.17.1 Sí → 🔴
-  - 1.1.17.2 Parcialmente → 🔴
-  - 1.1.17.3 No → 🔴
-
-  > ⚠️ No existe campo de dependencia económica en `care.person_responsible` ni en otro schema.
+  - 1.1.17.1 Sí → 🟢 `care.person_responsible.economic_dependence` = `YES`
+  - 1.1.17.2 Parcialmente → 🟢 `care.person_responsible.economic_dependence` = `PARTIALLY`
+  - 1.1.17.3 No → 🟢 `care.person_responsible.economic_dependence` = `NO`
 
 - **1.1.15 Ocupación**
-  - 1.1.15.1 Empleado/a → 🟡 `people.profile.occupation` — campo texto libre, sin enum de categorías
-  - 1.1.15.2–1.1.15.8 (resto de opciones) → 🟡 `people.profile.occupation` — mismo campo, pero sin enum de categorías estandarizadas
+  - 1.1.15.1 Empleado/a → 🟢 `people.profile.occupation_type` = `EMPLOYED`
+  - 1.1.15.2 Trabajador/a independiente → 🟢 `people.profile.occupation_type` = `SELF_EMPLOYED`
+  - 1.1.15.3 Trabajador/a independiente ⚠️ _(duplicado en diagrama)_ → 🟢 `people.profile.occupation_type` = `FREELANCE`
+  - 1.1.15.4 Trabajo del hogar → 🟢 `people.profile.occupation_type` = `HOMEMAKER`
+  - 1.1.15.5 Desempleado/a → 🟢 `people.profile.occupation_type` = `UNEMPLOYED`
+  - 1.1.15.6 Jubilado/a o pensionado/a → 🟢 `people.profile.occupation_type` = `RETIRED`
+  - 1.1.15.7 Otro → 🟢 `people.profile.occupation_type` = `OTHER`
+    - _(Especifique)_ → 🟢 `people.profile.occupation_other`
+  - 1.1.15.8 Prefiere no decirlo → 🟢 `people.profile.occupation_type` = `PREFERS_NOT_TO_SAY`
 
 - **1.1.16 Ingresos**
-  - 1.1.16.1 Sin ingresos → 🔴
-  - 1.1.16.2 < $5,000 → 🔴
-  - 1.1.16.3 $5,000 – $9,999 → 🔴
-  - 1.1.16.4 $10,000 – $19,999 → 🔴
-  - 1.1.16.5 $20,000 – $39,999 → 🔴
-  - 1.1.16.6 ≥ $40,000 → 🔴
-  - 1.1.16.7 Prefiere no decirlo → 🔴
-
-  > ⚠️ No existe ningún campo de ingresos en la DB.
+  - 1.1.16.1 Sin ingresos → 🟢 `people.profile.income_range` = `NO_INCOME`
+  - 1.1.16.2 < $5,000 → 🟢 `people.profile.income_range` = `UNDER_5000`
+  - 1.1.16.3 $5,000 – $9,999 → 🟢 `people.profile.income_range` = `FROM_5000_TO_9999`
+  - 1.1.16.4 $10,000 – $19,999 → 🟢 `people.profile.income_range` = `FROM_10000_TO_19999`
+  - 1.1.16.5 $20,000 – $39,999 → 🟢 `people.profile.income_range` = `FROM_20000_TO_39999`
+  - 1.1.16.6 ≥ $40,000 → 🟢 `people.profile.income_range` = `FROM_40000`
+  - 1.1.16.7 Prefiere no decirlo → 🟢 `people.profile.income_range` = `PREFERS_NOT_TO_SAY`
 
 ---
 
@@ -179,9 +178,9 @@ _(El usuario llena sus propios datos. Mismos campos y mapeos que los de la secci
   - 1.2.9.4 Hermano(a) → 🟢 `people.emergency_contact.relationship_type` = `SIBLING`
   - 1.2.9.5 Hijo(a) → 🟢 `people.emergency_contact.relationship_type` = `CHILD`
   - 1.2.9.6 Amigo(a) → 🟢 `people.emergency_contact.relationship_type` = `FRIEND`
-  - 1.2.9.7 Cuidador(a) → 🔴 — `ERelationshipContact` no tiene `CAREGIVER`
+  - 1.2.9.7 Cuidador(a) → 🟢 `people.emergency_contact.relationship_type` = `CAREGIVER`
   - 1.2.9.4 Otro → 🟢 `people.emergency_contact.relationship_type` = `OTHER`
-    - 1.2.9.1.1 _Especifique_ → 🔴 — `emergency_contact` no tiene campo de texto libre para relación personalizada
+    - 1.2.9.1.1 _Especifique_ → 🟢 `people.emergency_contact.relationship_other`
 
 - **1.2.10 Teléfono principal del contacto**
   - 🟢 `people.emergency_contact.phone_number`
@@ -189,28 +188,35 @@ _(El usuario llena sus propios datos. Mismos campos y mapeos que los de la secci
 ### Más datos del usuario
 
 - **1.2.11 Sexo al nacer**
-  - 🟡 `people.person.type_gender` — misma situación que 1.1.10 (ver nota)
+  - 1.2.11.1 Mujer → 🟢 `health_profile.biological_profile.type_biological_sex` = `MUJER`
+  - 1.2.11.2 Hombre → 🟢 `health_profile.biological_profile.type_biological_sex` = `HOMBRE`
+  - 1.2.11.3 Intersexual → 🟢 `health_profile.biological_profile.type_biological_sex` = `INTERSEXUAL`
+  - 1.2.11.4 Prefiere no decirlo → 🟢 `health_profile.biological_profile.type_biological_sex` = `NULL`
 
 - **1.2.13 Edad**
   - 🟢 calculada desde `people.birth.birth_date`
 
-- **1.2.14 Religión**
-  - 🟡 `people.sociocultural_identity.key_religion` (ver nota en 1.1.12)
+- **1.2.14 Religión** _(condicional)_
+  - 1.2.14.1 Católica → 🟡 `people.sociocultural_identity.key_religion` — depende del catálogo
+  - 1.2.14.2 Cristiana → 🟡 `people.sociocultural_identity.key_religion`
+  - 1.2.14.3 Otra religión → 🟡 `people.sociocultural_identity.key_religion`
+    - _Especifique_ → 🟢 `people.sociocultural_identity.religion_other`
+  - 1.2.14.4 Ninguna → 🟡 `people.sociocultural_identity.key_religion` — depende del catálogo
+  - 1.2.14.5 Prefiere no decirlo → 🟢 `people.sociocultural_identity.key_religion` = `NULL`
 
 - **1.2.16 Estado civil**
-  - 🟡 `people.legal_info.type_civil_status` (ver nota en 1.1.14)
+  - 1.2.16.1 Soltero/a → 🟢 `people.legal_info.civil_status` = `SINGLE`
+  - 1.2.16.2 Casado/a → 🟢 `people.legal_info.civil_status` = `MARRIED`
+  - 1.2.16.3 Unión libre / convivencia → 🟢 `people.legal_info.civil_status` = `COMMON_LAW`
+  - 1.2.16.4 Separado/a → 🟢 `people.legal_info.civil_status` = `SEPARATED`
+  - 1.2.16.5 Divorciado/a → 🟢 `people.legal_info.civil_status` = `DIVORCED`
+  - 1.2.16.6 Viudo/a → 🟢 `people.legal_info.civil_status` = `WIDOWED`
+  - 1.2.16.7 Prefiere no decirlo → 🟢 `people.legal_info.civil_status` = `NULL`
 
 ---
 
-## Resumen de gaps 🔴
+## Resumen de gaps 🟡
 
-| Campo | Schema sugerido | Nota |
+| Campo | Entidad | Nota |
 |---|---|---|
-| Sexo al nacer (vs. identidad de género) | `people.person` | Agregar `sex_at_birth` con enum dedicado |
-| Escolaridad | `people` | Nueva entidad/columna `education_level` |
-| Ingresos | `people` | Nueva columna `income_range` en `profile` o `sociocultural_identity` |
-| Dependencia económica | `care.person_responsible` | Agregar `economic_dependency` enum (FULL, PARTIAL, NONE) |
-| Religión: texto libre / "prefiere no decirlo" | `people.sociocultural_identity` | Agregar `religion_other` texto libre + valor en catálogo |
-| Cuidador(a) como parentesco de emergencia | `people.emergency_contact` | Agregar `CAREGIVER` a `ERelationshipContact` |
-| Texto libre parentesco de emergencia | `people.emergency_contact` | Agregar columna `other_relationship` |
-| "Prefiere no decirlo" en edo. civil | `people.legal_info` | Definir enum `ECivilStatus` con esa opción |
+| Religión (1.1.12 / 1.2.14) | `people.sociocultural_identity.key_religion` | FK a catálogo `catalog.religion` — catálogo pendiente de poblar |

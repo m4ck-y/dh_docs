@@ -7,6 +7,7 @@ Cada carpeta representa un schema de PostgreSQL.
 | care | Relaciones de cuidado (responsable/cuidado) |
 | catalog | Catalogos (paises, estados, municipios, colonias, idiomas, religiones, etc) |
 | expedient | Documentos e identificadores |
+| health_profile | Perfil biologico y clinico (sexo biologico, tipo de sangre, alergias, condiciones cronicas) |
 | people | Datos demograficos y contacto |
 | public | Tablas publicas sin schema especifico |
 

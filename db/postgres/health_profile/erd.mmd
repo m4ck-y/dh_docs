@@ -1,0 +1,70 @@
+erDiagram
+    %% HEALTH_PROFILE SCHEMA
+    %% Perfil biologico y clinico de la persona
+
+    %% RELACIONES
+    person ||--|| biological_profile : "has_biological_profile"
+    person ||--o{ person_allergy : "has_allergies"
+    person ||--o{ chronic_condition : "has_chronic_conditions"
+    person ||--o{ vaccination_record : "has_vaccinations"
+
+    %% ENUMS
+    %% EBiologicalSex: sexo biologico (HOMBRE=1, MUJER=2, INTERSEXUAL=3)
+    %% EBloodType: tipo de sangre (A+, A-, B+, B-, AB+, AB-, O+, O-)
+    EBiologicalSex {
+        Integer HOMBRE "1"
+        Integer MUJER "2"
+        Integer INTERSEXUAL "3"
+    }
+
+    EBloodType {
+        String A_POSITIVE "A+"
+        String A_NEGATIVE "A-"
+        String B_POSITIVE "B+"
+        String B_NEGATIVE "B-"
+        String AB_POSITIVE "AB+"
+        String AB_NEGATIVE "AB-"
+        String O_POSITIVE "O+"
+        String O_NEGATIVE "O-"
+    }
+
+    %% ENTIDADES
+    %% biological_profile: perfil biologico de la persona
+    %% type_biological_sex: sexo biologico (enum)
+    %% type_blood_type: tipo de sangre (enum)
+    biological_profile {
+        UUID id PK
+        UUID id_person FK
+        Enum(EBiologicalSex) type_biological_sex
+        Enum(EBloodType) type_blood_type
+    }
+
+    %% person_allergy: alergias del paciente
+    person_allergy {
+        UUID id PK
+        UUID id_person FK
+        String allergen
+        String severity
+        String reaction_type
+        Text notes
+    }
+
+    %% chronic_condition: condiciones cronicas de salud
+    chronic_condition {
+        UUID id PK
+        UUID id_person FK
+        String condition_name
+        Date diagnosis_date
+        String status
+        Text notes
+    }
+
+    %% vaccination_record: historial de vacunacion
+    vaccination_record {
+        UUID id PK
+        UUID id_person FK
+        String vaccine_name
+        Date vaccination_date
+        String batch_number
+        String administered_by
+    }

@@ -9,6 +9,7 @@ erDiagram
     %% ENUMS
     %% ERelationship: tipo de relacion (MOTHER, FATHER, CAREGIVER, LEGAL_GUARDIAN, OTHER)
     %% ECareRole: rol del cuidador (LIVES_WITH_AND_CARES, CARES_NOT_LIVING_WITH, ADMINISTRATIVE_SUPPORT_ONLY)
+    %% EEconomicDependence: dependencia economica (YES, PARTIALLY, NO)
     ERelationship {
         String MOTHER "MOTHER"
         String FATHER "FATHER"
@@ -23,15 +24,23 @@ erDiagram
         String ADMINISTRATIVE_SUPPORT_ONLY "ADMINISTRATIVE_SUPPORT_ONLY"
     }
 
+    EEconomicDependence {
+        String YES "YES"
+        String PARTIALLY "PARTIALLY"
+        String NO "NO"
+    }
+
     %% ENTIDADES
     %% person_responsible: vinculacion responsable-dependiente
     %% id_dependent: persona que depende (paciente)
     %% id_responsible: responsable o tutor
+    %% economic_dependence: dependencia economica del responsable hacia el dependiente
     person_responsible {
         UUID id PK
         UUID id_dependent FK
         UUID id_responsible FK
         Enum(ERelationship) type_relationship
         Enum(ECareRole) care_role
-        String(100) other_relationship
+        Enum(EEconomicDependence) economic_dependence
+        String(100) relationship_other
     }

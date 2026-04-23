@@ -13,21 +13,94 @@ erDiagram
     person ||--|| legal_info : "has_legal_info"
     person ||--o{ personal_identifier : "has"
     person ||--|| user : "has"
+    person ||--o{ emergency_contact : "has_emergency"
 
     %% RELACIONES SECUNDARIAS
     social_platform ||--o{ social_links : "has"
     identifier_type ||--o{ personal_identifier : "has"
-    person ||--o{ emergency_contact : "has_emergency"
 
     %% ENUMS
     %% EVerificationStatus: estado de verificacion (REJECTED, PENDING, APPROVED)
     %% EGenderIdentity: identidad de genero (NO_ESPECIFICADO=0, MASCULINO=1, FEMENINO=2, TRANSGENERO=3, TRANSEXUAL=4, TRAVESTI=5, INTERSEXUAL=6, OTRO=88)
+    %% EEducationLevel: nivel educativo (NO_STUDIES=0, PRIMARY=1, SECONDARY=2, HIGH_SCHOOL=3, UNIVERSITY=4, POSTGRADUATE=5, PREFERS_NOT_TO_SAY=99)
+    %% EIncomeRange: rango de ingresos (<5000, 5000-9999, 10000-19999, 20000-39999, >=40000, PREFERS_NOT_TO_SAY)
     %% ESocialPlatform: plataformas sociales (twitter, linkedin, github, facebook, instagram, youtube, tiktok, personal_website, other)
     %% EIdentifierType: tipos de identificador (NATIONAL_ID=1, FISCAL_ID=2, SOCIAL_SECURITY_ID=3)
     %% EAddressType: tipos de direccion (HOME=1, WORK=2, BUSINESS=3, OTHER=10)
     %% EEmailType: tipos de email (PERSONAL=2, WORK=3, BUSINESS=4, OTHER=10)
-%% EPhoneType: tipos de telefono (MOBILE=1, WORK=2, HOME=3, BUSINESS=4, OTHER=10)
-    %% ERelationshipContact: tipo de relacion de contacto (SPOUSE, PARENT, SIBLING, CHILD, FRIEND, OTHER)
+    %% EPhoneType: tipos de telefono (MOBILE=1, WORK=2, HOME=3, BUSINESS=4, OTHER=10)
+    %% ERelationshipContact: tipo de relacion de contacto (SPOUSE, PARENT, SIBLING, CHILD, FRIEND, CAREGIVER, OTHER)
+    %% EOccupationType: tipo de ocupacion (EMPLOYED, SELF_EMPLOYED, FREELANCE, HOMEMAKER, UNEMPLOYED, RETIRED, OTHER, PREFERS_NOT_TO_SAY)
+    %% ECivilStatus: estado civil (SINGLE, MARRIED, COMMON_LAW, SEPARATED, DIVORCED, WIDOWED, PREFERS_NOT_TO_SAY)
+    EVerificationStatus {
+        String REJECTED "REJECTED"
+        String PENDING "PENDING"
+        String APPROVED "APPROVED"
+    }
+
+    EGenderIdentity {
+        Integer NO_ESPECIFICADO "0"
+        Integer MASCULINO "1"
+        Integer FEMENINO "2"
+        Integer TRANSGENERO "3"
+        Integer TRANSEXUAL "4"
+        Integer TRAVESTI "5"
+        Integer INTERSEXUAL "6"
+        Integer OTRO "88"
+    }
+
+    EEducationLevel {
+        Integer NO_STUDIES "0"
+        Integer PRIMARY "1"
+        Integer SECONDARY "2"
+        Integer HIGH_SCHOOL "3"
+        Integer UNIVERSITY "4"
+        Integer POSTGRADUATE "5"
+        Integer PREFERS_NOT_TO_SAY "99"
+    }
+
+    EIncomeRange {
+        Integer NO_INCOME "0"
+        Integer UNDER_5000 "1"
+        Integer FROM_5000_TO_9999 "2"
+        Integer FROM_10000_TO_19999 "3"
+        Integer FROM_20000_TO_39999 "4"
+        Integer FROM_40000 "5"
+        Integer PREFERS_NOT_TO_SAY "99"
+    }
+
+    ESocialPlatform {
+        String TWITTER "twitter"
+        String LINKEDIN "linkedin"
+        String GITHUB "github"
+        String FACEBOOK "facebook"
+        String INSTAGRAM "instagram"
+        String YOUTUBE "youtube"
+        String TIKTOK "tiktok"
+        String PERSONAL_WEBSITE "personal_website"
+        String OTHER "other"
+    }
+
+    EIdentifierType {
+        Integer NATIONAL_ID "1"
+        Integer FISCAL_ID "2"
+        Integer SOCIAL_SECURITY_ID "3"
+    }
+
+    EAddressType {
+        Integer HOME "1"
+        Integer WORK "2"
+        Integer BUSINESS "3"
+        Integer OTHER "10"
+    }
+
+    EEmailType {
+        Integer PERSONAL "2"
+        Integer WORK "3"
+        Integer BUSINESS "4"
+        Integer OTHER "10"
+    }
+
     EPhoneType {
         Integer MOBILE "1"
         Integer WORK "2"
@@ -42,7 +115,29 @@ erDiagram
         String SIBLING "SIBLING"
         String CHILD "CHILD"
         String FRIEND "FRIEND"
+        String CAREGIVER "CAREGIVER"
         String OTHER "OTHER"
+    }
+
+    EOccupationType {
+        Integer EMPLOYED "1"
+        Integer SELF_EMPLOYED "2"
+        Integer FREELANCE "3"
+        Integer HOMEMAKER "4"
+        Integer UNEMPLOYED "5"
+        Integer RETIRED "6"
+        Integer OTHER "88"
+        Integer PREFERS_NOT_TO_SAY "99"
+    }
+
+    ECivilStatus {
+        Integer SINGLE "1"
+        Integer MARRIED "2"
+        Integer COMMON_LAW "3"
+        Integer SEPARATED "4"
+        Integer DIVORCED "5"
+        Integer WIDOWED "6"
+        Integer PREFERS_NOT_TO_SAY "99"
     }
 
     %% ENTIDADES
@@ -119,11 +214,18 @@ erDiagram
 
     %% profile: perfil profesional/laboral
     %% known_as: apodo o nombre artistico
+    %% education_level: nivel educativo mas alto completado
+    %% income_range: rango de ingresos economicos
+    %% occupation_type: categoria de ocupacion (enum)
+    %% occupation_other: descripcion libre si occupation_type = OTHER
     profile {
         UUID id PK
         UUID id_person FK
-        String occupation
+        Enum(EOccupationType) occupation_type
+        String(100) occupation_other
         String known_as
+        Enum(EEducationLevel) education_level
+        Enum(EIncomeRange) income_range
         Text about_me
     }
 
@@ -150,15 +252,17 @@ erDiagram
         Boolean self_considers_migrant
         String(20) key_country_origin FK
         String(20) key_religion FK
+        String(100) religion_other
     }
 
     %% legal_info: informacion legal
     %% key_nationality: clave de nacionalidad (catalog)
+    %% civil_status: estado civil (enum ECivilStatus, nullable = prefiere no decirlo)
     legal_info {
         UUID id PK
         UUID id_person FK
         String type_national_id_sex
-        String type_civil_status
+        Enum(ECivilStatus) civil_status
         String(20) key_nationality FK
     }
 
@@ -197,6 +301,7 @@ erDiagram
         String phone_number
         String email
         Enum(ERelationshipContact) relationship_type
+        String(100) relationship_other
         Text notes
     }
 
