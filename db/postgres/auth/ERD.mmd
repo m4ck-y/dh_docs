@@ -1,0 +1,89 @@
+erDiagram
+    %% AUTH SCHEMA
+    %% Autenticacion y sesiones
+    %% Todas las entidades heredan de BaseModel (id, created_at, updated_at, deleted_at)
+    %% Solo se muestran columnas especificas de cada entidad
+
+    %% REFERENCIAS EXTERNAS
+    %% person: definida en schema people
+
+    %% RELACIONES
+    person ||--o{ user : "has_credentials"
+    person ||--o{ device : "owns"
+    person ||--o{ session : "has"
+    person ||--o{ login_attempt : "generates"
+    person ||--o{ password_reset : "requests"
+    device ||--o{ session : "opens"
+
+    %% ENUMS
+    ECredentialType {
+        String PASSWORD "PASSWORD"
+        String OAUTH "OAUTH"
+        String MAGIC_LINK "MAGIC_LINK"
+    }
+
+    ESessionStatus {
+        String ACTIVE "ACTIVE"
+        String REVOKED "REVOKED"
+        String EXPIRED "EXPIRED"
+    }
+
+    ELoginAttemptStatus {
+        String SUCCESS "SUCCESS"
+        String FAILED "FAILED"
+        String BLOCKED "BLOCKED"
+    }
+
+    %% ENTIDADES
+    %% user: metodo de autenticacion de la persona (password, OAuth, magic link)
+    user {
+        UUID id_person FK
+        Enum(ECredentialType) type
+        String password_hash
+        String provider
+        String provider_id
+    }
+
+    %% device: dispositivos de confianza donde el usuario inicia sesion
+    device {
+        UUID id_person FK
+        String name
+        String type
+        String os
+        String browser
+        String fingerprint_hash
+        String last_ip
+        DateTime first_seen_at
+        DateTime last_seen_at
+    }
+
+    %% session: sesion activa del usuario
+    session {
+        UUID id_person FK
+        UUID id_device FK
+        Enum(ESessionStatus) status
+        String refresh_token_hash
+        DateTime expires_at
+        DateTime revoked_at
+        DateTime last_activity_at
+    }
+
+    %% login_attempt: intentos de login para seguridad y rate limiting
+    login_attempt {
+        UUID id_person FK
+        String email
+        String ip_address
+        String user_agent
+        Enum(ELoginAttemptStatus) status
+        String failure_reason
+    }
+
+    %% password_reset: flujo de recuperacion de contrasena
+    password_reset {
+        UUID id_person FK
+        String token_hash
+        String ip_address
+        Boolean used
+        DateTime expires_at
+        DateTime used_at
+    }

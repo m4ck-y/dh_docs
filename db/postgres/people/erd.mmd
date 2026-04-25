@@ -145,6 +145,7 @@ erDiagram
     %% verification_status: estado de verificacion del perfil
     %% type_gender: identidad de genero
     person {
+        UUID id PK
         Enum(EVerificationStatus) verification_status "default: PENDING"
         String url_photo
         String first_name
@@ -206,7 +207,7 @@ erDiagram
     social_links {
         UUID id PK
         UUID id_person FK
-        Enum(ESocialPlatform) id_platform FK
+        UUID id_platform FK
         String url_profile
         Boolean is_verified
         Integer order_display

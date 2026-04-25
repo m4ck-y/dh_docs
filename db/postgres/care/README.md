@@ -16,6 +16,7 @@ Modela el vinculo entre un usuario (dependiente) y su tutor o responsable: tipo 
 |---|---|
 | `ERelationship` | `MOTHER`, `FATHER`, `CAREGIVER`, `LEGAL_GUARDIAN`, `OTHER` |
 | `ECareRole` | `LIVES_WITH_AND_CARES`, `CARES_NOT_LIVING_WITH`, `ADMINISTRATIVE_SUPPORT_ONLY` |
+| `EEconomicDependence` | `YES`, `PARTIALLY`, `NO` |
 
 ## Archivos
 

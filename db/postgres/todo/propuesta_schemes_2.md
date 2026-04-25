@@ -1,8 +1,8 @@
-## 📂 Documentación de Schemas y Tablas
+## Documentacion de Schemas y Tablas
 
 ---
 
-## 📁 Schema: `public`
+## Schema: `public`
 
 **Descripción:**
 
@@ -15,7 +15,7 @@ Contiene las entidades centrales, compartidas y de alto nivel que son reutilizad
 
 ---
 
-## 📁 Schema: `person_data`
+## Schema: `person_data`
 
 **Descripción:**
 
@@ -29,7 +29,7 @@ Almacena datos extendidos o complementarios asociados a una persona, manteniendo
 
 ---
 
-## 📁 Schema: `health_profile`
+## Schema: `health_profile`
 
 **Descripción:**
 
@@ -44,7 +44,7 @@ Agrupa atributos biológicos y clínicos estables del individuo, como sexo biol�
 
 ---
 
-## 📁 Schema: `health_monitoring`
+## Schema: `health_monitoring`
 
 **Descripción:**
 
@@ -58,7 +58,7 @@ Registra datos dinámicos o frecuentes, como signos vitales y mediciones de moni
 
 ---
 
-## 📁 Schema: `clinical_history`
+## Schema: `clinical_history`
 
 **Descripción:**
 
@@ -73,7 +73,7 @@ Contiene el historial médico formal con trazabilidad temporal, incluyendo diagn
 
 ---
 
-## 📁 Schema: `security`
+## Schema: `security`
 
 **Descripción:**
 
@@ -89,7 +89,7 @@ Define el sistema de autenticación, autorización y control de acceso, con mód
 
 ---
 
-## 📁 Schema: `account`
+## Schema: `account`
 
 **Descripción:**
 
@@ -104,7 +104,7 @@ Gestiona cuentas de usuario y autenticación, separando la gestión de identidad
 
 ---
 
-# 🗂️ Tabla resumen con sugerencias de nombres y justificaciones
+# Tabla resumen con sugerencias de nombres y justificaciones
 
 | Schema | Tabla original | Nombre sugerido | Motivo / Justificación |
 | --- | --- | --- | --- |
@@ -136,7 +136,7 @@ Gestiona cuentas de usuario y autenticación, separando la gestión de identidad
 
 ---
 
-# 🎯 Reglas de nomenclatura aplicadas
+# Reglas de nomenclatura aplicadas
 
 1. **Nombres en singular**: para mantener uniformidad y claridad.
 2. **Prefijos para evitar ambigüedad**: especialmente en tablas relacionadas a entidades centrales.

@@ -27,13 +27,18 @@ Es el schema central del sistema: toda entidad que represente a una persona fís
 
 | Enum | Valores relevantes |
 |---|---|
-| `EGenderIdentity` | `NO_ESPECIFICADO`, `MASCULINO`, `FEMENINO`, `TRANSGENERO`, `TRANSEXUAL`, `TRAVESTI`, `INTERSEXUAL`, `OTRO` |
-| `EPhoneType` | `MOBILE`, `WORK`, `HOME`, `BUSINESS`, `OTHER` |
-| `EEmailType` | `PERSONAL`, `WORK`, `BUSINESS`, `OTHER` |
-| `EAddressType` | `HOME`, `WORK`, `BUSINESS`, `OTHER` |
-| `ERelationshipContact` | `SPOUSE`, `PARENT`, `SIBLING`, `CHILD`, `FRIEND`, `OTHER` |
-| `EIdentifierType` | `NATIONAL_ID`, `FISCAL_ID`, `SOCIAL_SECURITY_ID` |
 | `EVerificationStatus` | `PENDING`, `APPROVED`, `REJECTED` |
+| `EGenderIdentity` | `NO_ESPECIFICADO`, `MASCULINO`, `FEMENINO`, `TRANSGENERO`, `TRANSEXUAL`, `TRAVESTI`, `INTERSEXUAL`, `OTRO` |
+| `EEducationLevel` | `NO_STUDIES`, `PRIMARY`, `SECONDARY`, `HIGH_SCHOOL`, `UNIVERSITY`, `POSTGRADUATE`, `PREFERS_NOT_TO_SAY` |
+| `EIncomeRange` | `NO_INCOME`, `UNDER_5000`, `FROM_5000_TO_9999`, `FROM_10000_TO_19999`, `FROM_20000_TO_39999`, `FROM_40000`, `PREFERS_NOT_TO_SAY` |
+| `ESocialPlatform` | `TWITTER`, `LINKEDIN`, `GITHUB`, `FACEBOOK`, `INSTAGRAM`, `YOUTUBE`, `TIKTOK`, `PERSONAL_WEBSITE`, `OTHER` |
+| `EIdentifierType` | `NATIONAL_ID`, `FISCAL_ID`, `SOCIAL_SECURITY_ID` |
+| `EAddressType` | `HOME`, `WORK`, `BUSINESS`, `OTHER` |
+| `EEmailType` | `PERSONAL`, `WORK`, `BUSINESS`, `OTHER` |
+| `EPhoneType` | `MOBILE`, `WORK`, `HOME`, `BUSINESS`, `OTHER` |
+| `ERelationshipContact` | `SPOUSE`, `PARENT`, `SIBLING`, `CHILD`, `FRIEND`, `CAREGIVER`, `OTHER` |
+| `EOccupationType` | `EMPLOYED`, `SELF_EMPLOYED`, `FREELANCE`, `HOMEMAKER`, `UNEMPLOYED`, `RETIRED`, `OTHER`, `PREFERS_NOT_TO_SAY` |
+| `ECivilStatus` | `SINGLE`, `MARRIED`, `COMMON_LAW`, `SEPARATED`, `DIVORCED`, `WIDOWED`, `PREFERS_NOT_TO_SAY` |
 
 ## Archivos
 

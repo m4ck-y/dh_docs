@@ -1,0 +1,96 @@
+erDiagram
+    %% IAM SCHEMA
+    %% Control de acceso, roles y permisos (multi-tenant)
+    %% Todas las entidades heredan de BaseModel (id, created_at, updated_at, deleted_at)
+    %% Solo se muestran columnas especificas de cada entidad
+    %% Excepcion: user_role y role_permission son tablas intermediarias N:N (no heredan BaseModel)
+
+    %% REFERENCIAS EXTERNAS
+    %% person: definida en schema people
+
+    %% RELACIONES
+    tenant ||--o{ membership : "has"
+    person ||--o{ membership : "belongs_to"
+    membership ||--o{ user_role : "grants_context"
+    role ||--o{ user_role : "assigned"
+    role ||--o{ role_permission : "grants"
+    permission ||--o{ role_permission : "included_in"
+    resource ||--o{ permission : "defines_scope"
+    operation ||--o{ permission : "defines_action"
+
+    %% ENUMS
+    EMembershipStatus {
+        String PENDING "PENDING"
+        String ACTIVE "ACTIVE"
+        String SUSPENDED "SUSPENDED"
+    }
+
+    %% ENTIDADES
+    %% tenant: empresa u organizacion (multi-tenant)
+    %% key: identificador unico global (ej: acme, globex)
+    tenant {
+        String key
+        String name
+        Text description
+    }
+
+    %% membership: vinculo persona-tenant (N:N con datos de negocio)
+    %% UNIQUE(id_person, id_tenant)
+    membership {
+        UUID id_person FK
+        UUID id_tenant FK
+        Enum(EMembershipStatus) status
+        DateTime invited_at
+        DateTime accepted_at
+    }
+
+    %% role: rol dentro de un tenant
+    %% UNIQUE(id_tenant, key)
+    %% Los roles NO son globales, cada tenant define los suyos
+    role {
+        UUID id_tenant FK
+        String key
+        String name
+        Text description
+    }
+
+    %% user_role: tabla intermediaria N:N (membership + role)
+    %% No hereda de BaseModel
+    %% Conecta usuario + tenant + role via membership
+    user_role {
+        UUID id_membership FK
+        UUID id_role FK
+    }
+
+    %% resource: dominio funcional del sistema (ej: billing, auth, crm)
+    %% key: UNIQUE global, actua como namespace semantico
+    resource {
+        String key
+        String name
+    }
+
+    %% operation: verbo del sistema (ej: create, read, update, delete)
+    %% Catalogo global compartido
+    operation {
+        String key
+        String name
+    }
+
+    %% permission: combinacion resource + operation
+    %% key = resource.key + "." + operation.key (ej: billing.create)
+    %% UNIQUE(id_resource, id_operation) y UNIQUE(key)
+    permission {
+        UUID id_resource FK
+        UUID id_operation FK
+        String key
+        Text description
+        Boolean is_active
+    }
+
+    %% role_permission: tabla intermediaria N:N (role + permission)
+    %% No hereda de BaseModel
+    %% UNIQUE(id_role, id_permission)
+    role_permission {
+        UUID id_role FK
+        UUID id_permission FK
+    }

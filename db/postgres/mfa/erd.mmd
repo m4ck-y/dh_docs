@@ -1,0 +1,74 @@
+erDiagram
+    %% MFA SCHEMA
+    %% Autenticacion multifactor
+    %% Todas las entidades heredan de BaseModel (id, created_at, updated_at, deleted_at)
+    %% Solo se muestran columnas especificas de cada entidad
+
+    %% REFERENCIAS EXTERNAS
+    %% person: definida en schema people
+
+    %% RELACIONES
+    person ||--o{ auth_factor : "has_factors"
+    person ||--o{ otp_challenge : "receives"
+    person ||--o{ recovery_code : "has_backup"
+    auth_factor ||--o{ otp_challenge : "generates"
+
+    %% ENUMS
+    EFactorType {
+        String TOTP "TOTP"
+        String SMS "SMS"
+        String EMAIL "EMAIL"
+        String RECOVERY_CODE "RECOVERY_CODE"
+    }
+
+    EOtpChannel {
+        String SMS "SMS"
+        String EMAIL "EMAIL"
+        String TOTP "TOTP"
+    }
+
+    EOtpPurpose {
+        String LOGIN "LOGIN"
+        String RESET_PASSWORD "RESET_PASSWORD"
+        String SENSITIVE_ACTION "SENSITIVE_ACTION"
+    }
+
+    %% ENTIDADES
+    %% auth_factor: metodo MFA habilitado por persona
+    %% secret: seed TOTP o valor encriptado (SIEMPRE encriptado, nunca texto plano)
+    %% is_primary: factor principal (recomendado: TOTP, fallback: SMS o EMAIL)
+    auth_factor {
+        UUID id_person FK
+        Enum(EFactorType) type
+        Text secret
+        String phone
+        String email
+        Boolean verified
+        Boolean is_primary
+        DateTime last_used_at
+    }
+
+    %% otp_challenge: desafio OTP temporal (expira en 1-5 minutos)
+    %% code_hash: hash del codigo OTP (nunca raw code)
+    %% single-use: se invalida al consumirse
+    otp_challenge {
+        UUID id_person FK
+        UUID id_factor FK
+        Text code_hash
+        Enum(EOtpChannel) channel
+        Enum(EOtpPurpose) purpose
+        DateTime expires_at
+        Boolean used
+        DateTime consumed_at
+    }
+
+    %% recovery_code: codigos de respaldo de emergencia
+    %% Se generan una sola vez, se muestran al usuario una vez
+    %% code_hash: hash del codigo (nunca texto plano)
+    %% single-use: se invalida al consumirse
+    recovery_code {
+        UUID id_person FK
+        Text code_hash
+        Boolean used
+        DateTime used_at
+    }

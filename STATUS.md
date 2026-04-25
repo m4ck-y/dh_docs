@@ -1,4 +1,4 @@
-# Estado del Proyecto (LLM Context) 🚀
+# Estado del Proyecto (LLM Context)
 
 **Última actualización**: 2026-04-11
 
@@ -9,10 +9,10 @@ El proyecto se encuentra en fase de **Migración y Alineación Arquitectónica**
 
 | Servicio | Estado | Notas |
 | :--- | :--- | :--- |
-| `api_middleware` | 🟢 Activo | Actúa como Gateway único. |
-| `api_core` | 🟡 En Refactor | Faltan módulos de `auth` y `security`. |
-| `app_questionnaire` | 🟢 Estable | FormFlow operativo, pero debe migrar su auth a `api_core`. |
-| `app_health_monitoring`| ⚪ Planeado | Pendiente de integración con perfiles de salud. |
+| `api_middleware` | Activo | Actúa como Gateway único. |
+| `api_core` | En Refactor | Faltan módulos de `auth` y `security`. |
+| `app_questionnaire` | Estable | FormFlow operativo, pero debe migrar su auth a `api_core`. |
+| `app_health_monitoring`| Planeado | Pendiente de integración con perfiles de salud. |
 
 ## Bloqueos Actuales
 - Ninguno. Estamos iniciando la migración de `auth`.
