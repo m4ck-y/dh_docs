@@ -1,25 +1,26 @@
 # Estado del Proyecto (LLM Context)
 
-**Última actualización**: 2026-04-11
+**Última actualización**: 2026-04-25
 
 ## Resumen Ejecutivo
-El proyecto se encuentra en fase de **Migración y Alineación Arquitectónica**. Estamos transformando `api_core` para que sea el núcleo compartido de identidad, basado en el estándar `template_backend_python`.
+El proyecto ha completado la **Auditoría de Estándares de Base de Datos** y ha definido la **Arquitectura de Onboarding**. Se está procediendo con la implementación del microservicio de Waitlist y la integración del flujo "Person-first".
 
 ## Estado de los Servicios
 
 | Servicio | Estado | Notas |
 | :--- | :--- | :--- |
-| `api_middleware` | Activo | Actúa como Gateway único. |
-| `api_core` | En Refactor | Faltan módulos de `auth` y `security`. |
-| `app_questionnaire` | Estable | FormFlow operativo, pero debe migrar su auth a `api_core`. |
-| `app_health_monitoring`| Planeado | Pendiente de integración con perfiles de salud. |
+| `api_middleware` | Activo | Gateway único. |
+| `api_core` | En Refactor | Auditoría de DB completada. Schemas actualizados. |
+| `app_waitlist` | Planeado | TASK-001 creada. Persistencia en MongoDB. |
+| `app_questionnaire` | Estable | FormFlow operativo. |
 
 ## Bloqueos Actuales
-- Ninguno. Estamos iniciando la migración de `auth`.
+- Ninguno.
 
 ## Objetivos Inmediatos
-1. Implementar la estructura de documentación (EN PROGRESO).
-2. Iniciar migración de `auth` desde la plantilla.
+1. Implementar `TASK-002`: Microservicio de Waitlist (MongoDB).
+2. Finalizar la migración de los módulos de `auth` e `iam` en `api_core` siguiendo los nuevos ERDs.
+3. Iniciar el flujo de onboarding "Person-first" (TASK-003).
 
 ---
 *Este documento es la fuente de verdad para el contexto de la IA.*
