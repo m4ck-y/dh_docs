@@ -32,7 +32,7 @@ Reglas transversales a todos los clientes:
 ### `POST /v1/logs/` — LogEntry
 ```json
 {
-  "level": "info",
+  "level": "INFO",
   "event": "waitlist.duplicate",
   "message": "Email already registered",
   "service": "dh_onboarding_back",

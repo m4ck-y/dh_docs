@@ -18,7 +18,7 @@ Gestiona factores de autenticacion adicionales (TOTP, SMS, email), desafios OTP 
 |---|---|
 | `EFactorType` | `TOTP`, `SMS`, `EMAIL`, `RECOVERY_CODE` |
 | `EOtpChannel` | `SMS`, `EMAIL`, `TOTP` |
-| `EOtpPurpose` | `LOGIN`, `RESET_PASSWORD`, `SENSITIVE_ACTION` |
+| `EOtpPurpose` | `LOGIN`, `RESET_PASSWORD`, `SENSITIVE_ACTION`, `ONBOARDING` |
 
 ## Dependencias externas
 

@@ -55,7 +55,21 @@ class MyModel(Base):
 
 ### MongoDB / Beanie
 
-MongoDB almacena internamente en UTC. Solo asegurarse de pasar datetimes timezone-aware desde Python:
+MongoDB almacena internamente en UTC. Sin embargo, PyMongo y Motor devuelven datetimes **naive** (sin `tzinfo`) por defecto. Cuando Pydantic serializa un datetime naive, omite el sufijo de timezone en el JSON (`Z` / `+00:00`). El cliente (JavaScript) interpreta ese valor como hora local en vez de UTC, mostrando la fecha incorrecta.
+
+**Siempre pasar `tz_aware=True` al cliente** para que todos los datetimes recuperados de MongoDB lleven `tzinfo=UTC`:
+
+```python
+# pymongo (servicios nuevos)
+from pymongo import AsyncMongoClient
+client = AsyncMongoClient(settings.MONGO_URL, tz_aware=True)
+
+# motor (servicios legacy)
+from motor.motor_asyncio import AsyncIOMotorClient
+client = AsyncIOMotorClient(settings.MONGO_URL, tz_aware=True)
+```
+
+En los modelos Beanie, pasar datetimes timezone-aware al escribir:
 
 ```python
 from beanie import Document
@@ -66,6 +80,8 @@ class MyDocument(Document):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 ```
+
+Sin `tz_aware=True`, el JSON de la API devuelve `"2026-04-26T06:58:58.847000"` (sin Z) y el frontend lo interpreta como hora local. Con `tz_aware=True` devuelve `"2026-04-26T06:58:58.847000+00:00"` que JavaScript parsea correctamente como UTC.
 
 ---
 
