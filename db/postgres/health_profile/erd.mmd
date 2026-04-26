@@ -37,7 +37,7 @@ erDiagram
     %% type_blood_type: tipo de sangre (enum)
     biological_profile {
         UUID id PK
-        UUID id_person FK
+        Integer id_person FK
         Enum(EBiologicalSex) type_biological_sex
         Enum(EBloodType) type_blood_type
     }
@@ -45,7 +45,7 @@ erDiagram
     %% person_allergy: alergias del paciente
     person_allergy {
         UUID id PK
-        UUID id_person FK
+        Integer id_person FK
         String allergen
         String severity
         String reaction_type
@@ -55,7 +55,7 @@ erDiagram
     %% chronic_condition: condiciones cronicas de salud
     chronic_condition {
         UUID id PK
-        UUID id_person FK
+        Integer id_person FK
         String condition_name
         Date diagnosis_date
         String status
@@ -65,7 +65,7 @@ erDiagram
     %% vaccination_record: historial de vacunacion
     vaccination_record {
         UUID id PK
-        UUID id_person FK
+        Integer id_person FK
         String vaccine_name
         Date vaccination_date
         String batch_number

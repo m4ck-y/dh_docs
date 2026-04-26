@@ -24,12 +24,12 @@ erDiagram
     %% verified_by: usuario que verifico (FK a user o null)
     document {
         UUID id PK
-        UUID id_person FK
+        Integer id_person FK
         String url_file
         String url_thumbnail
         String title
         Text description
-        UUID id_document_type FK
+        Integer id_document_type FK
         Date issued_at
         Date expires_at
         Enum(EVerificationStatus) verification_status
@@ -41,7 +41,7 @@ erDiagram
     document_type {
         UUID id PK
         String name
-        UUID id_category FK
+        Integer id_category FK
     }
 
     %% document_category: categorias de documentos

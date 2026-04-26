@@ -40,8 +40,8 @@ erDiagram
     %% economic_dependence: dependencia economica del responsable hacia el dependiente
     person_responsible {
         UUID id PK
-        UUID id_dependent FK
-        UUID id_responsible FK
+        Integer id_dependent FK
+        Integer id_responsible FK
         Enum(ERelationship) type_relationship
         Enum(ECareRole) care_role
         Enum(EEconomicDependence) economic_dependence

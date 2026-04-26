@@ -1,8 +1,13 @@
 erDiagram
     %% MFA SCHEMA
     %% Autenticacion multifactor
-    %% Todas las entidades heredan de BaseModel (id, created_at, updated_at, deleted_at)
-    %% Solo se muestran columnas especificas de cada entidad
+    %% BaseModel (heredado por todas las entidades):
+    %%   id Integer PK autoincrement — interno, NUNCA expuesto en API
+    %%   uuid UUID auto-generado    — externo, usado en respuestas y rutas de API
+    %%   created_at / updated_at / deleted_at  DateTime(tz) UTC
+    %%   created_by_id_user / updated_by_id_user / deleted_by_id_user Integer FK nullable
+    %% FKs entre tablas usan Integer (id del padre). Ver docs/decisions/010-database-id-strategy.md
+    %% Solo se muestran columnas específicas de cada entidad
 
     %% REFERENCIAS EXTERNAS
     %% person: definida en schema people
@@ -39,7 +44,7 @@ erDiagram
     %% secret: seed TOTP o valor encriptado (SIEMPRE encriptado, nunca texto plano)
     %% is_primary: factor principal (recomendado: TOTP, fallback: SMS o EMAIL)
     auth_factor {
-        UUID id_person FK
+        Integer id_person FK
         Enum(EFactorType) type
         Text secret
         String phone
@@ -52,9 +57,12 @@ erDiagram
     %% otp_challenge: desafio OTP temporal (expira en 1-5 minutos)
     %% code_hash: hash del codigo OTP (nunca raw code)
     %% single-use: se invalida al consumirse
+    %% id_factor: FK a auth_factor (el metodo MFA que genero el desafio). nullable cuando
+    %%   el OTP no proviene de un factor MFA registrado (ej. purpose=ONBOARDING o RESET_PASSWORD,
+    %%   donde el usuario aun no tiene factores configurados y el codigo se envia por email/SMS directo).
     otp_challenge {
-        UUID id_person FK
-        UUID id_factor FK
+        Integer id_person FK
+        Integer id_factor "FK nullable — ver comentario arriba"
         Text code_hash
         String destination
         Enum(EOtpChannel) channel
@@ -69,7 +77,7 @@ erDiagram
     %% code_hash: hash del codigo (nunca texto plano)
     %% single-use: se invalida al consumirse
     recovery_code {
-        UUID id_person FK
+        Integer id_person FK
         Text code_hash
         Boolean used
         DateTime used_at

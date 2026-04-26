@@ -1,0 +1,116 @@
+---
+title: "MFA — OTP Challenge Collection (MongoDB)"
+---
+classDiagram
+
+    %% Colección: otp_challenge
+    %% Motor: MongoDB. No tiene ERD clásico — se usa Class Diagram para documentar la estructura del documento.
+    %% person_id referencia people.person.uuid (PostgreSQL, identificador externo — no ObjectId de Mongo).
+    %%
+    %% Nota sobre TTL:
+    %%   El TTL index elimina documentos automáticamente, pero se recomienda un TTL más largo
+    %%   que expires_at (ej. +24h) para conservarlos con status=EXPIRED y poder auditarlos.
+    %%   La expiración lógica la maneja expire() antes de consultar, no el TTL.
+
+    class OtpChallenge {
+        +ObjectId _id
+        +String person_id "UUID — ref a people.person.uuid en PostgreSQL"
+        +EOtpChannel channel
+        +EOtpPurpose purpose
+        +String destination "email o teléfono destino"
+        +String code_hash "SHA-256 del código OTP (nunca raw code)"
+        +EOtpStatus status
+        +Integer verify_attempts "intentos fallidos de verificar el código actual"
+        +Integer verify_max_attempts "máximo de intentos antes de BLOCKED (default: 5)"
+        +Integer resend_attempts "veces que se solicitó un nuevo código (rate limiting de reenvíos)"
+        +Integer resend_max_attempts "máximo de reenvíos permitidos (default: 3)"
+        +DateTime created_at "UTC"
+        +DateTime expires_at "UTC — expiración lógica del código"
+        +DateTime consumed_at "UTC — null si aún no consumido"
+    }
+
+    class EOtpChannel {
+        <<enumeration>>
+        SMS
+        EMAIL
+        TOTP
+    }
+
+    class EOtpPurpose {
+        <<enumeration>>
+        LOGIN
+        RESET_PASSWORD
+        SENSITIVE_ACTION
+        ONBOARDING
+    }
+
+    class EOtpStatus {
+        <<enumeration>>
+        CREATED
+        EXPIRED
+        CONSUMED
+        BLOCKED
+    }
+
+    OtpChallenge --> EOtpChannel : channel
+    OtpChallenge --> EOtpPurpose : purpose
+    OtpChallenge --> EOtpStatus : status
+
+    %% ── Patrón de consulta antes de verificar ─────────────────────────────────
+    %%
+    %% Antes de verificar un código, se ejecutan dos pasos:
+    %%
+    %% 1. expire(person_id, purpose)
+    %%    Marca como EXPIRED los documentos vencidos activos para esa persona/propósito.
+    %%    updateMany({
+    %%      person_id, purpose,
+    %%      status:     CREATED,
+    %%      expires_at: { $lt: now }
+    %%    }, { $set: { status: EXPIRED } })
+    %%
+    %% 2. find_active(person_id, purpose, destination)
+    %%    Devuelve el challenge vigente tras el paso anterior.
+    %%    findOne({
+    %%      person_id,
+    %%      purpose,
+    %%      destination,
+    %%      status: CREATED
+    %%    })
+    %%    → null: no existe challenge activo (expiró, fue consumido o bloqueado)
+    %%    → doc:  challenge listo para verificar
+
+    %% ── Lógica de verificación ────────────────────────────────────────────────
+    %% verify_otp(otp, code) -> EOtpStatus | "INVALID"
+    %%
+    %% Precondición: expire() + find_active() ya fueron ejecutados.
+    %% Si find_active() devolvió null → responder EXPIRED / CONSUMED / BLOCKED según contexto.
+    %%
+    %%   1. if otp.status == BLOCKED  → return BLOCKED  (defensivo)
+    %%   2. if hash(code) != otp.code_hash:
+    %%        otp.verify_attempts += 1
+    %%        if otp.verify_attempts >= otp.verify_max_attempts:
+    %%            otp.status = BLOCKED
+    %%        return INVALID
+    %%   3. otp.status      = CONSUMED
+    %%      otp.consumed_at = now
+    %%      return CONSUMED
+
+    %% ── Lógica de reenvío ─────────────────────────────────────────────────────
+    %% resend_otp(otp, nuevo_codigo) -> "OK" | "TOO_MANY_RESENDS"
+    %%
+    %% El reenvío NO crea un documento nuevo — actualiza el mismo documento.
+    %% Esto permite trackear el total de reenvíos sin consultar documentos anteriores.
+    %%
+    %%   1. if otp.resend_attempts >= otp.resend_max_attempts → return TOO_MANY_RESENDS
+    %%   2. otp.code_hash        = hash(nuevo_codigo)   ← código nuevo
+    %%      otp.verify_attempts  = 0                    ← reset intentos de verificación
+    %%      otp.resend_attempts += 1                    ← incrementa contador de reenvíos
+    %%      otp.expires_at       = now + TTL            ← nueva expiración
+    %%      otp.status           = CREATED              ← reactiva si estaba BLOCKED
+    %%   3. Despacha el nuevo código vía PulseCore
+    %%      return OK
+
+    %% ── Índices recomendados ──────────────────────────────────────────────────
+    %% { person_id: 1, purpose: 1, status: 1 }       — expire() y find_active()
+    %% { person_id: 1, purpose: 1, destination: 1 }  — búsqueda combinada
+    %% { expires_at: 1 }  — TTL index (expireAfterSeconds: 86400) — limpieza +24h post expiración

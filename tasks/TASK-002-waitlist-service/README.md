@@ -2,28 +2,33 @@
 type: task
 id: TASK-002
 title: "Implementación de Módulo Waitlist en dh_onboarding_back (MongoDB/Beanie)"
-status: backlog
+status: completed
 priority: high
 created: "2026-04-25"
-started: null
-completed: null
+started: "2026-04-26"
+completed: "2026-04-26"
 tags: [onboarding, mongodb, beanie, waitlist]
 ---
 
-# TASK-002: Implementación de Módulo Waitlist en dh_onboarding_back (MongoDB/Beanie)
+# TASK-002: Implementación de Módulo Waitlist en dh_onboarding_back
 
-## Descripcion
-Desarrollo del módulo de Waitlist dentro del microservicio `dh_onboarding_back` utilizando MongoDB con Beanie ODM. Este servicio es el punto de entrada inicial para el flujo de onboarding.
+## Descripción
+
+Módulo de Waitlist dentro de `dh_onboarding_back` usando MongoDB + Beanie ODM.
 
 ## Objetivos
-- [ ] Configurar conexión MongoDB con Beanie en dh_onboarding_back.
-- [ ] Definir el esquema de la colección `waitlist` en MongoDB.
-- [ ] Implementar el CRUD básico de leads (Create, Read, List).
-- [ ] Implementar la lógica de generación y almacenamiento de tokens de invitación.
-- [ ] Exponer endpoints para gestionar waitlist.
-- [ ] Exponer endpoint para convertir lead en applicant (iniciar onboarding).
 
-## Enlaces Rapidos
-- [Plan de Ejecución](planning/README.md)
-- [Registro de Progreso](progress/README.md)
-- [Artefactos](artifacts/)
+- [x] Configurar conexión MongoDB con Beanie (`AsyncMongoClient`, `tz_aware=True`, lifespan).
+- [x] Definir el esquema de la colección `waitlist` (`WaitlistLead` con todos los campos, Field + examples, enums).
+- [x] `POST /v1/waitlist` — registrar lead + email de confirmación vía PulseCore + log a VitalTrace.
+- [x] `GET /v1/waitlist` — listar leads paginado con filtros `status` y `source`.
+- [x] `GET /v1/waitlist/check/{email}` — verificar si un email ya está registrado.
+- [x] `POST /v1/waitlist/{email}/invite` — generar token seguro (7 días), status `INVITED`, email de invitación vía PulseCore.
+- [x] Emails en minúsculas forzados en DTO y use cases.
+- [x] `ApiResponseSingle` / `ApiResponsePaginated` en todos los endpoints.
+- [x] Legacy router en `/v1/onboarding/legacy/` para compatibilidad con el frontend existente.
+
+## Notas
+
+- El endpoint de conversión de lead a applicant (`CONVERTED`) se activa automáticamente en `POST /v1/onboarding/personal-info` cuando se valida el invite_token.
+- Ver TASK-003 para el flujo de onboarding completo.

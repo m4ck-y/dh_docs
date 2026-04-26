@@ -2,6 +2,15 @@ erDiagram
     %% PEOPLE SCHEMA
     %% Tablas relacionadas con datos demograficos y contacto de personas
 
+    %% BaseModel (heredado por todas las entidades no-intermediarias):
+    %%   id     Integer PK autoincrement  — interno, NUNCA expuesto en API
+    %%   uuid   UUID auto-generado       — externo, usado en respuestas y rutas de API
+    %%   created_at / updated_at / deleted_at  DateTime(tz) UTC
+    %%   created_by_id_user / updated_by_id_user / deleted_by_id_user  Integer FK nullable (pendiente IAM)
+    %%
+    %% Convención de FKs: siempre Integer (id del padre), nunca UUID.
+    %% Ver docs/decisions/010-database-id-strategy.md
+
     %% RELACIONES PRINCIPALES
     person ||--o{ email : "has"
     person ||--o{ phone : "has"
@@ -145,7 +154,8 @@ erDiagram
     %% verification_status: estado de verificacion del perfil
     %% type_gender: identidad de genero
     person {
-        UUID id PK
+        Integer id PK
+        UUID uuid
         Enum(EVerificationStatus) verification_status "default: PENDING"
         String url_photo
         String first_name
@@ -157,8 +167,9 @@ erDiagram
     %% email: correos electronicos de contacto
     %% type_email: tipo de correo (PERSONAL, WORK, BUSINESS, OTHER)
     email {
-        UUID id PK
-        UUID id_person FK
+        Integer id PK
+        UUID uuid
+        Integer id_person FK
         String email
         Enum(EEmailType) type_email
     }
@@ -167,8 +178,9 @@ erDiagram
     %% code: codigo de pais + lada (ej: +52)
     %% number: numero sin codigo
     phone {
-        UUID id PK
-        UUID id_person FK
+        Integer id PK
+        UUID uuid
+        Integer id_person FK
         String code
         String number
         Enum(EPhoneType) type_phone
@@ -178,8 +190,9 @@ erDiagram
     %% type_address: tipo de direccion (HOME, WORK, BUSINESS, OTHER)
     %% key_country/state/municipality/colony: claves geograficas (catalog)
     address {
-        UUID id PK
-        UUID id_person FK
+        Integer id PK
+        UUID uuid
+        Integer id_person FK
         Enum(EAddressType) type_address
         String(20) key_country FK
         String(20) key_state FK
@@ -195,7 +208,8 @@ erDiagram
     %% social_platform: catalogo de plataformas sociales
     %% name: tipo de plataforma (enum)
     social_platform {
-        UUID id PK
+        Integer id PK
+        UUID uuid
         Enum(ESocialPlatform) name
         String url_icon
         Boolean is_active
@@ -205,9 +219,10 @@ erDiagram
     %% id_platform: tipo de plataforma (enum)
     %% order_display: orden de prioridad para mostrar
     social_links {
-        UUID id PK
-        UUID id_person FK
-        UUID id_platform FK
+        Integer id PK
+        UUID uuid
+        Integer id_person FK
+        Integer id_platform FK
         String url_profile
         Boolean is_verified
         Integer order_display
@@ -220,8 +235,9 @@ erDiagram
     %% occupation_type: categoria de ocupacion (enum)
     %% occupation_other: descripcion libre si occupation_type = OTHER
     profile {
-        UUID id PK
-        UUID id_person FK
+        Integer id PK
+        UUID uuid
+        Integer id_person FK
         Enum(EOccupationType) occupation_type
         String(100) occupation_other
         String known_as
@@ -233,8 +249,9 @@ erDiagram
     %% birth: informacion de nacimiento
     %% key_birth_country/state: claves geograficas de origen
     birth {
-        UUID id PK
-        UUID id_person FK
+        Integer id PK
+        UUID uuid
+        Integer id_person FK
         String(20) key_birth_country FK
         String(20) key_state_birth FK
         Date birth_date
@@ -246,8 +263,9 @@ erDiagram
     %% key_indigenous_language: idioma indigena (catalog)
     %% self_considers_migrant: si es migrante (si/no)
     sociocultural_identity {
-        UUID id PK
-        UUID id_person FK
+        Integer id PK
+        UUID uuid
+        Integer id_person FK
         Boolean self_considers_indigenous
         String(20) key_indigenous_language FK
         Boolean self_considers_migrant
@@ -260,8 +278,9 @@ erDiagram
     %% key_nationality: clave de nacionalidad (catalog)
     %% civil_status: estado civil (enum ECivilStatus, nullable = prefiere no decirlo)
     legal_info {
-        UUID id PK
-        UUID id_person FK
+        Integer id PK
+        UUID uuid
+        Integer id_person FK
         String type_national_id_sex
         Enum(ECivilStatus) civil_status
         String(20) key_nationality FK
@@ -271,9 +290,10 @@ erDiagram
     %% id_identifier_type: tipo de identificador (enum)
     %% id_document: documento de respaldo (FK a document, nullable)
     personal_identifier {
-        UUID id PK
+        Integer id PK
+        UUID uuid
         Enum(EIdentifierType) id_identifier_type FK
-        UUID id_person FK
+        Integer id_person FK
         String identifier_value
         UUID id_document FK
     }
@@ -281,7 +301,8 @@ erDiagram
     %% identifier_type: catalogo de tipos de identificador
     %% type_identifier: tipo como enum (NATIONAL_ID, FISCAL_ID, SOCIAL_SECURITY_ID)
     identifier_type {
-        UUID id PK
+        Integer id PK
+        UUID uuid
         Enum(EIdentifierType) type_identifier
         String name
         String abbreviation
@@ -294,9 +315,10 @@ erDiagram
     %% first_name/last_name: snapshot del contacto (nullable si es user)
     %% relationship_type: tipo de relacion (enum)
     emergency_contact {
-        UUID id PK
-        UUID id_user_owner FK
-        UUID id_contact_user FK
+        Integer id PK
+        UUID uuid
+        Integer id_user_owner FK
+        Integer id_contact_user FK
         String first_name
         String last_name
         String phone_number
@@ -309,8 +331,9 @@ erDiagram
     %% user: cuenta de usuario del sistema
     %% 1:1 con person
     user {
-        UUID id PK
-        UUID id_person FK
+        Integer id PK
+        UUID uuid
+        Integer id_person FK
         String username
         String password_hash
         Boolean is_active

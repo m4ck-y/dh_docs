@@ -15,6 +15,7 @@ Cada decisión técnica importante debe documentarse siguiendo el formato de **A
 - **[007: Documentación de Schemas Pydantic](007-pydantic-schemas-documentation.md)**
 - **[008: Estándar de Fechas y Horas — UTC en Todo el Sistema](008-datetime-utc-standard.md)**
 - **[009: Formato Estándar de Respuesta de API](009-api-response-format.md)**
+- **[010: Estrategia de Identificadores en Base de Datos](010-database-id-strategy.md)**
 
 ---
 *Para crear una nueva decisión, utiliza la plantilla `_template.md` (próximamente).*

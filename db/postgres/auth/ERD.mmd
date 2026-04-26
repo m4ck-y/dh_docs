@@ -1,8 +1,13 @@
 erDiagram
     %% AUTH SCHEMA
     %% Autenticacion y sesiones
-    %% Todas las entidades heredan de BaseModel (id, created_at, updated_at, deleted_at)
-    %% Solo se muestran columnas especificas de cada entidad
+    %% BaseModel (heredado por todas las entidades):
+    %%   id Integer PK autoincrement — interno, NUNCA expuesto en API
+    %%   uuid UUID auto-generado    — externo, usado en respuestas y rutas de API
+    %%   created_at / updated_at / deleted_at  DateTime(tz) UTC
+    %%   created_by_id_user / updated_by_id_user / deleted_by_id_user Integer FK nullable
+    %% FKs entre tablas usan Integer (id del padre). Ver docs/decisions/010-database-id-strategy.md
+    %% Solo se muestran columnas específicas de cada entidad
 
     %% REFERENCIAS EXTERNAS
     %% person: definida en schema people
@@ -37,7 +42,7 @@ erDiagram
     %% ENTIDADES
     %% user: metodo de autenticacion de la persona (password, OAuth, magic link)
     user {
-        UUID id_person FK
+        Integer id_person FK
         Enum(ECredentialType) type
         String password_hash
         String provider
@@ -46,7 +51,7 @@ erDiagram
 
     %% device: dispositivos de confianza donde el usuario inicia sesion
     device {
-        UUID id_person FK
+        Integer id_person FK
         String name
         String type
         String os
@@ -59,8 +64,8 @@ erDiagram
 
     %% session: sesion activa del usuario
     session {
-        UUID id_person FK
-        UUID id_device FK
+        Integer id_person FK
+        Integer id_device FK
         Enum(ESessionStatus) status
         String refresh_token_hash
         DateTime expires_at
@@ -70,7 +75,7 @@ erDiagram
 
     %% login_attempt: intentos de login para seguridad y rate limiting
     login_attempt {
-        UUID id_person FK
+        Integer id_person FK
         String email
         String ip_address
         String user_agent
@@ -80,7 +85,7 @@ erDiagram
 
     %% password_reset: flujo de recuperacion de contrasena
     password_reset {
-        UUID id_person FK
+        Integer id_person FK
         String token_hash
         String ip_address
         Boolean used
