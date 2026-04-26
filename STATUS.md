@@ -19,8 +19,9 @@ El proyecto ha completado la **Auditoría de Estándares de Base de Datos** y ha
 
 ## Objetivos Inmediatos
 1. Implementar `TASK-002`: Microservicio de Waitlist (MongoDB).
-2. Finalizar la migración de los módulos de `auth` e `iam` en `api_core` siguiendo los nuevos ERDs.
-3. Iniciar el flujo de onboarding "Person-first" (TASK-003).
+2. Desarrollar `TASK-003`: Microservicio de Onboarding (`dh_onboarding_back`).
+3. Ejecutar `TASK-004`: Extracción de la lógica de Auth y MFA a `app_auth`.
+4. Finalizar la migración de `iam` en `api_core`.
 
 ---
 *Este documento es la fuente de verdad para el contexto de la IA.*

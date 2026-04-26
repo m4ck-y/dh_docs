@@ -45,6 +45,7 @@ Basado en el **Enfoque B (Person-first)**: la creacion de la entidad central ocu
 |-------|---------|----------------|
 | `mfa.otp_challenge` | `id_person` | `person.id` |
 | `mfa.otp_challenge` | `code_hash` | Generado por sistema |
+| `mfa.otp_challenge` | `destination` | Email o Telefono donde se envio el codigo |
 | `mfa.otp_challenge` | `channel` | `'EMAIL'` o `'SMS'` (Enum EOtpChannel) |
 | `mfa.otp_challenge` | `purpose` | `'LOGIN'` o `'SENSITIVE_ACTION'` (Enum EOtpPurpose) |
 

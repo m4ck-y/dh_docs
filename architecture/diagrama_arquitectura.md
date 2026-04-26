@@ -13,12 +13,18 @@ graph TD
 
     subgraph Services_Layer["Capa de Microservicios (Negocio)"]
         Core["api_core
-(Identidad / Personas / Auth)"]
+(Identidad / Personas / IAM)"]
+        Auth["app_auth
+(Autenticación / MFA / JWT)"]
+        Onboarding["app_onboarding
+(Flujo de Registro / Orquestación)"]
         Questionnaire["app_questionnaire
 (FormFlow)"]
         Health["app_health_monitoring
 (Monitoreo Clínico)"]
 
+        Onboarding -..->|Orquestación| Core
+        Onboarding -..->|Orquestación| Auth
         Questionnaire -..->|Consulta Interna| Core
         Health -..->|Consulta Interna| Core
     end
@@ -36,9 +42,9 @@ Email · SMS · WhatsApp"]
         Postgres[(PostgreSQL
 Transaccional)]
         Mongo[(MongoDB
-Catálogos Documentales)]
+Leads / Logs / Configs)]
         Clickhouse[(ClickHouse
-Analítica / OLAP)]
+Fase 2 - Analítica / OLAP)]
         MemBuffer[("In-Memory Buffer
 (Dev Phase)")]
     end
@@ -51,18 +57,24 @@ Analítica / OLAP)]
     end
 
     %% Gateway routing
-    Middleware -->|Auth & Routing| Core
+    Middleware -->|Routing| Core
+    Middleware -->|Auth & Login| Auth
+    Middleware -->|Proxy Routing| Onboarding
     Middleware -->|Proxy Routing| Questionnaire
     Middleware -->|Proxy Routing| Health
 
     %% Business services → Observability
     Middleware -->|Telemetría| Logger
     Core -->|Telemetría| Logger
+    Auth -->|Telemetría| Logger
+    Onboarding -->|Telemetría| Logger
     Questionnaire -->|Telemetría| Logger
     Health -->|Telemetría| Logger
 
     %% Business services → Messaging
     Core -->|Despacho| Messenger
+    Auth -->|OTP / Reset| Messenger
+    Onboarding -->|Notificaciones| Messenger
     Questionnaire -->|Notificaciones| Messenger
     Health -->|Alertas Clínicas| Messenger
 
@@ -73,6 +85,7 @@ Analítica / OLAP)]
     Core --- Postgres
     Core --- Mongo
     Core --- Clickhouse
+    Auth --- Postgres
     Questionnaire --- Postgres
     Health --- Postgres
 

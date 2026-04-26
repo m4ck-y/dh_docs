@@ -15,6 +15,17 @@ Bienvenido al centro de documentación del proyecto. Este directorio sigue el es
 
 ---
 
+## Nomenclatura
+- **`dh_`**: Prefijo utilizado en microservicios y componentes para abreviar el nombre del proyecto (**Digital Hospital**). Ejemplo: `dh_onboarding_back`.
+
+---
+
+## Estándares de Persistencia
+- **Relacional**: PostgreSQL + SQLAlchemy.
+- **Documental**: MongoDB + **Beanie ODM** (asíncrono y basado en Pydantic).
+
+---
+
 ## Estado y Reportes
 - **[Estado Actual (STATUS.md)](STATUS.md)**: Resumen ejecutivo del proyecto para IAs y humanos.
 - **[Informes de Auditoría (reports/)](reports/)**: Reportes detallados de sesiones o hitos.

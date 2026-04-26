@@ -160,6 +160,21 @@ ADMIN APP     DOCTOR APP     PATIENT APP
               AUDIT / LOGS
 ```
 
+## Onboarding Service Architecture
+
+```
+    dh_onboarding_back (Mongo + FastAPI)
+                    |
+        +-----------+-----------+
+        |                       |
+    WAITLIST             ONBOARDING
+   (Mongo/Beanie)      (4 pasos)
+                    |
+                    v
+              api_core (PostgreSQL)
+              app_auth (credenciales)
+```
+
 ## Decisión de Arquitectura (ADR 004)
 
 Se ha seleccionado el **Enfoque B (Person-first)** y el almacenamiento de **Waitlist en MongoDB**.
@@ -173,7 +188,7 @@ Se ha seleccionado el **Enfoque B (Person-first)** y el almacenamiento de **Wait
 
 Con la decisión tomada en [ADR 004](../decisions/004-onboarding-approach-and-waitlist-storage.md), se pueden proceder a crear las tareas de implementación:
 
-1.  **TASK-002**: Implementación del microservicio de Waitlist (MongoDB).
+1.  **TASK-002**: Implementación del módulo de Waitlist (MongoDB/Beanie) dentro de `dh_onboarding_back`.
 2.  **TASK-003**: Creación de la lógica de "Promoción de Lead" (Mongo -> Postgres).
 3.  **TASK-004**: Adaptación de los endpoints de `people` y `auth` para soportar el flujo de onboarding.
 4.  **TASK-005**: Panel de administración para revisión y aprobación de Applicants (Personas PENDING).

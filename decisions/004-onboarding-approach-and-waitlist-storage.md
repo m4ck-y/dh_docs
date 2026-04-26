@@ -14,7 +14,8 @@ Se han tomado las siguientes decisiones arquitectónicas:
     - Esto permite reutilizar inmediatamente los schemas de `mfa` (para OTP), `expedient` (para documentos) y `people` (para datos demográficos) sin duplicar lógica o tablas.
     - Una vez finalizado y aprobado el proceso por un administrador, el status cambiará a `APPROVED`.
 
-2.  **Waitlist en MongoDB**: La Waitlist (leads interesados) se mantendrá en **MongoDB**.
+2. **Waitlist en MongoDB (dentro de dh_onboarding_back)**: La Waitlist (leads interesados) se mantendrá en **MongoDB** utilizando **Beanie ODM**.
+    - estará contenida dentro del microservicio `dh_onboarding_back` para mantener cohesión, ya que waiting y onboarding forman un flujo continuo.
     - Dado que los datos de prospección pueden ser muy variables (fuentes de marketing, datos de contacto parciales, etc.), el esquema flexible de MongoDB es ideal.
     - Cuando un lead de la Waitlist es invitado o decide iniciar el onboarding, se gatilla la creación de la entidad `person` en PostgreSQL.
 
