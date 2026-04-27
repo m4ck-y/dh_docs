@@ -20,6 +20,7 @@ Cada decisión técnica importante debe documentarse siguiendo el formato de **A
 - **[012: SQL Alchemy Echo Debug](012-sqlalchemy-echo-debug.md)**
 - **[013: Seeders de Base de Datos](013-database-seeders.md)**
 - **[014: Estándar de Hashing de Contraseñas](014-estandar-hashing-contrasenas.md)**
+- **[015: Estrategia de Autorización Stateless via JWT](015-estrategia-autorizacion-stateless.md)**
 
 ---
 *Para crear una nueva decisión, utiliza la plantilla `_template.md` (próximamente).*

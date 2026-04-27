@@ -28,9 +28,10 @@ El flujo de auto-registro (waitlist → onboarding → person) está implementad
 
 1. ~~Conectar `dh_onboarding_back` con `dh_mfa` para el paso OTP del onboarding~~ (completado).
 2. ~~Implementar hashing de contraseñas en onboarding (Bcrypt)~~ (completado).
-3. Implementar `dh_auth` (TASK-004) — login, OAuth Google, JWT.
-4. Implementar endpoints de admin review en `api_core` (ver TASK-005 backoffice).
-4. Implementar `dh_documents` (TASK-007) — storage evolutivo, validación configurable.
+3. Implementar `dh_auth` (TASK-004) — login, OAuth Google, emisor de JWT Stateless.
+4. Implementar validación de RBAC en `api_middleware` basado en claims de JWT.
+5. Implementar endpoints de admin review en `api_core` (ver TASK-005 backoffice).
+6. Implementar `dh_documents` (TASK-007) — storage evolutivo, validación configurable.
 
 ## Tasks
 
