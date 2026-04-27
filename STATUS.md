@@ -40,7 +40,7 @@ El flujo de auto-registro (waitlist → onboarding → person) está implementad
 | TASK-001 | Auditoría de DB | Completada |
 | TASK-002 | Módulo Waitlist en dh_onboarding_back | **Completada** |
 | TASK-003 | Microservicio de Onboarding (dh_onboarding_back) | **En progreso (OTP y Hashing OK)** |
-| TASK-004 | Microservicio de Auth (dh_auth) | **Backlog (Siguiente prioridad)** |
+| TASK-004 | Implementación de `dh_auth` y actualización de `api_middleware` | **Prioridad Alta (Siguiente)** |
 | TASK-005 | Backoffice Administrativo (dh_backoffice) | Backlog |
 | TASK-006 | Microservicio MFA — OTP Challenge (dh_mfa) | **Completada** |
 | TASK-007 | Microservicio de Gestión de Documentos (dh_documents) | Backlog |
