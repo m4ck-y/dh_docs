@@ -5,10 +5,30 @@ erDiagram
     %% REFERENCIAS EXTERNAS
     %% person: definida en schema people
 
+    %% CONVENCION: SUBTIPO GENERICO
+    %% Todo document siempre apunta a un document_subtype, nunca al type directamente.
+    %% Para tipos sin variantes significativas (CURP, CSF) se crea un subtype con el mismo nombre que el type.
+    %% Ejemplo: type "Comprobante de Domicilio" tiene un unico subtype "Comprobante de Domicilio".
+    %% Esto mantiene el modelo uniforme: id_document_subtype nunca es null, el JOIN siempre es igual.
+
+    %% EJEMPLOS DE REGISTROS
+    %% document_type: type-001 "Identificacion Oficial", type-002 "Medico", type-003 "Fiscal", type-004 "Comprobante de Domicilio"
+    %% document_subtype: subtype-ine INE type-001, subtype-passport Pasaporte type-001, subtype-medical-hist "Historia Medica" type-002, subtype-csf CSF type-003
+    %% document_subtype (genericos): subtype-proof-addr "Comprobante de Domicilio" type-004 (unico subtype del tipo, mismo nombre)
+    %% document: doc-001 per-100 subtype-ine "INE Juan" issued 2020-05-10 expires 2030-05-10 APPROVED usr-admin
+    %% document: doc-002 per-100 subtype-proof-addr "CFE Marzo" issued 2026-03-01 expires null PENDING null
+    %% document: doc-003 per-200 subtype-medical-hist "Historial" issued 2025-12-01 expires null APPROVED usr-admin
+    %% document_file: file-001 doc-001 FRONT cdn/ine/front.jpg thumb cdn/ine/front_t.jpg image/jpeg 245678
+    %% document_file: file-002 doc-001 BACK cdn/ine/back.jpg thumb cdn/ine/back_t.jpg image/jpeg 198432
+    %% document_file: file-003 doc-002 SINGLE cdn/cfe/mar.pdf thumb null application/pdf 512000
+    %% document_file: file-004 doc-003 EXTRA cdn/med/labs.pdf thumb null application/pdf 320000
+    %% document_file: file-005 doc-003 EXTRA cdn/med/rx.jpg thumb cdn/med/rx_t.jpg image/jpeg 150000
+
     %% RELACIONES
     person ||--o{ document : "has"
-    document_category ||--o{ document_type : "categorizes"
-    document_type ||--o{ document : "defines_type"
+    document_type ||--o{ document_subtype : "categorizes"
+    document_subtype ||--o{ document : "defines_subtype"
+    document ||--o{ document_file : "has_files"
 
     %% ENUMS
     %% EVerificationStatus: estado de verificacion (REJECTED, PENDING, APPROVED)
@@ -18,35 +38,59 @@ erDiagram
         String APPROVED "APPROVED"
     }
 
+    %% EDocumentSide: lado o variante del archivo fisico
+    %% FRONT: frente (ej. INE cara delantera)
+    %% BACK: reverso (ej. INE cara trasera)
+    %% SINGLE: documento de una sola cara (ej. PDF comprobante domicilio)
+    %% EXTRA: anexos multiples sin cara definida (ej. estudios medicos)
+    EDocumentSide {
+        String FRONT "FRONT"
+        String BACK "BACK"
+        String SINGLE "SINGLE"
+        String EXTRA "EXTRA"
+    }
+
     %% ENTIDADES
-    %% document: documentos de identificacion y archivos
+    %% document_type: tipo raiz de documento (ej. Identificacion Oficial, Medico, Fiscal)
+    document_type {
+        UUID id PK
+        String name
+    }
+
+    %% document_subtype: subtipo especifico dentro de un tipo (ej. INE, Pasaporte, Historia Medica)
+    %% Para tipos sin variantes, se crea un subtype con el mismo nombre (subtype generico).
+    %% id_document_type: FK al tipo raiz
+    document_subtype {
+        UUID id PK
+        String name
+        Integer id_document_type FK
+    }
+
+    %% document: instancia de un documento perteneciente a una persona
     %% verification_status: estado de verificacion del documento
     %% verified_by: usuario que verifico (FK a user o null)
     document {
         UUID id PK
         Integer id_person FK
-        String url_file
-        String url_thumbnail
+        Integer id_document_subtype FK
         String title
         Text description
-        Integer id_document_type FK
         Date issued_at
         Date expires_at
         Enum(EVerificationStatus) verification_status
         UUID verified_by FK
     }
 
-    %% document_type: catalogo de tipos de documento
-    %% id_category: categoria del tipo (FK a document_category)
-    document_type {
+    %% document_file: archivos fisicos asociados a un documento
+    %% side: FRONT | BACK | SINGLE | EXTRA
+    %% url_thumbnail: nullable, no todos los tipos generan thumbnail
+    document_file {
         UUID id PK
-        String name
-        Integer id_category FK
-    }
-
-    %% document_category: categorias de documentos
-    %% Ejemplo: Identificacion, Educacion, Medico, Laboral, Fiscal
-    document_category {
-        UUID id PK
-        String name
+        Integer id_document FK
+        String side
+        String url
+        String url_thumbnail
+        String mime_type
+        BigInt size_bytes
+        Timestamp created_at
     }

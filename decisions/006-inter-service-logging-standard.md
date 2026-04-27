@@ -5,7 +5,7 @@ Aceptado
 
 ## Contexto
 
-El ecosistema Digital Hospital está compuesto por múltiples microservicios, frontend y apps móviles. Sin un estándar de observabilidad, cada cliente implementa su propio mecanismo de logging. `app_logger_tracer` (VitalTrace) es el hub centralizado. Esta decisión define cómo todos los clientes deben integrarse con él.
+El ecosistema Digital Hospital está compuesto por múltiples microservicios, frontend y apps móviles. Sin un estándar de observabilidad, cada cliente implementa su propio mecanismo de logging. `logger_tracer_service` (VitalTrace) es el hub centralizado. Esta decisión define cómo todos los clientes deben integrarse con él.
 
 ## Decisión
 
@@ -15,7 +15,7 @@ Se adopta el patrón de **logger dual** para microservicios backend:
 2. **Logger remoto**: `httpx` asíncrono hacia VitalTrace — observabilidad centralizada.
 
 Reglas transversales a todos los clientes:
-- Logger failures son siempre silenciosas — VitalTrace inaccesible no debe afectar al servicio.
+- Logger failures nunca afectan al servicio — `logger_tracer_service` inaccesible solo genera un warning local (stdlib), nunca una excepción.
 - `SERVICE_LOGGER_TRACER_URL` vacío deshabilita el forwarding sin error.
 - Dependencia requerida en microservicios: `httpx` (`uv add httpx`).
 - `ENVIRONMENT` debe estar configurado en cada servicio (`development`, `staging`, `production`).
@@ -114,8 +114,8 @@ async def _push(endpoint: str, payload: dict) -> None:
                 f"{settings.SERVICE_LOGGER_TRACER_URL}/v1/{endpoint}/",
                 json=payload,
             )
-    except Exception:
-        pass
+    except Exception as e:
+        _stdlib.warning("logger_tracer_service unreachable — log lost locally: %s", e)
 
 
 class ServiceLogger:
@@ -164,7 +164,7 @@ logger = ServiceLogger(service="<nombre_del_servicio>")
 # Values: development | staging | production
 ENVIRONMENT=production
 
-# URL of the VitalTrace observability service (app_logger_tracer)
+# URL of the VitalTrace observability service (logger_tracer_service)
 SERVICE_LOGGER_TRACER_URL=https://dh-logger-tracer-967885369144.europe-west1.run.app
 ```
 

@@ -21,14 +21,15 @@ El flujo de auto-registro (waitlist → onboarding → person) está implementad
 
 ## Bloqueos Actuales
 
-- Endpoints OTP en `dh_onboarding_back` (`/otp/send`, `/otp/verify`) ya conectados con `dh_mfa` via httpx.
-- Password hashing pendiente de `dh_auth` (TASK-004) — actualmente almacena texto plano.
+- Ninguno crítico. Los endpoints OTP ya están conectados y el hashing de contraseñas ha sido implementado.
+- Pendiente de iniciar `dh_auth` (TASK-004) para centralizar login y emisión de JWT.
 
 ## Objetivos Inmediatos
 
 1. ~~Conectar `dh_onboarding_back` con `dh_mfa` para el paso OTP del onboarding~~ (completado).
-2. Implementar `dh_auth` (TASK-004) — login, OAuth Google, JWT, password hashing.
-3. Implementar endpoints de admin review en `api_core` (ver TASK-005 backoffice).
+2. ~~Implementar hashing de contraseñas en onboarding (Bcrypt)~~ (completado).
+3. Implementar `dh_auth` (TASK-004) — login, OAuth Google, JWT.
+4. Implementar endpoints de admin review en `api_core` (ver TASK-005 backoffice).
 4. Implementar `dh_documents` (TASK-007) — storage evolutivo, validación configurable.
 
 ## Tasks
@@ -37,8 +38,8 @@ El flujo de auto-registro (waitlist → onboarding → person) está implementad
 | :--- | :--- | :--- |
 | TASK-001 | Auditoría de DB | Completada |
 | TASK-002 | Módulo Waitlist en dh_onboarding_back | **Completada** |
-| TASK-003 | Microservicio de Onboarding (dh_onboarding_back) | **En progreso (OTP conectado)** |
-| TASK-004 | Microservicio de Auth (dh_auth) | Backlog |
+| TASK-003 | Microservicio de Onboarding (dh_onboarding_back) | **En progreso (OTP y Hashing OK)** |
+| TASK-004 | Microservicio de Auth (dh_auth) | **Backlog (Siguiente prioridad)** |
 | TASK-005 | Backoffice Administrativo (dh_backoffice) | Backlog |
 | TASK-006 | Microservicio MFA — OTP Challenge (dh_mfa) | **Completada** |
 | TASK-007 | Microservicio de Gestión de Documentos (dh_documents) | Backlog |

@@ -37,8 +37,8 @@ erDiagram
     %% membership: vinculo persona-tenant (N:N con datos de negocio)
     %% UNIQUE(id_person, id_tenant)
     membership {
-        Integer id_person FK
-        Integer id_tenant FK
+        UUID id_person FK
+        UUID id_tenant FK
         Enum(EMembershipStatus) status
         DateTime invited_at
         DateTime accepted_at
@@ -48,7 +48,7 @@ erDiagram
     %% UNIQUE(id_tenant, key)
     %% Los roles NO son globales, cada tenant define los suyos
     role {
-        Integer id_tenant FK
+        UUID id_tenant FK
         String key
         String name
         Text description
@@ -58,8 +58,8 @@ erDiagram
     %% No hereda de BaseModel
     %% Conecta usuario + tenant + role via membership
     user_role {
-        Integer id_membership FK
-        Integer id_role FK
+        UUID id_membership FK
+        UUID id_role FK
     }
 
     %% resource: dominio funcional del sistema (ej: billing, auth, crm)
@@ -80,8 +80,8 @@ erDiagram
     %% key = resource.key + "." + operation.key (ej: billing.create)
     %% UNIQUE(id_resource, id_operation) y UNIQUE(key)
     permission {
-        Integer id_resource FK
-        Integer id_operation FK
+        UUID id_resource FK
+        UUID id_operation FK
         String key
         Text description
         Boolean is_active
@@ -91,6 +91,6 @@ erDiagram
     %% No hereda de BaseModel
     %% UNIQUE(id_role, id_permission)
     role_permission {
-        Integer id_role FK
-        Integer id_permission FK
+        UUID id_role FK
+        UUID id_permission FK
     }

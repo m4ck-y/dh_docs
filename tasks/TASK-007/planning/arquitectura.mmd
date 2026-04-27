@@ -1,0 +1,59 @@
+# Arquitectura: dh_expedient
+
+```mermaid
+flowchart LR
+    subgraph dh_expedient["dh_expedient"]
+        direction TB
+        API["API Layer"]
+        UC["Use Cases"]
+        SRV["Storage Abstraction"]
+        
+        API --> UC
+        UC --> SRV
+    end
+    
+    subgraph storage_backends["Storage Backends"]
+        direction LR
+        DISK["Disk Storage"]
+        GCS["GCS Storage"]
+    end
+    
+    subgraph postgres["PostgreSQL - expedient"]
+        direction LR
+        DCAT["document_category"]
+        DTYPE["document_type"]
+        DOC["document"]
+    end
+    
+    subgraph mongo["MongoDB"]
+        DTC["document_type_config"]
+    end
+    
+    dh_onboarding_back --> dh_expedient
+    dh_expedient --> DISK
+    dh_expedient --> GCS
+    dh_expedient --- postgres
+    dh_expedient --- mongo
+    
+    DCAT --> DTYPE
+    DTYPE --> DOC
+```
+
+## Enums
+
+```mermaid
+erDiagram
+    EStorageProvider {
+        String DISK "disk"
+        String GCS "gcs"
+    }
+```
+
+## Flujo de Operativas
+
+| Operación | Storage | DB |
+|-----------|---------|-----|
+| Upload | EStorageProvider | PostgreSQL `document` |
+| Download | EStorageProvider | PostgreSQL `document` |
+| Review | - | PostgreSQL `document` |
+| Validation Config | - | MongoDB |
