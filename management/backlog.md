@@ -4,6 +4,8 @@ Este documento es el centro de control para todas las tareas del proyecto.
 
 ## 🏁 En Progreso (Doing)
 - [x] Estructurar directorio `docs/` optimizado para LLMs.
+- [x] Migrar diagramas Draw.io de Historia Clínica a Mermaid.
+- [ ] Implementar estrategia de **Identidad Unificada** (Unified Onboarding) y escalamiento de roles.
 - [ ] Iniciar migración del módulo `auth` a `api_core`.
 
 ## 📋 Próximas Tareas (To Do)

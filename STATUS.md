@@ -1,6 +1,11 @@
 # Estado del Proyecto (LLM Context)
 
-**Última actualización**: 2026-04-26
+**Última actualización**: 2026-05-01
+
+## Hitos de Documentación Recientes
+- **Migración Historial Clínico**: 15 pestañas de Draw.io migradas a Mermaid (.mmd) en `docs/historial_clinico/diagram/`.
+- **Estrategia de Identidad**: Definición de flujo unificado (Identity First) y solicitud de roles post-onboarding.
+- **Onboarding Legacy**: Documentación del flujo actual de 9 pasos extraído del frontend en `docs/management/1_onboarding_legacy/`.
 
 ## Resumen Ejecutivo
 

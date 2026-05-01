@@ -1,0 +1,44 @@
+graph TD
+    %% Phase 1: Unified Identity Onboarding
+    subgraph Phase_1 [Onboarding Unificado: Identidad Base]
+        Start((Inicio)) --> Account[/"Registro de Cuenta<br/>(Email, Tel, Pass)"/]
+        Account --> OTP[Verificación OTP]
+        OTP --> BaseDocs[/"Carga ID Base<br/>(Identificación Oficial)"/]
+        BaseDocs --> PersonalData[/"Datos Personales<br/>(CURP, Nombre, Fecha Nac)"/]
+        PersonalData --> SystemVerify[Sistema Valida Identidad]
+        SystemVerify --> BasicUser((Usuario Verificado))
+    end
+
+    %% Phase 2: Role Escalation (Solicitud de Roles)
+    BasicUser --> AppHome{App Dashboard}
+    
+    AppHome -->|Solicitar Rol: TUTOR| TutorFlow[Proceso de Validación Tutor]
+    AppHome -->|Solicitar Rol: MÉDICO| DoctorFlow[Proceso de Validación Médico]
+    AppHome -->|Uso como PACIENTE| PatientFlow[Acceso a Servicios de Salud]
+
+    %% Case A: Tutor Workflow
+    subgraph Case_A [Flujo Tutor / Cuidador]
+        TutorFlow --> TutorDocs[/"Carga de Documentos:<br/>- Acta de nacimiento (si aplica)<br/>- Poder legal (si aplica)"/]
+        TutorDocs --> AdminApproveTutor[Validación Administrativa]
+        AdminApproveTutor -->|Aprobado| ManageDependents[Habilitar: 'Gestionar personas bajo mi cuidado']
+        ManageDependents --> RegisterDependent[/"Registrar Dependiente:<br/>(Hijo, Adulto Mayor, etc.)"/]
+        RegisterDependent --> NewPersonEntity[Creación de Entidad 'Person' vinculada]
+    end
+
+    %% Case B: Doctor Workflow
+    subgraph Case_B [Flujo Profesional de Salud]
+        DoctorFlow --> ProfessionalDocs[/"Carga de Documentos:<br/>- Título Profesional<br/>- Cédula Profesional<br/>- Certificación Especialidad"/]
+        ProfessionalDocs --> AdminApproveDoctor[Validación Administrativa Senior]
+        AdminApproveDoctor -->|Aprobado| MedicalAccess[Acceso a Herramientas Clínicas y Recetario]
+    end
+
+    %% Styles
+    classDef unified fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef tutor fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef doctor fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef terminal fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px;
+
+    class Start,BasicUser,NewPersonEntity,MedicalAccess terminal;
+    class Case_A tutor;
+    class Case_B doctor;
+    class Phase_1 unified;
