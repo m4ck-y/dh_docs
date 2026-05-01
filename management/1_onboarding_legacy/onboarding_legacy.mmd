@@ -1,0 +1,55 @@
+graph TD
+    Start(("Inicio de Onboarding")) --> SelectProfile{"¿Tipo de Perfil?"}
+    
+    SelectProfile -->|Paciente / Médico| InputAccount[/"Captura de Credenciales:<br/>- Correo electrónico<br/>- Teléfono celular<br/>- Contraseña estable / confirmada"/]
+    
+    InputAccount --> AcceptTerms{"Acepta Términos<br/>y Privacidad"}
+    
+    AcceptTerms -->|SÍ| SelectCodeMethod{"Método de Verificación"}
+    AcceptTerms -->|NO| EndCancel(("Registro Cancelado"))
+    
+    SelectCodeMethod -->|Correo / SMS| SendCode["Sistema genera y envía OTP de 6 dígitos"]
+    
+    SendCode --> InputCode[/"Ingreso de Código de Verificación"/]
+    
+    InputCode --> ValidateCode{"¿OTP Válido y Vigente?"}
+    
+    ValidateCode -->|SÍ| AccountActive["Cuenta Pre-registrada y Validada"]
+    ValidateCode -->|NO| Resend{"¿Reenviar Código?"}
+    Resend -->|SÍ| SendCode
+    Resend -->|NO| EndCancel
+    
+    AccountActive --> StartProfile["Inicio de Captura de Información General"]
+    
+    StartProfile --> UploadDocs[/"Carga de Documentos Digitales:<br/>- Identificación Oficial (Frente/Reverso)<br/>- Comprobante de Domicilio Vigente"/]
+    
+    UploadDocs --> InputPersonal[/"Captura de Datos Personales:<br/>- Ingreso de CURP"/]
+    
+    InputPersonal --> ValidateRenapo["Validación con RENAPO / Autocompletado"]
+    
+    ValidateRenapo --> ConfirmPersonal[/"Confirmación / Corrección de:<br/>- Nombre(s) y Apellidos<br/>- Fecha de Nacimiento<br/>- Sexo y Nacionalidad"/]
+    
+    ConfirmPersonal --> InputAddress[/"Captura de Domicilio:<br/>- Ingreso de Código Postal"/]
+    
+    InputAddress --> ValidateCP["Búsqueda de Colonias y Validación"]
+    
+    ValidateCP --> SelectColonia[/"Selección de Colonia y Captura de:<br/>- Calle, Números (Ext/Int)<br/>- Ciudad y Estado (Auto)<br/>- Referencias Visuales"/]
+    
+    SelectColonia --> SubmitProfile["Envío de Información para Validación"]
+    
+    SubmitProfile --> ReviewProcess["Proceso de Validación Administrativa<br/>- Revisión humana de legibilidad de documentos<br/>- Cotejo de CURP vs Identificación<br/>- Verificación de domicilio"]
+    
+    ReviewProcess --> FinalStatus(("Fin: Notificación de Activación en 48h"))
+
+    %% Estilos para mayor profesionalismo
+    classDef input fill:#f5f5f5,stroke:#333,stroke-width:2px;
+    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef start fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px;
+    classDef terminal fill:#ffcdd2,stroke:#c62828,stroke-width:2px;
+    
+    class InputAccount,InputCode,UploadDocs,InputPersonal,ConfirmPersonal,InputAddress,SelectColonia input;
+    class SendCode,ValidateRenapo,ValidateCP,ReviewProcess,SubmitProfile process;
+    class SelectProfile,AcceptTerms,SelectCodeMethod,ValidateCode,Resend decision;
+    class Start start;
+    class FinalStatus,EndCancel terminal;

@@ -25,7 +25,7 @@ Este microservicio cubre los casos que NO pasan por el flujo de onboarding:
 
 `dh_onboarding_back` es el dueño del flujo de **auto-registro**. Para creación administrativa, se requiere un punto de entrada separado que no exija OTP ni token de invitación.
 
-Ver: [2.onboarding.md](../../management/onboarding/2.onboarding.md)
+Ver: [2.onboarding.md](../../management/1_onboarding/2.onboarding.md)
 
 ## Objetivos
 

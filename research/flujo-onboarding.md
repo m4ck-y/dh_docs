@@ -2,4 +2,4 @@
 
 > **Documento promovido a documentación operacional.**
 > Ver versión actualizada con endpoints reales en:
-> [`docs/management/onboarding/README.md`](../management/onboarding/README.md)
+> [`docs/management/1_onboarding/README.md`](../management/1_onboarding/README.md)
