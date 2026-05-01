@@ -1,17 +1,15 @@
-# historial_clinico
+# Clinical History Documentation
 
-Documentación del flujo y estructura del historial clínico del sistema.
+Technical and functional specifications for the Digital Hospital Clinical History module.
 
-Cada sección del historial clínico tiene su origen en un diagrama de flujo draw.io. Al documentar una sección se generan **dos archivos con el mismo nombre base**:
+## Directory Structure
+- [diagram/](./diagram/): Machine-readable Mermaid (.mmd) workflow diagrams.
+- `*.md`: Structural breakdown of forms (questions, options, sub-routes).
+- `*.MAPPER.md`: Database mapping (PostgreSQL) for each clinical field.
 
-| Archivo | Descripción |
-|---|---|
-| `<SECCIÓN>.md` | Estructura en markdown del diagrama: secciones, preguntas, opciones y subrutas — ignorando la lógica de flujo |
-| `<SECCIÓN>.MAPPER.md` | Mapeo de cada campo hacia su `schema.entidad.columna` en PostgreSQL, con indicadores de cobertura (🟢 modelado / 🟡 parcial / 🔴 pendiente) |
+## Documentation Files
+- [A.REGISTRO.md](./A.REGISTRO.md): Registration form structure (Tutor & General Data).
+- [A.REGISTRO.MAPPER.md](./A.REGISTRO.MAPPER.md): Database mapping for Registration section.
 
-## Archivos
-
-| Archivo | Descripción |
-|---|---|
-| [A.REGISTRO.md](./A.REGISTRO.md) | Estructura de la sección "A. Registro": datos de tutor/responsable y datos generales del usuario |
-| [A.REGISTRO.MAPPER.md](./A.REGISTRO.MAPPER.md) | Mapeo DB de la sección "A. Registro" |
+## Source of Truth
+The [diagram/README.md](./diagram/README.md) contains the index of all clinical workflows (A to I) and system logic annexes. These diagrams serve as the definitive specification for implementation.

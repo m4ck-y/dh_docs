@@ -1,0 +1,62 @@
+graph TD
+    Start((Inicio)) --> Q1{1.0 ¿Tiene alguno de los siguientes problemas?}
+    
+    Q1 --> O1.1[1.1 MENTAL]
+    Q1 --> O1.2[1.2 MOTRIZ]
+    Q1 --> O1.3[1.3 VISUAL]
+    Q1 --> O1.4[1.4 MEMORIA]
+    Q1 --> O1.5[1.5 AUDITIVO]
+    Q1 --> O1.6[1.6 DE LENGUAJE]
+    
+    O1.1 & O1.2 & O1.3 & O1.4 & O1.5 & O1.6 --> Q2[2.0 Padece o ha padecido enfermedades alguna vez]
+    
+    Q2 --> Q2.1[2.1 Enfermedades transmisibles y no transmisibles]
+    Q2.1 --> Q2.1_List{Listado: Úlceras, Hipertensión, Obesidad, Diabetes, Cáncer, Depresión, Hepatitis, VIH, ITS, Vectores, Otro}
+    
+    Q2.1_List --> Q2.2[2.2 ¿Tiene o ha tenido tratamientos?]
+    
+    Q2.2 --> Q2.2_Types{Tipos de tratamiento}
+    Q2.2_Types --> T2.2.1[2.2.1 Farmacológico]
+    Q2.2_Types --> T2.2.2[2.2.2 Nutricional]
+    Q2.2_Types --> T2.2.3[2.2.3 Psicológico]
+    Q2.2_Types --> T2.2.4[2.2.4 Rehabilitador]
+    Q2.2_Types --> T2.2.5[2.2.5 Complementario]
+    
+    T2.2.1 --> T2.2.1.1[2.2.1.1 Indique medicamentos]
+    T2.2.1.1 --> T2.2.1.1.1[BD de medicamentos]
+    
+    T2.2.1.1.1 --> Q3{3.0 ¿Fuma?}
+    Q3 -- SÍ --> Q3.1[3.1 SÍ]
+    Q3 -- NO --> Q3.2[3.2 NO]
+    Q3.2 --> Q3.2.1[3.2.1 ¿Alguien cercano fuma?]
+    
+    Q3.1 & Q3.2.1 --> Q4{4.0 ¿Consume bebidas alcohólicas?}
+    
+    Q4 -- SÍ --> Q4.1[4.1 SÍ]
+    Q4 -- NO --> Q4.2[4.2 NO]
+    
+    Q4.1 & Q4.2 --> Q5{5.0 ¿Ha consumido algún tipo de droga?}
+    Q5 -- SÍ --> Q5.1[5.1 SÍ] --> Q5.1.1[¿Cuál(es)?]
+    Q5 -- NO --> Q5.2[5.2 NO]
+    
+    Q5.1.1 & Q5.2 --> Q6{6.0 ¿Padece algún tipo de alergia?}
+    Q6 -- SÍ --> Q6.1[6.1 SÍ] --> Q6.1.1[¿A qué?]
+    Q6 -- NO --> Q6.2[6.2 NO]
+    
+    Q6.1.1 & Q6.2 --> Q7{7.0 ¿Ha tenido alguna operación o cirugía?}
+    Q7 -- SÍ --> Q7.1[7.1 SÍ] --> Q7.1.1[¿De qué?]
+    Q7 -- NO --> Q7.2[7.2 NO]
+    
+    Q7.1.1 & Q7.2 --> Q8{8.0 ¿Le han transfundido sangre?}
+    Q8 -- SÍ --> Q8.1[8.1 SÍ]
+    Q8 -- NO --> Q8.2[8.2 NO]
+    
+    Q8.1 & Q8.2 --> Q9{9.0 ¿Ha donado sangre?}
+    Q9 -- SÍ --> Q9.1[9.1 SÍ]
+    Q9 -- NO --> Q9.2[9.2 NO]
+    
+    Q9.1 & Q9.2 --> Q10{10.0 ¿Ha sufrido alguna fractura?}
+    Q10 -- SÍ --> Q10.1[10.1 SÍ] --> Q10.1.1[¿Cuántas?] --> Q10.1.2[¿Zonas?] --> Q10.1.3[¿Edad?]
+    Q10 -- NO --> Q10.2[10.2 NO]
+    
+    Q10.1.3 & Q10.2 --> End((Fin))

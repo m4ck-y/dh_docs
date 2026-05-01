@@ -1,0 +1,46 @@
+graph LR
+    subgraph Form_A[Formulario A: Registro]
+        A_Sex[1.2.11 Sexo al nacer]
+        A_Age[1.2.13 Edad]
+    end
+
+    subgraph Form_G[Formulario G: Salud Sexual]
+        G_Menstr[1.2.1 Última menstruación]
+        G_Life[1.4 Inicio vida sexual]
+        G_SecA[Sección A]
+        G_SecB[Sección B]
+    end
+
+    subgraph Form_H[Formulario H: Embarazo]
+        H_PregCount[3.1 # de embarazos]
+        H_SecA[Sección A]
+        H_SecB[Sección B]
+    end
+
+    subgraph Form_F[Formulario F: Prevención]
+        F_SecA[Sección A]
+        F_SecB[Sección B]
+        F_SecC[Sección C]
+    end
+
+    subgraph Form_I[Formulario I: Prenatal]
+        I_SecA[Sección A]
+        I_SecB[Sección B]
+        I_SecC[Sección C]
+    end
+
+    %% Logic Connections
+    A_Age --> F_SecA
+    A_Age --> F_SecC
+    
+    A_Sex --> F_SecB
+    A_Sex --> G_SecA
+    A_Sex --> H_SecA
+    A_Sex --> I_SecA
+    
+    G_Menstr --> G_SecB
+    
+    G_Life --> H_SecB
+    G_Life --> I_SecB
+    
+    H_PregCount --> I_SecC

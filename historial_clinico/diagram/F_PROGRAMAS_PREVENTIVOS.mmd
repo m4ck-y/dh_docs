@@ -1,0 +1,30 @@
+graph TD
+    Start((Inicio)) --> Age{¿Es >20 años?}
+    
+    Age -- SÍ --> Q1[1.0 Durante los últimos 12 meses...]
+    Age -- NO --> End((Fin))
+    
+    Q1 --> Q1.1[1.1 Tuberculosis]
+    Q1 --> Q1.2[1.2 Sobrepeso/Obesidad]
+    Q1 --> Q1.3[1.3 Diabetes]
+    Q1 --> Q1.4[1.4 Hipertensión]
+    Q1 --> Q1.5[1.5 Colesterol/Triglicéridos]
+    
+    Q1.1 & Q1.2 & Q1.3 & Q1.4 & Q1.5 --> Q2{2.0 ¿Estudios de imagen?}
+    Q2 -- SÍ --> Q2.1[2.1 SÍ - Listado]
+    Q2 -- NO --> Q3
+    
+    Q2.1 --> Q3{3.0 ¿Estudios de laboratorio?}
+    Q3 -- SÍ --> Q3.List[3.1 Biometría, 3.2 Química, 3.3 Orina, 3.4 Otro]
+    Q3 -- NO --> Gender
+    
+    Q3.List --> Gender{De acuerdo al sexo:}
+    
+    Gender -- MUJER --> Q4.1[4.1 Exploración clínica de senos]
+    Q4.1 --> Q4.2[4.2 Mastografía]
+    
+    Gender -- HOMBRE --> AgeH{¿Es >30 años?}
+    AgeH -- SÍ --> Q5.1[5.1 Antígeno Prostático]
+    Q5.1 --> Q5.3[5.3 Tacto rectal]
+    
+    Q4.2 & Q5.3 & AgeH -- NO --> End

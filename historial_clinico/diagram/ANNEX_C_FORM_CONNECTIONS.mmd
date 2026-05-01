@@ -1,0 +1,38 @@
+graph TD
+    subgraph Registro[A. REGISTRO]
+        A_1_0{1.0 ¿Requiere apoyo de tutor?}
+    end
+
+    subgraph Padecimiento[B. PADECIMIENTO ACTUAL]
+        B_2_0{2.0 ¿Qué le gustaría atender?}
+        B_2_1[2.1 Molestia o síntomas]
+        B_2_2[2.2 Seguimiento a problema]
+        B_2_3[2.3 Cuidar su salud]
+        B_2_4[2.4 Chequeo general]
+    end
+
+    subgraph APP[C. APP]
+        C_1_1{1.0 ¿Problemas específicos?}
+    end
+
+    subgraph Specialized[CUESTIONARIOS ESPECIALIZADOS]
+        ZARIT[ZARIT-CBI: Sobrecarga del cuidador]
+        SF12[SF-12: Calidad de vida]
+        ASQ15[ASQ-15: Cribado de salud mental]
+        HADS[HADS: Ansiedad y Depresión]
+    end
+
+    %% Logic
+    A_1_0 -- SÍ --> ZARIT
+    
+    B_2_0 --> B_2_1 & B_2_2 & B_2_3 & B_2_4
+    
+    B_2_1 --> SF12
+    B_2_2 --> SF12 & ASQ15
+    B_2_3 --> SF12 & ASQ15
+    B_2_4 --> SF12 & ASQ15
+    
+    C_1_1 -- SÍ --> HADS
+    
+    %% Tab 15 also mentioned Form I Section C connections
+    B_2_1 & B_2_2 & B_2_3 --> I_SecC[I. PRENATAL - Sección C]

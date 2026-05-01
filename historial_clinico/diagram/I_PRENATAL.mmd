@@ -1,0 +1,40 @@
+graph TD
+    Start((Inicio)) --> Age{¿Es mujer?}
+    
+    Age -- SÍ --> Q_Repro{¿Ha iniciado vida reproductiva?}
+    Age -- NO --> End((Fin))
+    
+    Q_Repro -- SÍ --> Q_Count{¿Es >1 embarazo?}
+    Q_Repro -- NO --> End
+    
+    Q_Count -- SÍ --> Q1.0[1.0 Datos de embarazos previos]
+    Q_Count -- NO --> Q2.0
+    
+    Q1.0 --> Q1.1[1.1 Abortos]
+    Q1.0 --> Q1.2[1.2 Nacidos muertos]
+    Q1.0 --> Q1.3[1.3 Nacidos vivos]
+    
+    Q1.1 & Q1.2 & Q1.3 --> Q2.0{2.0 ¿Consultas prenatales?}
+    
+    Q2.0 -- SÍ --> Q3.0[3.0 ¿A qué mes fue revisada?]
+    Q2.0 -- NO --> Q4.0
+    
+    Q3.0 --> Q4.0[4.0 Servicios recibidos durante embarazo]
+    
+    Q4.0 --> Q4.List[Estatura, Peso, Presión, Orina, Sangre, Azúcar, Sífilis, VIH, Ultrasonido, Tétanos, Ácido fólico, Vitaminas, Salud mental, Anticonceptivo, Lactancia materna, Fondo uterino]
+    
+    Q4.List --> Q5.0{5.0 ¿Quién atendió su parto?}
+    Q5.0 --> Q5.List[Médico, Enfermera, Partera, Nadie, Otro]
+    
+    Q5.List --> Q6.0{6.0 ¿En dónde atendieron su parto?}
+    Q6.0 --> Q6.List[Hospital, Consultorio, Casa, Otro]
+    
+    Q6.List --> Q7.0{7.0 ¿Tuvo alguna complicación durante el embarazo?}
+    Q7.0 -- SÍ --> Q7.1[SÍ - Especifique]
+    Q7.0 -- NO --> Q8.0
+    
+    Q7.1 --> Q8.0{8.0 ¿Tuvo alguna complicación durante el parto?}
+    Q8.0 -- SÍ --> Q8.1[SÍ - Especifique]
+    Q8.0 -- NO --> End
+    
+    Q8.1 --> End

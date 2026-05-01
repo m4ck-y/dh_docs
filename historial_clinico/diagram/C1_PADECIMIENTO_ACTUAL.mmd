@@ -1,0 +1,34 @@
+graph TD
+    Start((Inicio)) --> Msg1[1.0 Introducción al Padecimiento Actual]
+    Msg1 --> Q2{2.0 ¿Qué le gustaría atender en este momento?}
+    
+    Q2 -- "2.1 Presenta alguna molestia o síntoma" --> Q3[3.0 ¿Cuál es la principal molestia o síntoma?]
+    Q2 -- "2.2 Dar seguimiento a un problema de salud" --> Q2.3.1
+    Q2 -- "2.3 Cuidar su salud y prevenir problemas" --> Q2.3.1
+    Q2 -- "2.4 Realizar un chequeo general" --> Q2.3.1
+    
+    Q2.3.1{2.3.1 ¿Actualmente presenta alguna molestia o síntoma?}
+    Q2.3.1 -- Sí --> Q3
+    Q2.3.1 -- No --> End((Fin))
+    
+    Q3 --> Q4{4.0 ¿Desde cuándo presenta esta molestia o síntoma?}
+    
+    Q4 -- "4.1 Inició hoy" --> Q5
+    Q4 -- "4.2 Hace algunos días" --> Q5
+    Q4 -- "4.3 Hace semanas" --> Q5
+    Q4 -- "4.4 Hace meses" --> Q5
+    Q4 -- "4.5 Hace más tiempo" --> Q5
+    
+    Q5[5.0 ¿Cómo comenzó esta molestia o síntoma?] --> Q5_Opts
+    Q5_Opts{Forma de inicio}
+    Q5_Opts -- "5.1 De forma repentina" --> Q6
+    Q5_Opts -- "5.2 De manera gradual" --> Q6
+    Q5_Opts -- "5.3 Aparece y desaparece" --> Q6
+    Q5_Opts -- "5.4 No lo recuerda" --> Q6
+    
+    Q6[6.0 Desde que comenzó, ¿cómo ha evolucionado?] --> Q6_Opts
+    Q6_Opts{Evolución}
+    Q6_Opts -- "6.1 Ha mejorado" --> End
+    Q6_Opts -- "6.2 Ha empeorado" --> End
+    Q6_Opts -- "6.3 Se ha mantenido igual" --> End
+    Q6_Opts -- "6.4 Aparece y desaparece" --> End

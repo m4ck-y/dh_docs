@@ -1,0 +1,101 @@
+graph TD
+    Start((Inicio)) --> Q1.0{1.0 ¿Requiere apoyo de tutor o responsable?}
+    
+    Q1.0 -- Sí --> R1.1[1.1 Ruta Sí]
+    Q1.0 -- No --> R1.2[1.2 Ruta No]
+    
+    %% Ruta 1.1 - Sí
+    R1.1 --> Msg1.1[A continuación, ingrese los datos del tutor o responsable]
+    Msg1.1 --> T1.1.1[1.1.1 Nombre completo tutor]
+    T1.1.1 --> Q1.1.2{1.1.2 Parentesco}
+    
+    Q1.1.2 --> T1.1.2.1[1.1.2.1 Madre]
+    Q1.1.2 --> T1.1.2.2[1.1.2.2 Padre]
+    Q1.1.2 --> T1.1.2.3[1.1.2.3 Cuidador/a]
+    Q1.1.2 --> T1.1.2.4[1.1.2.4 Tutor legal]
+    Q1.1.2 --> T1.1.2.6[1.1.2.6 Otro]
+    T1.1.2.6 --> T1.1.2.6.1[1.1.2.6.1 Especifique]
+    
+    T1.1.2.1 & T1.1.2.2 & T1.1.2.3 & T1.1.2.4 & T1.1.2.6.1 --> Q1.1.3{1.1.3 Relación de cuidado}
+    
+    Q1.1.3 --> T1.1.3.1[1.1.3.1 Vive con usuario y participa en cuidado]
+    Q1.1.3 --> T1.1.3.2[1.1.3.2 Participa en cuidado, no vive con él/ella]
+    Q1.1.3 --> T1.1.3.3[1.1.3.3 Sólo apoyo administrativo o legal]
+    
+    T1.1.3.1 & T1.1.3.2 --> MsgUser[A continuación, comparta datos generales del usuario]
+    T1.1.3.3 --> MsgUser
+    
+    MsgUser --> U1.1.4[1.1.4 Domicilio actual]
+    U1.1.4 --> U1.1.5[1.1.5 Fecha de nacimiento]
+    U1.1.5 --> U1.1.6[1.1.6 Lugar de nacimiento]
+    U1.1.6 --> U1.1.7[1.1.7 Teléfono fijo]
+    U1.1.7 --> U1.1.8[1.1.8 Celular]
+    U1.1.8 --> U1.1.9[1.1.9 Correo electrónico]
+    U1.1.9 --> Q1.1.10{1.1.10 Sexo al nacer}
+    
+    Q1.1.10 --> U1.1.10.1[1.1.10.1 Femenino]
+    Q1.1.10 --> U1.1.10.2[1.1.10.2 Masculino]
+    Q1.1.10 --> U1.1.10.3[1.1.10.3 Intersexual]
+    Q1.1.10 --> U1.1.10.4[1.1.10.4 Prefiere no decirlo]
+    
+    U1.1.10.1 & U1.1.10.2 & U1.1.10.3 & U1.1.10.4 --> U1.1.11[1.1.11 Edad]
+    U1.1.11 --> Q1.1.12{1.1.12 Religión}
+    
+    Q1.1.12 --> U1.1.12.1[1.1.12.1 Católica]
+    Q1.1.12 --> U1.1.12.2[1.1.12.2 Cristiana]
+    Q1.1.12 --> U1.1.12.3[1.1.12.3 Otra religión]
+    U1.1.12.3 --> U1.1.12.3.1[1.1.12.3.1 Especifique]
+    Q1.1.12 --> U1.1.12.4[1.1.12.4 Ninguna]
+    Q1.1.12 --> U1.1.12.5[1.1.12.5 Prefiere no decirlo]
+    
+    U1.1.12.1 & U1.1.12.2 & U1.1.12.3.1 & U1.1.12.4 & U1.1.12.5 --> U1.1.13[1.1.13 Escolaridad]
+    U1.1.13 --> U1.1.14[1.1.14 Estado civil]
+    U1.1.14 --> Q1.1.17{1.1.17 ¿Depende económicamente?}
+    
+    Q1.1.17 --> U1.1.17.1[1.1.17.1 Sí]
+    Q1.1.17 --> U1.1.17.2[1.1.17.2 Parcialmente]
+    Q1.1.17 --> U1.1.17.3[1.1.17.3 No]
+    
+    U1.1.17.1 & U1.1.17.2 & U1.1.17.3 --> U1.1.15[1.1.15 Ocupación]
+    U1.1.15 --> U1.1.16[1.1.16 Ingresos]
+    
+    %% Ruta 1.2 - No
+    R1.2 --> MsgUser2[Para mejorar su experiencia, proporcione la siguiente información]
+    MsgUser2 --> U1.2.1[1.2.1 Nombre completo]
+    U1.2.1 --> U1.2.2[1.2.2 Domicilio actual]
+    U1.2.2 --> U1.2.3[1.2.3 Fecha de nacimiento]
+    U1.2.3 --> U1.2.4[1.2.4 Lugar de nacimiento]
+    U1.2.4 --> U1.2.5[1.2.5 Teléfono fijo]
+    U1.2.5 --> U1.2.6[1.2.6 Celular]
+    U1.2.6 --> U1.2.7[1.2.7 Correo electrónico]
+    
+    U1.2.7 --> MsgEmerg[Agregue un contacto en caso de emergencia -opcional-]
+    MsgEmerg --> U1.2.8B[1.2.8B Nombre completo contacto]
+    U1.2.8B --> Q1.2.9{1.2.9 Parentesco contacto}
+    
+    Q1.2.9 --> U1.2.9.1[1.2.9.1 Madre]
+    Q1.2.9 --> U1.2.9.2[1.2.9.2 Padre]
+    Q1.2.9 --> U1.2.9.3[1.2.9.3 Pareja]
+    Q1.2.9 --> U1.2.9.4[1.2.9.4 Hermano/a]
+    Q1.2.9 --> U1.2.9.5[1.2.9.5 Hijo/a]
+    Q1.2.9 --> U1.2.9.6[1.2.9.6 Amigo/a]
+    Q1.2.9 --> U1.2.9.7[1.2.9.7 Cuidador/a]
+    Q1.2.9 --> U1.2.9.4alt[1.2.9.4 Otro]
+    U1.2.9.4alt --> U1.2.9.1.1[1.2.9.1.1 Especifique]
+    
+    U1.2.9.1 & U1.2.9.2 & U1.2.9.3 & U1.2.9.4 & U1.2.9.5 & U1.2.9.6 & U1.2.9.7 & U1.2.9.1.1 --> U1.2.10[1.2.10 Teléfono principal contacto]
+    
+    U1.2.10 --> MsgCont[1.2.8A Continuemos con la información del usuario]
+    MsgCont --> U1.2.11[1.2.11 Sexo al nacer]
+    U1.2.11 --> U1.2.13[1.2.13 Edad]
+    U1.2.13 --> Q1.2.14{1.2.14 Religión}
+    Q1.2.14 --> U1.2.14.3[1.2.14.3 Otra] --> U1.2.14.3.1[Especifique]
+    
+    U1.2.14.3.1 & Q1.2.14 --> U1.2.15[1.2.15 Escolaridad]
+    U1.2.15 --> U1.2.16[1.2.16 Estado civil]
+    U1.2.16 --> U1.2.17[1.2.17 Ocupación]
+    U1.2.17 --> U1.2.18[1.2.18 Ingresos]
+    U1.2.18 --> U1.2.19[1.2.19 Personas dependientes]
+    
+    U1.1.16 --> End((Fin))
+    U1.2.19 --> End

@@ -14,7 +14,7 @@ El flujo de auto-registro (waitlist → onboarding → person) está implementad
 | `api_core` | En Refactor | Auditoría de DB completada. Schemas actualizados. |
 | `app_logger_tracer` (VitalTrace) | Activo en Cloud Run | Migrado a lifespan. Filtrado MongoDB corregido. |
 | `app_message_sender` (PulseCore) | Activo en Cloud Run | Waitlist confirmation, invite, OTP, welcome. |
-| `dh_onboarding_back` | En desarrollo | OTP conectado. Pendiente: password hashing. |
+| `dh_onboarding_back` | En desarrollo | OTP conectado. Validación de duplicados implementada. Pendiente: password hashing. |
 | `dh_mfa` | Completo | OTP challenge. |
 | `dh_documents` | Backlog | Storage evolutivo (disk/GCS). Validación configurable. |
 | `app_questionnaire` | Estable | FormFlow operativo. |
