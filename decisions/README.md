@@ -21,6 +21,7 @@ Cada decisión técnica importante debe documentarse siguiendo el formato de **A
 - **[013: Seeders de Base de Datos](013-database-seeders.md)**
 - **[014: Estándar de Hashing de Contraseñas](014-estandar-hashing-contrasenas.md)**
 - **[015: Estrategia de Autorización Stateless via JWT](015-estrategia-autorizacion-stateless.md)**
+- **[016: Tipos de Membresía y Contextos de Usuario](016-tipos-de-membresia-y-contexto-de-usuario.md)**
 
 ---
 *Para crear una nueva decisión, utiliza la plantilla `_template.md` (próximamente).*

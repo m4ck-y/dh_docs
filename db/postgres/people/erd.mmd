@@ -21,7 +21,6 @@ erDiagram
     person ||--|| sociocultural_identity : "has_sociocultural_identity"
     person ||--|| legal_info : "has_legal_info"
     person ||--o{ personal_identifier : "has"
-    person ||--|| user : "has"
     person ||--o{ emergency_contact : "has_emergency"
 
     %% RELACIONES SECUNDARIAS
@@ -288,14 +287,15 @@ erDiagram
 
     %% personal_identifier: identificadores oficiales (CURP, RFC, NSS, pasaporte, etc)
     %% id_identifier_type: tipo de identificador (enum)
-    %% id_document: documento de respaldo (FK a document, nullable)
+    %% id_document: FK a expedient.document.id (nullable, se popula tras subir el documento)
+    %% La dependencia circular se resuelve creando expedient antes que people en el lifespan de dh_core
     personal_identifier {
         Integer id PK
         UUID uuid
         Enum(EIdentifierType) id_identifier_type FK
         Integer id_person FK
         String identifier_value
-        UUID id_document FK
+        Integer id_document FK
     }
 
     %% identifier_type: catalogo de tipos de identificador
@@ -310,8 +310,8 @@ erDiagram
     }
 
     %% emergency_contact: contactos de emergencia
-    %% id_user_owner: usuario propietario del contacto
-    %% id_contact_user: si existe, FK a user (nullable)
+    %% id_user_owner: usuario propietario del contacto (FK a auth.user.id)
+    %% id_contact_user: si existe, FK a auth.user (nullable)
     %% first_name/last_name: snapshot del contacto (nullable si es user)
     %% relationship_type: tipo de relacion (enum)
     emergency_contact {
@@ -326,15 +326,4 @@ erDiagram
         Enum(ERelationshipContact) relationship_type
         String(100) relationship_other
         Text notes
-    }
-
-    %% user: cuenta de usuario del sistema
-    %% 1:1 con person
-    user {
-        Integer id PK
-        UUID uuid
-        Integer id_person FK
-        String username
-        String password_hash
-        Boolean is_active
     }

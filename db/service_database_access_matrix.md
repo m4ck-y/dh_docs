@@ -3,49 +3,49 @@
 Este documento define la propiedad y los permisos de acceso de cada microservicio sobre los diferentes schemas y bases de datos del ecosistema.
 
 ## Principios de Acceso
-1.  **Propiedad (Owner)**: Solo un microservicio debe ser el dueño (escritura/migraciones) de un schema específico.
-2.  **Acceso Indirecto**: Los servicios deben preferir consultar datos a través de APIs de otros servicios en lugar de acceso directo a la DB (desacoplamiento).
-3.  **Solo Lectura (Read-Only)**: En casos excepcionales de alto rendimiento, se permite acceso de solo lectura a schemas ajenos.
+1. **Propiedad (Owner)**: Solo un microservicio es dueño (escritura/migraciones) de un schema.
+2. **Ningún endpoint expone `id`**: Toda respuesta HTTP devuelve `uuid`. El `id` integer es estrictamente interno a la DB. Ver ADR 017.
+3. **FK cross-service con `id` real**: Los FKs entre schemas de distintos servicios usan `id` Integer con constraint real en DB — misma instancia PostgreSQL.
+4. **Resolución `uuid → id` via lectura directa**: Cuando un servicio necesita el `id` de una entidad ajena para una FK, lo resuelve con un `SELECT` de solo lectura (modelo `*Ref`) — nunca vía HTTP. Ver ADR 017.
 
 ## Matriz de Persistencia Relacional (PostgreSQL)
 
 | Servicio | Schema | Acceso | Notas |
 |:---------|:-------|:------:|:------|
-| `api_core` | `people` | **Owner** | Datos demográficos y perfiles centrales. |
-| `app_auth` | `auth` | **Owner** | Credenciales, sesiones y dispositivos (Extraído). |
-| `api_core` | `iam` | **Owner** | Roles, membresías y permisos. |
-| `app_auth` | `mfa` | **Owner** | Factores y desafíos multi-factor (Extraído). |
-| `app_questionnaire` | `expedient` | **Owner** | Documentos e identificadores clínicos. |
-| `app_health_monitoring` | `health_profile` | **Owner** | Perfiles biológicos y monitoreo. |
+| `dh_core` | `people` | **Owner** | Personas, vínculos sociales. |
+| `dh_auth` | `auth` | **Owner** | Credenciales y sesiones. Referencias a `people` via `person_uuid` (UUID lógico). |
+| `dh_iam` | `iam` | **Owner** | Roles, membresías, permisos, tenants. |
+| `dh_mfa` | `mfa` | **Owner** | Desafíos OTP y factores MFA. |
+| `dh_expedient` | `expedient` | **Owner** | Documentos e identificadores. Referencias a `people` via `person_uuid` (UUID lógico). |
+| `dh_clinical` | `health_profile` | **Owner** | Perfiles clínicos, alergias, antecedentes. |
+| `dh_organizations` | `org` | **Owner** | Empresas, empleados, sedes, servicios. |
+| `dh_catalogs` | `catalog` | **Owner** | Catálogos globales del sistema. |
 
-## Matriz de Persistencia No Relacional (MongoDB / ClickHouse)
+## Regla de Referencias Cross-Service
 
-| Servicio | Motor | Base de Datos / Colección | Acceso | Notas |
-|:---------|:------|:--------------------------|:------:|:------|
-| `app_waitlist` | Mongo | `waitlist` | **Owner** | Leads y prospección. |
-| `api_core` | Mongo | `audit_logs` | **Owner** | Logs de auditoría de identidad. |
-| `app_logger_tracer` | Mongo | `telemetry_events` | **Owner** | Almacenamiento inicial de logs. |
-| `app_logger_tracer` | ClickHouse | `telemetry_analytics` | **Owner** | Analítica de logs y trazabilidad. |
-| `app_logger_tracer` | Mongo | `service_configs` | **Owner** | Configuraciones dinámicas de tracing. |
+Cuando un schema necesita vincular una entidad de otro servicio:
+- ✅ Usar `person_uuid UUID` (sin FK constraint) — no hay integridad referencial entre servicios.
+- ❌ No usar `id_person INTEGER FK → people.person.id` — esa FK implica acceso directo al schema ajeno.
 
-## Interdependencias Críticas
+## Matriz de Persistencia No Relacional (MongoDB)
+
+| Servicio | Base de Datos / Colección | Acceso | Notas |
+|:---------|:--------------------------|:------:|:------|
+| `dh_onboarding_back` | `dh_onboarding / waitlist` | **Owner** | Leads y waitlist. |
+| `dh_mfa` | `dh_mfa / otp_challenge` | **Owner** | Challenges OTP con TTL. |
+| `app_logger_tracer` | `telemetry_events` | **Owner** | Logs y trazabilidad. |
+
+## Interdependencias por Flujo de Negocio
 
 | Origen | Destino | Tipo | Razón |
 |:-------|:--------|:----:|:------|
-| `app_waitlist` | `api_core` | API | Promoción de lead a `person` (Postgres). |
-| `app_questionnaire` | `api_core` | API | Validación de identidad del paciente. |
-| `api_middleware` | `api_core` | API | Validación de JWT y permisos de ruta. |
-| `Cualquier Servicio` | `app_logger_tracer` | API | Envío de telemetría y logs. |
-
-## Dependencias por Flujo de Negocio (Vista de Procesos)
-
-Esta vista muestra como microservicios de orquestacion (como Onboarding) interactuan con multiples dominios para completar un proceso.
-
-| Microservicio | Proceso | Schemas Relacionados | Entidades Clave | Interaccion |
-|:--------------|:--------|:---------------------|:----------------|:------------|
-| `app_onboarding` | **Registro de Usuario** | `people`, `auth`, `mfa`, `expedient` | `person`, `user`, `otp_challenge`, `document` | Orquestacion (vía API) |
-| `app_questionnaire` | **Llenado de Formulario** | `people`, `expedient` | `person`, `document`, `identifier` | Consulta y Escritura |
-| `app_waitlist` | **Captura de Leads** | `mongo.waitlist`, `people` | `waitlist`, `person` | Conversion (Mongo -> Postgres) |
+| `dh_onboarding_back` | `dh_core` | API | Creación y actualización de `person`. |
+| `dh_onboarding_back` | `dh_mfa` | API | Desafíos OTP durante onboarding. |
+| `dh_onboarding_back` | `dh_auth` | API | Registro de `AuthUser` y set password (TASK-004 pendiente). |
+| `dh_auth` | `dh_iam` | API | Consulta permisos y membresías para emitir JWT. |
+| `api_middleware` | — | JWT | Valida JWT stateless, sin acceso a DB. |
+| `Cualquier servicio` | `app_logger_tracer` | API | Telemetría y logs (VitalTrace). |
+| `Cualquier servicio` | `app_message_sender` | API | Envío de emails/SMS (PulseCore). |
 
 ---
-*Este documento debe actualizarse cada vez que se cree un nuevo microservicio o se añada un nuevo schema de datos.*
+*Actualizar cuando se cree un nuevo microservicio o se añada un schema.*

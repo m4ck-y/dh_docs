@@ -20,12 +20,12 @@ Servicio `dh_onboarding_back` que orquesta el flujo de registro de nuevos usuari
 
 - [x] Estructura base del proyecto (FastAPI + Screaming Architecture + hexagonal).
 - [x] Conexión dual: MongoDB (Beanie, waitlist) + PostgreSQL (SQLAlchemy async, onboarding).
-- [x] Modelos SQLAlchemy para schemas `people`, `auth`, `expedient` con `BaseModel` dual-id (Integer PK + UUID externo).
+- [x] Modelos SQLAlchemy para schemas `people`, `auth`, `expedient` (referenciando a `dh_core`, `dh_auth` y `dh_expedient`).
 - [x] `POST /v1/onboarding/start` — valida invite_token en MongoDB (sin escritura en DB).
-- [x] `POST /v1/onboarding/personal-info` — crea `Person` (PENDING) + email, phone, auth.user, birth, legal_info, CURP en PostgreSQL.
-- [x] `POST /v1/onboarding/{id}/password` — guarda hash en `auth.user.password_hash`.
-- [x] `POST /v1/onboarding/{id}/address` — guarda domicilio en `people.address`.
-- [x] `POST /v1/onboarding/{id}/documents` — sube documento a `expedient.document` (PENDING).
+- [x] `POST /v1/onboarding/personal-info` — delegar creación de `Person` a `dh_core` (pendiente refactor TASK-011).
+- [x] `POST /v1/onboarding/{id}/password` — delegar a `dh_auth` (pendiente refactor TASK-004).
+- [x] `POST /v1/onboarding/{id}/address` — guarda domicilio en `dh_core` (schema people).
+- [x] `POST /v1/onboarding/{id}/documents` — sube documento a `dh_expedient` (schema expedient).
 - [x] `POST /v1/onboarding/{id}/submit` — cambia `verification_status` a `SUBMITTED`.
 - [x] `ApiResponseSingle` en todos los endpoints.
 - [x] VitalTrace logging en cada acción.
@@ -33,9 +33,14 @@ Servicio `dh_onboarding_back` que orquesta el flujo de registro de nuevos usuari
 - [x] Enums de dominio en `app/shared/enums.py` (EVerificationStatus, EEmailType, EPhoneType, etc.).
 - [x] `POST /v1/onboarding/{id}/otp/send` — conectado a `dh_mfa` vía `SERVICE_MFA_URL`.
 - [x] `POST /v1/onboarding/{id}/otp/verify` — conectado a `dh_mfa` vía `challenge_id`.
-- [ ] Hashing de contraseña delegado a `app_auth` (actualmente guarda texto plano — pendiente TASK-004).
+
+## 📜 Log de Cambios
+- **2026-04-26**: Renombramiento global de servicios orquestados (api_core -> dh_core, dh_auth, dh_expedient).
+- **2026-04-26**: El microservicio ahora actúa estrictamente como **Orquestador**, delegando la persistencia de Personas a `dh_core` y de Usuarios a `dh_auth`.
+
+## 📜 Log de Cambios (continuación)
+- **2026-04-26**: Extracción de lógica `people.*` a `dh_core`. Los modelos SQLAlchemy de `person`, `email`, `phone`, `birth`, `legal_info`, `personal_identifier`, `address` fueron eliminados de onboarding. Los use cases `SavePersonalInfoUseCase`, `SaveAddressUseCase`, `SubmitOnboardingUseCase` ahora delegan a `dh_core` vía HTTP.
+- **2026-04-26**: `AuthUser.id_person` (int FK) reemplazado por `person_uuid` (UUID lógico, sin FK cross-schema). Igual en `expedient.document`.
 
 ## Pendiente
-
-- Hash de contraseña via `dh_auth` (TASK-004).
-- Reemplazar `{id_person}` en el path de cada endpoint por una cookie HTTP-only (`onboarding_session`) que el backend setea al crear la Person en `POST /personal-info` y lee automáticamente en los pasos siguientes. El frontend deja de manejar y re-enviar el `id_person` en cada petición.
+- Reemplazar `{id_person}` en el path de cada endpoint por una cookie HTTP-only (`onboarding_session`).

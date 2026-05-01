@@ -10,10 +10,10 @@ erDiagram
     %% Solo se muestran columnas específicas de cada entidad
 
     %% REFERENCIAS EXTERNAS
-    %% person: definida en schema people
+    %% person: definida en schema people (dh_core). FK real a people.person.id — dh_core debe arrancar primero (ADR 017)
 
     %% RELACIONES
-    person ||--o{ user : "has_credentials"
+    person ||--|| user : "has_account"
     person ||--o{ device : "owns"
     person ||--o{ session : "has"
     person ||--o{ login_attempt : "generates"
@@ -40,13 +40,15 @@ erDiagram
     }
 
     %% ENTIDADES
-    %% user: metodo de autenticacion de la persona (password, OAuth, magic link)
+    %% user: cuenta de usuario del sistema (movido desde people schema)
+    %% 1:1 con person
     user {
+        Integer id PK
+        UUID uuid
         Integer id_person FK
-        Enum(ECredentialType) type
+        String username
         String password_hash
-        String provider
-        String provider_id
+        Boolean is_active
     }
 
     %% device: dispositivos de confianza donde el usuario inicia sesion

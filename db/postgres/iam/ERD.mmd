@@ -7,6 +7,7 @@ erDiagram
 
     %% REFERENCIAS EXTERNAS
     %% person: definida en schema people
+    %% company: definida en schema organizations (opcional para tenants tipo COMPANY)
 
     %% RELACIONES
     tenant ||--o{ membership : "has"
@@ -20,22 +21,30 @@ erDiagram
 
     %% ENUMS
     EMembershipStatus {
-        String PENDING "PENDING"
-        String ACTIVE "ACTIVE"
-        String SUSPENDED "SUSPENDED"
+        String PENDING "Invitación enviada"
+        String ACTIVE "Acceso habilitado"
+        String SUSPENDED "Acceso revocado temporalmente"
+    }
+
+    ETenantType {
+        String SYSTEM "Sistema Core (Pacientes y configuración global)"
+        String COMPANY "Entidad de Negocio (Hospitales, Clínicas, Farmacias)"
     }
 
     %% ENTIDADES
-    %% tenant: empresa u organizacion (multi-tenant)
-    %% key: identificador unico global (ej: acme, globex)
+    %% tenant: El 'contenedor' de acceso (multi-tenant)
+    %% type: Define si es el sistema global o una empresa privada
+    %% id_company: Enlace al perfil de negocio si type == COMPANY
     tenant {
-        String key
-        String name
+        String key "slug único (ej: hosp-central)"
+        String name "Nombre visual"
+        Enum(ETenantType) type "SYSTEM o COMPANY"
+        Int id_company FK "NULL si es SYSTEM"
         Text description
     }
 
-    %% membership: vinculo persona-tenant (N:N con datos de negocio)
-    %% UNIQUE(id_person, id_tenant)
+    %% membership: El vínculo de una Persona con una Organización
+    %% Esta tabla permite que una persona sea 'Médico' en el Hospital A y 'Paciente' en el Sistema Global
     membership {
         UUID id_person FK
         UUID id_tenant FK
@@ -44,52 +53,43 @@ erDiagram
         DateTime accepted_at
     }
 
-    %% role: rol dentro de un tenant
-    %% UNIQUE(id_tenant, key)
-    %% Los roles NO son globales, cada tenant define los suyos
+    %% role: Definición de conjunto de permisos
+    %% Los roles pertenecen a un Tenant (un 'Admin' de un Hospital no es 'Admin' de otro)
     role {
         UUID id_tenant FK
-        String key
+        String key "identificador (ej: admin, doctor)"
         String name
         Text description
     }
 
-    %% user_role: tabla intermediaria N:N (membership + role)
-    %% No hereda de BaseModel
-    %% Conecta usuario + tenant + role via membership
+    %% user_role: Asignación de roles a una membresía específica
     user_role {
         UUID id_membership FK
         UUID id_role FK
     }
 
-    %% resource: dominio funcional del sistema (ej: billing, auth, crm)
-    %% key: UNIQUE global, actua como namespace semantico
+    %% resource: Módulos o Áreas del sistema (ej: billing, records, users)
     resource {
-        String key
+        String key "Namespace (ej: core.patient)"
         String name
     }
 
-    %% operation: verbo del sistema (ej: create, read, update, delete)
-    %% Catalogo global compartido
+    %% operation: Acciones permitidas (ej: create, read, update, delete)
     operation {
-        String key
+        String key "Verbo (ej: read)"
         String name
     }
 
-    %% permission: combinacion resource + operation
-    %% key = resource.key + "." + operation.key (ej: billing.create)
-    %% UNIQUE(id_resource, id_operation) y UNIQUE(key)
+    %% permission: La unión de Recurso + Operación (ej: core.patient.read)
     permission {
         UUID id_resource FK
         UUID id_operation FK
-        String key
+        String key "key_resource + '.' + key_operation"
         Text description
         Boolean is_active
     }
 
-    %% role_permission: tabla intermediaria N:N (role + permission)
-    %% No hereda de BaseModel
-    %% UNIQUE(id_role, id_permission)
+    %% role_permission: Los permisos que componen un rol
     role_permission {
         UUID id_role FK
         UUID id_permission FK

@@ -1,0 +1,87 @@
+erDiagram
+    %% ORGANIZATION SCHEMA
+    %% Manejo de la estructura corporativa y laboral
+
+    %% RELACIONES INTERNAS
+    industry ||--o{ company : "classifies"
+    industry ||--o{ industry : "hiearchy (subindustries)"
+    industry ||--o{ type_service : "categorizes"
+    
+    company ||--o{ company : "hiearchy (subcompanies)"
+    company ||--|| location : "located_at"
+    company ||--o{ employee : "employs"
+    company }|--|{ service : "offers"
+    
+    type_service ||--o{ service : "defines_type"
+
+    employee ||--|| employee_mexican : "has_details"
+    employee }|--|{ personal_type : "classified_as"
+    
+    %% REFERENCIAS EXTERNAS
+    %% person: definida en schema people
+    %% membership: definida en schema iam (vínculo lógico: 1 employee ≈ 1 membership)
+
+    %% ENTIDADES
+    personal_type {
+        string(100) name "Ej: Personal Médico, Administrativo, Enfermería"
+        text description
+    }
+    company {
+        string(100) name
+        string(255) legal_name
+        string(255) commercial_name
+        string(255) fiscal_id
+        string(255) url_website
+        string(255) url_logo
+        string(255) tagline
+        int id_industry FK
+        enum organization_size
+        enum type_organization
+        int id_parent_company FK
+    }
+
+    industry {
+        string(100) name
+        text description
+        int id_parent_industry FK
+    }
+
+    location {
+        int id_company FK "Unique"
+        string(50) key_country
+        string(50) key_state
+        string(50) key_city
+        string(50) key_municipality
+        string(50) key_neighborhood
+        string(255) address
+        string(255) address_complement
+        string(20) postal_code
+        float latitude
+        float longitude
+    }
+
+    service {
+        string(50) name
+        string(10) key_service
+        int id_type_service FK
+    }
+
+    type_service {
+        int id_industry FK
+        string(100) name
+    }
+
+    employee {
+        int id_person FK
+        int id_company FK
+        datetime date_entry
+        datetime date_exit
+        enum status
+        enum type_contract
+        float score
+    }
+
+    employee_mexican {
+        int id_employee FK "Unique"
+        enum programaSMyMG
+    }

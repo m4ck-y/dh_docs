@@ -25,6 +25,7 @@ erDiagram
     %% document_file: file-005 doc-003 EXTRA cdn/med/rx.jpg thumb cdn/med/rx_t.jpg image/jpeg 150000
 
     %% RELACIONES
+    %% person definida en schema people (dh_core). FK real a people.person.id — dh_core debe arrancar primero (ADR 017)
     person ||--o{ document : "has"
     document_type ||--o{ document_subtype : "categorizes"
     document_subtype ||--o{ document : "defines_subtype"

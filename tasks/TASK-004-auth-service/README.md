@@ -15,29 +15,23 @@ tags: [auth, identity, oauth, jwt, security]
 
 ## Descripción
 
-Crear el microservicio `dh_auth` responsable de todo lo relacionado con identidad y autenticación de usuarios. Este servicio es el **único punto de emisión de tokens JWT** en el ecosistema.
+Crear el microservicio `dh_auth` responsable de la **Identidad y Autenticación**. Su única función es verificar quién es el usuario y emitir el JWT final, consultando los permisos al servicio de `dh_iam`.
 
-## Separación de responsabilidades
-
-| Servicio | Responsabilidad |
-|---|---|
-| `dh_auth` | Login tradicional, OAuth/OpenID Connect (Google, etc.), emisión de JWT, refresh, logout, sesiones |
-| `dh_mfa` *(TASK-006, futuro)* | TOTP (Google Authenticator), WebAuthn, políticas de segundo factor — solo si se configura como factor adicional |
-
-> Google Login es un **proveedor de identidad externo (OAuth/OpenID Connect)**, no es MFA. Va en `dh_auth`, no en `dh_mfa`.
+## 🔑 Concepto: Separación Auth vs IAM
+- **`dh_auth`**: Maneja el "Quién" (Email, Password, Google OAuth).
+- **`dh_iam`**: Maneja el "Qué puede hacer" (Roles, Permisos, Tenants).
+- **Flujo**: Tras un login exitoso, `dh_auth` solicita a `dh_iam` el contexto del usuario para inyectar los permisos en el JWT.
 
 ## Objetivos
 
-- [ ] Inicializar el repositorio `dh_auth`.
-- [ ] Implementar login tradicional (email + contraseña) con hashing Argon2.
-- [ ] Implementar OAuth/OpenID Connect — Google como proveedor inicial.
-- [ ] Emitir JWT (access token corto) y refresh token (largo).
+- [ ] Inicializar el repositorio `dh_auth` con Screaming Architecture.
+- [ ] **API de Registro de Usuarios**: Endpoint para crear `AuthUser` (email/password) vinculado a una `person_id`.
+- [ ] Implementar login tradicional con **hashing Bcrypt** (ADR 014).
+- [ ] Implementar OAuth Google como proveedor de identidad.
+- [ ] **Integración con `dh_iam`**: Endpoint para solicitar membresías y permisos durante el flujo de emisión de token.
 - [ ] Implementar refresh, logout y revocación de tokens.
-- [ ] Configurar par de llaves RSA/ECDSA para firma de JWTs verificable por otros servicios.
-- [ ] Exponer `GET /v1/auth/me` — info del usuario autenticado.
-- [ ] Exponer `GET /v1/auth/.well-known/jwks.json` — public keys para verificación de tokens.
-- [ ] Actualizar `api_middleware` para que el routing de `/auth` apunte a `dh_auth`.
-- [ ] Migrar los modelos `auth.*` de `api_core` a `dh_auth`.
+- [ ] Configurar firma de JWTs (RSA/ECDSA).
+- [ ] **Update api_middleware**: Routing de `/auth` hacia este servicio.
 
 ## No incluye
 
@@ -48,6 +42,10 @@ Crear el microservicio `dh_auth` responsable de todo lo relacionado con identida
 ## Referencia de arquitectura
 
 Ver `docs/management/onboarding/4.auth.md` y `docs/db/postgres/auth/ERD.mmd`.
+
+## 📜 Log de Cambios
+- **2026-04-26**: Renombramiento global de servicios para consistencia (api_core -> dh_core, dh_health -> dh_clinical, dh_documents -> dh_expedient).
+- **2026-04-26**: Separación oficial de responsabilidades entre dh_auth y dh_iam.
 
 ## Enlaces Rápidos
 
