@@ -36,6 +36,15 @@ Para: `POST` (crear), `GET /{id}` (detalle), `PUT`, `PATCH`.
 
 Para: `GET /recursos` (colecciones).
 
+Los endpoints de lista **deben aceptar** los siguientes query params:
+
+| Parámetro | Tipo | Default | Máximo | Descripción |
+|-----------|------|---------|--------|-------------|
+| `page` | `int` | 1 | — | Número de página (≥ 1). |
+| `limit` | `int` | 50 | 200 | Items por página. |
+
+Ejemplo de petición: `GET /v1/iam/tenants?page=1&limit=20`
+
 ```json
 {
   "status_code": 200,
