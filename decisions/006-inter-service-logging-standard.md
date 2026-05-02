@@ -15,10 +15,11 @@ Se adopta el patrón de **logger dual** para microservicios backend:
 2. **Logger remoto**: `httpx` asíncrono hacia VitalTrace — observabilidad centralizada.
 
 Reglas transversales a todos los clientes:
-- Logger failures nunca afectan al servicio — `logger_tracer_service` inaccesible solo genera un warning local (stdlib), nunca una excepción.
-- `SERVICE_LOGGER_TRACER_URL` vacío deshabilita el forwarding sin error.
-- Dependencia requerida en microservicios: `httpx` (`uv add httpx`).
-- `ENVIRONMENT` debe estar configurado en cada servicio (`development`, `staging`, `production`).
+- **Prohibición de `print`**: El uso de la función `print()` está estrictamente prohibido en código de producción. Toda salida de información debe realizarse a través del `ServiceLogger` para garantizar que sea capturada por VitalTrace y stdlib.
+- **Logger failures**: Los fallos del logger nunca afectan al servicio — si `logger_tracer_service` es inaccesible, solo genera un warning local (stdlib), nunca una excepción.
+- **Configuración**: `SERVICE_LOGGER_TRACER_URL` vacío deshabilita el forwarding sin error.
+- **Dependencias**: Dependencia requerida en microservicios: `httpx` (`uv add httpx`).
+- **Entorno**: `ENVIRONMENT` debe estar configurado en cada servicio (`development`, `staging`, `production`).
 
 ---
 

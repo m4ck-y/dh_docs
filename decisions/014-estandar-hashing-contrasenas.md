@@ -11,16 +11,20 @@ Se evaluaron dos enfoques:
 2. **Bcrypt**: Un algoritmo de hashing de contraseñas basado en el cifrado Blowfish, diseñado para ser computacionalmente costoso y que incluye un "salt" aleatorio de forma nativa.
 
 ## Decisión
-Hemos decidido adoptar **Bcrypt** como el estándar único para el hashing de contraseñas en todo el ecosistema de Digital Hospital.
+Hemos decidido adoptar **Argon2** como el estándar único para el hashing de contraseñas en todo el ecosistema de Digital Hospital, implementado a través de la librería **`pwdlib`**.
+
+### Centralización en `dh_shared`
+Para garantizar que todos los microservicios utilicen exactamente la misma configuración y algoritmo, la lógica de hashing se ha centralizado en la librería compartida:
+- **Ubicación**: `dh_shared.utils.security`
+- **Funciones**: `hash_password(password)` y `verify_password(plain, hashed)`
 
 ### Detalles Técnicos:
-- **Algoritmo**: Bcrypt.
-- **Factor de trabajo (Cost)**: 12 (valor predeterminado de la librería `bcrypt` en Python).
-- **Salado (Salting)**: Automático y único por cada hash generado.
-- **Librería**: Se utilizará la librería nativa `bcrypt` para Python en lugar de `passlib` para reducir dependencias legadas.
+- **Algoritmo**: Argon2id (vía `pwdlib.PasswordHash.recommended()`).
+- **Librería**: `pwdlib[argon2]`.
+- **Salado (Salting)**: Gestionado automáticamente por el formato PHC del hash.
 
 ### Diferenciación de Uso:
-- **Contraseñas**: Únicamente Bcrypt.
+- **Contraseñas**: Únicamente Argon2 a través de `dh_shared`.
 - **Tokens (JWT)**: Se reserva HS256 exclusivamente para la firma de tokens de sesión, nunca para el almacenamiento de credenciales.
 
 ## Consecuencias

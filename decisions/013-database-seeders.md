@@ -69,10 +69,12 @@ async def lifespan(app: FastAPI):
 
 - Un seeder por dominio de catálogo — no mezclar dominios en una misma función.
 - El guard de tabla vacía es obligatorio — nunca insertar sin verificar primero.
+- **Uso de Logger Tracer**: Los seeders **nunca** deben usar `print()`. Deben usar `ServiceLogger` para reportar el inicio, salto (skip) y éxito de la operación hacia VitalTrace.
+- **Utilidades de `dh_shared`**: Si el seeder requiere hashear contraseñas (ej. usuario admin inicial) o usar enums, debe importar estas utilidades de `dh_shared` para garantizar la consistencia en todo el monorepo.
 - Usar `flush()` entre niveles de FK, no múltiples `commit()`.
 - Un solo `commit()` al final de cada función seeder.
 - Los seeders son **idempotentes** — ejecutarlos N veces produce el mismo estado que ejecutarlos una vez.
-- Los seeders solo cubren **datos de catálogo estáticos** — nunca datos de usuario ni datos de negocio.
+- Los seeders solo cubren **datos de catálogo estáticos** — nunca datos de negocio dinámicos.
 
 ## Consecuencias
 
