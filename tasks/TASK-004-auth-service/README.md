@@ -1,13 +1,13 @@
 ---
 type: task
 id: TASK-004
-title: "Microservicio de Identidad y Autenticación (dh_auth)"
-status: backlog
+title: "Microservicio de Identidad y Autenticacion (dh_auth)"
+status: completed
 priority: critical
 created: "2026-04-25"
-updated: "2026-04-26"
-started: null
-completed: null
+updated: "2026-05-02"
+started: "2026-04-26"
+completed: "2026-05-01"
 tags: [auth, identity, oauth, jwt, security]
 ---
 

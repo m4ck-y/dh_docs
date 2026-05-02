@@ -24,18 +24,21 @@ Estos servicios no "son dueños" de tablas maestras, sino que coordinan procesos
 - **`dh_seeder`**: Herramienta de desarrollo para poblar el sistema. Consume todos los servicios vía API. No tiene base de datos propia.
 - **`api_middleware`**: Puerta de enlace (Gateway). Valida seguridad stateless y redirige tráfico.
 
-## 📊 Estado y Prioridades de Implementación
+## Estado y Prioridades de Implementacion
 
 | ID Task | Microservicio | Estado | Prioridad |
 | :--- | :--- | :--- | :--- |
-| TASK-004 | `dh_auth` | Backlog | **CRÍTICA** |
-| TASK-009 | `dh_iam` | Backlog | **CRÍTICA** |
-| TASK-011 | `api_core` (Refactor) | Backlog | **Alta** |
-| TASK-010 | `dh_organizations` | Backlog | **Alta** |
-| TASK-003 | `dh_onboarding_back` | En Progreso | Media |
+| TASK-004 | `dh_auth` | **Activo** | **Completada** |
+| TASK-009 | `dh_iam` | **Activo** | **Completada** |
+| TASK-003 | `dh_onboarding_back` | **Activo** | **Completada** |
+| TASK-006 | `dh_mfa` | **Completado** | **Completada** |
+| TASK-010 | `dh_organizations` | En progreso | **Alta** |
+| TASK-011 | `api_core` (Refactor) | Refactorizado via dh_shared | Completada |
 | TASK-007 | `dh_documents` | Backlog | Media |
 | TASK-012 | `dh_seeder` | Backlog | Baja |
 
-## 🔗 Referencias Arquitectónicas
-- [ADR 015: Autorización Stateless](./decisions/015-estrategia-autorizacion-stateless.md)
-- [ADR 016: Tipos de Membresía y Contexto de Usuario](./decisions/016-tipos-de-membresia-y-contexto-de-usuario.md)
+## Referencias Arquitectonicas
+- [ADR 015: Autorizacion Stateless](./decisions/015-estrategia-autorizacion-stateless.md)
+- [ADR 016: Tipos de Membresia y Contexto de Usuario](./decisions/016-tipos-de-membresia-y-contexto-de-usuario.md)
+- [ADR 024: UUIDs en API publica](./decisions/024-endpoints-uuid-only.md)
+- [ADR 025: Static Test UI Standard](./decisions/025-static-test-ui-standard.md)

@@ -2,42 +2,36 @@
 type: task
 id: TASK-009
 title: "Microservicio de Identity & Access Management (dh_iam)"
-status: backlog
+status: completed
 priority: high
 created: "2026-04-26"
-started: null
-completed: null
+started: "2026-05-01"
+completed: "2026-05-02"
 tags: ["iam", "rbac", "tenants", "permissions"]
 ---
 
 # TASK-009: Microservicio de Identity & Access Management (dh_iam)
 
-## 📝 Descripción
-Desarrollar el "cerebro" de autorización del sistema. `dh_iam` será el responsable de gestionar quién puede hacer qué (RBAC) y en qué contexto (Tenants/Memberships). 
+## Descripcion
+"Cerebro" de autorizacion del sistema. `dh_iam` gestiona quien puede hacer que (RBAC) y en que contexto (Tenants/Memberships).
 
-Este servicio debe servir a dos canales de entrada:
-1. **Canal Onboarding**: Asignación automática de roles básicos (Paciente) tras validación OTP/Docs.
-2. **Canal Administrativo**: Registro directo de empleados y médicos por parte de un administrador (Backoffice).
+## Objetivos cumplidos
+- [x] Inicializar el repositorio `dh_iam` con Screaming Architecture.
+- [x] **Gestion de Tenants**: CRUD de organizaciones (SYSTEM y COMPANY).
+- [x] **Gestion de Recursos y Operaciones**: Catalogos globales para componer permisos.
+- [x] **Gestion de Permisos**: Catalogo de permisos (recurso:operacion) con auto-generacion de key. Toggle activate/deactivate.
+- [x] **Gestion de Roles**: CRUD de roles por tenant con asignacion de permisos via UUIDs.
+- [x] **Gestion de Memberships**: CRUD de vinculos persona-tenant con asignacion de roles via UUIDs.
+- [x] **API de Contexto para Auth**: `GET /v1/iam/context/{person_uuid}` devuelve roles + permisos agregados.
+- [x] **32 endpoints** con paginacion, `ApiResponseSingle`/`ApiResponsePaginated`, UUIDs en API publica.
+- [x] **Seeders**: Datos por defecto (tenant SYSTEM, 11 resources, 6 operations, permisos, admin role).
+- [x] **Static Test UI**: Admin panel retro terminal en `GET /` con membership manager, permission generator.
+- [x] **Dual logger**: ServiceLogger con forward asincrono a VitalTrace.
+- [x] **Documentacion**: `ENDPOINTS.md`, `app/static/README.md`.
 
-## 🔑 Concepto: Multi-Membresía y Multi-Rol
-- **Memberships**: Gestiona el vínculo entre la identidad (`person_id`) y la organización (`tenant_id`).
-- **Agregación de Roles**: Capacidad de sumar permisos de múltiples roles (ej: Médico + Jefe de Área) en una sola membresía.
-
-## 🎯 Objetivos
-- [ ] Inicializar el repositorio `dh_iam` con Screaming Architecture.
-- [ ] **Gestión de Tenants**: CRUD de organizaciones (vinculado a `dh_organizations`).
-- [ ] **Gestión de Roles y Permisos**: Definición de catálogo global de permisos (recurso:operación).
-- [ ] **Gestión de Memberships**: APIs para crear, suspender y asignar roles a membresías.
-- [ ] **API de Contexto para Auth**: Endpoint que devuelva el "Active Context" (permisos agregados) para que `dh_auth` emita el JWT.
-- [ ] **Lógica de Doble Carril**: 
-    - APIs para `dh_onboarding_back` (roles básicos).
-    - APIs para `dh_organizations` (roles profesionales manuales).
-
-## 📜 Log de Cambios
-- **2026-04-26**: Renombramiento global para consistencia. Se vincula con `dh_core` (antes api_core) para la obtención de `person_id`.
-- **2026-04-26**: Definición de esquema `relationships` (antes care) como apoyo a la lógica de membresías familiares.
-
-## 🔗 Enlaces Rápidos
-- [Plan de Ejecución](planning/README.md)
-- [Registro de Progreso](progress/)
-- [Artefactos](artifacts/)
+## Pendiente (futuro)
+- Conexion real HTTP entre `dh_auth` y `dh_iam` (endpoint context).
+- Integracion con `dh_onboarding_back` para membresias de paciente.
+- Integracion con `dh_organizations` para membresias de empleado.
+- Asignacion de permisos a roles desde la UI.
+- Validacion RBAC en `api_middleware`.
