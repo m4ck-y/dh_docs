@@ -19,6 +19,7 @@
 | `api_middleware` | Activo | Gateway único. Pendiente inyectar validación RBAC. |
 | `dh_auth` | **Activo** | Stateless Auth, Login, Logout, Me. Sincroniza esquemas core. UI retro terminal en `/`. |
 | `dh_onboarding_back` | **Activo** | Flujo completo waitlist -> person. Password hashing Argon2 OK. |
+| `dh_core` | **Activo** | Personas completo: Person, Email, Phone, Address, PersonalIdentifier, EmergencyContact. UI con tabs. Cumple ADR 009, 006, 022, 024, 025. |
 | `app_logger_tracer` (VitalTrace) | Activo | Ingesta de logs asíncrona. |
 | `app_message_sender` (PulseCore) | Activo | OTP, Invites y Welcome messages. |
 | `dh_mfa` | Completo | OTP challenge integrado. |
@@ -41,7 +42,7 @@
 | TASK-006 | Microservicio MFA — OTP Challenge (dh_mfa) | **Completada** |
 | TASK-009 | Microservicio de IAM (dh_iam) | **Completada** |
 | TASK-010 | Microservicio de Organizaciones (dh_organizations) | **En progreso** |
-| TASK-011 | Centralización de `Person` en `dh_core` | Refactorizado vía dh_shared |
+| TASK-011 | Centralización de `Person` en `dh_core` | **Completada** |
 
 ---
 *Este documento es la fuente de verdad para el contexto de la IA.*

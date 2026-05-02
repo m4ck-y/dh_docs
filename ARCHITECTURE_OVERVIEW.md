@@ -33,7 +33,7 @@ Estos servicios no "son dueños" de tablas maestras, sino que coordinan procesos
 | TASK-003 | `dh_onboarding_back` | **Activo** | **Completada** |
 | TASK-006 | `dh_mfa` | **Completado** | **Completada** |
 | TASK-010 | `dh_organizations` | En progreso | **Alta** |
-| TASK-011 | `api_core` (Refactor) | Refactorizado via dh_shared | Completada |
+| TASK-011 | `dh_core` (Personas) | **Activo** | **Completada** |
 | TASK-007 | `dh_documents` | Backlog | Media |
 | TASK-012 | `dh_seeder` | Backlog | Baja |
 
