@@ -31,10 +31,10 @@ En fases tempranas del desarrollo, algunos endpoints aceptaban `id` (entero) com
 
 ### Reglas
 
-1. **Parámetros de ruta**: Usar `{resource_uuid}` no `{resource_id}`.
-2. **Parámetros query**: Usar `resource_uuid` no `resource_id`.
-3. **Campos en body de solicitudes (DTOs)**: Usar `resource_uuid` no `resource_id`. Ejemplo: `tenant_uuid`, `person_uuid`, `permission_uuids`, `role_uuids`.
-4. **Respuestas**: Los DTOs de respuesta incluyen `uuid` (no `id`) como identificador principal del recurso.
+1. **Parámetros de ruta**: Usar `{uuid_resource}` no `{resource_id}` ni `{resource_uuid}`.
+2. **Parámetros query**: Usar `uuid_resource` no `resource_id` ni `resource_uuid`.
+3. **Campos en body de solicitudes (DTOs)**: Usar `uuid_resource` no `resource_id` ni `resource_uuid`. Ejemplo: `uuid_tenant`, `uuid_person`, `uuid_permissions`, `uuid_roles`.
+4. **Respuestas**: Los DTOs de respuesta incluyen `uuid` (no `id`) como identificador principal del recurso. Las referencias a otras entidades usan `uuid_<entity>`.
 5. **IDs internos**: El campo `id` (autoincremental) **nunca se expone en la API**. Solo se usa internamente para:
    - Joins entre tablas en consultas SQLAlchemy.
    - Claves foráneas en el modelo de datos.
@@ -42,21 +42,21 @@ En fases tempranas del desarrollo, algunos endpoints aceptaban `id` (entero) com
 
 ### Nomenclatura
 
-Todos los campos que referencien un UUID desde el exterior siguen el patrón:
+Todos los campos que referencien un UUID desde el exterior siguen el patron definido en ADR 010:
 
 ```
-{entidad}_uuid
+uuid_{entidad}
 ```
 
 Ejemplos:
 
 | Contexto | Campo correcto | Campo incorrecto |
 |----------|----------------|------------------|
-| Crear permiso | `resource_uuid`, `operation_uuid` | `id_resource`, `id_operation` |
-| Crear rol | `tenant_uuid`, `permission_uuids` | `id_tenant`, `permission_ids` |
-| Crear membresía | `person_uuid`, `tenant_uuid`, `role_uuids` | `id_person`, `id_tenant`, `role_ids` |
-| Listar roles por tenant | `?tenant_uuid=...` | `?tenant_id=...` |
-| Listar membresías | `?person_uuid=...` | `?person_id=...` |
+| Crear permiso | `uuid_resource`, `uuid_operation` | `resource_uuid`, `resource_id`, `id_resource`, `id_operation` |
+| Crear rol | `uuid_tenant`, `uuid_permissions` | `tenant_uuid`, `tenant_id`, `id_tenant`, `permission_ids` |
+| Crear membresia | `uuid_person`, `uuid_tenant`, `uuid_roles` | `person_uuid`, `person_id`, `id_person`, `role_ids` |
+| Listar roles por tenant | `?uuid_tenant=...` | `?tenant_uuid=...`, `?tenant_id=...` |
+| Listar membresias | `?uuid_person=...` | `?person_uuid=...`, `?person_id=...` |
 
 ### Implementación
 
@@ -66,7 +66,7 @@ Los use cases resuelven el UUID a ID interno inmediatamente después de recibir 
 # Ejemplo en permission_use_case.py
 async def create(self, dto: PermissionCreateDTO) -> PermissionResponseDTO:
     resource = await self.db.execute(
-        select(Resource).where(Resource.uuid == dto.resource_uuid)
+        select(Resource).where(Resource.uuid == dto.uuid_resource)
     )
     resource = resource.scalar_one_or_none()
     if not resource:
