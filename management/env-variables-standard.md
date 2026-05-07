@@ -110,12 +110,12 @@ POSTGRES_URL=postgresql+asyncpg://admin:secret@localhost:5432/dh_core
 
 | Variable | `api_core` | `dh_onboarding_back` | `api_middleware` | `app_logger_tracer` |
 |---|---|---|---|---|
-| `ENVIRONMENT` | ✅ | ✅ | ✅ | ❌ pendiente |
-| `MONGO_URL` | ⚠️ usa campos separados | ✅ | — | ⚠️ usa campos separados |
-| `MONGO_DB_NAME` | ✅ | ✅ | — | ⚠️ usa `MONGO_DB` |
-| `POSTGRES_URL` | ⚠️ usa campos separados | — | — | — |
-| `SERVICE_LOGGER_TRACER_URL` | ❌ pendiente | ✅ | ✅ | — |
-| `JWT_ALGORITHM` | ✅ | ⚠️ usa `ALGORITHM` | — | — |
+| `ENVIRONMENT` | pendiente |
+| `MONGO_URL` | WARNING: usa campos separados | — | WARNING: usa campos separados |
+| `MONGO_DB_NAME` | — | WARNING: usa `MONGO_DB` |
+| `POSTGRES_URL` | WARNING: usa campos separados | — | — | — |
+| `SERVICE_LOGGER_TRACER_URL` | pendiente | — |
+| `JWT_ALGORITHM` | WARNING: usa `ALGORITHM` | — | — |
 
 ---
 

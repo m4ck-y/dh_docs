@@ -20,10 +20,10 @@ Un sistema hospitalario multi-servicio con base en distintos timezones (servidor
 ```python
 from datetime import datetime, timezone
 
-# ✅ Correcto
+# Correcto
 datetime.now(timezone.utc)
 
-# ❌ Prohibido — deprecated en Python 3.12+
+# Prohibido — deprecated en Python 3.12+
 datetime.utcnow()
 ```
 

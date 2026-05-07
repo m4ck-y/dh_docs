@@ -43,15 +43,15 @@ Reglas transversales a todos los clientes:
 ```
 | Campo | Requerido | Descripción |
 |---|---|---|
-| `level` | ✅ | Enum: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `FATAL` |
-| `event` | ✅ | Nombre corto del evento: `user.login`, `waitlist.register` |
-| `message` | ✅ | Descripción detallada |
-| `service` | ✅ | Nombre del servicio emisor |
-| `environment` | ✅ | `development`, `staging`, `production` |
-| `trace_id` | ❌ | ID de trace distribuido (opcional) |
-| `user` | ❌ | `{ id, name, ip_address }` |
-| `http` | ❌ | `{ method, route, status_code, user_agent, ip }` |
-| `metadata` | ❌ | Dict arbitrario con contexto adicional |
+| `level` | Enum: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `FATAL` |
+| `event` | Nombre corto del evento: `user.login`, `waitlist.register` |
+| `message` | Descripción detallada |
+| `service` | Nombre del servicio emisor |
+| `environment` | `development`, `staging`, `production` |
+| `trace_id` | | ID de trace distribuido (opcional) |
+| `user` | | `{ id, name, ip_address }` |
+| `http` | | `{ method, route, status_code, user_agent, ip }` |
+| `metadata` | | Dict arbitrario con contexto adicional |
 
 ### `POST /v1/events/` — EventEntry
 ```json
@@ -64,12 +64,12 @@ Reglas transversales a todos los clientes:
 ```
 | Campo | Requerido | Descripción |
 |---|---|---|
-| `event` | ✅ | Identificador del evento: `lead_registered`, `onboarding_completed` |
-| `service` | ✅ | Nombre del servicio emisor |
-| `session_id` | ✅ | ID de sesión. En backend sin sesión usar `"system"` |
-| `user_id` | ❌ | ID del usuario involucrado |
-| `page` | ❌ | Vista o URL donde ocurrió el evento |
-| `metadata` | ❌ | Dict arbitrario con contexto adicional |
+| `event` | Identificador del evento: `lead_registered`, `onboarding_completed` |
+| `service` | Nombre del servicio emisor |
+| `session_id` | ID de sesión. En backend sin sesión usar `"system"` |
+| `user_id` | | ID del usuario involucrado |
+| `page` | | Vista o URL donde ocurrió el evento |
+| `metadata` | | Dict arbitrario con contexto adicional |
 
 ### `POST /v1/metrics/` — MetricEntry
 ```json
@@ -84,12 +84,12 @@ Reglas transversales a todos los clientes:
 ```
 | Campo | Requerido | Descripción |
 |---|---|---|
-| `name` | ✅ | Nombre estandarizado: `http_requests_total`, `duration_ms` |
-| `value` | ✅ | Valor numérico |
-| `service` | ✅ | Nombre del servicio emisor |
-| `type` | ❌ | Enum: `counter`, `gauge`, `histogram` |
-| `labels` | ❌ | Dict `str→str` para agrupar (sin IDs únicos — usar `metadata` para eso) |
-| `metadata` | ❌ | Dict arbitrario (acepta IDs únicos) |
+| `name` | Nombre estandarizado: `http_requests_total`, `duration_ms` |
+| `value` | Valor numérico |
+| `service` | Nombre del servicio emisor |
+| `type` | | Enum: `counter`, `gauge`, `histogram` |
+| `labels` | | Dict `str→str` para agrupar (sin IDs únicos — usar `metadata` para eso) |
+| `metadata` | | Dict arbitrario (acepta IDs únicos) |
 
 ---
 

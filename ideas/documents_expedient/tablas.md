@@ -2,7 +2,7 @@ tablas relacionales reales, con filas como si ya estuvieras en PostgreSQL/MySQL.
 
 Voy a usar este modelo mínimo:
 
-🧱 TABLAS
+ TABLAS
 person
 id (UUID)	name
 document_type
@@ -15,11 +15,11 @@ document_file
 
 | id | document_id | side | url |
 
-🧾 1. PERSON
+ 1. PERSON
 id	name
 per_100	Juan Pérez
 per_200	María López
-📚 2. DOCUMENT_TYPE
+ 2. DOCUMENT_TYPE
 id	name
 INE	Identificación INE
 PROOF_OF_ADDRESS	Comprobante de domicilio

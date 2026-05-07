@@ -79,10 +79,10 @@ user {
 
 ## Implementación
 
-1. ✅ Actualizar ERD de `auth` y `people`
-2. ✅ Modificar `AuthUser` en `dh_shared`
-3. 🔄 Actualizar servicios que usen el modelo
-4. 🔄 Ejecutar migraciones de base de datos
+1. Actualizar ERD de `auth` y `people`
+2. Modificar `AuthUser` en `dh_shared`
+3.  Actualizar servicios que usen el modelo
+4.  Ejecutar migraciones de base de datos
 
 ## Referencias
 

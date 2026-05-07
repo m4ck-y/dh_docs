@@ -2,7 +2,7 @@
 
 Este directorio centraliza el seguimiento del progreso del desarrollo del proyecto Digital Hospital. Seguimos un modelo granular donde cada tarea importante tiene su propia carpeta.
 
-## 📋 Backlog General
+## Backlog General
 Para una visión rápida de todas las tareas y su estado, consulta el **[Backlog del Proyecto](backlog.md)**.
 
 ## 📂 Tareas Activas
@@ -10,7 +10,7 @@ Para una visión rápida de todas las tareas y su estado, consulta el **[Backlog
 
 ---
 
-## 🛠️ Cómo crear una nueva tarea
+## TOOLS: Cómo crear una nueva tarea
 Para iniciar una nueva tarea, copia la carpeta **[`_TEMPLATE/`](_TEMPLATE/README.md)** y asígnale el siguiente número disponible (`TASK-NNN`).
 
 ### Estructura de una Tarea:

@@ -1,5 +1,10 @@
 # ADR 020: Database Synchronization Strategy for Multi-Schema Monorepo
 
+## Estado
+Reemplazado por [ADR 030](030-init-schemas.md).
+
+> ADR 030 reemplaza `sync_schemas(conn, schemas)` por `init_schemas(conn)`, creando los 8 schemas + todas las tablas en una sola pasada sin orden de arranque forzoso. Este documento se conserva como historico.
+
 ## Context
 In our microservices architecture, we use a shared library (`dh_shared`) to define models across different PostgreSQL schemas (`auth`, `people`, `iam`, etc.). Many tables have cross-schema foreign keys (e.g., `auth.user` points to `people.person`). 
 

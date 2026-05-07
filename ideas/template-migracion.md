@@ -1,6 +1,6 @@
 # Propuesta de Migración: [Nombre del Módulo]
 
-## 📝 Resumen
+##  Resumen
 Breve descripción de qué se va a migrar y por qué es necesario en este momento.
 
 ## 🔍 Análisis de la Plantilla
@@ -17,7 +17,7 @@ Breve descripción de qué se va a migrar y por qué es necesario en este moment
 1. Paso 1...
 2. Paso 2...
 
-## ⚠️ Riesgos y Consideraciones
+## WARNING: Riesgos y Consideraciones
 - [Impacto en otros módulos]
 - [Breaking changes]
 

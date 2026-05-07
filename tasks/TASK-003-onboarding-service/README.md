@@ -34,11 +34,11 @@ Servicio `dh_onboarding_back` que orquesta el flujo de registro de nuevos usuari
 - [x] `POST /v1/onboarding/{id}/otp/send` — conectado a `dh_mfa` vía `SERVICE_MFA_URL`.
 - [x] `POST /v1/onboarding/{id}/otp/verify` — conectado a `dh_mfa` vía `challenge_id`.
 
-## 📜 Log de Cambios
+##  Log de Cambios
 - **2026-04-26**: Renombramiento global de servicios orquestados (api_core -> dh_core, dh_auth, dh_expedient).
 - **2026-04-26**: El microservicio ahora actúa estrictamente como **Orquestador**, delegando la persistencia de Personas a `dh_core` y de Usuarios a `dh_auth`.
 
-## 📜 Log de Cambios (continuación)
+##  Log de Cambios (continuación)
 - **2026-04-26**: Extracción de lógica `people.*` a `dh_core`. Los modelos SQLAlchemy de `person`, `email`, `phone`, `birth`, `legal_info`, `personal_identifier`, `address` fueron eliminados de onboarding. Los use cases `SavePersonalInfoUseCase`, `SaveAddressUseCase`, `SubmitOnboardingUseCase` ahora delegan a `dh_core` vía HTTP.
 - **2026-04-26**: `AuthUser.id_person` (int FK) reemplazado por `person_uuid` (UUID lógico, sin FK cross-schema). Igual en `expedient.document`.
 

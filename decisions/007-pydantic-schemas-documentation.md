@@ -1,4 +1,7 @@
-# Documentación de Schemas Pydantic
+# ADR 007: Documentacion de Schemas Pydantic
+
+## Estado
+Aceptado
 
 ## Objetivo
 

@@ -2,13 +2,13 @@
 
 Este documento es el centro de control para todas las tareas del proyecto.
 
-## 🏁 En Progreso (Doing)
+## Done: En Progreso (Doing)
 - [x] Estructurar directorio `docs/` optimizado para LLMs.
 - [x] Migrar diagramas Draw.io de Historia Clínica a Mermaid.
 - [ ] Implementar estrategia de **Identidad Unificada** (Unified Onboarding) y escalamiento de roles.
 - [ ] Iniciar migración del módulo `auth` a `api_core`.
 
-## 📋 Próximas Tareas (To Do)
+## Próximas Tareas (To Do)
 
 ### api_core
 - [ ] Integrar `passlib` y `jose` para gestión de tokens.
@@ -22,7 +22,7 @@ Este documento es el centro de control para todas las tareas del proyecto.
 +
 - [ ] Configurar variables de entorno globales (.env central).
 
-## 💡 Ideas y Backlog (Icebox)
+## Ideas y Backlog (Icebox)
 - [ ] Monitoreo en tiempo real de signos vitales (app_health_monitoring).
 - [ ] Generación automática de reportes PDF para pacientes.
 

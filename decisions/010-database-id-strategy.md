@@ -19,7 +19,7 @@ Todos los modelos no-intermediarios heredan de `BaseModel` que define **dos iden
 | Columna | Tipo | Visibilidad | Propósito |
 |---|---|---|---|
 | `id` | `Integer` PK, autoincrement | **Interno** — nunca expuesto en APIs | JOINs, FKs, índices eficientes |
-| `uuid` | `UUID`, auto-generado (`uuid4`) | **Externo** — usado en todas las respuestas y rutas de API | Lookups seguros, sin enumeración |
+| `uuid` | `UUID`, auto-generado (`uuid7`) | **Externo** — usado en todas las respuestas y rutas de API | Lookups seguros, sin enumeración |
 
 ### Reglas de uso
 
@@ -117,3 +117,4 @@ Los ERDs de `docs/db/postgres/` muestran `Integer id PK` + `UUID uuid` en cada e
 
 Ver `app/shared/database/postgres.py` — clase `BaseModel`.
 Ver `.agents/rules/PYTHON_INFRA_DB_BASE_MODEL.md`.
+Ver [ADR 024: Endpoints API con UUIDs](./024-endpoints-uuid-only.md) — expansion de las reglas 2-3 de visibilidad API.

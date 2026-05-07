@@ -23,6 +23,8 @@ erDiagram
     person ||--o{ personal_identifier : "has"
     person ||--o{ emergency_contact : "has_emergency"
 
+    person ||--|| photo : "has_photo"
+
     %% RELACIONES SECUNDARIAS
     social_platform ||--o{ social_links : "has"
     identifier_type ||--o{ personal_identifier : "has"
@@ -285,10 +287,26 @@ erDiagram
         String(20) key_nationality FK
     }
 
+    %% photo: fotografia de perfil del person (tres tamanos)
+    %% Unico por persona (unique id_person).
+    %% Gestionado por dh_core. Los archivos en disco estan bajo people/{uuid}/photos/
+    photo {
+        Integer id PK
+        UUID uuid
+        Integer id_person FK "unique — one photo per person"
+        String url_raw "ruta relativa al archivo raw"
+        String url_800 "ruta relativa a 800px"
+        String url_200 "ruta relativa a 200px"
+        String mime_type "ej: image/jpeg"
+        BigInt size_bytes_raw
+        BigInt size_bytes_800
+        BigInt size_bytes_200
+    }
+
     %% personal_identifier: identificadores oficiales (CURP, RFC, NSS, pasaporte, etc)
     %% id_identifier_type: tipo de identificador (enum)
-    %% id_document: FK a expedient.document.id (nullable, se popula tras subir el documento)
-    %% La dependencia circular se resuelve creando expedient antes que people en el lifespan de dh_core
+    %% id_document: FK a storage.document.id (nullable, se popula tras subir el documento)
+    %% La dependencia circular se resuelve creando storage antes que people en el lifespan de dh_core
     personal_identifier {
         Integer id PK
         UUID uuid

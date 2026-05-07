@@ -1,5 +1,8 @@
 # ADR 022: Mandatory Endpoints Documentation (ENDPOINTS.md)
 
+## Estado
+Aceptado
+
 ## Context
 As the number of microservices grows, it becomes difficult to track the available API surfaces without starting each service and checking the Swagger/OpenAPI documentation. For AI agents and developers, having a machine-readable and human-readable file at the root of each service is essential for quick context extraction.
 

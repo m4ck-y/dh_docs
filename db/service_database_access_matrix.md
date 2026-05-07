@@ -16,7 +16,7 @@ Este documento define la propiedad y los permisos de acceso de cada microservici
 | `dh_auth` | `auth` | **Owner** | Credenciales y sesiones. Referencias a `people` via `person_uuid` (UUID lógico). |
 | `dh_iam` | `iam` | **Owner** | Roles, membresías, permisos, tenants. |
 | `dh_mfa` | `mfa` | **Owner** | Desafíos OTP y factores MFA. |
-| `dh_expedient` | `expedient` | **Owner** | Documentos e identificadores. Referencias a `people` via `person_uuid` (UUID lógico). |
+| `dh_storage` | `storage` | **Owner** | Documentos, fotos e identificadores. Storage layer unico. |
 | `dh_clinical` | `health_profile` | **Owner** | Perfiles clínicos, alergias, antecedentes. |
 | `dh_organizations` | `org` | **Owner** | Empresas, empleados, sedes, servicios. |
 | `dh_catalogs` | `catalog` | **Owner** | Catálogos globales del sistema. |
@@ -24,8 +24,8 @@ Este documento define la propiedad y los permisos de acceso de cada microservici
 ## Regla de Referencias Cross-Service
 
 Cuando un schema necesita vincular una entidad de otro servicio:
-- ✅ Usar `person_uuid UUID` (sin FK constraint) — no hay integridad referencial entre servicios.
-- ❌ No usar `id_person INTEGER FK → people.person.id` — esa FK implica acceso directo al schema ajeno.
+- Usar `person_uuid UUID` (sin FK constraint) — no hay integridad referencial entre servicios.
+- No usar `id_person INTEGER FK → people.person.id` — esa FK implica acceso directo al schema ajeno.
 
 ## Matriz de Persistencia No Relacional (MongoDB)
 

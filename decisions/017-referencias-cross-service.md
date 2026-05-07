@@ -13,8 +13,8 @@ El ADR 010 define `id` Integer para FKs y `uuid` para APIs externas. Con microse
 
 | Consumidor | `id` | `uuid` |
 |---|---|---|
-| Clientes externos via `api_middleware` (frontend, mobile) | ❌ Nunca | ✅ Siempre |
-| Llamadas inter-servicio (backend ↔ backend) | ✅ Sí | ✅ Sí |
+| Clientes externos via `api_middleware` (frontend, mobile) | Nunca Siempre |
+| Llamadas inter-servicio (backend ↔ backend) Sí Sí |
 
 El `api_middleware` es responsable de filtrar el `id` de las respuestas antes de reenviarlas al exterior. Los microservicios entre sí sí se pasan el `id` para poder usarlo en FKs sin consultas adicionales.
 
@@ -23,7 +23,7 @@ El `api_middleware` es responsable de filtrar el `id` de las respuestas antes de
 Los FKs entre tablas — incluso cross-service — usan `id` Integer con `ForeignKey()` real. El constraint es válido porque todos los servicios comparten la misma instancia PostgreSQL.
 
 ```python
-# ✅ FK integer real incluso apuntando a tabla de otro servicio
+# FK integer real incluso apuntando a tabla de otro servicio
 class AuthUser(BaseModel):
     id_person: MappedColumn[int] = mapped_column(
         Integer, ForeignKey("people.person.id"), nullable=False
@@ -54,8 +54,8 @@ El servicio dueño del schema referenciado debe arrancar primero.
 
 | Escenario | Columna | `ForeignKey()` | Cómo obtener el `id` |
 |---|---|---|---|
-| Mismo servicio | `id_<entidad> INTEGER` | ✅ Sí | Flush + `obj.id` |
-| Cross-service | `id_<entidad> INTEGER` | ✅ Sí | Llamada HTTP al servicio dueño |
+| Mismo servicio | `id_<entidad> INTEGER` Sí | Flush + `obj.id` |
+| Cross-service | `id_<entidad> INTEGER` Sí | Llamada HTTP al servicio dueño |
 | Respuesta a clientes externos | `uuid` solamente | — | `api_middleware` filtra el `id` |
 
 ## Dependencia circular resuelta por orden de create_all

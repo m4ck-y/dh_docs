@@ -1,6 +1,6 @@
 # Propuesta de Migración: Módulo Auth (001)
 
-## 📝 Resumen
+##  Resumen
 Implementar el núcleo de autenticación en `api_core` basándose en la lógica de la plantilla. Este módulo será el encargado de generar y verificar los tokens JWT que usará todo el ecosistema (Middleware y Microservicios).
 
 ## 🔍 Análisis de la Plantilla
@@ -23,7 +23,7 @@ Implementar el núcleo de autenticación en `api_core` basándose en la lógica 
 4.  **Implementar Casos de Uso**: Crear el servicio de autenticación que valide el password hash.
 5.  **Exponer Rutas**: Agregar el router de Auth al `main.py` de `api_core`.
 
-## ⚠️ Riesgos y Consideraciones
+## WARNING: Riesgos y Consideraciones
 - **Impacto**: Este es el cambio más crítico. Sin este módulo funcionando, el `api_middleware` no podrá validar sesiones de forma centralizada.
 - **Desacoplamiento**: Debemos asegurar que `auth` no dependa circularmente de `account`.
 

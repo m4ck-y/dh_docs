@@ -22,6 +22,16 @@ Cada microservicio del ecosistema Digital Hospital expone una API REST documenta
 
 Se requiere un estándar para que **cada microservicio** tenga una interfaz de prueba servida en su raíz (`GET /`).
 
+Adicionalmente, cada microservicio debe exponer su documentacion OpenAPI en rutas estandar:
+
+| Ruta | Proposito |
+|---|---|
+| `GET /` | Test UI interactiva (sandbox visual) |
+| `GET /docs` | Swagger UI — documentacion interactiva de la API |
+| `GET /redoc` | ReDoc — documentacion estatica de la API |
+| `GET /openapi.json` | OpenAPI spec raw (JSON) |
+| `GET /health` | Health check del servicio |
+
 ## Decisión
 
 Todo microservicio del ecosistema **debe incluir** una interfaz de prueba estática servida en `GET /`, montada via `FastAPI StaticFiles`.
@@ -30,17 +40,58 @@ Todo microservicio del ecosistema **debe incluir** una interfaz de prueba estát
 
 #### 1. Montaje
 
-Archivos estáticos en `app/static/`, montados en `main.py`:
+Archivos estáticos en `app/static/`, montados en `main.py`.
+
+El docstring del modulo `main.py` se usa como descripcion de Swagger via el patron `description=__doc__` (ver [ADR 033](./033-swagger-docstring-templates.md)):
 
 ```python
+"""
+## Digital Hospital — <Service Name>
+
+<Service description in Markdown. Rendered in Swagger UI at /docs.>
+
+### Endpoints
+- POST /v1/... — description
+- GET /v1/... — description
+"""
+
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    description=__doc__,
+    version=settings.VERSION,
+    lifespan=lifespan,
+    root_path=settings.ROOT_PATH,
+)
+
+app.include_router(...)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 @app.get("/", tags=["UI"])
 async def root():
+    """Serve the test UI page."""
     return FileResponse("app/static/index.html")
+
+@app.get("/health", tags=["Health"])
+async def health_check():
+    return {"status": "healthy", "service": "dh_<name>"}
+```
+
+#### 1.1 API Reference en la test UI
+
+El `index.html` de cada servicio debe incluir enlaces a la documentacion de la API:
+
+```html
+<h3>API_REFERENCE</h3>
+<ul>
+    <li><a href="/docs" target="_blank">/docs &lt;Swagger UI&gt;</a></li>
+    <li><a href="/redoc" target="_blank">/redoc &lt;ReDoc&gt;</a></li>
+    <li><a href="/openapi.json" target="_blank">/openapi.json &lt;raw spec&gt;</a></li>
+</ul>
 ```
 
 #### 2. Archivos requeridos
@@ -155,6 +206,7 @@ Ejemplo de diagrama ASCII en el README:
 
 ## Referencias
 
-- Implementación de referencia: `dh_auth/app/static/` (login test) y `dh_iam/app/static/` (admin panel).
-- ADR 022: ENDPOINTS.md — documentación complementaria de endpoints.
-- ADR 024: UUIDs en API pública.
+- Implementacion de referencia: `dh_auth/app/static/` (login test) y `dh_iam/app/static/` (admin panel).
+- [ADR 033: Docstrings Swagger — Templates y Placeholders](./033-swagger-docstring-templates.md) — formato de docstring para `description=__doc__`.
+- ADR 022: ENDPOINTS.md — documentacion complementaria de endpoints.
+- ADR 024: UUIDs en API publica.

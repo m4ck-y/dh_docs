@@ -43,8 +43,8 @@ Se estableció la convención de que cada sección del historial clínico produc
 
 **Avances de la actividad (si lo requiere):**
 - Modelado de datos y diseño de schema completado: todos los campos de la sección "A. Registro" cuentan con entidad, columna y valor mapeados.
-- Mapeo completo de los 40+ campos — sin campos 🔴 sin modelar al cierre de esta fase.
-- Gap único pendiente: catálogo `catalog.religion` sin poblar — los campos `key_religion` de `sociocultural_identity` permanecen en 🟡 hasta que dicho catálogo sea definido.
+- Mapeo completo de los 40+ campos — sin campos  sin modelar al cierre de esta fase.
+- Gap único pendiente: catálogo `catalog.religion` sin poblar — los campos `key_religion` de `sociocultural_identity` permanecen en  hasta que dicho catálogo sea definido.
 - Convenciones establecidas y documentadas en `historial_clinico/README.md` para uso en secciones futuras del historial clínico.
 
 **Siguientes pasos:**

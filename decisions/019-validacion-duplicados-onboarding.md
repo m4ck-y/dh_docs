@@ -84,13 +84,13 @@ else:
 
 ## Implementación
 
-1. ✅ Crear endpoints de validación en `dh_core`
-2. ✅ Implementar `CheckPersonExistsUseCase`
-3. ✅ Agregar `PersonExistsResponseDTO`
-4. ✅ Actualizar cliente HTTP en `dh_onboarding_back`
-5. ✅ Modificar flujo de `SavePersonalInfoUseCase`
-6. 🔄 Agregar endpoints al `api_middleware` (contrato)
-7. 🔄 Pruebas de integración
+1. Crear endpoints de validación en `dh_core`
+2. Implementar `CheckPersonExistsUseCase`
+3. Agregar `PersonExistsResponseDTO`
+4. Actualizar cliente HTTP en `dh_onboarding_back`
+5. Modificar flujo de `SavePersonalInfoUseCase`
+6.  Agregar endpoints al `api_middleware` (contrato)
+7.  Pruebas de integración
 
 ## Referencias
 

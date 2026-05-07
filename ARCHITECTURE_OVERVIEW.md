@@ -2,7 +2,7 @@
 
 Este documento define la responsabilidad única de cada microservicio y la propiedad de los datos en el ecosistema.
 
-## 🗺️ Matriz de Propiedad de Datos (Ownership)
+##  Matriz de Propiedad de Datos (Ownership)
 
 | Microservicio | Esquema / Tablas de las que es DUEÑO | Responsabilidad Principal |
 | :--- | :--- | :--- |
@@ -14,9 +14,9 @@ Este documento define la responsabilidad única de cada microservicio y la propi
 | **`dh_health_monitoring`** | `vitals` | Registro de signos vitales y monitoreo en tiempo real. |
 | **`dh_organizations`** | `org.Company`, `org.Employee`, `org.Location`, `org.Industry` | Estructura administrativa y laboral. |
 | **`dh_mfa`** | `mfa.OTP_Log` | Desafíos de segundo factor (SMS/Email/TOTP). |
-| **`dh_expedient`** | `expedient` | Gestión de archivos físicos, expedientes y validación documental. |
+| **`dh_storage`** | `storage` | Gestión de archivos físicos: fotos, documentos, expedientes. |
 
-## 🛠️ Servicios de Orquestación (Sin Propiedad de Tablas Core)
+## TOOLS: Servicios de Orquestación (Sin Propiedad de Tablas Core)
 
 Estos servicios no "son dueños" de tablas maestras, sino que coordinan procesos llamando a otros servicios:
 

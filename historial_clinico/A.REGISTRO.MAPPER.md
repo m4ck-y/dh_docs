@@ -215,7 +215,7 @@ _(El usuario llena sus propios datos. Mismos campos y mapeos que los de la secci
 
 ---
 
-## Resumen de gaps 🟡
+## Resumen de gaps
 
 | Campo | Entidad | Nota |
 |---|---|---|

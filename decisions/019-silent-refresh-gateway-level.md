@@ -1,5 +1,8 @@
 # ADR 019: Silent Refresh at Gateway Level
 
+## Estado
+Aceptado
+
 ## Context
 In a microservices architecture with a frontend client, managing JWT expiration often requires complex logic in the frontend (interceptors, handling 401s, queuing requests during refresh). To simplify the frontend and improve security, we need a mechanism to refresh tokens transparently.
 

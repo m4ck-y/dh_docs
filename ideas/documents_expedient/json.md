@@ -1,6 +1,6 @@
 📄 DOCUMENT (actualizado)
 
-🧱 1. DOCUMENT_TYPE (tabla faltante corregida)
+ 1. DOCUMENT_TYPE (tabla faltante corregida)
 CREATE TABLE document_type (
     id UUID PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,

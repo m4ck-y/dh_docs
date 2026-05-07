@@ -12,12 +12,17 @@ language: es
 
 # ADR 024: Endpoints API con UUIDs — Prohibición de IDs autoincrementales en la interfaz pública
 
+> **Relacion con ADR 010**: Este ADR expande las reglas 2 ("respuestas de API exponen uuid") y 3 ("rutas de API usan uuid_<entity>") de [ADR 010](./010-database-id-strategy.md) con ejemplos concretos de endpoints, patrones de resolucion en use cases y reglas de nomenclatura para parametros query/body.
+
+## Estado
+Aceptado
+
 ## Contexto
 
 Todos los modelos del sistema heredan de `BaseModelMixin` (ADR 010), que define dos identificadores:
 
 - `id`: entero autoincremental (`INTEGER PK`), usado exclusivamente para **joins entre tablas en la base de datos**.
-- `uuid`: identificador único universal (`UUID v4`), usado como **identificador público** expuesto en APIs.
+- `uuid`: identificador único universal (`UUID v7`, time-ordered), usado como **identificador público** expuesto en APIs.
 
 En fases tempranas del desarrollo, algunos endpoints aceptaban `id` (entero) como parámetro de ruta, query o body. Esto introduce problemas de seguridad y mantenimiento:
 

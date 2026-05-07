@@ -12,14 +12,14 @@ tags: []
 
 # TASK-NNN: Título de la Tarea
 
-## 📝 Descripción
+##  Descripción
 Descripción breve del objetivo de la tarea.
 
-## 🎯 Objetivos
+## Objetivos
 - [ ] Objetivo 1
 - [ ] Objetivo 2
 
-## 🔗 Enlaces Rápidos
+## Enlaces Rápidos
 - [Plan de Ejecución](planning/README.md)
 - [Registro de Progreso](progress/)
 - [Artefactos](artifacts/)
