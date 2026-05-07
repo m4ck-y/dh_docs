@@ -1,5 +1,20 @@
+Lee el archivo Draw.io:
+/home/m4cky/Documents/dev_me/my_projects/digital_hospital/docs/historial_clinico/DI-001-01-LS-GE Propuesta Historia Clínica_
+y genera un Markdown únicamente de la primera página: “OK a registro”.
+Convierte el diagrama en una estructura textual jerárquica, ignorando totalmente el flujo y las conexiones.
+Extrae y organiza:
 
+secciones
 
-lee mi drwio: /home/m4cky/Documents/dev_me/my_projects/digital_hospital/docs/historial_clinico/DI-001-01-LS-GE Propuesta Historia Clínica_
-y quiero que generes un markdown con esa estructura por ahora solo quiero que extraigas la primera pagina
-"ok a registro", ya que esta compuesto por secciones, subsecciones, preguntas, y posibles opciones o respuestas, y todas estan enumedadas, asi que mejor crea un mejor formato siguiendo esas numeraciones en formato lista y tambiens sus secciones y subsecciones y todos las piblers respuestas, obviamente ingorando que es un diagrama de flujo 
+subsecciones
+
+preguntas
+
+opciones/respuestas
+
+numeraciones originales
+
+Usa Markdown limpio con encabezados y listas anidadas respetando la jerarquía visual y numérica.
+Si una pregunta tiene opciones, colócalas debajo como sublista.
+No resumir, reinterpretar ni omitir contenido.
+Entrega únicamente el Markdown generado.
