@@ -63,7 +63,7 @@ Base path: `/v1/storage`
 
 - `dh_storage` es el **unico punto de entrada** para upload/download de archivos en el ecosistema.
 - `dh_storage` escribe en `storage.*` (documentos) y `people.photo` (fotos de perfil).
-- `dh_onboarding_back` llama a `dh_storage` via HTTP para subir documentos.
+- `dh_onboarding` llama a `dh_storage` via HTTP para subir documentos.
 - `dh_core` llama a `dh_storage` via HTTP para fotos de perfil.
 - Ningun otro microservicio escribe archivos a disco ni inserta en `storage.*` o `people.photo`.
 - Cuando el storage migre a GCS/AWS, solo `dh_storage` cambia.

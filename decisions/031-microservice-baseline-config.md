@@ -101,11 +101,11 @@ Cada servicio publica su `.env.example` con valores por defecto funcionales para
 | `dh_iam` | `/api/iam` | `/api/middleware/iam` |
 | `dh_core` | `/api/core` | `/api/middleware/core` |
 | `dh_mfa` | `/api/mfa` | `/api/middleware/mfa` |
-| `dh_onboarding_back` | `/api/onboarding` | `/api/middleware/onboarding` |
+| `dh_onboarding` | `/api/onboarding` | `/api/middleware/onboarding` |
 | `dh_storage` | `/api/storage` | `/api/middleware/storage` |
 | `dh_admin` | `/api/admin` | `/api/middleware/admin` |
-| `app_logger_tracer` | `/api/logger` | `/api/middleware/logger_tracer` |
-| `app_message_sender` | `/api/message-sender` | `/api/middleware/message_sender` |
+| `dh_logger` | `/api/logger` | `/api/middleware/logger` |
+| `dh_notify` | `/api/notify` | `/api/middleware/notify` |
 | `dh_organizations` (pendiente) | `/api/organizations` | `/api/middleware/organizations` |
 | `dh_catalogs` (pendiente) | `/api/catalogs` | `/api/middleware/catalogs` |
 

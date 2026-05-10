@@ -41,7 +41,7 @@ async def init_schemas(conn):
 ### Uso en microservicios
 
 ```python
-# dh_core, dh_auth, dh_iam, dh_onboarding_back, dh_admin, dh_storage
+# dh_core, dh_auth, dh_iam, dh_onboarding, dh_admin, dh_storage
 from dh_shared.base import init_schemas
 
 @asynccontextmanager

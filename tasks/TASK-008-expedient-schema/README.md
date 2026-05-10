@@ -24,10 +24,10 @@ Decisión tomada el 2026-04-26. Ver análisis en `docs/ideas/documents_expedient
 
 - [ ] Actualizar `docs/db/postgres/expedient/erd.mmd` — agregar `document_file`, eliminar `url_file` y `url_thumbnail` de `document`.
 - [ ] Crear ADR documentando la decisión (`document_file` relacional vs JSONB).
-- [ ] Actualizar modelo SQLAlchemy `expedient.document` en `dh_onboarding_back`.
+- [ ] Actualizar modelo SQLAlchemy `expedient.document` en `dh_onboarding`.
 - [ ] Crear modelo SQLAlchemy `expedient.document_file`.
 - [ ] Actualizar el use case `upload_document_use_case.py` para persistir en `document_file`.
-- [ ] Actualizar `dh_onboarding_back` para soportar múltiples archivos en `POST /v1/onboarding/{id}/documents`.
+- [ ] Actualizar `dh_onboarding` para soportar múltiples archivos en `POST /v1/onboarding/{id}/documents`.
 
 ## Estructura de `document_file`
 

@@ -1,18 +1,18 @@
 # Guía de Comunicación Interna (Microservicios)
 
-Este documento define cómo los microservicios (`app_*`) deben interactuar con el núcleo central (`api_core`) y cómo se maneja el tráfico externo.
+Este documento define cómo los microservicios (`app_*`) deben interactuar con el núcleo central (`dh_core`) y cómo se maneja el tráfico externo.
 
 ## 1. Flujo de Peticiones Externas
 
 1.  **Origen**: Aplicación Móvil, Web o Frontend.
 2.  **Destino**: `api_middleware`.
 3.  **Proceso**:
-    - El middleware valida el token JWT contra `api_core` (o de forma autónoma si tiene la clave pública).
+    - El middleware valida el token JWT contra `dh_core` (o de forma autónoma si tiene la clave pública).
     - El middleware redirige la petición al microservicio correspondiente (ej. `app_questionnaire`).
 
 ## 2. Comunicación Interna (Service-to-Service)
 
-Cuando un microservicio como `app_questionnaire` necesita datos que residen en `api_core`, debe realizar una petición interna.
+Cuando un microservicio como `app_questionnaire` necesita datos que residen en `dh_core`, debe realizar una petición interna.
 
 ### Reglas de Oro:
 - **No acceso directo a DB**: Un microservicio NUNCA debe leer directamente la base de datos de otro. Siempre debe usar la API interna.
@@ -20,8 +20,8 @@ Cuando un microservicio como `app_questionnaire` necesita datos que residen en `
 
 ### Ejemplo de flujo (Obtención de datos de Persona):
 1.  `app_questionnaire` recibe una petición para un formulario.
-2.  `app_questionnaire` realiza una petición `GET` interna a `api_core/person/{id}`.
-3.  `api_core` responde con el objeto JSON de la persona.
+2.  `app_questionnaire` realiza una petición `GET` interna a `dh_core/person/{id}`.
+3.  `dh_core` responde con el objeto JSON de la persona.
 4.  `app_questionnaire` procesa la lógica y responde al middleware.
 
 ## 3. Seguridad Interna
@@ -31,4 +31,4 @@ Cuando un microservicio como `app_questionnaire` necesita datos que residen en `
 
 ## 4. Implementación Sugerida
 
-Se recomienda crear una clase `CoreAPIClient` en la carpeta `shared/` de cada microservicio para abstraer las llamadas a `api_core`.
+Se recomienda crear una clase `CoreAPIClient` en la carpeta `shared/` de cada microservicio para abstraer las llamadas a `dh_core`.

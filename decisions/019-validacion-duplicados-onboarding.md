@@ -73,7 +73,7 @@ else:
 ### Negativas
 - **Complejidad adicional**: Más validaciones en el flujo de onboarding
 - **Latencia**: Llamada adicional a `dh_core` antes de crear registros
-- **Dependencia**: Mayor acoplamiento entre `dh_onboarding_back` y `dh_core`
+- **Dependencia**: Mayor acoplamiento entre `dh_onboarding` y `dh_core`
 
 ### Casos de Uso Cubiertos
 
@@ -87,7 +87,7 @@ else:
 1. Crear endpoints de validación en `dh_core`
 2. Implementar `CheckPersonExistsUseCase`
 3. Agregar `PersonExistsResponseDTO`
-4. Actualizar cliente HTTP en `dh_onboarding_back`
+4. Actualizar cliente HTTP en `dh_onboarding`
 5. Modificar flujo de `SavePersonalInfoUseCase`
 6.  Agregar endpoints al `api_middleware` (contrato)
 7.  Pruebas de integración

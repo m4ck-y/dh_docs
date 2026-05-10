@@ -4,7 +4,7 @@
 Aceptado
 
 ## Contexto
-El sistema requiere almacenar credenciales de usuario de forma segura. Inicialmente, se detectó que el microservicio `dh_onboarding_back` almacenaba contraseñas en texto plano. Se requiere definir un algoritmo de hashing que sea resistente a ataques de fuerza bruta y que cumpla con los estándares modernos de seguridad.
+El sistema requiere almacenar credenciales de usuario de forma segura. Inicialmente, se detectó que el microservicio `dh_onboarding` almacenaba contraseñas en texto plano. Se requiere definir un algoritmo de hashing que sea resistente a ataques de fuerza bruta y que cumpla con los estándares modernos de seguridad.
 
 Se evaluaron dos enfoques:
 1. **HS256 (HMAC-SHA256)**: Común en firmas de tokens JWT pero extremadamente rápido, lo que facilita ataques de fuerza bruta si la base de datos es comprometida.

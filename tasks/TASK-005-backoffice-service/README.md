@@ -14,7 +14,7 @@ tags: [backoffice, admin, persons, staff]
 
 ## Descripción
 
-Desarrollo del microservicio administrativo para la creación y gestión directa de entidades `Person` por parte del equipo interno. Este servicio existe como alternativa al flujo de auto-registro de `dh_onboarding_back`, que es exclusivo para usuarios que se registran por cuenta propia.
+Desarrollo del microservicio administrativo para la creación y gestión directa de entidades `Person` por parte del equipo interno. Este servicio existe como alternativa al flujo de auto-registro de `dh_onboarding`, que es exclusivo para usuarios que se registran por cuenta propia.
 
 Este microservicio cubre los casos que NO pasan por el flujo de onboarding:
 - Alta directa de médicos, enfermeros y staff hospitalario interno.
@@ -23,7 +23,7 @@ Este microservicio cubre los casos que NO pasan por el flujo de onboarding:
 
 ## Contexto
 
-`dh_onboarding_back` es el dueño del flujo de **auto-registro**. Para creación administrativa, se requiere un punto de entrada separado que no exija OTP ni token de invitación.
+`dh_onboarding` es el dueño del flujo de **auto-registro**. Para creación administrativa, se requiere un punto de entrada separado que no exija OTP ni token de invitación.
 
 Ver: [2.onboarding.md](../../management/1_onboarding/2.onboarding.md)
 
@@ -34,7 +34,7 @@ Ver: [2.onboarding.md](../../management/1_onboarding/2.onboarding.md)
 - [ ] Implementar gestión de roles y membresías en `iam.membership`.
 - [ ] Implementar endpoints de edición de datos de Person ya existentes.
 - [ ] Implementar importación masiva (batch) desde CSV o sistema externo.
-- [ ] Integrar con `app_logger_tracer` para auditoría de acciones administrativas.
+- [ ] Integrar con `dh_logger` para auditoría de acciones administrativas.
 
 ## Enlaces Rápidos
 

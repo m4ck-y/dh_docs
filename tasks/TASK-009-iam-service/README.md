@@ -31,7 +31,7 @@ tags: ["iam", "rbac", "tenants", "permissions"]
 
 ## Pendiente (futuro)
 - Conexion real HTTP entre `dh_auth` y `dh_iam` (endpoint context).
-- Integracion con `dh_onboarding_back` para membresias de paciente.
+- Integracion con `dh_onboarding` para membresias de paciente.
 - Integracion con `dh_organizations` para membresias de empleado.
 - Asignacion de permisos a roles desde la UI.
 - Validacion RBAC en `api_middleware`.

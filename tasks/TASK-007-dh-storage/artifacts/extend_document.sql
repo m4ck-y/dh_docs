@@ -1,5 +1,5 @@
 -- Sugerencia: Extender tabla `document` en PostgreSQL (schema expedient)
--- Para soportar upload, download y review en dh_expedient
+-- Para soportar upload, download y review en dh_storage
 
 ALTER TABLE expedient.document
 ADD COLUMN storage_provider VARCHAR(20) NOT NULL DEFAULT 'gcs',

@@ -1,4 +1,4 @@
-# Investigación: Análisis de Compatibilidad — dh_onboarding_front vs dh_onboarding_back
+# Investigación: Análisis de Compatibilidad — dh_onboarding_front vs dh_onboarding
 
 **Estado**: Investigación
 **Fecha**: 2026-04-26
@@ -26,7 +26,7 @@ El frontend implementa **9 pasos** de registro en `VistaRegistro`:
 
 ## 2. Endpoints que llama el frontend
 
-El frontend apunta a **dos bases de URL** independientes (`VITE_API_PREREGISTRO_URL`, `VITE_API_SESION_URL`), **no a `dh_onboarding_back`**.
+El frontend apunta a **dos bases de URL** independientes (`VITE_API_PREREGISTRO_URL`, `VITE_API_SESION_URL`), **no a `dh_onboarding`**.
 
 ### Endpoints de preregistro (`VITE_API_PREREGISTRO_URL`)
 
@@ -108,11 +108,11 @@ El frontend apunta a **dos bases de URL** independientes (`VITE_API_PREREGISTRO_
 - **A)** Adaptar el frontend para leer el token del URL (`?token=xxx`) antes del paso 1
 - **B)** Hacer el token opcional en `POST /v1/onboarding/start` — si no hay token, es registro libre
 
-### Gap #2 — Los endpoints del frontend no existen en dh_onboarding_back
+### Gap #2 — Los endpoints del frontend no existen en dh_onboarding
 
-El frontend llama a `/preregistro/preregistro/...` y `/preregistro/curp/...`. Ninguna de estas rutas existe en `dh_onboarding_back`. Requiere:
+El frontend llama a `/preregistro/preregistro/...` y `/preregistro/curp/...`. Ninguna de estas rutas existe en `dh_onboarding`. Requiere:
 - Mapear los endpoints del frontend a la nueva estructura de rutas
-- O actualizar el frontend para apuntar a `dh_onboarding_back`
+- O actualizar el frontend para apuntar a `dh_onboarding`
 
 ### Gap #3 — Mapeo de sexo (H/M/X → EGenderIdentity)
 
@@ -207,7 +207,7 @@ La validación y guardado del CURP están desactivados. El backend debe tratar e
 **Dónde está:**
 - Frontend — paso definido en `PasoSeleccionCapturaPerfil.tsx` (captura con cámara o archivo)
 - DB — campo destino: `people.person.url_photo` (`erd.mmd` **línea 150**)
-- Backend — no existe ningún endpoint de upload en `dh_onboarding_back`
+- Backend — no existe ningún endpoint de upload en `dh_onboarding`
 
 Requiere endpoint de upload + integración con storage (GCS / S3 / MinIO).
 
@@ -236,7 +236,7 @@ El backend debe ignorar el campo `rol` en el registro inicial y solo usarlo como
 
 ---
 
-## 5. Endpoints que necesita implementar dh_onboarding_back
+## 5. Endpoints que necesita implementar dh_onboarding
 
 Basado en el flujo del frontend y la DB:
 
@@ -290,4 +290,4 @@ que devuelve los tipos requeridos para el proceso de registro.
 2. Decidir Gap #3 (mapeo sexo X)
 3. Definir estrategia de catálogos geográficos (Gap #4 y #5)
 4. Implementar `POST /v1/onboarding/start` como primer endpoint de TASK-003
-5. Actualizar el frontend para apuntar a `dh_onboarding_back` como `VITE_API_PREREGISTRO_URL`
+5. Actualizar el frontend para apuntar a `dh_onboarding` como `VITE_API_PREREGISTRO_URL`

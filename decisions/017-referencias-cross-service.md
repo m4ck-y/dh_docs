@@ -35,7 +35,7 @@ class AuthUser(BaseModel):
 Cuando un servicio necesita el `id` de una entidad de otro servicio, llama al endpoint del servicio dueño pasando el `uuid` y recibe `id` + `uuid` en la respuesta.
 
 ```python
-# dh_onboarding_back resuelve id_person para crear auth.user
+# dh_onboarding resuelve id_person para crear auth.user
 response = await core.get_person(person_uuid)  # GET /v1/people/persons/{uuid}
 person_id = response["data"]["id"]
 session.add(AuthUser(id_person=person_id, ...))
@@ -47,7 +47,7 @@ El servicio dueño del schema referenciado debe arrancar primero.
 
 ```
 1. dh_core              → crea people.*
-2. dh_onboarding_back   → crea auth.*, expedient.* (FK a people.person.id)
+2. dh_onboarding   → crea auth.*, expedient.* (FK a people.person.id)
 ```
 
 ## Tabla de referencia

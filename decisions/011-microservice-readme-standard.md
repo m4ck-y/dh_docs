@@ -53,13 +53,13 @@ Todos los README de microservicio deben incluir exactamente estas cinco seccione
 
 | Microservicio | Tipo | README esperado |
 |---|---|---|
-| `api_core` | Plano | `api_core/README.md` |
+| `dh_core` | Plano | `dh_core/README.md` |
 | `api_middleware` | Plano | `api_middleware/README.md` |
 | `app_catalogs` | Fullstack | `app_catalogs/backend/README.md` |
 | `app_health_monitoring` | Fullstack | `app_health_monitoring/backend/README.md` |
-| `app_logger_tracer` | Fullstack | `app_logger_tracer/backend/README.md` |
-| `app_message_sender` | Plano | `app_message_sender/README.md` |
+| `dh_logger` | Fullstack | `dh_logger/backend/README.md` |
+| `dh_notify` | Plano | `dh_notify/README.md` |
 | `app_questionnaire` | Fullstack | `app_questionnaire/backend/README.md` |
 | `dh_mfa` | Plano | `dh_mfa/README.md` |
-| `dh_onboarding_back` | Plano | `dh_onboarding_back/README.md` |
+| `dh_onboarding` | Plano | `dh_onboarding/README.md` |
 | `dh_onboarding_front` | Frontend | No aplica (sin backend Python propio) |

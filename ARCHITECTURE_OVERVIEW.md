@@ -20,7 +20,7 @@ Este documento define la responsabilidad única de cada microservicio y la propi
 
 Estos servicios no "son dueños" de tablas maestras, sino que coordinan procesos llamando a otros servicios:
 
-- **`dh_onboarding_back`**: Orquesta el flujo de auto-registro. Consume `dh_core`, `dh_auth` y `dh_iam`.
+- **`dh_onboarding`**: Orquesta el flujo de auto-registro. Consume `dh_core`, `dh_auth` y `dh_iam`.
 - **`dh_seeder`**: Herramienta de desarrollo para poblar el sistema. Consume todos los servicios vía API. No tiene base de datos propia.
 - **`api_middleware`**: Puerta de enlace (Gateway). Valida seguridad stateless y redirige tráfico.
 
@@ -30,7 +30,7 @@ Estos servicios no "son dueños" de tablas maestras, sino que coordinan procesos
 | :--- | :--- | :--- | :--- |
 | TASK-004 | `dh_auth` | **Activo** | **Completada** |
 | TASK-009 | `dh_iam` | **Activo** | **Completada** |
-| TASK-003 | `dh_onboarding_back` | **Activo** | **Completada** |
+| TASK-003 | `dh_onboarding` | **Activo** | **Completada** |
 | TASK-006 | `dh_mfa` | **Completado** | **Completada** |
 | TASK-010 | `dh_organizations` | En progreso | **Alta** |
 | TASK-011 | `dh_core` (Personas) | **Activo** | **Completada** |

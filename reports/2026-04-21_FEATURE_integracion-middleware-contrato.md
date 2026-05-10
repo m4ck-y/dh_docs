@@ -14,8 +14,8 @@ Adicionalmente, esta recepción central no solo redirige el tráfico, sino que c
 
 *Detalles Técnicos y de Código:*
 Se ha transformado el componente `api_middleware` de un proxy pasivo a un "Contrato Explícito" (Interface Estricta). Para ello, se han integrado formalmente los desarrollos recientes de dos pilares críticos de la plataforma:
-- **Mensajería Multicanal (`app_message_sender` / PulseCore):** Se han duplicado y expuesto los modelos para el envío de códigos OTP (Contraseñas de un solo uso), confirmaciones de lista de espera (Waitlist) y los registros de auditoría de mensajes enviados.
-- **Observabilidad y Telemetría (`app_logger_tracer` / VitalTrace):** Se han expuesto los esquemas de alta cardinalidad como `EventEntry` (Analítica de clics de usuario), `LogEntry` (Errores técnicos), `MetricEntry` (Salud de CPU/RAM) y `TraceEntry` (Trazabilidad distribuida).
+- **Mensajería Multicanal (`dh_notify` / PulseCore):** Se han duplicado y expuesto los modelos para el envío de códigos OTP (Contraseñas de un solo uso), confirmaciones de lista de espera (Waitlist) y los registros de auditoría de mensajes enviados.
+- **Observabilidad y Telemetría (`dh_logger` / VitalTrace):** Se han expuesto los esquemas de alta cardinalidad como `EventEntry` (Analítica de clics de usuario), `LogEntry` (Errores técnicos), `MetricEntry` (Salud de CPU/RAM) y `TraceEntry` (Trazabilidad distribuida).
 
 Para lograr el Contrato Explícito, se abandonó el uso del antipatrón de enrutadores dinámicos o *catch-all proxies* (por ejemplo, `/{path:path}` que simplemente reenviaba todo ciegamente). En su lugar, se adoptó un mapeo explícito mediante el uso de la librería Pydantic. 
 

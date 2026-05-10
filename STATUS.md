@@ -1,31 +1,31 @@
 # Estado del Proyecto (LLM Context)
 
-**Última actualización**: 2026-05-05
+**Última actualización**: 2026-05-08
 
 ## Hitos de Arquitectura Recientes
+- **Renombres**: `dh_logger_tracer` → `dh_logger`, `dh_message_sender` → `dh_notify`. ROOT_PATH unificados: `/api/logger`, `/api/notify`.
+- **Deploy automático**: Plan systemd + GitHub Actions para todos los microservicios. `.service` files en `docs/`, workflows en `.github/workflows/deploy.yml`.
+- **dh_admin montado en gateway**: Integrado como sub-app en `api_middleware` bajo `/admin`. 2 rutas proxy (`POST /v1/db/recreate`, `POST /v1/db/seed-all`).
+- **Roles de puertos**: api_middleware en 8080 (público), backends 8081-8092 (red interna). dh_admin → 8088, dh_storage → 8087.
 - **UUID v7**: Reemplazo de `uuid4` por `uuid7` (time-ordered) en `BaseModelMixin` para indices B-tree eficientes. Libreria `uuid6`.
-- **dh_storage**: Microservicio implementado (puerto 8060). Storage layer para fotos (people.photo) y documentos (storage.*). DiskStorage con abstraccion swappable. 9 endpoints: documents POST/GET/DELETE, photo POST/GET/DELETE, files GET download, config types/subtypes. UI retro con 4 tabs.
-- **dh_admin** (antes dh_backoffice): Admin panel con endpoint drop/recreate schemas. UI retro en `/`.
-- **init_schemas**: ADR 030 — reemplaza `sync_schemas` en todos los servicios. Crea 8 schemas, luego `shared_metadata.create_all`. SQLAlchemy resuelve FKs circulares. Sin orden de arranque.
 - **Sub-objetos en DTOs**: ADR 029 — `CreatePersonDTO` con `email: {address, type}`, `phone: {code, number, type}`, `birth: {date, key_country, key_state}`. Naming sin prefijos redundantes.
-- **Renombres**: Schema `expedient` → `storage`. `dh_backoffice` → `dh_admin`.
+- **init_schemas**: ADR 030 — reemplaza `sync_schemas` en todos los servicios. Crea 8 schemas, luego `shared_metadata.create_all`. SQLAlchemy resuelve FKs circulares.
 
 ## Estado de los Servicios
 
 | Servicio | Estado | Notas |
 | :--- | :--- | :--- |
-| `api_middleware` | **Activo** | 8 sub-apps montadas con schemas duplicados. 3 servicios listados como PENDING en docstring. |
-| `dh_auth` | **Activo** | Stateless Auth, Login, Logout, Me, Refresh. UI retro terminal en `/`. |
-| `dh_iam` | **Activo** | RBAC completo: 32 endpoints. UI retro terminal en `/`. Scrollbars cyberpunk. |
-| `dh_core` | **Activo** | CRUD completo Person + sub-entidades (27 endpoints). Soft-delete, UUID-only. UI retro terminal con 6 tabs. |
-| `dh_mfa` | **Activo** | OTP challenge (create, verify, resend). Naming `uuid_challenge` estandarizado. |
-| `dh_onboarding_back` | **Activo** | Flujo onboarding step-by-step. UI retro con 3 tabs (Waitlist, Onboarding, Legacy) y auto-avance. |
-| `app_logger_tracer` (VitalTrace) | TESTING | Ingesta de logs. |
-| `app_message_sender` (PulseCore) | TESTING | OTP, Invites, Welcome messages. |
-| `dh_organizations` | PENDING | Modelos de Company/Employee en dh_shared. Sin servicio. |
-| `dh_catalogs` | PENDING | No iniciado. |
-| `dh_storage` | **Activo** | 9 endpoints: documents, photos, files, config. PUERTO 8060. |
-| `dh_admin` | **Activo** | Admin DB — drop/recreate schemas. UI retro en `/`. Puerto 8050. |
+| `api_middleware` | **Activo** | 10 sub-apps montadas (auth, iam, core, mfa, onboarding, health_monitoring, storage, admin, notify, logger). 3 PENDING. Puerto 8080 público. |
+| `dh_auth` | **Activo** | Stateless Auth, Login, Logout, Me, Refresh. UI retro terminal en `/`. Puerto 8081. |
+| `dh_iam` | **Activo** | RBAC completo: 32 endpoints. UI retro terminal en `/`. Scrollbars cyberpunk. Puerto 8082. |
+| `dh_core` | **Activo** | CRUD completo Person + sub-entidades (27 endpoints). Soft-delete, UUID-only. UI retro terminal con 6 tabs. Puerto 8083. |
+| `dh_mfa` | **Activo** | OTP challenge (create, verify, resend). Naming `uuid_challenge` estandarizado. Puerto 8084. |
+| `dh_onboarding` | **Activo** | Flujo onboarding step-by-step. UI retro con 3 tabs (Waitlist, Onboarding, Legacy) y auto-avance. Puerto 8085. |
+| `dh_health_monitoring` | **Activo** | Monitoreo clínico: mediciones, tipos, reportes. Puerto 8086. |
+| `dh_storage` | **Activo** | 9 endpoints: documents, photos, files, config. Puerto 8087. Montado en gateway. |
+| `dh_admin` | **Activo** | Admin DB — drop/recreate schemas, seed. UI retro en `/`. Puerto 8088. Montado en gateway. |
+| `dh_logger` (VitalTrace) | TESTING | Ingesta de logs, trazas, métricas. Puerto 8092. ROOT_PATH `/api/logger`. |
+| `dh_notify` (PulseCore) | TESTING | OTP, Invites, Welcome messages. Puerto 8091. ROOT_PATH `/api/notify`. |
 
 ## Objetivos Inmediatos
 
@@ -38,7 +38,7 @@
 
 | Task | Titulo | Status |
 | :--- | :--- | :--- |
-| TASK-003 | Microservicio de Onboarding (dh_onboarding_back) | **Completada** |
+| TASK-003 | Microservicio de Onboarding (dh_onboarding) | **Completada** |
 | TASK-004 | Microservicio de Auth (dh_auth) | **Completada** |
 | TASK-006 | Microservicio MFA — OTP Challenge (dh_mfa) | **Completada** |
 | TASK-007 | Storage Service (dh_storage) | **Completada** |
@@ -61,6 +61,8 @@
 | ADR 031 | Configuracion baseline para microservicios — ROOT_PATH, CORS, checklist |
 | ADR 032 | Politica de emojis como indicadores de estado — 🟢🟡🔴 solo tres colores |
 | ADR 033 | Docstrings Swagger — templates y placeholders para `description=__doc__` |
+| ADR 035 | API Path Format — prohibido trailing slash en endpoints |
+| ADR 035 | API Path Format — prohibido trailing slash en endpoints |
 
 ---
 

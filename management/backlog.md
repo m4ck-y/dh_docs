@@ -6,17 +6,17 @@ Este documento es el centro de control para todas las tareas del proyecto.
 - [x] Estructurar directorio `docs/` optimizado para LLMs.
 - [x] Migrar diagramas Draw.io de Historia Clínica a Mermaid.
 - [ ] Implementar estrategia de **Identidad Unificada** (Unified Onboarding) y escalamiento de roles.
-- [ ] Iniciar migración del módulo `auth` a `api_core`.
+- [ ] Iniciar migración del módulo `auth` a `dh_core`.
 
 ## Próximas Tareas (To Do)
 
-### api_core
+### dh_core
 - [ ] Integrar `passlib` y `jose` para gestión de tokens.
 - [ ] Crear capa de dominio para `Security`.
 - [ ] Refactorizar `Person` para cumplir con Clean Architecture al 100%.
 
 ### app_questionnaire
-- [ ] Crear cliente interno para conectar con `api_core`.
+- [ ] Crear cliente interno para conectar con `dh_core`.
 
 ### Infraestructura
 +

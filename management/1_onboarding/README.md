@@ -33,18 +33,18 @@ ACCESO AL PRODUCTO
 
 | Servicio | Rol |
 |---|---|
-| `dh_onboarding_back` | Orquestador — waitlist, onboarding, validación de token |
-| `app_message_sender` (PulseCore) | Envío de emails: confirmación, invitación, OTP, bienvenida |
-| `api_core` | Entidades base: Person, IAM, MFA, Expediente |
+| `dh_onboarding` | Orquestador — waitlist, onboarding, validación de token |
+| `dh_notify` (PulseCore) | Envío de emails: confirmación, invitación, OTP, bienvenida |
+| `dh_core` | Entidades base: Person, IAM, MFA, Expediente |
 | `app_auth` | Credenciales y sesiones JWT |
-| `app_logger_tracer` (VitalTrace) | Observabilidad — logs y eventos de cada acción |
+| `dh_logger` (VitalTrace) | Observabilidad — logs y eventos de cada acción |
 
 ---
 
 ## Etapas y entidades clave
 
 ### 1. Waitlist
-Lead interesado. Almacenado en **MongoDB** (`dh_onboarding_back`).
+Lead interesado. Almacenado en **MongoDB** (`dh_onboarding`).
 
 | Campo | Descripción |
 |---|---|
@@ -87,12 +87,12 @@ Solo se crea tras aprobación del admin.
 ## Arquitectura del onboarding
 
 ```
-dh_onboarding_back
+dh_onboarding
     ├── contexts/waitlist/     ← MongoDB (Beanie)
-    └── contexts/onboarding/   ← Orquesta llamadas a api_core + app_auth
+    └── contexts/onboarding/   ← Orquesta llamadas a dh_core + app_auth
              │
              ▼
-        api_core (PostgreSQL)
+        dh_core (PostgreSQL)
         ├── people.person
         ├── people.birth
         ├── people.email
@@ -111,7 +111,7 @@ dh_onboarding_back
 | Lead se registra | Automático | `POST /v1/waitlist/confirmation` |
 | Admin invita lead | Automático | `POST /v1/waitlist/invite` |
 | Paso de OTP | Automático | `POST /v1/otp` (`purpose: SENSITIVE_ACTION`) |
-| Admin aprueba | Manual post-aprobación | `POST /v1/notifications/welcome` |
+| Admin aprueba | Manual post-aprobación | `POST /v1/applicant/welcome` |
 | Recuperar contraseña | Automático | `POST /v1/otp` (`purpose: RESET_PASSWORD`) |
 
 ---

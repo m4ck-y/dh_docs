@@ -31,21 +31,21 @@ Cuando un schema necesita vincular una entidad de otro servicio:
 
 | Servicio | Base de Datos / Colección | Acceso | Notas |
 |:---------|:--------------------------|:------:|:------|
-| `dh_onboarding_back` | `dh_onboarding / waitlist` | **Owner** | Leads y waitlist. |
+| `dh_onboarding` | `dh_onboarding / waitlist` | **Owner** | Leads y waitlist. |
 | `dh_mfa` | `dh_mfa / otp_challenge` | **Owner** | Challenges OTP con TTL. |
-| `app_logger_tracer` | `telemetry_events` | **Owner** | Logs y trazabilidad. |
+| `dh_logger` | `telemetry_events` | **Owner** | Logs y trazabilidad. |
 
 ## Interdependencias por Flujo de Negocio
 
 | Origen | Destino | Tipo | Razón |
 |:-------|:--------|:----:|:------|
-| `dh_onboarding_back` | `dh_core` | API | Creación y actualización de `person`. |
-| `dh_onboarding_back` | `dh_mfa` | API | Desafíos OTP durante onboarding. |
-| `dh_onboarding_back` | `dh_auth` | API | Registro de `AuthUser` y set password (TASK-004 pendiente). |
+| `dh_onboarding` | `dh_core` | API | Creación y actualización de `person`. |
+| `dh_onboarding` | `dh_mfa` | API | Desafíos OTP durante onboarding. |
+| `dh_onboarding` | `dh_auth` | API | Registro de `AuthUser` y set password (TASK-004 pendiente). |
 | `dh_auth` | `dh_iam` | API | Consulta permisos y membresías para emitir JWT. |
 | `api_middleware` | — | JWT | Valida JWT stateless, sin acceso a DB. |
-| `Cualquier servicio` | `app_logger_tracer` | API | Telemetría y logs (VitalTrace). |
-| `Cualquier servicio` | `app_message_sender` | API | Envío de emails/SMS (PulseCore). |
+| `Cualquier servicio` | `dh_logger` | API | Telemetría y logs (VitalTrace). |
+| `Cualquier servicio` | `dh_notify` | API | Envío de emails/SMS (PulseCore). |
 
 ---
 *Actualizar cuando se cree un nuevo microservicio o se añada un schema.*

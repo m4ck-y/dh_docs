@@ -1,9 +1,9 @@
 # Planning: TASK-001 - Migración Auth
 
 ## 1. Análisis
-- **Situación Actual**: `api_core` tiene contextos vacíos o parciales. `template_backend_python` tiene una implementación robusta de Auth.
+- **Situación Actual**: `dh_core` tiene contextos vacíos o parciales. `template_backend_python` tiene una implementación robusta de Auth.
 - **Riesgo**: Compromiso de seguridad en la migración de JWT.
-- **Estrategia**: Usar `api_core/app/contexts/security` para toda la lógica de autenticación y autorización.
+- **Estrategia**: Usar `dh_core/app/contexts/security` para toda la lógica de autenticación y autorización.
 
 ## 2. Fases
 ### Fase I: Estructura (Día 1)

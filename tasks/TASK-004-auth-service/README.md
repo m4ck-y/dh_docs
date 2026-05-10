@@ -44,7 +44,7 @@ Crear el microservicio `dh_auth` responsable de la **Identidad y Autenticación*
 Ver `docs/management/1_onboarding/4.auth.md` y `docs/db/postgres/auth/ERD.mmd`.
 
 ##  Log de Cambios
-- **2026-04-26**: Renombramiento global de servicios para consistencia (api_core -> dh_core, dh_health -> dh_clinical, dh_documents -> dh_expedient).
+- **2026-04-26**: Renombramiento global de servicios para consistencia (dh_core, dh_health, dh_expedient → dh_storage).
 - **2026-04-26**: Separación oficial de responsabilidades entre dh_auth y dh_iam.
 
 ## Enlaces Rápidos

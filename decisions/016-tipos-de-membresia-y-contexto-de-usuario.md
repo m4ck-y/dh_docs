@@ -45,7 +45,7 @@ Para garantizar la flexibilidad total, el sistema opera bajo los siguientes nive
 Para evitar la duplicidad de lógica y asegurar la integridad, se define la siguiente propiedad exclusiva:
 
 - **Microservicio `dh_auth`**: Dueño exclusivo de la tabla `AuthUser` (credenciales, contraseñas, tokens). Ningún otro servicio puede escribir directamente en esta tabla.
-- **Microservicio `api_core`**: Dueño exclusivo de la tabla `Person` (perfil humano: nombre, fecha de nacimiento, género). Cualquier registro de persona (vía onboarding o administrativo) debe pasar por sus APIs.
+- **Microservicio `dh_core`**: Dueño exclusivo de la tabla `Person` (perfil humano: nombre, fecha de nacimiento, género). Cualquier registro de persona (vía onboarding o administrativo) debe pasar por sus APIs.
 
 ## Consecuencias
 

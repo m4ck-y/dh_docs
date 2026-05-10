@@ -1,10 +1,10 @@
-# Analisis de Inconsistencias: api_core y Schemas de Datos
+# Analisis de Inconsistencias: dh_core y Schemas de Datos
 
 **Fecha**: 2026-04-25
 **Estado**: Pendiente de Decision
 
 ## 1. Problema de Alineacion
-Actualmente existe un desacoplamiento entre los nombres de los schemas de PostgreSQL y los Bounded Contexts definidos en el codigo fuente de `api_core`.
+Actualmente existe un desacoplamiento entre los nombres de los schemas de PostgreSQL y los Bounded Contexts definidos en el codigo fuente de `dh_core`.
 
 ### Matriz de Inconsistencias actual
 

@@ -198,6 +198,33 @@ Ejemplo de diagrama ASCII en el README:
 - **Singleton**: Una sola instancia de la clase principal creada en `DOMContentLoaded`.
 - **Migración**: El README.md permite a cualquier desarrollador copiar la estructura a otro servicio cambiando solo endpoints + README, sin leer el código fuente completo.
 
+#### 8. Convención de tabs vs formulario — relaciones de entidad
+
+La estructura de la test UI refleja la cardinalidad de las relaciones:
+
+| Tipo de relación | Dónde se expone en la UI |
+|---|---|
+| **1:1** con la entidad primaria (ej. `birth`, `profile`, `legal_info`, `sociocultural_identity`) | Dentro del **mismo formulario** de la entidad primaria. Se agrupan con `<hr>` y un label del tipo `▸ BIRTH — /v1/.../birth`. |
+| **1:N** (ej. `emails`, `phones`, `addresses`, `identifiers`, `emergency_contacts`) | **Tab independiente** con su propia sección de FETCH/ADD/EDIT/DELETE. |
+
+**Tabs solo para 1:N.** No crear tabs para entidades que tienen una relación 1:1 con la entidad principal. Sus campos se incluyen directamente en el modal lateral de la entidad primaria.
+
+En **ADD mode** del modal: se rellenan todos los campos y el save handler dispara un POST a la entidad primaria + POSTs opcionales a los sub-recursos 1:1 si sus campos están completos.
+
+En **EDIT mode**: el botón SEARCH hace fetch en paralelo de la entidad primaria y todos sus sub-recursos 1:1, pobla el formulario completo, y el save handler dispara PATCHes coordinados.
+
+#### 8.1 UUID input en el modal — comportamiento dual para 1:N
+
+El modal lateral de tabs 1:N tiene un único input UUID cuyo **placeholder cambia según el modo** para comunicar qué UUID se espera:
+
+| Modo | Placeholder | UUID que recibe | Acción del SEARCH |
+|------|-------------|-----------------|-------------------|
+| ADD | `uuid person` | UUID del padre (Person) | `GET /v1/people/{uuid}` — verifica que el padre existe |
+| EDIT | `uuid {entidad}` (ej. `uuid address`) | UUID de la entidad | Carga los campos del registro a editar |
+| DELETE | `uuid {entidad}` | UUID de la entidad | Carga los campos en modo read-only |
+
+El cambio de placeholder se hace en `_open()` vía el mapa `_ENTITY_PH` en JavaScript. No hay inputs duplicados ni secciones ocultas: el mismo input sirve para los tres modos mediante el cambio dinámico de semántica.
+
 ## Consecuencias
 
 - **Positivas**: UI de prueba inmediata en cada servicio, curva de aprendizaje cero para frontend/mobile, migración rápida a nuevos clientes, consistencia visual.

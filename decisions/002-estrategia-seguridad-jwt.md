@@ -10,7 +10,7 @@ En un ecosistema de microservicios, existen varias formas de manejar la autentic
 Se ha decidido implementar la **Opción B: Validación Global mediante Propagación de Identidad**.
 
 1.  **api_middleware**: Realizará la primera validación. Si el token es inválido, rechazará la petición inmediatamente. Si es válido, pasará el token original (sin modificar) en el encabezado `Authorization` a los microservicios.
-2.  **Microservicios (`app_*`, `api_core`)**: Cada servicio volverá a validar el token JWT utilizando la clave pública/secreto compartido antes de procesar cualquier lógica de negocio.
+2.  **Microservicios (`app_*`, `dh_core`)**: Cada servicio volverá a validar el token JWT utilizando la clave pública/secreto compartido antes de procesar cualquier lógica de negocio.
 
 ## Consecuencias
 - **Positivas**: 

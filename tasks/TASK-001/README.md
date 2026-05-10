@@ -7,16 +7,16 @@ priority: critical
 created: "2026-04-10"
 started: "2026-04-10"
 completed: null
-tags: [auth, api_core, migration]
+tags: [auth, dh_core, migration]
 ---
 
 # TASK-001: Migración de Módulo Auth y Estructura Base API Core
 
 ## Descripcion
-Esta tarea consiste en establecer los cimientos de `api_core` migrando la lógica de autenticación desde la plantilla `template_backend_python`. Se debe implementar bajo principios de Clean Architecture y DDD.
+Esta tarea consiste en establecer los cimientos de `dh_core` migrando la lógica de autenticación desde la plantilla `template_backend_python`. Se debe implementar bajo principios de Clean Architecture y DDD.
 
 ## Objetivos
-- [ ] Estructurar contextos en `api_core` (person, account, security).
+- [ ] Estructurar contextos en `dh_core` (person, account, security).
 - [ ] Migrar lógica de JWT.
 - [ ] Implementar validación global (ADR-002).
 - [ ] Configurar conectores para Multi-DB (ADR-003).

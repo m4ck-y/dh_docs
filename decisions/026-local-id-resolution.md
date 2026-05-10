@@ -9,7 +9,7 @@ Todos los microservicios usan `BaseModelMixin` (ADR 010) que define dos identifi
 
 Sin embargo, cuando un microservicio A llama a un microservicio B para crear un recurso, A frecuentemente necesita el `id` (Integer) del nuevo registro para insertar registros relacionados via FK (ej. `AuthUser.id_person`).
 
-Historicamente, `dh_core` retornaba tanto `id` como `uuid` en su respuesta de creacion, y `dh_onboarding_back` accedia `response["data"]["id"]` para obtener el integer PK. Esto viola el ADR 010 y el ADR 024.
+Historicamente, `dh_core` retornaba tanto `id` como `uuid` en su respuesta de creacion, y `dh_onboarding` accedia `response["data"]["id"]` para obtener el integer PK. Esto viola el ADR 010 y el ADR 024.
 
 ## Decision
 
@@ -50,7 +50,7 @@ async def resolve_uuid_to_id(session, model, uuid_val):
 
 ### Aplicacion concreta
 
-En `dh_onboarding_back`, tras `core.create_person()`:
+En `dh_onboarding`, tras `core.create_person()`:
 
 ```python
 response = await core.create_person(payload)

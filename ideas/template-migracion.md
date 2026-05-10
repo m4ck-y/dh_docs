@@ -8,7 +8,7 @@ Breve descripción de qué se va a migrar y por qué es necesario en este moment
 - **Entidades Clave**: [Lista de entidades]
 - **Casos de Uso**: [Lógica de negocio identificada]
 
-## 🏗️ Plan de Adaptación para `api_core`
+## 🏗️ Plan de Adaptación para `dh_core`
 - **Contexto Destino**: `app/contexts/[modulo]`
 - **Cambios en Base de Datos**: [Nuevas tablas o campos]
 - **Dependencias Nuevas**: [Librerías a instalar]

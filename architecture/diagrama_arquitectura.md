@@ -12,7 +12,7 @@ graph TD
     end
 
     subgraph Services_Layer["Capa de Microservicios (Negocio)"]
-        Core["api_core
+        Core["dh_core
 (Identidad / Personas / IAM)"]
         Auth["app_auth
 (Autenticación / MFA / JWT)"]
@@ -30,10 +30,10 @@ graph TD
     end
 
     subgraph CrossCutting_Layer["Capa Transversal (Cross-cutting)"]
-        Logger["app_logger_tracer
+        Logger["dh_logger
 (Observability Gateway)
 Logs · Traces · Metrics · Events"]
-        Messenger["app_message_sender
+        Messenger["dh_notify
 (PulseCore · Messaging)
 Email · SMS · WhatsApp"]
     end
@@ -107,33 +107,33 @@ Fase 2 - Analítica / OLAP)]
 1. **api_middleware**: Único punto de entrada del ecosistema. Valida tokens JWT, aplica rate limiting y enruta el tráfico hacia los microservicios internos.
 
 ### Capa de Microservicios (Negocio)
-2. **api_core**: Centro de gravedad para datos compartidos (Personas, Cuentas, Seguridad, Identidad). Todos los servicios lo consultan para obtener contexto del usuario.
-3. **app_questionnaire**: Gestión de formularios clínicos y flujos dinámicos (FormFlow). Publica notificaciones de confirmación vía `app_message_sender`.
+2. **dh_core**: Centro de gravedad para datos compartidos (Personas, Cuentas, Seguridad, Identidad). Todos los servicios lo consultan para obtener contexto del usuario.
+3. **app_questionnaire**: Gestión de formularios clínicos y flujos dinámicos (FormFlow). Publica notificaciones de confirmación vía `dh_notify`.
 4. **app_health_monitoring**: Monitoreo clínico de signos vitales y alertas. Emite alertas críticas vía mensajería.
 
 ### Capa Transversal (Cross-cutting)
-5. **app_logger_tracer** *(Observability Gateway)*: Sistema centralizado de ingesta de telemetría. Recibe Logs, Traces, Metrics y Events desde **cualquier microservicio, desde el API Gateway o incluso directamente desde el Frontend**. Expone endpoints `GET` para que cualquier consumidor consulte el historial de trazas y eventos con filtros dot-notation (`{"metadata.user": "123"}`).
-6. **app_message_sender** *(PulseCore)*: Servicio de mensajería multi-canal con arquitectura de Providers intercambiables. Soporta Email (SMTP/Google), SMS y WhatsApp (Twilio). Registra toda actividad de despacho en `app_logger_tracer` para auditoría completa sin acoplar el núcleo de negocio.
+5. **dh_logger** *(Observability Gateway)*: Sistema centralizado de ingesta de telemetría. Recibe Logs, Traces, Metrics y Events desde **cualquier microservicio, desde el API Gateway o incluso directamente desde el Frontend**. Expone endpoints `GET` para que cualquier consumidor consulte el historial de trazas y eventos con filtros dot-notation (`{"metadata.user": "123"}`).
+6. **dh_notify** *(PulseCore)*: Servicio de mensajería multi-canal con arquitectura de Providers intercambiables. Soporta Email (SMTP/Google), SMS y WhatsApp (Twilio). Registra toda actividad de despacho en `dh_logger` para auditoría completa sin acoplar el núcleo de negocio.
 
 ### Capa de Datos (Multi-DB)
 - **PostgreSQL**: Motor principal para datos transaccionales y relacionales.
 - **MongoDB**: Almacenamiento documental para catálogos con estructuras dinámicas.
 - **ClickHouse**: Motor OLAP para analítica masiva de baja mutabilidad y eventos.
-- **In-Memory Buffer**: Buffer temporal de desarrollo para `app_logger_tracer` (Fase 1). Se reemplazará por RabbitMQ + SigNoz en Fases 2-3.
+- **In-Memory Buffer**: Buffer temporal de desarrollo para `dh_logger` (Fase 1). Se reemplazará por RabbitMQ + SigNoz en Fases 2-3.
 
 ### Proveedores Externos
-- **SMTP / Google Mail**: Proveedor de email transaccional para `app_message_sender`.
+- **SMTP / Google Mail**: Proveedor de email transaccional para `dh_notify`.
 - **Twilio**: Proveedor para SMS y WhatsApp.
-- **SigNoz / OpenTelemetry**: Backend de observabilidad real (Fase 3 del roadmap de `app_logger_tracer`).
+- **SigNoz / OpenTelemetry**: Backend de observabilidad real (Fase 3 del roadmap de `dh_logger`).
 
 ## Decisiones Arquitectónicas Clave
 
 | Decisión | Justificación |
 | :--- | :--- |
-| `app_logger_tracer` como capa transversal universal | Desacoplar la generación de telemetría del almacenamiento. Cualquier cliente (backend o frontend) puede ingestar y consultar señales. |
-| `app_message_sender` con Provider Pattern | Intercambiar proveedores de mensajería (SMTP → SendGrid, Twilio → AWS SNS) sin tocar la lógica de negocio de ningún microservicio. |
-| `app_message_sender` → `app_logger_tracer` para auditoría | Cada mensaje enviado queda registrado como `Event` en el Observability Gateway, dando trazabilidad completa sin código de auditoría duplicado. |
-| Frontend con acceso directo a `app_logger_tracer` | Permite que el dashboard de observabilidad (`frontend/index.html`) consulte logs y trazas en tiempo real sin pasar por el Gateway, reduciendo latencia en herramientas de diagnóstico internas. |
+| `dh_logger` como capa transversal universal | Desacoplar la generación de telemetría del almacenamiento. Cualquier cliente (backend o frontend) puede ingestar y consultar señales. |
+| `dh_notify` con Provider Pattern | Intercambiar proveedores de mensajería (SMTP → SendGrid, Twilio → AWS SNS) sin tocar la lógica de negocio de ningún microservicio. |
+| `dh_notify` → `dh_logger` para auditoría | Cada mensaje enviado queda registrado como `Event` en el Observability Gateway, dando trazabilidad completa sin código de auditoría duplicado. |
+| Frontend con acceso directo a `dh_logger` | Permite que el dashboard de observabilidad (`frontend/index.html`) consulte logs y trazas en tiempo real sin pasar por el Gateway, reduciendo latencia en herramientas de diagnóstico internas. |
 
 ---
 
@@ -145,10 +145,10 @@ Muestra el recorrido completo de una acción clínica típica a través del ecos
 sequenceDiagram
     actor User as Usuario / Frontend
     participant GW as api_middleware
-    participant Core as api_core
+    participant Core as dh_core
     participant SVC as app_questionnaire
-    participant MSG as app_message_sender
-    participant LOG as app_logger_tracer
+    participant MSG as dh_notify
+    participant LOG as dh_logger
 
     User->>GW: POST /v1/questionnaire/submit
     GW->>GW: Valida JWT
@@ -196,7 +196,7 @@ JWT · Rate Limit · Proxy"]
 
     subgraph Business["Microservicios de Negocio"]
         direction TB
-        CORE["api_core
+        CORE["dh_core
 Identidad · Auth"]
         QUEST["app_questionnaire
 FormFlow Clínico"]
@@ -206,9 +206,9 @@ Monitoreo"]
 
     subgraph CrossCutting["Servicios Transversales"]
         direction TB
-        LOGGER["app_logger_tracer
+        LOGGER["dh_logger
 Logs · Traces · Metrics · Events"]
-        MSGSENDER["app_message_sender
+        MSGSENDER["dh_notify
 Email · SMS · WhatsApp"]
     end
 

@@ -61,7 +61,7 @@ class PacienteCreateSchema(BaseModel):
 
 ## Aplicación
 
-- **En servicios propios** (dh_onboarding_back, etc.): siempre incluir Field con description y examples
+- **En servicios propios** (dh_onboarding, etc.): siempre incluir Field con description y examples
 - **En api_middleware**: si los schemas se redefinen allí, también deben incluir la documentación completa
 
 La documentación en api_middleware es independiente pero debe mantener coherencia con los schemas originales.

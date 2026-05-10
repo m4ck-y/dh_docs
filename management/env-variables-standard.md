@@ -31,12 +31,12 @@ Todo URL hacia otro microservicio **debe** seguir el patrón `SERVICE_<NOMBRE>_U
 
 | Variable | Servicio |
 |---|---|
-| `SERVICE_CORE_URL` | `api_core` — entidades base (Person, IAM, etc.) |
+| `SERVICE_CORE_URL` | `dh_core` — entidades base (Person, IAM, etc.) |
 | `SERVICE_AUTH_URL` | `app_auth` — autenticación y tokens |
-| `SERVICE_LOGGER_TRACER_URL` | `app_logger_tracer` (VitalTrace) — observabilidad |
-| `SERVICE_MESSAGE_SENDER_URL` | `app_message_sender` (PulseCore) — notificaciones |
+| `SERVICE_LOGGER_URL` | `dh_logger` (VitalTrace) — observabilidad |
+| `SERVICE_NOTIFY_URL` | `dh_notify` (PulseCore) — notificaciones |
 | `SERVICE_HEALTH_MONITORING_URL` | `app_health_monitoring` — signos vitales |
-| `SERVICE_WAITLIST_URL` | *(eliminado)* — la waitlist es un módulo interno de `dh_onboarding_back` |
+| `SERVICE_WAITLIST_URL` | *(eliminado)* — la waitlist es un módulo interno de `dh_onboarding` |
 
 > Nunca hardcodear URLs en el código fuente. Ver `AGENTS.md`.
 
@@ -65,7 +65,7 @@ MONGO_URL=mongodb+srv://user:pass@cluster.mongodb.net/?retryWrites=true&w=majori
 MONGO_DB_NAME=dh_onboarding
 ```
 
-> **Inconsistencia conocida:** `app_logger_tracer` usa `MONGO_DB` en lugar de `MONGO_DB_NAME` y divide la conexión en campos separados (`MONGO_USER`, `MONGO_HOST`, etc.). Pendiente de migrar al estándar.
+> **Inconsistencia conocida:** `dh_logger` usa `MONGO_DB` en lugar de `MONGO_DB_NAME` y divide la conexión en campos separados (`MONGO_USER`, `MONGO_HOST`, etc.). Pendiente de migrar al estándar.
 
 ---
 
@@ -80,7 +80,7 @@ MONGO_DB_NAME=dh_onboarding
 POSTGRES_URL=postgresql+asyncpg://admin:secret@localhost:5432/dh_core
 ```
 
-> **Inconsistencia conocida:** `api_core` usa campos separados (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB_NAME`) en lugar de un connection string único. Pendiente de migrar.
+> **Inconsistencia conocida:** `dh_core` usa campos separados (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB_NAME`) en lugar de un connection string único. Pendiente de migrar.
 
 ---
 
@@ -92,7 +92,7 @@ POSTGRES_URL=postgresql+asyncpg://admin:secret@localhost:5432/dh_core
 | `JWT_ALGORITHM` | `HS256` | Algoritmo de firma. |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | `60` | Tiempo de vida del access token. |
 
-> **Inconsistencia conocida:** `dh_onboarding_back` usa `ALGORITHM` en lugar de `JWT_ALGORITHM`. Pendiente de normalizar.
+> **Inconsistencia conocida:** `dh_onboarding` usa `ALGORITHM` en lugar de `JWT_ALGORITHM`. Pendiente de normalizar.
 
 ---
 
@@ -101,20 +101,20 @@ POSTGRES_URL=postgresql+asyncpg://admin:secret@localhost:5432/dh_core
 | Variable | Ejemplo | Descripción |
 |---|---|---|
 | `LOG_LEVEL` | `INFO` | Nivel mínimo del logger local de Python. Valores: `DEBUG` / `INFO` / `WARNING` / `ERROR`. |
-| `SERVICE_LOGGER_TRACER_URL` | URL de VitalTrace | Cubierto en la categoría de Service URLs. |
+| `SERVICE_LOGGER_URL` | URL de VitalTrace | Cubierto en la categoría de Service URLs. |
 | `ENVIRONMENT` | `production` | Cubierto en Identidad del Servicio. |
 
 ---
 
 ## Estado por Servicio
 
-| Variable | `api_core` | `dh_onboarding_back` | `api_middleware` | `app_logger_tracer` |
+| Variable | `dh_core` | `dh_onboarding` | `api_middleware` | `dh_logger` |
 |---|---|---|---|---|
 | `ENVIRONMENT` | pendiente |
 | `MONGO_URL` | WARNING: usa campos separados | — | WARNING: usa campos separados |
 | `MONGO_DB_NAME` | — | WARNING: usa `MONGO_DB` |
 | `POSTGRES_URL` | WARNING: usa campos separados | — | — | — |
-| `SERVICE_LOGGER_TRACER_URL` | pendiente | — |
+| `SERVICE_LOGGER_URL` | pendiente | — |
 | `JWT_ALGORITHM` | WARNING: usa `ALGORITHM` | — | — |
 
 ---
@@ -123,6 +123,6 @@ POSTGRES_URL=postgresql+asyncpg://admin:secret@localhost:5432/dh_core
 
 | Servicio | Pendiente |
 |---|---|
-| `api_core` | Migrar a `POSTGRES_URL` y `MONGO_URL` únicos; agregar `SERVICE_LOGGER_TRACER_URL` |
-| `app_logger_tracer` | Migrar a `MONGO_URL` + `MONGO_DB_NAME`; agregar `ENVIRONMENT` |
-| `dh_onboarding_back` | Renombrar `ALGORITHM` → `JWT_ALGORITHM` |
+| `dh_core` | Migrar a `POSTGRES_URL` y `MONGO_URL` únicos; agregar `SERVICE_LOGGER_URL` |
+| `dh_logger` | Migrar a `MONGO_URL` + `MONGO_DB_NAME`; agregar `ENVIRONMENT` |
+| `dh_onboarding` | Renombrar `ALGORITHM` → `JWT_ALGORITHM` |

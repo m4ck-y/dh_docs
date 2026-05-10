@@ -6,7 +6,7 @@ Este directorio centraliza el seguimiento del progreso del desarrollo del proyec
 Para una visión rápida de todas las tareas y su estado, consulta el **[Backlog del Proyecto](backlog.md)**.
 
 ## 📂 Tareas Activas
-- **[TASK-001: Migración de Módulo Auth y Estructura Base API Core](TASK-001/README.md)**: Implementación de la base de seguridad y arquitectura limpia en `api_core`.
+- **[TASK-001: Migración de Módulo Auth y Estructura Base API Core](TASK-001/README.md)**: Implementación de la base de seguridad y arquitectura limpia en `dh_core`.
 
 ---
 

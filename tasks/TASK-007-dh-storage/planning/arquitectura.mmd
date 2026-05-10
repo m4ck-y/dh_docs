@@ -1,8 +1,8 @@
-# Arquitectura: dh_expedient
+# Arquitectura: dh_storage
 
 ```mermaid
 flowchart LR
-    subgraph dh_expedient["dh_expedient"]
+    subgraph dh_storage["dh_storage"]
         direction TB
         API["API Layer"]
         UC["Use Cases"]
@@ -18,7 +18,7 @@ flowchart LR
         GCS["GCS Storage"]
     end
     
-    subgraph postgres["PostgreSQL - expedient"]
+    subgraph postgres["PostgreSQL - storage"]
         direction LR
         DCAT["document_category"]
         DTYPE["document_type"]
@@ -29,11 +29,11 @@ flowchart LR
         DTC["document_type_config"]
     end
     
-    dh_onboarding_back --> dh_expedient
-    dh_expedient --> DISK
-    dh_expedient --> GCS
-    dh_expedient --- postgres
-    dh_expedient --- mongo
+    dh_onboarding --> dh_storage
+    dh_storage --> DISK
+    dh_storage --> GCS
+    dh_storage --- postgres
+    dh_storage --- mongo
     
     DCAT --> DTYPE
     DTYPE --> DOC

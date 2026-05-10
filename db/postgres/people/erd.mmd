@@ -16,7 +16,7 @@ erDiagram
     person ||--o{ phone : "has"
     person ||--o{ address : "has"
     person ||--o{ social_links : "has"
-    person ||--o{ profile : "has"
+    person ||--|| profile : "has_profile"
     person ||--|| birth : "has_birth_info"
     person ||--|| sociocultural_identity : "has_sociocultural_identity"
     person ||--|| legal_info : "has_legal_info"

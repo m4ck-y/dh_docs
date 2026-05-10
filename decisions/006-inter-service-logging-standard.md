@@ -17,7 +17,7 @@ Se adopta el patrón de **logger dual** para microservicios backend:
 Reglas transversales a todos los clientes:
 - **Prohibición de `print`**: El uso de la función `print()` está estrictamente prohibido en código de producción. Toda salida de información debe realizarse a través del `ServiceLogger` para garantizar que sea capturada por VitalTrace y stdlib.
 - **Logger failures**: Los fallos del logger nunca afectan al servicio — si `logger_tracer_service` es inaccesible, solo genera un warning local (stdlib), nunca una excepción.
-- **Configuración**: `SERVICE_LOGGER_TRACER_URL` vacío deshabilita el forwarding sin error.
+- **Configuración**: `SERVICE_LOGGER_URL` vacío deshabilita el forwarding sin error.
 - **Dependencias**: Dependencia requerida en microservicios: `httpx` (`uv add httpx`).
 - **Entorno**: `ENVIRONMENT` debe estar configurado en cada servicio (`development`, `staging`, `production`).
 
@@ -36,7 +36,7 @@ Reglas transversales a todos los clientes:
   "level": "INFO",
   "event": "waitlist.duplicate",
   "message": "Email already registered",
-  "service": "dh_onboarding_back",
+  "service": "dh_onboarding",
   "environment": "production",
   "metadata": { "email": "user@example.com" }
 }
@@ -57,7 +57,7 @@ Reglas transversales a todos los clientes:
 ```json
 {
   "event": "lead_registered",
-  "service": "dh_onboarding_back",
+  "service": "dh_onboarding",
   "session_id": "system",
   "metadata": { "email": "user@example.com", "source": "landing_page" }
 }
@@ -77,7 +77,7 @@ Reglas transversales a todos los clientes:
   "name": "onboarding_duration_ms",
   "value": 1250.0,
   "type": "gauge",
-  "service": "dh_onboarding_back",
+  "service": "dh_onboarding",
   "labels": { "step": "otp_verify" },
   "metadata": {}
 }
@@ -107,12 +107,12 @@ _stdlib = logging.getLogger(__name__)
 
 
 async def _push(endpoint: str, payload: dict) -> None:
-    if not settings.SERVICE_LOGGER_TRACER_URL:
+    if not settings.SERVICE_LOGGER_URL:
         return
     try:
         async with httpx.AsyncClient(timeout=2.0) as client:
             await client.post(
-                f"{settings.SERVICE_LOGGER_TRACER_URL}/v1/{endpoint}/",
+                f"{settings.SERVICE_LOGGER_URL}/v1/{endpoint}/",
                 json=payload,
             )
     except Exception as e:
@@ -158,7 +158,7 @@ logger = ServiceLogger(service="<nombre_del_servicio>")
 | Variable | Valores válidos | Descripción |
 |---|---|---|
 | `ENVIRONMENT` | `development` / `staging` / `production` | Campo requerido por VitalTrace en cada log. Permite filtrar y separar los logs por entorno en el dashboard de observabilidad. Sin este valor el endpoint `/v1/logs/` responde 422. |
-| `SERVICE_LOGGER_TRACER_URL` | URL base del servicio | URL de VitalTrace. Si está vacío, el logger omite el forwarding sin error. |
+| `SERVICE_LOGGER_URL` | URL base del servicio | URL de VitalTrace. Si está vacío, el logger omite el forwarding sin error. |
 
 ```env
 # Deployment environment. Required by VitalTrace for every log entry.
@@ -166,7 +166,7 @@ logger = ServiceLogger(service="<nombre_del_servicio>")
 ENVIRONMENT=production
 
 # URL of the VitalTrace observability service (logger_tracer_service)
-SERVICE_LOGGER_TRACER_URL=https://dh-logger-tracer-967885369144.europe-west1.run.app
+SERVICE_LOGGER_URL=https://dh-logger-tracer-967885369144.europe-west1.run.app
 ```
 
 ### Uso
@@ -175,7 +175,7 @@ from app.shared.utils.logger import logger
 
 await logger.info("Lead registrado", event="waitlist.register", email=email)
 await logger.warning("Email duplicado", event="waitlist.duplicate", email=email)
-await logger.error("Fallo al conectar con api_core", event="core.connection_error")
+await logger.error("Fallo al conectar con dh_core", event="core.connection_error")
 await logger.event("lead_registered", session_id="system", email=email, source=source)
 await logger.metric("onboarding_duration_ms", value=1250.0, metric_type="gauge")
 ```

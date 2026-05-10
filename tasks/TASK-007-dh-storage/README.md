@@ -20,7 +20,7 @@ Microservicio dueno de la abstraccion de storage del ecosistema. Gestiona el cic
 - [ ] Endpoint soft-delete document (cascade a document_file)
 - [ ] Endpoint delete photo
 - [ ] Storage en disco con estructura de carpetas estandarizada
-- [ ] Migrar `upload_document_use_case.py` de `dh_onboarding_back` a `dh_storage`
+- [ ] Migrar `upload_document_use_case.py` de `dh_onboarding` a `dh_storage`
 - [ ] Duplicar schemas en `api_middleware` (ADR 028)
 - [ ] Static test UI en `dh_storage`
 

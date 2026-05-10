@@ -1,7 +1,7 @@
 ---
 type: task
 id: TASK-002
-title: "Implementación de Módulo Waitlist en dh_onboarding_back (MongoDB/Beanie)"
+title: "Implementación de Módulo Waitlist en dh_onboarding (MongoDB/Beanie)"
 status: completed
 priority: high
 created: "2026-04-25"
@@ -10,11 +10,11 @@ completed: "2026-04-26"
 tags: [onboarding, mongodb, beanie, waitlist]
 ---
 
-# TASK-002: Implementación de Módulo Waitlist en dh_onboarding_back
+# TASK-002: Implementación de Módulo Waitlist en dh_onboarding
 
 ## Descripción
 
-Módulo de Waitlist dentro de `dh_onboarding_back` usando MongoDB + Beanie ODM.
+Módulo de Waitlist dentro de `dh_onboarding` usando MongoDB + Beanie ODM.
 
 ## Objetivos
 

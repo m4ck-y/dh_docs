@@ -28,7 +28,7 @@ En fases tempranas del desarrollo, algunos endpoints aceptaban `id` (entero) com
 
 1. **Enumeración de recursos**: Los IDs autoincrementales (1, 2, 3...) permiten a un atacante adivinar fácilmente otros identificadores y acceder/modificar recursos ajenos con peticiones manuales.
 2. **Acoplamiento interno**: Exponer `id` obliga a los clientes (frontend mobile/web) a conocer detalles de implementación de la base de datos.
-3. **Integración cross-service**: Cuando un microservicio (ej. `dh_onboarding_back`) necesita referirse a un recurso de otro servicio (ej. una `person`), debe usar el `uuid`, no el `id` interno, porque el `id` solo es significativo dentro de la base de datos del servicio propietario.
+3. **Integración cross-service**: Cuando un microservicio (ej. `dh_onboarding`) necesita referirse a un recurso de otro servicio (ej. una `person`), debe usar el `uuid`, no el `id` interno, porque el `id` solo es significativo dentro de la base de datos del servicio propietario.
 
 ## Decisión
 

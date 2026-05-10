@@ -28,7 +28,7 @@ Se adoptan los siguientes estándares para todos los servicios nuevos y futuros 
     - Conexión MongoDB correctamente enlazada al ciclo de vida de la aplicación (apertura en startup, cierre en shutdown).
     - Nomenclatura de variables de entorno consistente entre todos los servicios.
 - **Negativas**:
-    - `app_logger_tracer` (servicio existente) usa `motor` y `@app.on_event`. Deberá migrarse en una tarea futura.
+    - `dh_logger` (servicio existente) usa `motor` y `@app.on_event`. Deberá migrarse en una tarea futura.
 
 ## Referencia de Implementación
 

@@ -39,7 +39,7 @@ Los servicios ya definen `router = APIRouter(prefix="/v1")`, por lo que la ruta 
 - [ ] Validar que Swagger refleje rutas con prefijo (ej: `/api/middleware/auth/v1/docs`)
 
 ### Microservicios Individuales (12 servicios)
-Para cada servicio (`dh_auth`, `dh_iam`, `dh_core`, `dh_mfa`, `dh_onboarding_back`, `dh_health_monitoring`, `dh_storage`, `dh_admin`, `dh_organizations`, `dh_catalogs`, `app_message_sender`, `app_logger_tracer`):
+Para cada servicio (`dh_auth`, `dh_iam`, `dh_core`, `dh_mfa`, `dh_onboarding`, `dh_health_monitoring`, `dh_storage`, `dh_admin`, `dh_organizations`, `dh_catalogs`, `dh_notify`, `dh_logger`):
 - [ ] Agregar `ROOT_PATH: str = "/"` y `CORS_ORIGINS: list[str] = ["*"]` a `app/settings/env.py`
 - [ ] Actualizar `.env.example` con `ROOT_PATH=/` y `CORS_ORIGINS=["*"]`
 - [ ] Verificar que `app/main.py` tenga `CORSMiddleware` usando `settings.CORS_ORIGINS`
@@ -81,14 +81,14 @@ Para cada servicio (`dh_auth`, `dh_iam`, `dh_core`, `dh_mfa`, `dh_onboarding_bac
 | `dh_iam` | `/api/middleware/iam` | `/api/iam` | `["*"]` |  Alta |
 | `dh_core` | `/api/middleware/core` | `/api/core` | `["*"]` |  Alta |
 | `dh_mfa` | `/api/middleware/mfa` | `/api/mfa` | `["*"]` |  Media |
-| `dh_onboarding_back` | `/api/middleware/onboarding` | `/api/onboarding` | `["*"]` |  Media |
+| `dh_onboarding` | `/api/middleware/onboarding` | `/api/onboarding` | `["*"]` |  Media |
 | `dh_health_monitoring` | `/api/middleware/health_monitoring` | `/api/health_monitoring` | `["*"]` |  Media |
 | `dh_storage` | `/api/middleware/storage` | `/api/storage` | `["*"]` |  Media |
 | `dh_admin` | `/api/middleware/admin` | `/api/admin` | `["*"]` |  Baja |
 | `dh_organizations` | `/api/middleware/organizations` | `/api/organizations` | `["*"]` |  Alta (Pendiente) |
 | `dh_catalogs` | `/api/middleware/catalogs` | `/api/catalogs` | `["*"]` |  Media (Pendiente) |
-| `app_message_sender` | `/api/middleware/message_sender` | `/api/message_sender` | `["*"]` |  Baja (Testing) |
-| `app_logger_tracer` | `/api/middleware/logger_tracer` | `/api/logger_tracer` | `["*"]` |  Baja (Testing) |
+| `dh_notify` | `/api/middleware/notify` | `/api/notify` | `["*"]` |  Baja (Testing) |
+| `dh_logger` | `/api/middleware/logger` | `/api/logger` | `["*"]` |  Baja (Testing) |
 | `api_middleware` (gateway) | N/A | `/api/middleware` | `["*"]` |  Alta |
 
 **Nota**: El `ROOT_PATH` del servicio se usa solo cuando corre independiente (subdominio directo). Detrás del gateway, el path lo controla el gateway mediante `app.mount()`.
@@ -106,14 +106,14 @@ SERVICE_AUTH_URL=http://dh_auth:8081
 SERVICE_IAM_URL=http://dh_iam:8082
 SERVICE_CORE_URL=http://dh_core:8083
 SERVICE_MFA_URL=http://dh_mfa:8084
-SERVICE_ONBOARDING_URL=http://dh_onboarding_back:8085
+SERVICE_ONBOARDING_URL=http://dh_onboarding:8085
 SERVICE_HEALTH_MONITORING_URL=http://dh_health_monitoring:8086
 SERVICE_STORAGE_URL=http://dh_storage:8087
 SERVICE_ADMIN_URL=http://dh_admin:8088
 SERVICE_ORGANIZATIONS_URL=http://dh_organizations:8089
 SERVICE_CATALOGS_URL=http://dh_catalogs:8090
-SERVICE_MESSAGE_SENDER_URL=http://app_message_sender:8091
-SERVICE_LOGGER_TRACER_URL=http://app_logger_tracer:8092
+SERVICE_NOTIFY_URL=http://dh_notify:8091
+SERVICE_LOGGER_URL=http://dh_logger:8092
 ```
 
 **Nota**: `HOST` y `PORT` son gestionados por Docker (expose + container_name). Las URLs de servicios usan nombres de contenedor DNS interno.
@@ -174,7 +174,7 @@ app.mount(f"{ROOT}/storage", create_storage())
 app.mount(f"{ROOT}/admin", create_admin())
 app.mount(f"{ROOT}/organizations", create_organizations())
 app.mount(f"{ROOT}/catalogs", create_catalogs())
-app.mount(f"{ROOT}/message_sender", create_message_sender())
+app.mount(f"{ROOT}/notify", create_message_sender())
 app.mount(f"{ROOT}/logger_tracer", create_logger_tracer())
 ```
 
