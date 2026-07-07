@@ -5,9 +5,11 @@
 **Descripción de la actividad o tarea:**
 Se realizó una revisión cruzada entre todos los archivos `.py` de schemas FHIR en `dh_shared` y los archivos `.md` descargados en `dh_fhir/files/`. Cada clase/documento FHIR referenciado en los schemas (vía docstring `Source:`, `ValueSet:`, o property `system`) debe tener su correspondiente `.md` descargado para asegurar trazabilidad total con la especificación FHIR R5.
 
+Esta auditoría sistemática permite mitigar el riesgo de inconsistencias entre los schemas locales y la especificación oficial de HL7 FHIR R5. Al mapear explícitamente las dependencias de ValueSets y sub-recursos, se optimiza el proceso de desarrollo y se facilita la detección oportuna de elementos no implementados, garantizando la solidez y el cumplimiento de los contratos de la API en el ecosistema.
+
 **Estado de la actividad o tarea:** Concluido
 
-**Avances de la actividad:**
+**Avances de la actividad (si lo requiere):**
 
 ## ✅ CUBIERTOS (24 archivos .md existentes)
 
@@ -49,8 +51,8 @@ Se realizó una revisión cruzada entre todos los archivos `.py` de schemas FHIR
 
 ## 📝 Observaciones
 
-1. ~~`ornanization_type.py`~~ → renombrado a `organization_type.py`.
-2. **`datatypes-definitions.md`** es una página auxiliar de FHIR que contiene las definiciones detalladas (id, definition, comments, requirements) de cada elemento de los datatypes. No es estrictamente necesaria para la implementación del schema, pero está referenciada en el docstring de `Period`.
+1. renombrado `ornanization_type.py` a `organization_type.py`.
+2. **`datatypes-definitions.md`** es una página auxiliar de FHIR que contiene las definiciones detalladas de cada elemento de los datatypes. No es estrictamente necesaria para la implementación del schema, pero está referenciada en el docstring de `Period`.
 3. **`valueset-contact-point-system.md`** y **`valueset-contact-point-use.md`**: los archivos `codesystem-xxx.md` correspondientes cubren el mismo contenido, pero el docstring del enum apunta específicamente al ValueSet, no al CodeSystem.
 4. **`practitioner_role.py`** está vacío — el recurso `PractitionerRole` no tiene schema implementado aún.
 5. **`money.py`** no referencia ninguna URL FHIR.
