@@ -1,0 +1,39 @@
+flowchart TB
+    classDef priority1 fill:#1b5e20,color:#fff,stroke:#2e7d32,stroke-width:2px
+    classDef priority2 fill:#0d47a1,color:#fff,stroke:#1565c0,stroke-width:2px
+    classDef priority3 fill:#4e342e,color:#fff,stroke:#6d4c41,stroke-width:2px
+    classDef core fill:#e65100,color:#fff,stroke:#ef6c00,stroke-width:3px
+
+    Patient["Patient<br/>Núcleo del Historial Clínico"]:::core
+
+    subgraph P1["Prioridad 1 — Datos Directos del Paciente"]
+        Condition["Condition<br/>Diagnósticos / Problemas"]:::priority1
+        AllergyIntolerance["AllergyIntolerance<br/>Alergias e Intolerancias"]:::priority1
+        FamilyMemberHistory["FamilyMemberHistory<br/>Antecedentes Familiares"]:::priority1
+    end
+
+    subgraph P2["Prioridad 2 — Datos Transaccionales (por Encuentro)"]
+        Encounter["Encounter<br/>Encuentro / Consulta"]:::priority2
+        Observation["Observation<br/>Signos Vitales / Lab"]:::priority2
+        Procedure["Procedure<br/>Procedimientos / Intervenciones"]:::priority2
+        ClinicalImpression["ClinicalImpression<br/>Evaluación Clínica"]:::priority2
+        MedicationRequest["MedicationRequest<br/>Prescripciones"]:::priority2
+    end
+
+    subgraph P3["Prioridad 3 — Documentación y Soporte"]
+        MedicationStatement["MedicationStatement<br/>Consumo Declarado"]:::priority3
+        Composition["Composition<br/>Documento Clínico Estructurado"]:::priority3
+        DocumentReference["DocumentReference<br/>Referencia a Docs Externos"]:::priority3
+    end
+
+    Patient --> Condition
+    Patient --> AllergyIntolerance
+    Patient --> FamilyMemberHistory
+    Patient --> Encounter
+    Encounter --> Observation
+    Encounter --> Procedure
+    Encounter --> ClinicalImpression
+    Encounter --> MedicationRequest
+    Patient --> MedicationStatement
+    Patient --> Composition
+    Patient --> DocumentReference
