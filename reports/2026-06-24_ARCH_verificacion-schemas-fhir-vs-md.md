@@ -1,11 +1,11 @@
-**Proyecto o Apartado:** Core Domain / dh_shared / FHIR / Auditoría
+**Proyecto o Apartado:** Core Domain / dh_shared / FHIR / Verificación
 
-**Título de la actividad o tarea:** Auditoría de Schemas FHIR vs Archivos .md Descargados
+**Título de la actividad o tarea:** Verificación de Schemas FHIR vs Archivos .md Descargados
 
 **Descripción de la actividad o tarea:**
 Se realizó una revisión cruzada entre todos los archivos `.py` de schemas FHIR en `dh_shared` y los archivos `.md` descargados en `dh_fhir/files/`. Cada clase/documento FHIR referenciado en los schemas (vía docstring `Source:`, `ValueSet:`, o property `system`) debe tener su correspondiente `.md` descargado para asegurar trazabilidad total con la especificación FHIR R5.
 
-Esta auditoría sistemática permite mitigar el riesgo de inconsistencias entre los schemas locales y la especificación oficial de HL7 FHIR R5. Al mapear explícitamente las dependencias de ValueSets y sub-recursos, se optimiza el proceso de desarrollo y se facilita la detección oportuna de elementos no implementados, garantizando la solidez y el cumplimiento de los contratos de la API en el ecosistema.
+Esta verificación sistemática permite confirmar que cada schema local tiene su correspondiente especificación `.md` descargada, asegurando trazabilidad completa con FHIR R5. Al cotejar explícitamente las dependencias de ValueSets y sub-recursos, se mantiene la integridad de la implementación y se identifican elementos faltantes antes de que afecten el desarrollo.
 
 **Estado de la actividad o tarea:** Concluido
 
