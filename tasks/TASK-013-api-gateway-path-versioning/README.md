@@ -174,8 +174,8 @@ app.mount(f"{ROOT}/storage", create_storage())
 app.mount(f"{ROOT}/admin", create_admin())
 app.mount(f"{ROOT}/organizations", create_organizations())
 app.mount(f"{ROOT}/catalogs", create_catalogs())
-app.mount(f"{ROOT}/notify", create_message_sender())
-app.mount(f"{ROOT}/logger_tracer", create_logger_tracer())
+app.mount(f"{ROOT}/notify", create_notify())
+app.mount(f"{ROOT}/logger", create_logger())
 ```
 
 **Resultado** (Docker network):

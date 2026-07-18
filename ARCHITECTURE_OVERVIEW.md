@@ -10,7 +10,6 @@ Este documento define la responsabilidad única de cada microservicio y la propi
 | **`dh_iam`** | `iam.Tenant`, `iam.Membership`, `iam.Role`, `iam.Permission` | Autorización multi-tenant y RBAC. |
 | **`dh_core`** | `people`, `relationships` | Maestro de personas y vínculos sociales. |
 | **`dh_catalogs`** | `catalog` | Catálogos globales del sistema. |
-| **`dh_clinical`** | `health_profile` | Gestión clínica inicial, alergias, vacunas y antecedentes. |
 | **`dh_health_monitoring`** | `vitals` | Registro de signos vitales y monitoreo en tiempo real. |
 | **`dh_organizations`** | `org.Company`, `org.Employee`, `org.Location`, `org.Industry` | Estructura administrativa y laboral. |
 | **`dh_mfa`** | `mfa.OTP_Log` | Desafíos de segundo factor (SMS/Email/TOTP). |
@@ -21,7 +20,6 @@ Este documento define la responsabilidad única de cada microservicio y la propi
 Estos servicios no "son dueños" de tablas maestras, sino que coordinan procesos llamando a otros servicios:
 
 - **`dh_onboarding`**: Orquesta el flujo de auto-registro. Consume `dh_core`, `dh_auth` y `dh_iam`.
-- **`dh_seeder`**: Herramienta de desarrollo para poblar el sistema. Consume todos los servicios vía API. No tiene base de datos propia.
 - **`api_middleware`**: Puerta de enlace (Gateway). Valida seguridad stateless y redirige tráfico.
 
 ## Estado y Prioridades de Implementacion
@@ -34,7 +32,7 @@ Estos servicios no "son dueños" de tablas maestras, sino que coordinan procesos
 | TASK-006 | `dh_mfa` | **Completado** | **Completada** |
 | TASK-010 | `dh_organizations` | En progreso | **Alta** |
 | TASK-011 | `dh_core` (Personas) | **Activo** | **Completada** |
-| TASK-007 | `dh_documents` | Backlog | Media |
+| TASK-007 | `dh_storage` | **Activo** | **Completada** |
 | TASK-012 | `dh_seeder` | Backlog | Baja |
 
 ## Referencias Arquitectonicas

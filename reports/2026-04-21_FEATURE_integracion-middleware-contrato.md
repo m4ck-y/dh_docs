@@ -28,5 +28,5 @@ Esta simple adición en el código backend se traduce en que la documentación a
 
 **Avances de la actividad (si lo requiere):** 
 - Compilación estricta y exitosa de todos los modelos Pydantic, garantizando que el middleware valide correctamente las reglas de negocio base.
-- Rutas mapeadas correctamente (`/message_sender/` y `/logger_tracer/`) mediante el comando `app.mount()` en el archivo central `gateway.py`.
+- Rutas mapeadas correctamente (`/notify/` y `/logger/`) mediante el comando `app.mount()` en el archivo central `gateway.py`.
 - Documentación interactiva Swagger UI desplegada exitosamente sin errores de dependencia cíclica, listando de manera exhaustiva y transparente la totalidad de los métodos (POST, GET), parámetros requeridos, y objetos JSON de respuesta para el consumo seguro de las aplicaciones cliente.

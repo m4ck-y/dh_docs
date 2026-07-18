@@ -1,3 +1,5 @@
+> **Estado: BORRADOR**. Notas preliminares sobre el modelado de mediciones clinicas. Aun no formalizado en una ADR o task.
+
 Tu flujo sería:
 
 El endpoint recibe un code (ej: "heart_rate")
@@ -6,7 +8,7 @@ Si no existe:
 lo creas automáticamente
 Luego guardas en Measurement usando ese id
 
-👉 Esto se llama “auto-registro de catálogo” (dynamic dictionary / self-healing schema)
+Esto se llama “auto-registro de catálogo” (dynamic dictionary / self-healing schema)
 
 
 
@@ -74,13 +76,14 @@ CREATE INDEX idx_measure_type_system ON measure_type(system);
 CREATE INDEX idx_measure_type_translations
 ON measure_type
 USING GIN (translations);
+## Flujo correcto
 
+### Caso 1: LOINC / SNOMED
 
-🧠 Flujo correcto
-🟠 Caso 1: LOINC / SNOMED
 code = "8867-4"
 
-🟡 Caso 2: INTERNAL sin code
+### Caso 2: INTERNAL sin code
+
 code = "heart_rate"
 
 o si no lo mandan:

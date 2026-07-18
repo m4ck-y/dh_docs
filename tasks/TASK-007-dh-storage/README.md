@@ -11,18 +11,18 @@ Microservicio dueno de la abstraccion de storage del ecosistema. Gestiona el cic
 - [x] Modelos SQLAlchemy en `dh_shared` (DocumentType, DocumentSubtype, Document, DocumentFile + EDocumentSide, Photo)
 - [x] ERD en `docs/db/postgres/storage/erd.mmd`
 - [x] Seeder de catalogos (`seed_storage_catalogs`)
-- [ ] Crear servicio `dh_storage` con Screaming Architecture
-- [ ] Endpoint upload document (multipart: file + uuid_person + uuid_document_type + uuid_document_subtype + side)
-- [ ] Endpoint upload person photo (multipart: file + uuid_person, genera 3 tamanos)
-- [ ] Endpoint download file by file UUID
-- [ ] Endpoint list document metadata per person
-- [ ] Endpoint get photo metadata per person
-- [ ] Endpoint soft-delete document (cascade a document_file)
-- [ ] Endpoint delete photo
-- [ ] Storage en disco con estructura de carpetas estandarizada
-- [ ] Migrar `upload_document_use_case.py` de `dh_onboarding` a `dh_storage`
-- [ ] Duplicar schemas en `api_middleware` (ADR 028)
-- [ ] Static test UI en `dh_storage`
+- [x] Crear servicio `dh_storage` con Screaming Architecture
+- [x] Endpoint upload document (multipart: file + uuid_person + uuid_document_type + uuid_document_subtype + side)
+- [x] Endpoint upload person photo (multipart: file + uuid_person, genera 3 tamanos)
+- [x] Endpoint download file by file UUID
+- [x] Endpoint list document metadata per person
+- [x] Endpoint get photo metadata per person
+- [x] Endpoint soft-delete document (cascade a document_file)
+- [x] Endpoint delete photo
+- [x] Storage en disco con estructura de carpetas estandarizada
+- [x] Migrar `upload_document_use_case.py` de `dh_onboarding` a `dh_storage`
+- [x] Duplicar schemas en `api_middleware` (ADR 028)
+- [x] Static test UI en `dh_storage`
 
 ## Enlaces Rapidos
 

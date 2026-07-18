@@ -2,11 +2,11 @@
 type: task
 id: TASK-003
 title: "Implementación de Microservicio de Onboarding (dh_onboarding)"
-status: in-progress
+status: completed
 priority: high
 created: "2026-04-25"
 started: "2026-04-26"
-completed: null
+completed: "2026-07-18"
 tags: [onboarding, backend, orchestration, sqlalchemy, postgres]
 ---
 

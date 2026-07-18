@@ -1,6 +1,8 @@
-📄 DOCUMENT (actualizado)
+> **Estado: SUPERSEDED**. Este diseño temprano de documentos y expedientes fue implementado en `dh_storage` (TASK-007). Ver `docs/db/postgres/storage/erd.mmd` y `docs/tasks/TASK-007-dh-storage/` para el diseño actual.
 
- 1. DOCUMENT_TYPE (tabla faltante corregida)
+# DOCUMENT (actualizado)
+
+## 1. DOCUMENT_TYPE (tabla faltante corregida)
 CREATE TABLE document_type (
     id UUID PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
@@ -39,7 +41,7 @@ CREATE TABLE document (
         FOREIGN KEY (document_type_id)
         REFERENCES document_type(id)
 );
-🗂 JSON (FILES) actualizado
+## JSON (FILES) actualizado
 {
   "files": [
     {
@@ -56,18 +58,18 @@ CREATE TABLE document (
     }
   ]
 }
-🧠 Nota de diseño (importante)
+## Nota de diseño (importante)
 
 Este naming (size_bytes_total) es bueno porque:
 
-✔ es autoexplicativo (no hay dudas de unidad)
-✔ es consistente con size_bytes por archivo
-✔ escala bien si luego agregas:
+- es autoexplicativo (no hay dudas de unidad)
+- es consistente con size_bytes por archivo
+- escala bien si luego agregas:
 size_bytes_images
 size_bytes_ocr
 size_bytes_original
-🚀 Conclusión
+## Conclusión
 
-✔ size_bytes_total es el nombre correcto
-✔ más claro que size_total
-✔ evita errores en sistemas distribuidos o storage externo
+- size_bytes_total es el nombre correcto
+- más claro que size_total
+- evita errores en sistemas distribuidos o storage externo

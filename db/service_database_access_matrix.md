@@ -17,7 +17,6 @@ Este documento define la propiedad y los permisos de acceso de cada microservici
 | `dh_iam` | `iam` | **Owner** | Roles, membresías, permisos, tenants. |
 | `dh_mfa` | `mfa` | **Owner** | Desafíos OTP y factores MFA. |
 | `dh_storage` | `storage` | **Owner** | Documentos, fotos e identificadores. Storage layer unico. |
-| `dh_clinical` | `health_profile` | **Owner** | Perfiles clínicos, alergias, antecedentes. |
 | `dh_organizations` | `org` | **Owner** | Empresas, empleados, sedes, servicios. |
 | `dh_catalogs` | `catalog` | **Owner** | Catálogos globales del sistema. |
 

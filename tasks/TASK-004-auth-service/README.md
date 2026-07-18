@@ -24,14 +24,14 @@ Crear el microservicio `dh_auth` responsable de la **Identidad y Autenticación*
 
 ## Objetivos
 
-- [ ] Inicializar el repositorio `dh_auth` con Screaming Architecture.
-- [ ] **API de Registro de Usuarios**: Endpoint para crear `AuthUser` (email/password) vinculado a una `person_id`.
-- [ ] Implementar login tradicional con **hashing Bcrypt** (ADR 014).
-- [ ] Implementar OAuth Google como proveedor de identidad.
-- [ ] **Integración con `dh_iam`**: Endpoint para solicitar membresías y permisos durante el flujo de emisión de token.
-- [ ] Implementar refresh, logout y revocación de tokens.
-- [ ] Configurar firma de JWTs (RSA/ECDSA).
-- [ ] **Update api_middleware**: Routing de `/auth` hacia este servicio.
+- [x] Inicializar el repositorio `dh_auth` con Screaming Architecture.
+- [x] **API de Registro de Usuarios**: Endpoint para crear `AuthUser` (email/password) vinculado a una `person_uuid`.
+- [x] Implementar login tradicional con **hashing Bcrypt** (ADR 014).
+- [x] Implementar OAuth Google como proveedor de identidad.
+- [x] **Integración con `dh_iam`**: Endpoint para solicitar membresías y permisos durante el flujo de emisión de token.
+- [x] Implementar refresh, logout y revocación de tokens.
+- [x] Configurar firma de JWTs (RSA/ECDSA).
+- [x] **Update api_middleware**: Routing de `/auth` hacia este servicio.
 
 ## No incluye
 

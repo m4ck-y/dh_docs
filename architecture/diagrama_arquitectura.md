@@ -14,13 +14,13 @@ graph TD
     subgraph Services_Layer["Capa de Microservicios (Negocio)"]
         Core["dh_core
 (Identidad / Personas / IAM)"]
-        Auth["app_auth
+        Auth["dh_auth
 (Autenticación / MFA / JWT)"]
-        Onboarding["app_onboarding
+        Onboarding["dh_onboarding
 (Flujo de Registro / Orquestación)"]
-        Questionnaire["app_questionnaire
+        Questionnaire["dh_questionnaire
 (FormFlow)"]
-        Health["app_health_monitoring
+        Health["dh_health_monitoring
 (Monitoreo Clínico)"]
 
         Onboarding -..->|Orquestación| Core
@@ -108,8 +108,8 @@ Fase 2 - Analítica / OLAP)]
 
 ### Capa de Microservicios (Negocio)
 2. **dh_core**: Centro de gravedad para datos compartidos (Personas, Cuentas, Seguridad, Identidad). Todos los servicios lo consultan para obtener contexto del usuario.
-3. **app_questionnaire**: Gestión de formularios clínicos y flujos dinámicos (FormFlow). Publica notificaciones de confirmación vía `dh_notify`.
-4. **app_health_monitoring**: Monitoreo clínico de signos vitales y alertas. Emite alertas críticas vía mensajería.
+3. **dh_questionnaire**: Gestión de formularios clínicos y flujos dinámicos (FormFlow). Publica notificaciones de confirmación vía `dh_notify`.
+4. **dh_health_monitoring**: Monitoreo clínico de signos vitales y alertas. Emite alertas críticas vía mensajería.
 
 ### Capa Transversal (Cross-cutting)
 5. **dh_logger** *(Observability Gateway)*: Sistema centralizado de ingesta de telemetría. Recibe Logs, Traces, Metrics y Events desde **cualquier microservicio, desde el API Gateway o incluso directamente desde el Frontend**. Expone endpoints `GET` para que cualquier consumidor consulte el historial de trazas y eventos con filtros dot-notation (`{"metadata.user": "123"}`).
@@ -146,7 +146,7 @@ sequenceDiagram
     actor User as Usuario / Frontend
     participant GW as api_middleware
     participant Core as dh_core
-    participant SVC as app_questionnaire
+    participant SVC as dh_questionnaire
     participant MSG as dh_notify
     participant LOG as dh_logger
 
@@ -198,9 +198,9 @@ JWT · Rate Limit · Proxy"]
         direction TB
         CORE["dh_core
 Identidad · Auth"]
-        QUEST["app_questionnaire
+        QUEST["dh_questionnaire
 FormFlow Clínico"]
-        HEALTH["app_health_monitoring
+        HEALTH["dh_health_monitoring
 Monitoreo"]
     end
 

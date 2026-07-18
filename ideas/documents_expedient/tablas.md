@@ -1,3 +1,5 @@
+> **Estado: SUPERSEDED**. Este diseño temprano de documentos y expedientes fue implementado en `dh_storage` (TASK-007). Ver `docs/db/postgres/storage/erd.mmd` y `docs/tasks/TASK-007-dh-storage/` para el diseño actual.
+
 tablas relacionales reales, con filas como si ya estuvieras en PostgreSQL/MySQL.
 
 Voy a usar este modelo mínimo:
@@ -25,7 +27,7 @@ INE	Identificación INE
 PROOF_OF_ADDRESS	Comprobante de domicilio
 MEDICAL_HISTORY	Historia médica
 CLINICAL_RECORD	Historia clínica
-🇲🇽 3. DOCUMENT (REGISTROS REALES)
+3. DOCUMENT (REGISTROS REALES)
 INE de Juan
 id	person_id	document_type_id	status	issued_at	expires_at
 doc_001	per_100	INE	APPROVED	2020-05-10	2030-05-10
@@ -38,7 +40,7 @@ doc_003	per_100	MEDICAL_HISTORY	APPROVED	2025-12-01	NULL
 Historia clínica de María
 id	person_id	document_type_id	status	issued_at	expires_at
 doc_004	per_200	CLINICAL_RECORD	APPROVED	2026-01-10	NULL
-📁 4. DOCUMENT_FILE (ARCHIVOS)
+4. DOCUMENT_FILE (ARCHIVOS)
 INE Juan (FRONT + BACK)
 id	document_id	side	url
 file_001	doc_001	FRONT	https://cdn.app.com/ine/front_per_100.jpg
@@ -59,7 +61,7 @@ id	document_id	side	url
 file_007	doc_004	EXTRA	https://cdn.app.com/clinical/consultation.pdf
 
 file_008	doc_004	EXTRA	https://cdn.app.com/clinical/ultrasound.jpg
-🧠 Lo importante que estás viendo
+Lo importante que estás viendo
 1. document = “concepto”
 
 Ej:
@@ -80,16 +82,16 @@ FRONT	frente INE
 BACK	reverso INE
 SINGLE	documento único
 EXTRA	anexos médicos
-🔥 Query típica en SQL
+Query típica en SQL
 Obtener INE de Juan
 SELECT d.*, f.*
 FROM document d
 JOIN document_file f ON f.document_id = d.id
 WHERE d.person_id = 'per_100'
 AND d.document_type_id = 'INE';
-🚀 Conclusión
+Conclusión
 
-✔ Esto ya es diseño real de producción
-✔ Escala a KYC, salud, gobierno o fintech
-✔ No necesitas Mongo para esto
-✔ Los joins son simples y controlables
+- Esto ya es diseño real de producción
+- Escala a KYC, salud, gobierno o fintech
+- No necesitas Mongo para esto
+- Los joins son simples y controlables

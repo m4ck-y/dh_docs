@@ -5,7 +5,7 @@ Aceptado
 
 ## Contexto
 
-El ecosistema Digital Hospital está compuesto por múltiples microservicios, frontend y apps móviles. Sin un estándar de observabilidad, cada cliente implementa su propio mecanismo de logging. `logger_tracer_service` (VitalTrace) es el hub centralizado. Esta decisión define cómo todos los clientes deben integrarse con él.
+El ecosistema Digital Hospital está compuesto por múltiples microservicios, frontend y apps móviles. Sin un estándar de observabilidad, cada cliente implementa su propio mecanismo de logging. `dh_logger` (VitalTrace) es el hub centralizado. Esta decisión define cómo todos los clientes deben integrarse con él.
 
 ## Decisión
 
@@ -16,7 +16,7 @@ Se adopta el patrón de **logger dual** para microservicios backend:
 
 Reglas transversales a todos los clientes:
 - **Prohibición de `print`**: El uso de la función `print()` está estrictamente prohibido en código de producción. Toda salida de información debe realizarse a través del `ServiceLogger` para garantizar que sea capturada por VitalTrace y stdlib.
-- **Logger failures**: Los fallos del logger nunca afectan al servicio — si `logger_tracer_service` es inaccesible, solo genera un warning local (stdlib), nunca una excepción.
+- **Logger failures**: Los fallos del logger nunca afectan al servicio — si `dh_logger` es inaccesible, solo genera un warning local (stdlib), nunca una excepción.
 - **Configuración**: `SERVICE_LOGGER_URL` vacío deshabilita el forwarding sin error.
 - **Dependencias**: Dependencia requerida en microservicios: `httpx` (`uv add httpx`).
 - **Entorno**: `ENVIRONMENT` debe estar configurado en cada servicio (`development`, `staging`, `production`).
@@ -116,7 +116,7 @@ async def _push(endpoint: str, payload: dict) -> None:
                 json=payload,
             )
     except Exception as e:
-        _stdlib.warning("logger_tracer_service unreachable — log lost locally: %s", e)
+        _stdlib.warning("dh_logger unreachable — log lost locally: %s", e)
 
 
 class ServiceLogger:
@@ -165,8 +165,8 @@ logger = ServiceLogger(service="<nombre_del_servicio>")
 # Values: development | staging | production
 ENVIRONMENT=production
 
-# URL of the VitalTrace observability service (logger_tracer_service)
-SERVICE_LOGGER_URL=https://dh-logger-tracer-967885369144.europe-west1.run.app
+# URL of the VitalTrace observability service (dh_logger)
+SERVICE_LOGGER_URL=http://dh_logger:8092
 ```
 
 ### Uso
