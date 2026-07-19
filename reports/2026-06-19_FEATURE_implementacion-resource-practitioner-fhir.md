@@ -1,16 +1,16 @@
 **Proyecto o Apartado:** Core Domain / dh_shared / FHIR Practitioner
 
-**Título de la actividad o tarea:** Implementación del Esquema Pydantic para el Recurso Practitioner (FHIR)
+**Título de la actividad o tarea:** Implementación del Esquema Pydantic para el Recurso [Practitioner](https://hl7.org/fhir/R5/practitioner.html) (FHIR)
 
 **Descripción de la actividad o tarea:**
-Se implementó el esquema de validación Pydantic para el recurso FHIR **Practitioner** en la librería compartida `dh_shared`. Este recurso modela a las personas con responsabilidad formal en la provisión de servicios de salud (médicos, enfermeras, especialistas), distinguiéndose de `RelatedPerson` (vínculos personales sin responsabilidad clínica formal) y de `Patient` (destinatario del cuidado). La implementación sigue la especificación FHIR R5 y se alinea con los recursos previamente creados (`Patient`, `Organization`, `RelatedPerson`).
+Se implementó el esquema de validación Pydantic para el recurso FHIR [**Practitioner**](https://hl7.org/fhir/R5/practitioner.html) en la librería compartida `dh_shared`. Este recurso modela a las personas con responsabilidad formal en la provisión de servicios de salud (médicos, enfermeras, especialistas), distinguiéndose de [`RelatedPerson`](https://hl7.org/fhir/R5/relatedperson.html) (vínculos personales sin responsabilidad clínica formal) y de [`Patient`](https://hl7.org/fhir/R5/patient.html) (destinatario del cuidado). La implementación sigue la especificación FHIR R5 y se alinea con los recursos previamente creados ([`Patient`](https://hl7.org/fhir/R5/patient.html), [`Organization`](https://hl7.org/fhir/R5/organization.html), [`RelatedPerson`](https://hl7.org/fhir/R5/relatedperson.html)).
 
 **Detalles Técnicos y de Código:**
 Se programó la estructura en `dh_shared/src/dh_shared/schemas/shared/fhir/resources/practitioner.py`. Los componentes incluyen:
 
-- **`Practitioner(DomainResource)`**: Clase principal con `identifier` (lista de `Identifier`), `active`, `name` (lista de `HumanName`), `telecom` (lista de `ContactPoint`), `gender` (`AdministrativeGender`), `birthDate`, `deceased[x]` (choice type boolean/dateTime con validator para excluir ambos simultáneamente), `address` (lista de `Address`), `photo` (lista de `Attachment`), `qualification` (lista de `PractitionerQualification`) y `communication` (lista de `PractitionerCommunication`).
+- [**Practitioner(DomainResource)**](https://hl7.org/fhir/R5/practitioner.html): Clase principal con `identifier` (lista de `Identifier`), `active`, `name` (lista de `HumanName`), `telecom` (lista de `ContactPoint`), `gender` (`AdministrativeGender`), `birthDate`, `deceased[x]` (choice type boolean/dateTime con validator para excluir ambos simultáneamente), `address` (lista de `Address`), `photo` (lista de `Attachment`), `qualification` (lista de `PractitionerQualification`) y `communication` (lista de `PractitionerCommunication`).
 
-- **`PractitionerQualification(Element)`**: Backbone element para certificaciones y licencias profesionales, con `identifier`, `code` (`CodeableConcept` con binding a grado/licencia), `period` (`Period`) e `issuer` (`Reference` a `Organization` que regula la credencial).
+- **`PractitionerQualification(Element)`**: Backbone element para certificaciones y licencias profesionales, con `identifier`, `code` (`CodeableConcept` con binding a grado/licencia), `period` (`Period`) e `issuer` ([`Reference`](https://hl7.org/fhir/R5/organization.html) a `Organization` que regula la credencial).
 
 - **`PractitionerCommunication(Element)`**: Preferencias lingüísticas del profesional, con `language` (`CodeableConcept`) y `preferred` (boolean).
 
