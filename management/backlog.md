@@ -22,6 +22,13 @@ Este documento es el centro de control para todas las tareas del proyecto.
 +
 - [ ] Configurar variables de entorno globales (.env central).
 
+### Persistencia FHIR (TASK-015)
+- [ ] Fase 0: Infraestructura base (Beanie docs, sync service, mapping utilities).
+- [ ] Fase 1: RBAC + Admin seed.
+- [ ] Fase 2: Organization (company → FHIR Organization).
+- [ ] Fase 3: Patient (person → FHIR Patient).
+- [ ] Fase 4: Practitioner (person+employee → FHIR Practitioner).
+
 ## Ideas y Backlog (Icebox)
 - [ ] Monitoreo en tiempo real de signos vitales (app_health_monitoring).
 - [ ] Generación automática de reportes PDF para pacientes.

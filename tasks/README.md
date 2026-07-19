@@ -7,6 +7,7 @@ Para una visión rápida de todas las tareas y su estado, consulta el **[Backlog
 
 ## 📂 Tareas Activas
 - **[TASK-001: Migración de Módulo Auth y Estructura Base API Core](TASK-001/README.md)**: Implementación de la base de seguridad y arquitectura limpia en `dh_core`.
+- **[TASK-015: Adaptacion FHIR — persistencia hibrida PG + MongoDB](TASK-015-persistencia-fhir-pg-mongo/README.md)**: Estrategia de almacenamiento FHIR con PostgreSQL relacional + MongoDB documental, migracion incremental por microservicio.
 
 ---
 
