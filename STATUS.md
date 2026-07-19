@@ -1,6 +1,6 @@
 # Estado del Proyecto (LLM Context)
 
-**Última actualización**: 2026-07-18
+**Última actualización**: 2026-07-19
 
 ## Nuevos Proyectos
 
@@ -13,10 +13,10 @@
 - **`dh_shared` creado**: Paquete instalable (`dh-shared`) con esquemas FHIR R5 en `schemas/shared/fhir/`. Sigue Screaming Architecture con `resources/`, `datatypes/`, `valueset/`, `extensibility/`.
 - **`dh_fhir` creado**: Servicio FastAPI con DDD (`app/contexts/downloader/`). Descarga recursos FHIR via Jina AI, los almacena en SQLite y renderiza tablas.
 - **FHIR Resources implementados (19 core)**: Patient, Practitioner, Organization, RelatedPerson, HealthcareService, PractitionerRole, AllergyIntolerance, FamilyMemberHistory, Condition, MedicationStatement, DocumentReference, Encounter, Location, Endpoint, ClinicalImpression, Procedure, Composition, MedicationRequest, Observation — todos heredan de `DomainResource`.
-- **Recursos FHIR adicionales (8)**: Appointment, BodyStructure, CarePlan, DeviceRequest, EpisodeOfCare, ImmunizationRecommendation, QuestionnaireResponse, ServiceRequest — total de recursos: 27.
+- **Recursos FHIR adicionales (15)**: Appointment, BodyStructure, CarePlan, CareTeam, Device, DeviceRequest, DiagnosticReport, EpisodeOfCare, Group, ImmunizationRecommendation, Medication, ObservationDefinition, Person, QuestionnaireResponse, ServiceRequest — total de recursos: 34.
 - **FHIR Datatypes implementados (25 core)**: Address, Age, Annotation, Attachment, Availability, CodeableConcept, CodeableReference, Coding, ContactPoint, Dosage, Duration, Element, ExtendedContactDetail, HumanName, Identifier, Money, Period, Quantity, Range, Ratio, Reference, SampledData, SimpleQuantity, Timing, VirtualServiceDetail.
 - **Tipos de soporte adicionales**: Meta, Narrative, RelatedArtifact, UsageContext, AddressType, AddressUse, IdentifierUse.
-- **ValueSets implementados (95)**: Tabla detallada en seccion dedicada.
+- **ValueSets implementados (110)**: Tabla detallada en seccion dedicada.
 - **FHIR R5 .md descargados**: 142 archivos en `dh_fhir/files/` (recursos + value sets + datatypes + specs adicionales).
 - **Arquitectura de herencia**: `Resource` → `DomainResource` → recursos específicos. Backbone elements como clases anidadas (ej: `HealthcareServiceEligibility(Element)`).
 - **resourceType como computed_field**: `Resource` base ahora expone `resourceType` via `@computed_field` que retorna `type(self).__name__`. Eliminado de las 19 subclases. Previene errores de resourceType incorrecto.
@@ -65,8 +65,8 @@
 | Endpoint | 🟢 Completo | + EndpointPayload backbone |
 | ClinicalImpression | 🟢 Completo | + ClinicalImpressionFinding backbone. effective[x] choice type |
 | Procedure | 🟢 Completo | + ProcedurePerformer, ProcedureFocalDevice backbones. occurrence[x] (6), reported[x] choice types |
-| Composition | 🟢 Completo | + CompositionAttester, CompositionEvent, CompositionSection (recursivo) backbones |
-| MedicationRequest | 🟢 Completo | + MedicationRequestDispenseRequest, MedicationRequestSubstitution backbones |
+| Composition | 🟢 Completo | + CompositionAttester, CompositionEvent, CompositionSection (recursivo) backbones. `type` bindeado a `CodeableConcept[DocTypeCodes]` |
+| MedicationRequest | 🟢 Completo | + MedicationRequestDispenseRequest, MedicationRequestSubstitution, MedicationRequestInitialFill, MedicationRequestDoseChange backbones |
 | Observation | 🟢 Completo | + ObservationTriggeredBy, ObservationReferenceRange, ObservationComponent backbones. value[x] (13), effective[x] choice types |
 
 ## Recursos FHIR Adicionales
@@ -81,10 +81,17 @@
 | ImmunizationRecommendation | 🟢 Completo | Recomendacion de inmunizacion |
 | QuestionnaireResponse | 🟢 Completo | Respuestas a cuestionario |
 | ServiceRequest | 🟢 Completo | Solicitud de servicio diagnostico o terapeutico |
+| CareTeam | 🟢 Completo | + CareTeamParticipant backbone. coverage[x] choice type. Status via CareTeamStatus enum |
+| Device | 🟢 Completo | + DeviceUdiCarrier, DeviceName, DeviceVersion, DeviceConformsTo, DeviceProperty backbones. value[x] 7-way choice |
+| DiagnosticReport | 🟢 Completo | + DiagnosticReportMedia, DiagnosticReportSupportingInfo backbones. effective[x] choice. code bindeado a CodeableConcept[LOINCDiagnosticReportCodes] |
+| Group | 🟢 Completo | + GroupCharacteristic, GroupMember backbones. value[x] 5-way choice. type bindeado a GroupType |
+| Medication | 🟢 Completo | + MedicationIngredient, MedicationBatch backbones. strength[x] 3-way choice. CodeableReference for ingredient |
+| ObservationDefinition | 🟢 Completo | + ObservationDefinitionQualifiedValue, ObservationDefinitionComponent backbones. versionAlgorithm[x] choice |
+| Person | 🟢 Completo | + PersonCommunication, PersonLink backbones. deceased[x] choice. CodeableConcept[AllLanguages] |
 
-## ValueSets FHIR Implementados (95 total)
+## ValueSets FHIR Implementados (110 total)
 
-### Core (43)
+### Core (55)
 
 | ValueSet | Estado |
 | :--- | :--- |
@@ -116,7 +123,12 @@
 | patient_link | 🟢 |
 | reaction_event_severity | 🟢 |
 
-### Binding-specific / Extended (52)
+| care_team_status, device_name_type, device_status | 🟢 |
+| diagnostic_report_status, group_membership_basis, group_type | 🟢 |
+| identity_assurance_level, medication_status, observation_range_category | 🟢 |
+| permitted_data_type, publication_status, udi_entry_type | 🟢 |
+
+### Binding-specific / Extended (55)
 
 | ValueSet | Estado |
 | :--- | :--- |
@@ -172,6 +184,9 @@
 | service_provision_conditions | 🟢 |
 | substance_admin_substitution_reason | 🟢 |
 | week_of_month | 🟢 |
+| device_availability_status | 🟢 |
+| doc_type_codes | 🟢 |
+| loinc_diagnostic_report_codes | 🟢 |
 
 ### Notas
 
@@ -255,18 +270,53 @@
 | Archivo muerto | `docs/management/1_onboarding/0.overview.md` | Eliminado |
 | Codigo inconsistente con ADR 005 | `dh_logger/app/main.py`, `dh_logger/pyproject.toml` | Reemplazado `motor` por `pymongo.AsyncMongoClient`; eliminada dependencia `motor` |
 | Codigo inconsistente con ADR 005 | `app_health_monitoring/backend/app/main.py` | Reemplazado `@app.on_event("startup")` por `lifespan` context manager |
+| Recursos FHIR faltantes (gap analysis) | `docs/research/fhir-gap-analysis.md` | Identificados 7 recursos faltantes, 1 partial, 1 binding gap |
+| CareTeam no implementado | `resources/care_team.py` | Creado con CareTeamParticipant backbone, coverage[x] choice, CareTeamStatus enum |
+| Device no implementado | `resources/device.py` | Creado con 5 backbones, value[x] 7-way choice, 4 enums (device_status, device_name_type, udi_entry_type, device_availability_status) |
+| DiagnosticReport no implementado | `resources/diagnostic_report.py` | Creado con DiagnosticReportMedia/SupportingInfo backbones, effective[x] choice, DiagnosticReportStatus + LOINCDiagnosticReportCodes enums |
+| Group no implementado | `resources/group.py` | Creado con GroupCharacteristic/Member backbones, value[x] 5-way, GroupType + GroupMembershipBasis enums |
+| Medication no implementado | `resources/medication.py` | Creado con MedicationIngredient/Batch backbones, strength[x] 3-way, MedicationStatusCodes enum |
+| ObservationDefinition no implementado | `resources/observation_definition.py` | Creado con QualifiedValue/Component backbones, versionAlgorithm[x] choice, 3 enums |
+| Person no implementado | `resources/person.py` | Creado con PersonCommunication/Link backbones, deceased[x] choice, IdentityAssuranceLevel + AllLanguages enums |
+| MedicationRequest backbones como `Any` | `resources/medication_request.py` | Reemplazados `initialFill` y `doseChange` de `Any` a clases backbones tipadas |
+| Composition.type sin binding | `resources/composition.py` | Agregado `CodeableConcept[DocTypeCodes]` para el binding Preferred a FHIRDocumentTypeCodes |
+| Circular import preexistente | `resources/patient.py` ↔ `resources/related_person.py` | Identificado pero no corregido (pre-existente). model_rebuild agregado en __init__.py |
+| Sin dependencias Python | entorno | Verificacion de runtime no posible (no pip, no sqlalchemy). AST parse exitoso en 9/9 archivos |
 
 ## Objetivos Inmediatos
 
-1. ~~Implementar datatypes faltantes~~ ✅ Completado (Timing, Ratio, SimpleQuantity, Duration, SampledData, Availability, VirtualServiceDetail).
-2. ~~Unificar prefijo URL en docstrings~~ ✅ Completado (Source: en attachment.py, human_name.py, period.py).
-3. ~~Agregar property `definition` a enums~~ ✅ Completado (age_units, gender_administrative, organization_type, patient_contact_relationship, patient_link, contact_entity_type).
-4. ~~Verificar importabilidad desde un solo import~~ ✅ Completado (`__init__.py` en resources/).
-5. ~~Migrar `resourceType` a `computed_field` en base `Resource`~~ ✅ Completado. Eliminado de 27 subclases.
-6. ~~Binding audit: ClinicalImpression + reglas AGENTS.md~~ ✅ Completado.
-7. ~~Observation bindings~~ ✅ Completado (5 enums, 6 fields actualizados).
-8. ~~Encounter bindings~~ ✅ Completado (5 enums, 5 fields actualizados).
-9. ~~Batch bindings restantes~~ ✅ Completado (15 enums, 14 resources actualizados).
+### Completados (Fase 1: Binding Audit + Docs Cleanup)
+1. ✅ ~~Implementar datatypes faltantes~~ (Timing, Ratio, SimpleQuantity, Duration, SampledData, Availability, VirtualServiceDetail).
+2. ✅ ~~Unificar prefijo URL en docstrings~~ (Source: en attachment.py, human_name.py, period.py).
+3. ✅ ~~Agregar property `definition` a enums~~ (age_units, gender_administrative, organization_type, patient_contact_relationship, patient_link, contact_entity_type).
+4. ✅ ~~Verificar importabilidad desde un solo import~~ (`__init__.py` en resources/).
+5. ✅ ~~Migrar `resourceType` a `computed_field` en base `Resource`~~ (Eliminado de 27 subclases).
+6. ✅ ~~Binding audit: ClinicalImpression + reglas AGENTS.md~~.
+7. ✅ ~~Observation bindings~~ (5 enums, 6 fields actualizados).
+8. ✅ ~~Encounter bindings~~ (5 enums, 5 fields actualizados).
+9. ✅ ~~Batch bindings restantes~~ (15 enums, 14 resources actualizados).
+10. ✅ ~~Traducir docs en espanol fuera de docs/~~ (dh_fhir/app/contexts/downloader/README.md).
+11. ✅ ~~Limpiar docs obsoletos~~ (ARCHITECTURE_OVERVIEW.md, service_database_access_matrix.md, diagrama_arquitectura.md, ADR 006, TASK-013/014, reports, ideas/).
+12. ✅ ~~Arreglar codigo deprecated~~ (motor → pymongo.AsyncMongoClient, @app.on_event → lifespan).
+13. ✅ ~~Identificar gaps FHIR~~ (7 missing resources, 1 partial, 1 binding gap).
+
+### Activos (Fase 2: FHIR Resource Parity)
+1. ✅ ~~Implementar CareTeam~~ (CareTeam + CareTeamStatus enum).
+2. ✅ ~~Implementar Device~~ (Device + 4 enums + 5 backbones).
+3. ✅ ~~Implementar DiagnosticReport~~ (DiagnosticReport + 2 enums + 2 backbones).
+4. ✅ ~~Implementar Group~~ (Group + 2 enums + 2 backbones).
+5. ✅ ~~Implementar Medication~~ (Medication + 1 enum + 2 backbones).
+6. ✅ ~~Implementar ObservationDefinition~~ (ObservationDefinition + 3 enums + 2 backbones).
+7. ✅ ~~Implementar Person~~ (Person + 2 enums + 2 backbones).
+8. ✅ ~~Fix MedicationRequest backbones~~ (initialFill, doseChange tipados).
+9. ✅ ~~Fix Composition.type binding~~ (CodeableConcept[DocTypeCodes]).
+
+### Proximos (Fase 3)
+1. ✅ ~~Agregar `model_rebuild` para los 7 nuevos recursos en `__init__.py`~~.
+2. Verificar importabilidad con `from dh_shared.schemas.shared.fhir.resources import *` (bloqueado: no pip/sqlalchemy en entorno actual).
+3. Ejecutar suite de tests si existe (bloqueado: dependencias no instalables).
+4. Continuar analisis de gaps: revisar resources existentes para verificar que todos los `CodeableConcept` fields sigan las reglas de binding de AGENTS.md.
+5. Resolver circular import entre `patient.py` y `related_person.py`.
 
 ## ADRs Recientes
 
