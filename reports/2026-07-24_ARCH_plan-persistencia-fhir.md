@@ -110,9 +110,9 @@ flowchart TB
     VAL -->|upsert by uuid| MON_ORG
     VAL -->|upsert by uuid| MON_PRAC
 
-    FHIR_API -->|GET /fhir/Patient/{uuid}| MON_PAT
-    FHIR_API -->|GET /fhir/Organization/{uuid}| MON_ORG
-    FHIR_API -->|GET /fhir/Practitioner/{uuid}| MON_PRAC
+    FHIR_API -->|GET /fhir/Patient/uuid| MON_PAT
+    FHIR_API -->|GET /fhir/Organization/uuid| MON_ORG
+    FHIR_API -->|GET /fhir/Practitioner/uuid| MON_PRAC
 
     APP -.->|lectura interna<br/>sin FHIR| PG_PERSON
 ```
