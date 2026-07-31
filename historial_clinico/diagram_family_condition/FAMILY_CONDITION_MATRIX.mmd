@@ -1,0 +1,39 @@
+graph TD
+    Start((Inicio)) --> Msg1["1.0 Registre aquí las enfermedades o condiciones de salud que conozca en sus familiares (padres, hijos o abuelos). Esta información ayuda a su médico a conocer los padecimientos que podrían tener un componente hereditario o familiar."]
+
+    Msg1 --> Q2{"2.0 Seleccione el familiar sobre el que desea proporcionar información de salud"}
+
+    Q2 --> F2.1["2.1 Padre"]
+    Q2 --> F2.2["2.2 Madre"]
+    Q2 --> F2.3["2.3 Abuelo materno"]
+    Q2 --> F2.4["2.4 Abuelo paterno"]
+    Q2 --> F2.5["2.5 Abuela materna"]
+    Q2 --> F2.6["2.6 Abuela paterna"]
+
+    F2.1 & F2.2 & F2.3 & F2.4 & F2.5 & F2.6 --> Q3{"3.0 ¿Esta persona vive actualmente?"}
+
+    Q3 -- Sí --> Q4["4.0 Seleccione la categoría de salud donde desea registrar un padecimiento."]
+    Q3 -- No --> Q3.2{"3.2 ¿Cuál fue la causa de su fallecimiento?"}
+    Q3.2 --> Txt["3.2.1.1 Texto libre"]
+    Q3.2 --> NoSé["3.2.1.2 No lo sé"]
+    Txt & NoSé --> Q4
+
+    Q4 --> C4.1["4.1 Diabetes, colesterol y metabolismo<br/>• Diabetes (Block 2-5A1)<br/>• Prediabetes (5A40)<br/>• Obesidad (5B81)<br/>• Colesterol o triglicéridos altos (5C80)<br/>• Hipotiroidismo (5A00)<br/>• Hipertiroidismo (5A02)<br/>• Otro"]
+    Q4 --> C4.2["4.2 Presión alta y corazón<br/>• Presión alta (BA00)<br/>• Infarto (BlockL1-BA4)<br/>• Arritmias (BlockL1-BC6)<br/>• Insuficiencia cardiaca (BlockL1-BD1)<br/>• Otro"]
+    Q4 --> C4.3["4.3 Cerebro y sistema nervioso<br/>• Migraña (8A80)<br/>• Embolia o derrame cerebral (BlockL1-8B0)<br/>• Alzheimer (8A20)<br/>• Demencia / Problemas de memoria (BlockL1-6D7)<br/>• Parkinson (8A00)<br/>• Epilepsias (BlockL1-8A6)<br/>• Enfermedad de Huntington (8A01.10)<br/>• Otro"]
+    Q4 --> C4.4["4.4 Mente, emociones y aprendizaje<br/>• Depresión (BlockL2-6A7)<br/>• Ansiedad (BlockL1-6B0)<br/>• Trastorno bipolar (BlockL2-6A6)<br/>• Autismo (6A02)<br/>• TDAH (6A05)<br/>• Esquizofrenia (6A20)<br/>• Otro"]
+    Q4 --> C4.5["4.5 Pulmones y respiración<br/>• Asma (CA23)<br/>• EPOC (CA22)<br/>• Rinitis alérgica (CA08)<br/>• Ronquidos (7A41)<br/>• Fibrosis pulmonar (BlockL1-CB0)<br/>• Otro (Especifique)"]
+    Q4 --> C4.6["4.6 Visión y ojos<br/>• Cataratas (9B10)<br/>• Glaucoma (BlockL1-9C6)<br/>• Problemas de graduación (9D00)<br/>• Retinopatía diabética (9B71.0)<br/>• Otro (Especifique)"]
+    Q4 --> C4.7["4.7 Estómago, intestino y digestión<br/>• Gastritis o úlceras (DA42)<br/>• Reflujo (DA22)<br/>• Colitis o intestino irritable (DD91.0)<br/>• Enfermedad inflamatoria intestinal (BlockL1-DD7)<br/>• Piedras en la vesícula (DC11)<br/>• Otro"]
+    Q4 --> C4.8["4.8 Hígado, riñón y páncreas<br/>• Hígado graso no alcohólico (DB92)<br/>• Hígado graso por alcohol (DB94)<br/>• Hepatitis por virus (BlockL1-1E5)<br/>• Cirrosis o daño hepático (DB93)<br/>• Enfermedad renal crónica (GB61)<br/>• Piedras en los riñones (GB70.0)<br/>• Pancreatitis (BlockL1-DC3)<br/>• Otro"]
+    Q4 --> C4.9["4.9 Huesos, músculos y articulaciones<br/>• Artritis reumatoide (BlockL2-FA2)<br/>• Osteoporosis / Huesos frágiles (FB83)<br/>• Desgaste de articulaciones (BlockL2-FA0)<br/>• Fibromialgia (MG30.01)<br/>• Otro (Especifique)"]
+    Q4 --> C4.10["4.10 Piel, cabello y uñas<br/>• Piel sensible o dermatitis (BlockL2-EA8)<br/>• Psoriasis (EA90)<br/>• Vitiligo (ED63.0)<br/>• Alopecia o caída del pelo (ED70)<br/>• Otro (Especifique)"]
+    Q4 --> C4.11["4.11 Cáncer y tumores<br/>• Cáncer de mama (BlockL3-2C6)<br/>• Cáncer de próstata (2C82)<br/>• Cáncer de colon (2B90)<br/>• Leucemia (2B33)<br/>• Cáncer de ovario (2C73)<br/>• Otro (Especifique)"]
+    Q4 --> C4.12["4.12 Enfermedades hereditarias y autoinmunes<br/>• Síndrome de Down (LD40.0)<br/>• Lupus (4A40)<br/>• Esclerosis múltiple (8A40)<br/>• Fibrosis quística (CA25)<br/>• Otro (Especifique)"]
+    Q4 --> C4.13["4.13 Enfermedades de la sangre<br/>• Anemia (BlockL1-3A0)<br/>• Problemas de coagulación (BlockL1-3B1)<br/>• Várices (BD74)<br/>• Trombosis venosa (BD71)<br/>• Otro (Especifique)"]
+
+    C4.1 & C4.2 & C4.3 & C4.4 & C4.5 & C4.6 & C4.7 & C4.8 & C4.9 & C4.10 & C4.11 & C4.12 & C4.13 --> Q5{"5.0 ¿Desea completar los antecedentes de otro familiar?"}
+
+    Q5 -- Sí --> Q2
+    Q5 -- No --> End6["6.0 Guardar"]
+    End6 --> End((Fin))

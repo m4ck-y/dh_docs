@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antecedentes Familiares — Family First</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Material+Symbols+Rounded:opsz@20..48&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #6750A4; --on-primary: #FFFFFF;
+    --primary-container: #EADDFF; --on-primary-container: #21005E;
+    --secondary: #625B71; --on-secondary: #FFFFFF;
+    --secondary-container: #E8DEF8; --on-secondary-container: #1D192B;
+    --surface: #FFFBFE; --surface-dim: #DED8E1;
+    --surface-container: #F3EDF7; --surface-container-high: #ECE6F0;
+    --surface-container-highest: #E6E1E5; --on-surface: #1C1B1F;
+    --on-surface-variant: #49454F; --outline: #79747E; --outline-variant: #CAC4D0;
+    --error: #B3261E;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 28px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.04);
+    --shadow-lg: 0 2px 8px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.08);
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+    --sidebar-w: 340px;
+  }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font); background: var(--surface-dim); color: var(--on-surface);
+  }
+  .app-bar {
+    background: var(--surface); padding: 12px 24px; box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 10;
+  }
+  .app-bar h1 { font-size: 1.15rem; font-weight: 600; color: var(--primary); }
+  .app-bar .badge { font-size: .7rem; color: var(--on-surface-variant); background: var(--surface-container); padding: 3px 10px; border-radius: 999px; }
+  .sidebar-toggle {
+    display: none; padding: 8px 12px; border-radius: var(--radius-sm); border: none;
+    background: var(--surface-container-high); color: var(--on-surface); cursor: pointer;
+    font-family: var(--font); font-size: .85rem; margin-left: auto;
+  }
+  .filter-btn.reset-btn { display: inline-flex; align-items: center; gap: 4px; background: var(--error); color: white; }
+  .filter-btn.reset-btn:hover { opacity: .85; background: var(--error); }
+  .filter-btn.reset-btn .material-symbols-rounded { font-size: 16px; }
+  .filter-bar { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding: 2px 0; }
+  .filter-btn {
+    flex-shrink: 0; padding: 7px 14px; border-radius: 999px; border: none;
+    background: var(--surface-container-high); color: var(--on-surface-variant);
+    font-family: var(--font); font-size: .78rem; font-weight: 500;
+    cursor: pointer; transition: .15s; white-space: nowrap;
+  }
+  .layout { display: flex; height: calc(100vh - 56px); }
+  .sidebar {
+    width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--surface);
+    border-right: 1px solid var(--outline-variant); overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-header {
+    padding: 16px 20px 12px; font-weight: 600; font-size: .9rem;
+    color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .sidebar-header .count { font-weight: 400; font-size: .8rem; background: var(--surface-container); padding: 2px 10px; border-radius: 999px; }
+  .sidebar-body { flex: 1; overflow-y: auto; padding: 12px; }
+  .sidebar-empty {
+    text-align: center; padding: 40px 20px; color: var(--on-surface-variant); font-size: .85rem; line-height: 1.6;
+  }
+  .sidebar-empty .icon { font-size: 2rem; margin-bottom: 8px; display: block; opacity: .4; }
+  .sdc {
+    background: var(--surface-container); border-radius: var(--radius-md); margin-bottom: 10px;
+    padding: 12px 14px;
+  }
+  .sdc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .sdc-name { font-weight: 600; font-size: .82rem; }
+  .sdc-code { font-size: .65rem; color: var(--on-surface-variant); background: var(--surface-container-high); padding: 1px 8px; border-radius: 999px; }
+  .sdc-fams { display: flex; gap: 4px; flex-wrap: wrap; }
+  .sdc-fam-tag {
+    font-size: .72rem; padding: 2px 10px; background: var(--primary-container);
+    color: var(--on-primary-container); border-radius: 999px;
+  }
+  .sdc-group { margin-bottom: 16px; }
+  .sdc-group-title {
+    font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--on-surface-variant); padding: 0 4px 8px;
+  }
+  .main {
+    flex: 1; overflow-y: auto; padding: 16px 20px; background: var(--surface-dim);
+  }
+  .tabs {
+    display: flex; gap: 6px; overflow-x: auto; padding: 2px 0; margin-bottom: 14px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0; padding: 8px 16px; border-radius: 999px; border: none;
+    background: var(--surface-container-high); color: var(--on-surface-variant);
+    font-family: var(--font); font-size: .8rem; font-weight: 500;
+    cursor: pointer; transition: .15s; white-space: nowrap;
+  }
+  .tab-btn.active { background: var(--primary); color: var(--on-primary); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .vive-section {
+    background: var(--surface); border-radius: var(--radius-md); box-shadow: var(--shadow);
+    padding: 14px 18px; margin-bottom: 12px;
+  }
+  .vive-section .title { font-weight: 600; font-size: .85rem; margin-bottom: 10px; color: var(--on-surface); }
+  .vive-row {
+    display: flex; align-items: center; gap: 10px; padding: 5px 0; flex-wrap: wrap;
+  }
+  .vive-row .fm-label { font-weight: 500; font-size: .82rem; min-width: 110px; }
+  .vive-row label { display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: .8rem; }
+  .vive-row input[type="radio"] { accent-color: var(--primary); width: 15px; height: 15px; }
+  .cause-field { display: none; margin-left: 4px; }
+  .cause-field.visible { display: inline-flex; }
+  .cause-field input {
+    padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--outline-variant);
+    background: var(--surface); font-family: var(--font); font-size: .8rem; outline: none; width: 180px;
+  }
+  .cause-field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-container); }
+  .category-card {
+    background: var(--surface); border-radius: var(--radius-md); box-shadow: var(--shadow);
+    margin-bottom: 10px; overflow: hidden;
+  }
+  .category-title {
+    padding: 11px 16px; font-weight: 600; font-size: .85rem;
+    cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface); border-bottom: 1px solid transparent;
+  }
+  .category-card.open .category-title { border-bottom-color: var(--outline-variant); }
+  .category-title .chevron { transition: transform .25s; color: var(--on-surface-variant); font-size: .75rem; }
+  .category-card.open .category-title .chevron { transform: rotate(180deg); }
+  .category-body { display: none; }
+  .category-card.open .category-body { display: block; }
+  .disease-row {
+    padding: 8px 16px; border-bottom: 1px solid var(--outline-variant);
+  }
+  .disease-row:last-child { border-bottom: none; }
+  .disease-item {
+    display: flex; align-items: center; gap: 8px; padding: 5px 0;
+    font-size: .82rem; cursor: pointer; width: 100%;
+  }
+  .disease-item input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; }
+  .other-spec { padding: 4px 16px 10px; }
+  .other-spec input {
+    width: 100%; padding: 8px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--outline-variant); background: var(--surface-container);
+    font-family: var(--font); font-size: .8rem; outline: none;
+  }
+  .other-spec input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-container); }
+  .disease-item .code {
+    font-size: .68rem; color: var(--on-surface-variant); background: var(--surface-container);
+    padding: 1px 8px; border-radius: 999px; margin-left: auto; white-space: nowrap;
+  }
+  .overlay { display: none; }
+  @media (max-width: 820px) {
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+      transform: translateX(-100%); transition: transform .3s; box-shadow: var(--shadow-lg);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-toggle { display: block; }
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 99; }
+    .overlay.visible { display: block; }
+    .main { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-bar">
+  <h1>Antecedentes Familiares</h1>
+  <span class="badge">Family First</span>
+  <button class="sidebar-toggle" onclick="toggleSidebar()">☰ Padecimientos</button>
+</div>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span>Padecimientos registrados</span>
+      <span class="count" id="regCount">0</span>
+    </div>
+    <div class="sidebar-body" id="sidebarBody"></div>
+  </aside>
+  <main class="main">
+    <div class="filter-bar" id="filterBar"></div>
+    <div class="tabs" id="tabContainer"></div>
+    <div id="panelContainer"></div>
+  </main>
+</div>
+
+<template id="tmpl-disease-checkbox">
+  <label class="disease-item">
+    <input type="checkbox">
+    <span class="disease-label"></span>
+    <span class="code"></span>
+  </label>
+</template>
+
+<script>
+  const EMPTY_SIDEBAR = '<div class="sidebar-empty"><span class="icon">📋</span>Selecciona un padecimiento en los familiares<br>para agregarlo aquí</div>';
+
+  const familyMembers = [
+    { id: 'padre',    label: 'Padre' },
+    { id: 'madre',    label: 'Madre' },
+    { id: 'abuelo_m', label: 'Abuelo materno' },
+    { id: 'abuelo_p', label: 'Abuelo paterno' },
+    { id: 'abuela_m', label: 'Abuela materna' },
+    { id: 'abuela_p', label: 'Abuela paterna' },
+  ];
+
+  const categories = [
+    { id: 'c4_1', label: '4.1 Diabetes, colesterol y metabolismo', diseases: [
+      'Diabetes (Block 2-5A1)', 'Prediabetes (5A40)', 'Obesidad (5B81)',
+      'Colesterol o triglicéridos altos (5C80)', 'Hipotiroidismo (5A00)', 'Hipertiroidismo (5A02)', 'Otro'
+    ]},
+    { id: 'c4_2', label: '4.2 Presión alta y corazón', diseases: [
+      'Presión alta (BA00)', 'Infarto (BlockL1-BA4)', 'Arritmias (BlockL1-BC6)',
+      'Insuficiencia cardiaca (BlockL1-BD1)', 'Otro'
+    ]},
+    { id: 'c4_3', label: '4.3 Cerebro y sistema nervioso', diseases: [
+      'Migraña (8A80)', 'Embolia o derrame cerebral (BlockL1-8B0)', 'Alzheimer (8A20)',
+      'Demencia / Problemas de memoria (BlockL1-6D7)', 'Parkinson (8A00)', 'Epilepsias (BlockL1-8A6)',
+      'Enfermedad de Huntington (8A01.10)', 'Otro'
+    ]},
+    { id: 'c4_4', label: '4.4 Mente, emociones y aprendizaje', diseases: [
+      'Depresión (BlockL2-6A7)', 'Ansiedad (BlockL1-6B0)', 'Trastorno bipolar (BlockL2-6A6)',
+      'Autismo (6A02)', 'TDAH (6A05)', 'Esquizofrenia (6A20)', 'Otro'
+    ]},
+    { id: 'c4_5', label: '4.5 Pulmones y respiración', diseases: [
+      'Asma (CA23)', 'EPOC (CA22)', 'Rinitis alérgica (CA08)', 'Ronquidos (7A41)',
+      'Fibrosis pulmonar (BlockL1-CB0)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_6', label: '4.6 Visión y ojos', diseases: [
+      'Cataratas (9B10)', 'Glaucoma (BlockL1-9C6)', 'Problemas de graduación (9D00)',
+      'Retinopatía diabética (9B71.0)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_7', label: '4.7 Estómago, intestino y digestión', diseases: [
+      'Gastritis o úlceras (DA42)', 'Reflujo (DA22)', 'Colitis o intestino irritable (DD91.0)',
+      'Enfermedad inflamatoria intestinal (BlockL1-DD7)', 'Piedras en la vesícula (DC11)', 'Otro'
+    ]},
+    { id: 'c4_8', label: '4.8 Hígado, riñón y páncreas', diseases: [
+      'Hígado graso no alcohólico (DB92)', 'Hígado graso por alcohol (DB94)',
+      'Hepatitis por virus (BlockL1-1E5)', 'Cirrosis o daño hepático (DB93)',
+      'Enfermedad renal crónica (GB61)', 'Piedras en los riñones (GB70.0)',
+      'Pancreatitis (BlockL1-DC3)', 'Otro'
+    ]},
+    { id: 'c4_9', label: '4.9 Huesos, músculos y articulaciones', diseases: [
+      'Artritis reumatoide (BlockL2-FA2)', 'Osteoporosis / Huesos frágiles (FB83)',
+      'Desgaste de articulaciones (BlockL2-FA0)', 'Fibromialgia (MG30.01)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_10', label: '4.10 Piel, cabello y uñas', diseases: [
+      'Piel sensible o dermatitis (BlockL2-EA8)', 'Psoriasis (EA90)', 'Vitiligo (ED63.0)',
+      'Alopecia o caída del pelo (ED70)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_11', label: '4.11 Cáncer y tumores', diseases: [
+      'Cáncer de mama (BlockL3-2C6)', 'Cáncer de próstata (2C82)', 'Cáncer de colon (2B90)',
+      'Leucemia (2B33)', 'Cáncer de ovario (2C73)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_12', label: '4.12 Enfermedades hereditarias y autoinmunes', diseases: [
+      'Síndrome de Down (LD40.0)', 'Lupus (4A40)', 'Esclerosis múltiple (8A40)',
+      'Fibrosis quística (CA25)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_13', label: '4.13 Enfermedades de la sangre', diseases: [
+      'Anemia (BlockL1-3A0)', 'Problemas de coagulación (BlockL1-3B1)', 'Várices (BD74)',
+      'Trombosis venosa (BD71)', 'Otro (Especifique)'
+    ]},
+  ];
+
+  const registered = {};
+  const otherSpecs = {};
+  const viveState = {};
+  let activeTab = 0;
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('visible');
+  }
+
+  function setVive(fi, val) {
+    if (!viveState[fi]) viveState[fi] = { vive: null, cause: '' };
+    viveState[fi].vive = val;
+    const ids = ['cause_all_' + fi, 'cause_tab_' + fi];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('visible', val === false);
+    });
+  }
+
+  function setCause(fi, val) {
+    if (!viveState[fi]) viveState[fi] = { vive: null, cause: '' };
+    viveState[fi].cause = val;
+  }
+
+  function setSpec(catId, disease, val) {
+    otherSpecs[catId + '||' + disease] = val;
+    renderSidebar();
+  }
+
+  function findCat(disease) {
+    const parts = disease.split('||');
+    if (parts.length === 2) return parts[0];
+    for (const c of categories) if (c.diseases.includes(disease)) return c.id;
+    return '';
+  }
+
+  function displayName(disease) {
+    const parts = disease.split('||');
+    const isComposite = parts.length === 2;
+    const rawDisease = isComposite ? parts[1] : disease;
+    const catId = isComposite ? parts[0] : findCat(rawDisease);
+    const spec = otherSpecs[catId + '||' + rawDisease];
+    if (spec) return spec;
+    const codeMatch = rawDisease.match(/\(([^)]+)\)$/);
+    return codeMatch ? rawDisease.slice(0, rawDisease.lastIndexOf('(')).trim() : rawDisease;
+  }
+
+  function addDisease(fi, disease) {
+    if (!registered[disease]) registered[disease] = { families: new Map() };
+    registered[disease].families.set(fi, familyMembers[fi].label);
+    sync();
+  }
+
+  function removeDisease(fi, disease) {
+    if (!registered[disease]) return;
+    registered[disease].families.delete(fi);
+    if (registered[disease].families.size === 0) delete registered[disease];
+    sync();
+  }
+
+  function isChecked(fi, disease) {
+    return registered[disease]?.families.has(fi) ?? false;
+  }
+
+  function renderSidebar() {
+    const body = document.getElementById('sidebarBody');
+    document.getElementById('regCount').textContent = Object.keys(registered).length;
+    if (Object.keys(registered).length === 0) {
+      body.innerHTML = EMPTY_SIDEBAR;
+      return;
+    }
+    const grouped = {};
+    for (const [disease] of Object.entries(registered)) {
+      const catId = findCat(disease);
+      if (!grouped[catId]) grouped[catId] = [];
+      grouped[catId].push(disease);
+    }
+    let html = '';
+    for (const c of categories) {
+      const list = grouped[c.id];
+      if (!list) continue;
+      html += `<div class="sdc-group"><div class="sdc-group-title">${c.label}</div>`;
+      for (const disease of list) {
+        const data = registered[disease];
+        const parts = disease.split('||');
+        const rawDisease = parts.length === 2 ? parts[1] : disease;
+        const codeMatch = rawDisease.match(/\(([^)]+)\)$/);
+        const code = codeMatch ? codeMatch[1] : '';
+        const name = codeMatch ? rawDisease.slice(0, rawDisease.lastIndexOf('(')).trim() : rawDisease;
+        const shown = displayName(disease);
+        const isCustom = shown !== name;
+        html += `<div class="sdc">`;
+        html += `<div class="sdc-header"><span class="sdc-name">${isCustom ? shown + ' (' + name + ')' : shown}</span>${code ? `<span class="sdc-code">${code}</span>` : ''}</div>`;
+        html += `<div class="sdc-fams">`;
+        for (const [, fmLabel] of data.families) {
+          html += `<span class="sdc-fam-tag">${fmLabel}</span>`;
+        }
+        html += `</div></div>`;
+      }
+      html += `</div>`;
+    }
+    body.innerHTML = html;
+  }
+
+  function switchTab(i) {
+    activeTab = i;
+    document.querySelectorAll('.tab-btn').forEach((b, j) => b.classList.toggle('active', j === i));
+    document.querySelectorAll('.panel').forEach((p, j) => p.classList.toggle('active', j === i));
+  }
+
+  function render() {
+    const tabC = document.getElementById('tabContainer');
+    const panelC = document.getElementById('panelContainer');
+    tabC.innerHTML = '';
+    panelC.innerHTML = '';
+
+    familyMembers.forEach((fm, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+      btn.textContent = fm.label;
+      btn.onclick = () => switchTab(i);
+      tabC.appendChild(btn);
+
+      const panel = document.createElement('div');
+      panel.className = 'panel' + (i === 0 ? ' active' : '');
+      panel.id = 'panel_' + fm.id;
+      panel.innerHTML = renderTabHTML(i);
+      panelC.appendChild(panel);
+    });
+  }
+
+  function renderTabHTML(fi) {
+    const fm = familyMembers[fi];
+    const vs = viveState[fi] || {};
+    let html = `<div class="vive-section"><div class="title">${fm.label} — ¿Vive actualmente?</div>`;
+    html += `<div class="vive-row">`;
+    html += `<label onclick="event.stopPropagation()"><input type="radio" name="vive_tab_${fi}" ${vs.vive === true ? 'checked' : ''} onchange="setVive(${fi},true)"> Sí, vive</label>`;
+    html += `<label onclick="event.stopPropagation()"><input type="radio" name="vive_tab_${fi}" ${vs.vive === false ? 'checked' : ''} onchange="setVive(${fi},false)"> No, falleció</label>`;
+    html += `<div class="cause-field${vs.vive === false ? ' visible' : ''}" id="cause_tab_${fi}"><input type="text" placeholder="Causa de fallecimiento" value="${(vs.cause || '').replace(/"/g, '&quot;')}" onclick="event.stopPropagation()" oninput="setCause(${fi},this.value)"></div>`;
+    html += `</div></div>`;
+    html += renderCategoriesHTML(fi);
+    return html;
+  }
+
+  function renderCategoriesHTML(fi) {
+    let html = '';
+    categories.forEach(c => {
+      html += `<div class="category-card open" id="cat_${fi}_${c.id}">`;
+      html += `<div class="category-title" onclick="this.parentElement.classList.toggle('open')">`;
+      html += `<span>${c.label}</span><span class="chevron">▾</span>`;
+      html += `</div><div class="category-body">`;
+      c.diseases.forEach(d => {
+        const codeMatch = d.match(/\(([^)]+)\)$/);
+        const code = codeMatch ? codeMatch[1] : '';
+        const name = codeMatch ? d.slice(0, d.lastIndexOf('(')).trim() : d;
+        const isOther = d === 'Otro' || d === 'Otro (Especifique)';
+        const key = isOther ? c.id + '||' + d : d;
+        const chk = isChecked(fi, key);
+        html += `<div class="disease-row">`;
+        html += `<label class="disease-item" data-fi="${fi}" data-disease="${key.replace(/"/g, '&quot;')}" data-checkbox="1">`;
+        html += `<input type="checkbox" ${chk ? 'checked' : ''}> ${name}${code ? `<span class="code">${code}</span>` : ''}</label>`;
+        if (isOther) {
+          const specKey = c.id + '||' + d;
+          html += `<div class="other-spec" id="spec_${fi}_${c.id}" style="${chk ? '' : 'display:none'}">`;
+          html += `<input type="text" placeholder="Especifique..." value="${(otherSpecs[specKey] || '').replace(/"/g, '&quot;')}" oninput="setSpec('${c.id}','${d.replace(/'/g, "\\'")}',this.value)">`;
+          html += `</div>`;
+        }
+        html += `</div>`;
+      });  // closes forEach(d)
+      html += `</div></div>`;
+    });
+    return html;
+  }
+
+  function sync() {
+    renderSidebar();
+    const p = document.getElementById('panel_' + familyMembers[activeTab].id);
+    if (p) p.innerHTML = renderTabHTML(activeTab);
+  }
+
+  function resetAll() {
+    if (!confirm('¿Borrar todos los datos ingresados?\nEsta acción eliminará todas las selecciones y textos especificados.')) return;
+    Object.keys(registered).forEach(k => delete registered[k]);
+    Object.keys(otherSpecs).forEach(k => delete otherSpecs[k]);
+    Object.keys(viveState).forEach(k => delete viveState[k]);
+    render();
+    sync();
+  }
+
+  function renderFilterBar() {
+    const bar = document.getElementById('filterBar');
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'filter-btn reset-btn';
+    resetBtn.innerHTML = '<span class="material-symbols-rounded">refresh</span> Limpiar todo';
+    resetBtn.onclick = resetAll;
+    bar.appendChild(resetBtn);
+  }
+
+  document.addEventListener('click', function(e) {
+    const item = e.target.closest('.disease-item[data-checkbox]');
+    if (item && !e.target.matches('input')) {
+      const fi = parseInt(item.dataset.fi);
+      const disease = item.dataset.disease;
+      const input = item.querySelector('input');
+      input.checked = !input.checked;
+      if (input.checked) addDisease(fi, disease);
+      else removeDisease(fi, disease);
+    }
+  });
+
+  document.addEventListener('change', function(e) {
+    if (e.target.matches('.disease-item[data-checkbox] input')) {
+      const item = e.target.closest('.disease-item[data-checkbox]');
+      const fi = parseInt(item.dataset.fi);
+      const disease = item.dataset.disease;
+      if (e.target.checked) addDisease(fi, disease);
+      else removeDisease(fi, disease);
+    }
+  });
+
+  render();
+  renderSidebar();
+  renderFilterBar();
+</script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antecedentes Familiares — Condition First</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Material+Symbols+Rounded:opsz@20..48&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #6750A4; --on-primary: #FFFFFF;
+    --primary-container: #EADDFF; --on-primary-container: #21005E;
+    --secondary: #625B71; --on-secondary: #FFFFFF;
+    --secondary-container: #E8DEF8; --on-secondary-container: #1D192B;
+    --tertiary: #7D5260; --on-tertiary: #FFFFFF;
+    --tertiary-container: #FFD8E4; --on-tertiary-container: #31111D;
+    --surface: #FFFBFE; --surface-dim: #DED8E1;
+    --surface-container: #F3EDF7; --surface-container-high: #ECE6F0;
+    --surface-container-highest: #E6E1E5; --on-surface: #1C1B1F;
+    --on-surface-variant: #49454F; --outline: #79747E; --outline-variant: #CAC4D0;
+    --error: #B3261E; --success: #4A8C5C;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 28px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.04);
+    --shadow-lg: 0 2px 8px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.08);
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+    --sidebar-w: 340px;
+  }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font); background: var(--surface-dim); color: var(--on-surface);
+  }
+  .app-bar {
+    background: var(--surface); padding: 12px 24px; box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 10;
+  }
+  .app-bar h1 { font-size: 1.15rem; font-weight: 600; color: var(--primary); }
+  .app-bar .badge { font-size: .7rem; color: var(--on-surface-variant); background: var(--surface-container); padding: 3px 10px; border-radius: 999px; }
+  .sidebar-toggle {
+    display: none; padding: 8px 12px; border-radius: var(--radius-sm); border: none;
+    background: var(--surface-container-high); color: var(--on-surface); cursor: pointer;
+    font-family: var(--font); font-size: .85rem; margin-left: auto;
+  }
+  .layout { display: flex; height: calc(100vh - 56px); }
+  .sidebar {
+    width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--surface);
+    border-right: 1px solid var(--outline-variant); overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-header {
+    padding: 16px 20px 12px; font-weight: 600; font-size: .9rem;
+    color: var(--on-surface-variant); border-bottom: 1px solid var(--outline-variant);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .sidebar-header .count { font-weight: 400; font-size: .8rem; background: var(--surface-container); padding: 2px 10px; border-radius: 999px; }
+  .sidebar-body { flex: 1; overflow-y: auto; padding: 12px; }
+  .sidebar-empty {
+    text-align: center; padding: 40px 20px; color: var(--on-surface-variant); font-size: .85rem; line-height: 1.6;
+  }
+  .sidebar-empty .icon { font-size: 2rem; margin-bottom: 8px; display: block; opacity: .4; }
+  .fm-card {
+    background: var(--surface-container); border-radius: var(--radius-md); margin-bottom: 12px;
+    overflow: hidden; transition: .2s;
+  }
+  .fm-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; cursor: pointer; user-select: none;
+  }
+  .fm-card-header .name { font-weight: 600; font-size: .85rem; }
+  .fm-card-header .disease-badge {
+    font-size: .7rem; background: var(--primary-container); color: var(--on-primary-container);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .fm-card-header .chevron { font-size: .75rem; color: var(--on-surface-variant); transition: transform .25s; }
+  .fm-card.open .fm-card-header .chevron { transform: rotate(180deg); }
+  .fm-card-body { display: none; padding: 0 14px 14px; }
+  .fm-card.open .fm-card-body { display: block; }
+  .vive-row { display: flex; gap: 16px; align-items: center; padding: 6px 0 10px; flex-wrap: wrap; }
+  .vive-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: .82rem; }
+  .vive-row input[type="radio"] { accent-color: var(--primary); width: 16px; height: 16px; }
+  .cause-field { display: none; margin-bottom: 10px; }
+  .cause-field.visible { display: block; }
+  .cause-field input {
+    width: 100%; padding: 10px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--outline-variant); background: var(--surface);
+    font-family: var(--font); font-size: .82rem; outline: none;
+  }
+  .cause-field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-container); }
+  .fm-diseases { display: flex; flex-direction: column; gap: 4px; }
+  .fm-disease-tag {
+    font-size: .78rem; padding: 4px 10px; background: var(--surface-container-high);
+    border-radius: var(--radius-sm); display: flex; align-items: center; gap: 6px;
+  }
+  .fm-disease-tag .code { font-size: .65rem; color: var(--on-surface-variant); margin-left: auto; }
+  .fm-cat-title {
+    font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--on-surface-variant); padding: 8px 4px 4px; margin-top: 4px;
+  }
+  .fm-cat-title:first-of-type { margin-top: 0; }
+  .other-spec { padding: 6px 16px 10px; }
+  .other-spec input {
+    width: 100%; padding: 8px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--outline-variant); background: var(--surface-container);
+    font-family: var(--font); font-size: .8rem; outline: none;
+  }
+  .other-spec input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-container); }
+  .main {
+    flex: 1; overflow-y: auto; padding: 16px 20px; background: var(--surface-dim);
+  }
+  .search-bar { margin-bottom: 12px; }
+  .search-bar input {
+    width: 100%; padding: 11px 18px; border-radius: var(--radius-xl);
+    border: 1px solid var(--outline-variant); background: var(--surface);
+    font-family: var(--font); font-size: .875rem; outline: none; box-shadow: var(--shadow);
+  }
+  .search-bar input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-container); }
+  .filter-bar { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding: 2px 0; scrollbar-width: none; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-btn {
+    flex-shrink: 0; padding: 7px 14px; border-radius: 999px; border: none;
+    background: var(--surface-container-high); color: var(--on-surface-variant);
+    font-family: var(--font); font-size: .78rem; font-weight: 500;
+    cursor: pointer; transition: .15s; white-space: nowrap;
+  }
+  .filter-btn:hover { background: var(--surface-container); }
+  .filter-btn.active { background: var(--primary); color: var(--on-primary); }
+  .reset-btn { display: inline-flex; align-items: center; gap: 4px; background: var(--error); color: white; }
+  .reset-btn:hover { opacity: .85; background: var(--error); }
+  .reset-btn .material-symbols-rounded { font-size: 16px; }
+  .category-card {
+    background: var(--surface); border-radius: var(--radius-md); box-shadow: var(--shadow);
+    margin-bottom: 12px; overflow: hidden;
+  }
+  .category-title {
+    padding: 12px 16px; font-weight: 600; font-size: .9rem;
+    cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface); border-bottom: 1px solid transparent;
+  }
+  .category-card.open .category-title { border-bottom-color: var(--outline-variant); }
+  .category-title .chevron { transition: transform .25s; color: var(--on-surface-variant); font-size: .75rem; }
+  .category-card.open .category-title .chevron { transform: rotate(180deg); }
+  .category-body { display: none; }
+  .category-card.open .category-body { display: block; }
+  .disease-row {
+    padding: 9px 16px; border-bottom: 1px solid var(--outline-variant); transition: background .15s;
+  }
+  .disease-row:last-child { border-bottom: none; }
+  .disease-name { font-weight: 500; font-size: .84rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .disease-name .code { font-size: .68rem; font-weight: 400; color: var(--on-surface-variant); background: var(--surface-container); padding: 1px 8px; border-radius: 999px; }
+  .family-grid { display: flex; gap: 4px; flex-wrap: wrap; }
+  .family-chip {
+    display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px;
+    font-size: .78rem; background: var(--surface-container-high); cursor: pointer;
+    transition: .15s; user-select: none;
+  }
+  .family-chip:hover { background: var(--surface-container); }
+  .family-chip.selected { background: var(--primary-container); color: var(--on-primary-container); }
+  .family-chip input { display: none; }
+  .overlay { display: none; }
+  @media (max-width: 820px) {
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+      transform: translateX(-100%); transition: transform .3s; box-shadow: var(--shadow-lg);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-toggle { display: block; }
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 99; }
+    .overlay.visible { display: block; }
+    .main { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-bar">
+  <h1>Antecedentes Familiares</h1>
+  <span class="badge">Condition First</span>
+  <button class="sidebar-toggle" onclick="toggleSidebar()">☰ Familiares</button>
+</div>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span>Familiares registrados</span>
+      <span class="count" id="fmCount">0</span>
+    </div>
+    <div class="sidebar-body" id="sidebarBody"></div>
+  </aside>
+  <main class="main">
+    <div class="search-bar"><input type="text" id="searchInput" placeholder="Buscar enfermedad..." oninput="filterDiseases()"></div>
+    <div class="filter-bar" id="filterBar"></div>
+    <div id="app"></div>
+  </main>
+</div>
+
+<script>
+  const familyMembers = [
+    'Padre', 'Madre', 'Abuelo materno', 'Abuelo paterno', 'Abuela materna', 'Abuela paterna'
+  ];
+  const categories = [
+    { id: 'c4_1', label: '4.1 Diabetes, colesterol y metabolismo', diseases: [
+      'Diabetes (Block 2-5A1)', 'Prediabetes (5A40)', 'Obesidad (5B81)',
+      'Colesterol o triglicéridos altos (5C80)', 'Hipotiroidismo (5A00)', 'Hipertiroidismo (5A02)', 'Otro'
+    ]},
+    { id: 'c4_2', label: '4.2 Presión alta y corazón', diseases: [
+      'Presión alta (BA00)', 'Infarto (BlockL1-BA4)', 'Arritmias (BlockL1-BC6)',
+      'Insuficiencia cardiaca (BlockL1-BD1)', 'Otro'
+    ]},
+    { id: 'c4_3', label: '4.3 Cerebro y sistema nervioso', diseases: [
+      'Migraña (8A80)', 'Embolia o derrame cerebral (BlockL1-8B0)', 'Alzheimer (8A20)',
+      'Demencia / Problemas de memoria (BlockL1-6D7)', 'Parkinson (8A00)', 'Epilepsias (BlockL1-8A6)',
+      'Enfermedad de Huntington (8A01.10)', 'Otro'
+    ]},
+    { id: 'c4_4', label: '4.4 Mente, emociones y aprendizaje', diseases: [
+      'Depresión (BlockL2-6A7)', 'Ansiedad (BlockL1-6B0)', 'Trastorno bipolar (BlockL2-6A6)',
+      'Autismo (6A02)', 'TDAH (6A05)', 'Esquizofrenia (6A20)', 'Otro'
+    ]},
+    { id: 'c4_5', label: '4.5 Pulmones y respiración', diseases: [
+      'Asma (CA23)', 'EPOC (CA22)', 'Rinitis alérgica (CA08)', 'Ronquidos (7A41)',
+      'Fibrosis pulmonar (BlockL1-CB0)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_6', label: '4.6 Visión y ojos', diseases: [
+      'Cataratas (9B10)', 'Glaucoma (BlockL1-9C6)', 'Problemas de graduación (9D00)',
+      'Retinopatía diabética (9B71.0)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_7', label: '4.7 Estómago, intestino y digestión', diseases: [
+      'Gastritis o úlceras (DA42)', 'Reflujo (DA22)', 'Colitis o intestino irritable (DD91.0)',
+      'Enfermedad inflamatoria intestinal (BlockL1-DD7)', 'Piedras en la vesícula (DC11)', 'Otro'
+    ]},
+    { id: 'c4_8', label: '4.8 Hígado, riñón y páncreas', diseases: [
+      'Hígado graso no alcohólico (DB92)', 'Hígado graso por alcohol (DB94)',
+      'Hepatitis por virus (BlockL1-1E5)', 'Cirrosis o daño hepático (DB93)',
+      'Enfermedad renal crónica (GB61)', 'Piedras en los riñones (GB70.0)',
+      'Pancreatitis (BlockL1-DC3)', 'Otro'
+    ]},
+    { id: 'c4_9', label: '4.9 Huesos, músculos y articulaciones', diseases: [
+      'Artritis reumatoide (BlockL2-FA2)', 'Osteoporosis / Huesos frágiles (FB83)',
+      'Desgaste de articulaciones (BlockL2-FA0)', 'Fibromialgia (MG30.01)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_10', label: '4.10 Piel, cabello y uñas', diseases: [
+      'Piel sensible o dermatitis (BlockL2-EA8)', 'Psoriasis (EA90)', 'Vitiligo (ED63.0)',
+      'Alopecia o caída del pelo (ED70)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_11', label: '4.11 Cáncer y tumores', diseases: [
+      'Cáncer de mama (BlockL3-2C6)', 'Cáncer de próstata (2C82)', 'Cáncer de colon (2B90)',
+      'Leucemia (2B33)', 'Cáncer de ovario (2C73)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_12', label: '4.12 Enfermedades hereditarias y autoinmunes', diseases: [
+      'Síndrome de Down (LD40.0)', 'Lupus (4A40)', 'Esclerosis múltiple (8A40)',
+      'Fibrosis quística (CA25)', 'Otro (Especifique)'
+    ]},
+    { id: 'c4_13', label: '4.13 Enfermedades de la sangre', diseases: [
+      'Anemia (BlockL1-3A0)', 'Problemas de coagulación (BlockL1-3B1)', 'Várices (BD74)',
+      'Trombosis venosa (BD71)', 'Otro (Especifique)'
+    ]},
+  ];
+
+  const sidebar = {};
+  const otherSpecs = {};
+  let activeFilter = null;
+
+  function addToSidebar(fi, disease) {
+    if (!sidebar[fi]) sidebar[fi] = { vive: null, cause: '', diseases: new Map() };
+    sidebar[fi].diseases.set(disease, disease);
+    sync();
+  }
+
+  function removeFromSidebar(fi, disease) {
+    if (!sidebar[fi]) return;
+    sidebar[fi].diseases.delete(disease);
+    if (sidebar[fi].diseases.size === 0) delete sidebar[fi];
+    sync();
+  }
+
+  function toggleFam(chip) {
+    const fi = parseInt(chip.dataset.fi);
+    const disease = chip.dataset.disease;
+    const was = chip.classList.contains('selected');
+    chip.classList.toggle('selected');
+    chip.querySelector('input').checked = !was;
+    if (!was) addToSidebar(fi, disease);
+    else removeFromSidebar(fi, disease);
+  }
+
+  function setVive(fi, val) {
+    if (!sidebar[fi]) return;
+    sidebar[fi].vive = val;
+    const cf = document.getElementById('causeField_' + fi);
+    if (cf) cf.classList.toggle('visible', val === false);
+  }
+
+  function setCause(fi, val) {
+    if (sidebar[fi]) sidebar[fi].cause = val;
+  }
+
+  function setSpec(catId, disease, val) {
+    otherSpecs[catId + '||' + disease] = val;
+    renderSidebar();
+  }
+
+  function findCat(disease) {
+    const parts = disease.split('||');
+    if (parts.length === 2) return parts[0];
+    for (const c of categories) if (c.diseases.includes(disease)) return c.id;
+    return '';
+  }
+
+  function displayName(disease) {
+    const parts = disease.split('||');
+    const isComposite = parts.length === 2;
+    const rawDisease = isComposite ? parts[1] : disease;
+    const catId = isComposite ? parts[0] : findCat(rawDisease);
+    const spec = otherSpecs[catId + '||' + rawDisease];
+    if (spec) return spec;
+    const codeMatch = rawDisease.match(/\(([^)]+)\)$/);
+    return codeMatch ? rawDisease.slice(0, rawDisease.lastIndexOf('(')).trim() : rawDisease;
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('visible');
+  }
+
+  function render() {
+    const app = document.getElementById('app');
+    let html = '';
+    categories.forEach(c => {
+      html += `<div class="category-card open" id="cat_${c.id}" data-cat="${c.id}">`;
+      html += `<div class="category-title" onclick="this.parentElement.classList.toggle('open')">`;
+      html += `<span>${c.label}</span><span class="chevron">▾</span>`;
+      html += `</div><div class="category-body">`;
+      c.diseases.forEach(d => {
+        const codeMatch = d.match(/\(([^)]+)\)$/);
+        const code = codeMatch ? codeMatch[1] : '';
+        const name = codeMatch ? d.slice(0, d.lastIndexOf('(')).trim() : d;
+        const isOther = d === 'Otro' || d === 'Otro (Especifique)';
+        const key = isOther ? c.id + '||' + d : d;
+        html += `<div class="disease-row" data-cat="${c.id}">`;
+        html += `<div class="disease-name">${name}${code ? `<span class="code">${code}</span>` : ''}</div>`;
+        html += `<div class="family-grid">`;
+        familyMembers.forEach((fm, fi) => {
+          const has = sidebar[fi] && sidebar[fi].diseases.has(key);
+          html += `<label class="family-chip${has ? ' selected' : ''}" data-fi="${fi}" data-disease="${key.replace(/"/g, '&quot;')}">`;
+          html += `<input type="checkbox" ${has ? 'checked' : ''}> ${fm}`;
+          html += `</label>`;
+        });
+        html += `</div>`;
+        if (isOther) {
+          const hasAny = familyMembers.some((_, fi) => sidebar[fi]?.diseases.has(key));
+          html += `<div class="other-spec" id="spec_${c.id}" style="${hasAny ? '' : 'display:none'}">`;
+          html += `<input type="text" placeholder="Especifique..." value="${(otherSpecs[key] || '').replace(/"/g, '&quot;')}" oninput="setSpec('${c.id}','${d.replace(/'/g, "\\'")}',this.value)">`;
+          html += `</div>`;
+        }
+        html += `</div>`;
+      });
+      html += `</div></div>`;
+    });
+    app.innerHTML = html;
+  }
+
+  const EMPTY_HTML = `<div class="sidebar-empty"><span class="icon">👤</span>Selecciona un familiar en las enfermedades<br>para agregarlo aquí</div>`;
+
+  function renderSidebar() {
+    const body = document.getElementById('sidebarBody');
+    const count = document.getElementById('fmCount');
+    const keys = Object.keys(sidebar);
+    count.textContent = keys.length;
+    if (keys.length === 0) {
+      body.innerHTML = EMPTY_HTML;
+      return;
+    }
+    let html = '';
+    keys.forEach(fi => {
+      const fm = sidebar[fi];
+      const name = familyMembers[fi];
+      html += `<div class="fm-card" id="fmCard_${fi}">`;
+      html += `<div class="fm-card-header" onclick="this.parentElement.classList.toggle('open')">`;
+      html += `<span class="name">${name}</span>`;
+      html += `<span style="display:flex;align-items:center;gap:8px;">`;
+      html += `<span class="disease-badge">${fm.diseases.size} padec.</span>`;
+      html += `<span class="chevron">▾</span>`;
+      html += `</span></div>`;
+      html += `<div class="fm-card-body">`;
+      html += `<div class="vive-row">`;
+      html += `<label onclick="event.stopPropagation()"><input type="radio" name="vive_${fi}" ${fm.vive === true ? 'checked' : ''} onchange="setVive(${fi},true)"> Sí, vive</label>`;
+      html += `<label onclick="event.stopPropagation()"><input type="radio" name="vive_${fi}" ${fm.vive === false ? 'checked' : ''} onchange="setVive(${fi},false)"> No, falleció</label>`;
+      html += `</div>`;
+      html += `<div class="cause-field${fm.vive === false ? ' visible' : ''}" id="causeField_${fi}">`;
+      html += `<input type="text" placeholder="Causa de fallecimiento" value="${fm.cause}" oninput="setCause(${fi},this.value)" onclick="event.stopPropagation()">`;
+      html += `</div>`;
+      html += `<div class="fm-diseases">`;
+      const grouped = {};
+      for (const [key] of fm.diseases) {
+        const catId = findCat(key);
+        if (!grouped[catId]) grouped[catId] = [];
+        grouped[catId].push(key);
+      }
+      for (const c of categories) {
+        const list = grouped[c.id];
+        if (!list) continue;
+        html += `<div class="fm-cat-title">${c.label}</div>`;
+        for (const key of list) {
+          const shown = displayName(key);
+          const parts = key.split('||');
+          const rawDisease = parts.length === 2 ? parts[1] : key;
+          const codeMatch = rawDisease.match(/\(([^)]+)\)$/);
+          const code = codeMatch ? codeMatch[1] : '';
+          const nameOnly = codeMatch ? rawDisease.slice(0, rawDisease.lastIndexOf('(')).trim() : rawDisease;
+          const isCustom = shown !== nameOnly;
+          html += `<span class="fm-disease-tag">${isCustom ? shown + ' (' + nameOnly + ')' : shown}${code ? `<span class="code">${code}</span>` : ''}</span>`;
+        }
+      }
+      html += `</div></div></div>`;
+    });
+    body.innerHTML = html;
+    keys.forEach(fi => {
+      if (sidebar[fi] && sidebar[fi].diseases.size > 0) {
+        const el = document.getElementById('fmCard_' + fi);
+        if (el) el.classList.add('open');
+      }
+    });
+  }
+
+  function sync() {
+    render();
+    renderSidebar();
+  }
+
+  let renderTimeout;
+  function filterDiseases() {
+    clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(() => {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      document.querySelectorAll('.disease-row').forEach(row => {
+        const name = row.querySelector('.disease-name').textContent.toLowerCase();
+        const cat = row.closest('.category-card').dataset.cat;
+        const match = (!activeFilter || cat === activeFilter) && (!q || name.includes(q));
+        row.style.display = match ? '' : 'none';
+      });
+      document.querySelectorAll('.category-card').forEach(card => {
+        const visible = [...card.querySelectorAll('.disease-row')].some(r => r.style.display !== 'none');
+        card.style.display = visible ? '' : 'none';
+      });
+    }, 150);
+  }
+
+  function renderFilterBar() {
+    const bar = document.getElementById('filterBar');
+    const all = document.createElement('button');
+    all.className = 'filter-btn active'; all.textContent = 'Todas';
+    all.onclick = () => { activeFilter = null; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); all.classList.add('active'); filterDiseases(); };
+    bar.appendChild(all);
+    categories.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn'; btn.textContent = c.label.split(' ')[0];
+      btn.onclick = () => { activeFilter = c.id; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterDiseases(); };
+      bar.appendChild(btn);
+    });
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'filter-btn reset-btn';
+    resetBtn.innerHTML = '<span class="material-symbols-rounded">refresh</span> Limpiar todo';
+    resetBtn.onclick = resetAll;
+    bar.appendChild(resetBtn);
+  }
+
+  function resetAll() {
+    if (!confirm('¿Borrar todos los datos ingresados?\nEsta acción eliminará todas las selecciones y textos especificados.')) return;
+    Object.keys(sidebar).forEach(k => delete sidebar[k]);
+    Object.keys(otherSpecs).forEach(k => delete otherSpecs[k]);
+    activeFilter = null;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn:first-child')?.classList.add('active');
+    sync();
+    filterDiseases();
+  }
+
+  document.getElementById('app').addEventListener('click', function(e) {
+    const chip = e.target.closest('.family-chip');
+    if (chip) toggleFam(chip);
+  });
+
+  renderFilterBar();
+  sync();
+</script>
+</body>
+</html>
