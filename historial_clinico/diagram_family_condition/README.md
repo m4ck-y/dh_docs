@@ -8,6 +8,29 @@
 | `FAMILY_CONDITION_MATRIX.mmd` | Diagrama Mermaid | Flujo de decisión: familiar → categoría → enfermedad |
 | `family_first_matrix.md` | Cuestionario markdown | Vista: familiar primero, luego enfermedades |
 | `condition_first_matrix.md` | Cuestionario markdown | Vista: enfermedad primero, luego familiares |
+| `condition_first.html` | Vista interactiva (autónoma) | Condición primero: se navega por padecimientos y se marcan los familiares |
+| `family_first.html` | Vista interactiva (autónoma) | Familiar primero: tabs por miembro con categorías desplegables |
+| `matrix.html` | Vista interactiva (autónoma) | Matriz 2D: filas = padecimientos, columnas = familiares |
+
+## Vistas interactivas (HTML autónomos)
+
+Las tres vistas capturan los mismos datos y comparten reglas:
+
+- **"Otro"**: cada categoría termina en una opción `Otro` que despliega un input de texto libre con **capitalización automática** (`capFirst` al escribir, `capSpec` al salir). Las claves de estado son compuestas (`catId||disease[||fi]`) para evitar colisiones entre categorías y familiares.
+- **"¿Vive actualmente?"**: respondido **una vez por familiar** (no por padecimiento), evitando redundancia. Si responde "No", aparece el campo de causa de fallecimiento.
+- **Barra de acción superior** (separada de los tabs de filtro): botón **"Exportar CSV"** y **"Limpiar todo"** (con confirmación).
+- **Filtros**: búsqueda por texto y tabs de categorías (Todas + 4.1–4.13).
+- Fila **"¿Aún vive?"** en matrix: los checkboxes están **marcados por defecto** (viven); al desmarcar uno aparece el input de causa en esa celda.
+
+### Export CSV
+
+Las tres vistas exportan el **mismo formato transpuesto** (por eso el nombre del archivo no revela la vista de origen):
+
+- **Columnas**: los 6 familiares.
+- **Filas**: `¿Aún vive?` (`Sí`/`No`, vacío si no se respondió) → `Causa de muerte` → una fila separadora por categoría → una fila por padecimiento.
+- **Celdas de padecimiento**: `X` si el familiar lo padece, vacío si no; en las filas `Otro` va el texto personalizado.
+- **Codificación**: UTF-8 con BOM (para que Excel renderice tildes/ñ) y escaping RFC 4180.
+- **Nombre de archivo**: `export_family_conditions_YYYYMMDD_HHMMSS.csv` (hora local). El sufijo fecha+hora ordena cronológicamente los archivos y evita colisiones.
 
 ## Reglas de usabilidad
 
@@ -30,7 +53,22 @@ En el flujo `condition_first_matrix.md` el usuario navega por padecimientos y se
 1. Usuario selecciona "Diabetes" → marca "Padre" → se pregunta "¿Padre vive?"
 2. Usuario selecciona "Hipertensión" → vuelve a marcar "Padre" → se preguntaría "¿Padre vive?" de nuevo
 
-**Solución recomendada:** Elevar la pregunta "¿Vive?" al ámbito del familiar, no del padecimiento. Responderla una vez por familiar y cachear el estado durante la sesión.
+**Solución implementada:** La pregunta "¿Vive?" está elevada al ámbito del familiar, no del padecimiento. Se responde **una vez por familiar** y el estado se conserva durante la sesión (en condition-first y family-first dentro de la tarjeta del familiar en el sidebar; en matrix como fila fija "¿Aún vive?" bajo la cabecera).
+
+### Mapa de almacenamiento por vista
+
+Cada vista define su estado en memoria; el esquema exacto está comentado en el encabezado del `<script>` de cada archivo. Resumen:
+
+| Vista | Clave de padecimiento | Clave del texto "Otro" | Estado de "¿Vive?" |
+|---|---|---|---|
+| `condition_first.html` | nombre plano; `catId\|\|disease` solo para "Otro" | `otherSpecs[catId\|\|disease]` — **compartido por categoría** | `sidebar[fi].vive` (boolean o null) + `sidebar[fi].cause` |
+| `family_first.html` | nombre plano; `catId\|\|disease` solo para "Otro" | `otherSpecs[catId\|\|disease\|\|fi]` — **por miembro** | `viveState[fi] = { vive, cause }` |
+| `matrix.html` | `catId\|\|disease` **para todos** (anti-colisión) | `otherSpecs[catId\|\|Otro\|\|fi]` — **por coordenada** | `viveState[fi] = { dead, cause }` (fila "¿Aún vive?" marcada por defecto) |
+
+Diferencias clave a recordar antes de modificar:
+- El texto "Otro" **no** se almacena igual en las tres vistas (por categoría vs por miembro vs por coordenada).
+- En matrix **todas** las claves son compuestas; en las otras dos solo las de "Otro".
+- La capitalización del texto libre se hace en JS (`capFirst` en vivo, `capSpec` al salir), no con CSS, para que el valor exportado ya llegue formateado.
 
 ## Origen de los datos
 

@@ -39,6 +39,10 @@ Cada decision tecnica importante debe documentarse siguiendo el formato de **ADR
 - **[031: Configuracion Baseline para Microservicios](031-microservice-baseline-config.md)**
 - **[032: Politica de Emojis como Indicadores de Estado](032-emoji-status-indicator-policy.md)**
 - **[033: Docstrings Swagger — Templates y Placeholders](033-swagger-docstring-templates.md)**
+- **[034: UUID de Entidad en Rutas de PATCH/DELETE/GET-single](034-entity-uuid-single-path.md)**
+- **[035: Rutas API sin Slash Final](035-api-path-no-trailing-slash.md)**
+- **[036: Adopción FHIR R5](036-fhir-r5-adoption.md)**
+- **[037: Prototipos UI de Antecedentes Familiares](037-family-conditions-ui-prototype.md)**
 
 ---
 *Para crear una nueva decision, utiliza la plantilla `_template.md` (proximamente).*

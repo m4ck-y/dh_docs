@@ -69,6 +69,14 @@
     border-bottom: 2px solid var(--primary);
   }
   .cell:has(.spec-input) { padding: 0; }
+  .mg-row.mg-vive-row .cell { background: var(--surface-container); }
+  .mg-row.mg-vive-row .cell:first-child { font-weight: 600; justify-content: flex-start; }
+  .mg-row .mg-vive-cell { flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 4px 6px; }
+  .mg-row .mg-vive-cell .cause-input {
+    width: 100%; box-sizing: border-box; border: none;
+    border-bottom: 2px solid var(--primary); background: var(--surface-container-high);
+    font-family: var(--font); font-size: .72rem; outline: none; padding: 3px 6px;
+  }
   .mg-row .cell .code { font-size: .66rem; font-weight: 400; color: var(--on-surface-variant); background: var(--surface-container); padding: 1px 8px; border-radius: 999px; margin-left: 8px; }
   .mg-row { display: contents; }
   .mg-row.hidden-row { display: none; }
@@ -84,6 +92,7 @@
   .mg-summary .sc:first-child { justify-content: flex-start; color: var(--on-surface-variant); font-weight: 500; }
   .mg-summary .sc .num { background: var(--primary); color: var(--on-primary); padding: 2px 8px; border-radius: 999px; font-size: .72rem; min-width: 24px; text-align: center; }
   .filter-bar { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; padding: 2px 0; }
+  .action-bar { display: flex; gap: 6px; margin-bottom: 10px; }
   .filter-btn {
     flex-shrink: 0; padding: 7px 14px; border-radius: 999px; border: none;
     background: var(--surface-container-high); color: var(--on-surface-variant);
@@ -110,6 +119,7 @@
   <div class="summary"><span>Total: <span class="total" id="totalChecked">0</span></span></div>
 </div>
 <div class="main">
+  <div class="action-bar" id="actionBar"></div>
   <div class="filter-bar" id="filterBar"></div>
   <div class="matrix-wrap">
     <div class="matrix-grid" id="matrixGrid"></div>
@@ -134,6 +144,10 @@
   //  - `otherSpecs[catId||Otro||fi]` -> custom "Otro" free text.
   //    Keyed PER COORDINATE (trailing `||fi`) so each member's custom text
   //    lives in its own cell and never overwrites another member's.
+  //  - `viveState[fi]` -> { dead: boolean, cause: string }
+  //    Alive/deceased + cause of death per family member. Default is ALIVE
+  //    (dead=false): the "¿Aún vive?" row renders every checkbox checked until
+  //    the user unchecks one, which reveals the "Causa" input for that member.
   //  - `catStates[catId]` -> boolean (undefined = open) for category collapse.
   //  - `activeFilter` -> currently selected category filter id (or null).
   // =========================================================================
@@ -208,11 +222,13 @@
 
   // ---- State --------------------------------------------------------------
   // `matrix` maps a composite disease key to the Set of members that have it.
-  // `otherSpecs` holds the custom "Otro" text per coordinate. `activeFilter`
+  // `otherSpecs` holds the custom "Otro" text per coordinate. `viveState`
+  // holds the alive/deceased answer per member (default alive). `activeFilter`
   // drives the category quick filters; `catStates` remembers collapsed
   // categories across re-renders.
   const matrix = {};
   const otherSpecs = {};
+  const viveState = {};
   let activeFilter = null;
   let catStates = {};
 
@@ -232,6 +248,20 @@
   // unknown disease key safely returns false.
   function isChecked(fi, disease) {
     return matrix[disease]?.has(fi) ?? false;
+  }
+
+  // Toggles the "¿Aún vive?" checkbox for a member. Default is ALIVE (checked);
+  // unchecking sets dead=true and re-renders so the "Causa" input appears,
+  // then focuses it for immediate typing. Re-checking sets dead=false and hides
+  // the input again (the typed cause is kept in state and reused if re-unchecked).
+  function toggleVive(fi, alive) {
+    if (!viveState[fi]) viveState[fi] = { dead: false, cause: '' };
+    viveState[fi].dead = !alive;
+    render();
+    if (!alive) {
+      const input = document.querySelector(`.cause-input[data-fi="${fi}"]`);
+      if (input) input.focus();
+    }
   }
 
   // Toggles a custom "Otro" cell for (member, category):
@@ -255,12 +285,13 @@
     }
   }
 
-  // Wipes all interaction state (matrix ticks, custom texts, collapsed
-  // categories) after a confirmation, then rebuilds the grid from scratch.
+  // Wipes all interaction state (matrix ticks, custom texts, alive/deceased,
+  // collapsed categories) after a confirmation, then rebuilds the grid.
   function resetAll() {
     if (!confirm('¿Borrar todos los datos ingresados?\nEsta acción eliminará todas las selecciones y textos especificados en la matriz.')) return;
     Object.keys(matrix).forEach(k => delete matrix[k]);
     Object.keys(otherSpecs).forEach(k => delete otherSpecs[k]);
+    Object.keys(viveState).forEach(k => delete viveState[k]);
     catStates = {};
     render();
     updateCount();
@@ -294,14 +325,17 @@
 
   // Builds the whole grid HTML:
   //  1. Header row: "Padecimiento" + one column per family member.
-  //  2. One `.mg-cat` banner per category (collapsible via catStates) followed
+  //  2. Fixed "¿Aún vive?" row (never collapsed/filtered): a checkbox per
+  //     member (checked = alive, the default); a `.cause-input` appears below
+  //     the checkbox only when the member is marked as deceased.
+  //  3. One `.mg-cat` banner per category (collapsible via catStates) followed
   //     by one `.mg-row` per disease. Every cell is a checkbox carrying
   //     `data-fi` + `data-disease` (composite key). "Otro" rows read their
   //     coordinate from otherSpecs: if an entry exists the cell becomes a
   //     `.spec-input` (with the text as a `title` tooltip), otherwise a plain
   //     checkbox. `data-spec` carries the coordinate key for the input/change
   //     listeners.
-  //  3. Summary row with the per-member totals (standard ticks + "Otro" cells).
+  //  4. Summary row with the per-member totals (standard ticks + "Otro" cells).
   function render() {
     const grid = document.getElementById('matrixGrid');
     let html = '';
@@ -310,6 +344,19 @@
     familyMembers.forEach(fm => {
       html += `<div class="mg-header">${fm}</div>`;
     });
+
+    html += `<div class="mg-row mg-vive-row" data-vive="1">`;
+    html += `<div class="cell">¿Aún vive?</div>`;
+    familyMembers.forEach((_, fi) => {
+      const vs = viveState[fi] || {};
+      const dead = !!vs.dead;
+      const cause = (vs.cause || '').replace(/"/g, '&quot;');
+      html += `<div class="cell mg-vive-cell">`;
+      html += `<input type="checkbox" class="vive-chk" data-fi="${fi}" ${dead ? '' : 'checked'} title="Aún vive">`;
+      html += `<input type="text" class="cause-input" data-fi="${fi}" placeholder="Causa" value="${cause}" style="${dead ? '' : 'display:none'}">`;
+      html += `</div>`;
+    });
+    html += `</div>`;
 
     categories.forEach(c => {
       const catOpen = catStates[c.id] !== false;
@@ -371,10 +418,11 @@
   // Immediate (non-debounced) filter: hides rows whose disease name doesn't
   // match the search query AND/OR the active category filter. Unlike the other
   // two views there are no wrapping category cards to hide, so rows are toggled
-  // directly.
+  // directly. The fixed "¿Aún vive?" row (data-vive) is always kept visible.
   function filterDiseases() {
     const q = document.getElementById('searchInput')?.value?.toLowerCase() || '';
     document.querySelectorAll('.mg-row').forEach(row => {
+      if (row.dataset.vive !== undefined) return;
       const name = row.querySelector('.cell:first-child').textContent.toLowerCase();
       const cat = row.dataset.cat;
       const match = (!activeFilter || cat === activeFilter) && (!q || name.includes(q));
@@ -382,9 +430,9 @@
     });
   }
 
-  // Populates the filter bar: a search input + "Todas" + one quick button per
-  // category + the red "Limpiar todo" button. Called once at startup only —
-  // calling it inside resetAll() would duplicate the controls on each reset.
+  // Populates the filter bar (second row): a search input + "Todas" + one
+  // quick button per category. Called once at startup only — calling it inside
+  // resetAll() would duplicate the controls on each reset.
   function renderFilterBar() {
     const bar = document.getElementById('filterBar');
     const search = document.createElement('input');
@@ -406,6 +454,19 @@
       btn.onclick = () => { activeFilter = c.id; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterDiseases(); };
       bar.appendChild(btn);
     });
+  }
+
+  // Populates the action bar (top row): the export button and the red
+  // "Limpiar todo" button, kept separate from the padecimiento filter tabs.
+  // Called once at startup only — calling it inside resetAll() would duplicate
+  // the buttons on each reset.
+  function renderActionBar() {
+    const bar = document.getElementById('actionBar');
+    const exportBtn = document.createElement('button');
+    exportBtn.className = 'filter-btn';
+    exportBtn.innerHTML = '<span class="material-symbols-rounded">download</span> Exportar CSV';
+    exportBtn.onclick = exportCSV;
+    bar.appendChild(exportBtn);
 
     const resetBtn = document.createElement('button');
     resetBtn.className = 'filter-btn reset-btn';
@@ -414,11 +475,91 @@
     bar.appendChild(resetBtn);
   }
 
-  // Change listener for the grid checkboxes. Distinguishes the two cases from
-  // the disease key's second segment:
+  // Builds the CSV export as a transposed view of the grid: COLUMNS are the
+  // family members and ROWS are, in order: "¿Aún vive?" (Sí/No), "Causa de
+  // muerte", then one separator row per category label, then a row per disease
+  // (X if marked; "Otro" cells carry the member's custom text).
+  function exportCSV() {
+    const headers = ['Padecimiento', ...familyMembers];
+    const rows = [];
+
+    rows.push(['¿Aún vive?', ...familyMembers.map((_, fi) => {
+      const vs = viveState[fi] || {};
+      return vs.dead ? 'No' : 'Sí';
+    })]);
+
+    rows.push(['Causa de muerte', ...familyMembers.map((_, fi) => {
+      const vs = viveState[fi] || {};
+      return vs.cause || '';
+    })]);
+
+    categories.forEach(c => {
+      rows.push([c.label, ...familyMembers.map(() => '')]);
+      c.diseases.forEach(d => {
+        const codeMatch = d.match(/\(([^)]+)\)$/);
+        const name = codeMatch ? d.slice(0, d.lastIndexOf('(')).trim() : d;
+        const isOther = d === 'Otro' || d === 'Otro (Especifique)';
+        const key = c.id + '||' + d;
+        const cellVals = familyMembers.map((_, fi) => {
+          const has = matrix[key]?.has(fi) ?? false;
+          if (!has) return '';
+          return isOther ? (otherSpecs[key + '||' + fi] || 'X') : 'X';
+        });
+        rows.push([name, ...cellVals]);
+      });
+    });
+
+    downloadCSV(headers, rows);
+  }
+
+  // CSV cell serializer: wraps the value in double quotes only when it contains
+  // a separator (comma, quote, newline), doubling any inner quotes per RFC 4180.
+  function csvCell(v) {
+    v = String(v == null ? '' : v);
+    return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+
+  // timestampPrefix: local date+time stamp used as a sortable filename prefix,
+  // e.g. "20260731_143512". Uses LOCAL time (not UTC) so the stamp matches the
+  // user's calendar day. The underscore keeps date and time readable without
+  // breaking chronological ordering.
+  function timestampPrefix() {
+    const d = new Date();
+    const p = n => String(n).padStart(2, '0');
+    return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' +
+           p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+  }
+
+  // Triggers a browser download of the CSV. A UTF-8 BOM (\uFEFF) is prepended
+  // so Excel renders accents/ñ correctly. The filename is
+  // "export_family_conditions_" + a LOCAL timestamp: the fixed prefix groups
+  // every export of this domain, and the YYYYMMDD_HHMMSS suffix (local time,
+  // separator kept) makes names sort chronologically and never collide. All
+  // three views export the SAME data shape, so the name does not reveal the
+  // view it came from.
+  function downloadCSV(headers, rows) {
+    const lines = [headers, ...rows].map(r => r.map(csvCell).join(','));
+    const csv = '\uFEFF' + lines.join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'export_family_conditions_' + timestampPrefix() + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Change listener for the grid checkboxes. Three cases, in order:
+  //  - `.vive-chk` ("¿Aún vive?") -> toggleVive
   //  - "Otro"/"Otro (Especifique)" -> toggleOther (turns the cell into an input)
   //  - standard disease -> toggleCheck + re-render (to refresh summary state)
   document.addEventListener('change', function(e) {
+    if (e.target.matches('.vive-chk')) {
+      toggleVive(parseInt(e.target.dataset.fi), e.target.checked);
+      return;
+    }
     if (e.target.matches('.mg-row input[type="checkbox"]')) {
       const fi = parseInt(e.target.dataset.fi);
       const disease = e.target.dataset.disease;
@@ -433,22 +574,30 @@
     }
   });
 
-  // Live input listener for the custom "Otro" fields: capitalizes in real time
-  // (capFirst), persists the text into otherSpecs and mirrors it to the
-  // `title` tooltip (the column is too narrow to read long values inline). No
-  // re-render, so the input keeps focus.
+  // Live input listeners for the free-text fields:
+  //  - `.spec-input` (custom "Otro"): capitalizes in real time (capFirst),
+  //    persists into otherSpecs and mirrors to the `title` tooltip.
+  //  - `.cause-input` ("Causa" de fallecimiento): same treatment into viveState.
+  // No re-render, so the input keeps focus.
   document.addEventListener('input', function(e) {
     if (e.target.matches('.spec-input')) {
       e.target.value = capFirst(e.target.value);
       otherSpecs[e.target.dataset.spec] = e.target.value;
       e.target.title = e.target.value;
+    } else if (e.target.matches('.cause-input')) {
+      const fi = parseInt(e.target.dataset.fi);
+      e.target.value = capFirst(e.target.value);
+      if (!viveState[fi]) viveState[fi] = { dead: true, cause: '' };
+      viveState[fi].cause = e.target.value;
+      e.target.title = e.target.value;
     }
   });
 
-  // When a custom "Otro" field is blurred: an EMPTY value is treated as if the
-  // cell were never activated (entry removed, grid re-renders, cell reverts to
-  // a checkbox); a non-empty value is finalized with capSpec (trim + capitalize
-  // the last word), stored and shown, so storage always keeps the clean form.
+  // When a free-text field is blurred:
+  //  - `.spec-input` empty -> entry removed, grid re-renders, cell reverts to a
+  //    checkbox; non-empty -> finalized with capSpec (trim + capitalize).
+  //  - `.cause-input` -> always finalized with capSpec (an empty cause is kept;
+  //    the alive/dead state lives in the checkbox, not in this field).
   document.addEventListener('focusout', function(e) {
     if (e.target.matches('.spec-input')) {
       if (e.target.value === '') {
@@ -459,11 +608,18 @@
         otherSpecs[e.target.dataset.spec] = e.target.value;
         e.target.title = e.target.value;
       }
+    } else if (e.target.matches('.cause-input')) {
+      const fi = parseInt(e.target.dataset.fi);
+      e.target.value = capSpec(e.target.value);
+      if (!viveState[fi]) viveState[fi] = { dead: true, cause: '' };
+      viveState[fi].cause = e.target.value;
+      e.target.title = e.target.value;
     }
   });
 
   // ---- Startup -------------------------------------------------------------
-  renderFilterBar();   // search + filters + "Limpiar todo" (single call)
+  renderActionBar();   // Exportar CSV + Limpiar todo (top row, single call)
+  renderFilterBar();   // search + category filter tabs (single call)
   render();            // initial grid render
 </script>
 </body>

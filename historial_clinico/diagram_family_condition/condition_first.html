@@ -118,6 +118,7 @@
   }
   .search-bar input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-container); }
   .filter-bar { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding: 2px 0; scrollbar-width: none; }
+  .action-bar { display: flex; gap: 6px; margin-bottom: 10px; }
   .filter-bar::-webkit-scrollbar { display: none; }
   .filter-btn {
     flex-shrink: 0; padding: 7px 14px; border-radius: 999px; border: none;
@@ -189,6 +190,7 @@
     <div class="sidebar-body" id="sidebarBody"></div>
   </aside>
   <main class="main">
+    <div class="action-bar" id="actionBar"></div>
     <div class="search-bar"><input type="text" id="searchInput" placeholder="Buscar enfermedad..." oninput="filterDiseases()"></div>
     <div class="filter-bar" id="filterBar"></div>
     <div id="app"></div>
@@ -546,9 +548,9 @@
     }, 150);
   }
 
-  // Populates the filter bar: "Todas" + one quick button per category + the
-  // red "Limpiar todo" button. Called once at startup only — calling it inside
-  // resetAll() would duplicate the buttons on each reset.
+  // Populates the filter bar (second row): "Todas" + one quick button per
+  // category. Called once at startup only — calling it inside resetAll() would
+  // duplicate the buttons on each reset.
   function renderFilterBar() {
     const bar = document.getElementById('filterBar');
     const all = document.createElement('button');
@@ -561,6 +563,19 @@
       btn.onclick = () => { activeFilter = c.id; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterDiseases(); };
       bar.appendChild(btn);
     });
+  }
+
+  // Populates the action bar (top row): the export button and the red
+  // "Limpiar todo" button, kept separate from the padecimiento filter tabs.
+  // Called once at startup only — calling it inside resetAll() would duplicate
+  // the buttons on each reset.
+  function renderActionBar() {
+    const bar = document.getElementById('actionBar');
+    const exportBtn = document.createElement('button');
+    exportBtn.className = 'filter-btn';
+    exportBtn.innerHTML = '<span class="material-symbols-rounded">download</span> Exportar CSV';
+    exportBtn.onclick = exportCSV;
+    bar.appendChild(exportBtn);
     const resetBtn = document.createElement('button');
     resetBtn.className = 'filter-btn reset-btn';
     resetBtn.innerHTML = '<span class="material-symbols-rounded">refresh</span> Limpiar todo';
@@ -582,6 +597,83 @@
     filterDiseases();
   }
 
+  // Builds the CSV export as a transposed view (same shape as matrix.html):
+  // COLUMNS are the family members and ROWS are, in order: "¿Aún vive?"
+  // (Sí/No, blank when unanswered), "Causa de muerte", then one separator row per
+  // category label, then a row per disease (X if marked; "Otro" cells carry
+  // the custom text, shared per category in this view).
+  function exportCSV() {
+    const headers = ['Padecimiento', ...familyMembers];
+    const rows = [];
+
+    rows.push(['¿Aún vive?', ...familyMembers.map((_, fi) => {
+      const fm = sidebar[fi];
+      return fm ? (fm.vive === true ? 'Sí' : fm.vive === false ? 'No' : '') : '';
+    })]);
+
+    rows.push(['Causa de muerte', ...familyMembers.map((_, fi) => {
+      const fm = sidebar[fi];
+      return fm ? fm.cause : '';
+    })]);
+
+    categories.forEach(c => {
+      rows.push([c.label, ...familyMembers.map(() => '')]);
+      c.diseases.forEach(d => {
+        const codeMatch = d.match(/\(([^)]+)\)$/);
+        const name = codeMatch ? d.slice(0, d.lastIndexOf('(')).trim() : d;
+        const isOther = d === 'Otro' || d === 'Otro (Especifique)';
+        const key = isOther ? c.id + '||' + d : d;
+        const cellVals = familyMembers.map((_, fi) => {
+          const fm = sidebar[fi];
+          if (!fm || !fm.diseases.has(key)) return '';
+          return isOther ? (otherSpecs[key] || 'X') : 'X';
+        });
+        rows.push([name, ...cellVals]);
+      });
+    });
+
+    downloadCSV(headers, rows);
+  }
+
+  // CSV cell serializer: wraps the value in double quotes only when it contains
+  // a separator (comma, quote, newline), doubling any inner quotes per RFC 4180.
+  function csvCell(v) {
+    v = String(v == null ? '' : v);
+    return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+
+  // timestampPrefix: local date+time stamp used as a sortable filename prefix,
+  // e.g. "20260731_143512". Uses LOCAL time (not UTC) so the stamp matches the
+  // user's calendar day. The underscore keeps date and time readable without
+  // breaking chronological ordering.
+  function timestampPrefix() {
+    const d = new Date();
+    const p = n => String(n).padStart(2, '0');
+    return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' +
+           p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+  }
+
+  // Triggers a browser download of the CSV. A UTF-8 BOM (\uFEFF) is prepended
+  // so Excel renders accents/ñ correctly. The filename is
+  // "export_family_conditions_" + a LOCAL timestamp: the fixed prefix groups
+  // every export of this domain, and the YYYYMMDD_HHMMSS suffix (local time,
+  // separator kept) makes names sort chronologically and never collide. All
+  // three views export the SAME data shape, so the name does not reveal the
+  // view it came from.
+  function downloadCSV(headers, rows) {
+    const lines = [headers, ...rows].map(r => r.map(csvCell).join(','));
+    const csv = '\uFEFF' + lines.join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'export_family_conditions_' + timestampPrefix() + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   // Event delegation for family chips: clicking anywhere on a chip toggles it.
   // Bound once on the #app container instead of per-render so no closures leak
   // on every sync().
@@ -591,7 +683,8 @@
   });
 
   // ---- Startup -------------------------------------------------------------
-  renderFilterBar();   // filter buttons + "Limpiar todo" (single call)
+  renderActionBar();   // Exportar CSV + Limpiar todo (top row, single call)
+  renderFilterBar();   // category filter tabs (single call)
   sync();              // initial render of the main panel and sidebar
 </script>
 </body>
