@@ -290,8 +290,20 @@
     viveState[fi].cause = val;
   }
 
-  function setSpec(catId, disease, val) {
-    otherSpecs[catId + '||' + disease] = val;
+  function capSpec(s) {
+    return (s || '').trim().replace(/(^|\s)(\S)/g, (_, p1, p2) => p1 + p2.toUpperCase());
+  }
+
+  function capFirst(s) {
+    return (s || '').replace(/(^|\s)(\S)/g, (_, p1, p2) => p1 + p2.toUpperCase());
+  }
+
+  function normSpec(s) {
+    return (s || '').trim().toLowerCase();
+  }
+
+  function setSpec(fi, catId, disease, val) {
+    otherSpecs[catId + '||' + disease + '||' + fi] = capSpec(val);
     renderSidebar();
   }
 
@@ -300,17 +312,6 @@
     if (parts.length === 2) return parts[0];
     for (const c of categories) if (c.diseases.includes(disease)) return c.id;
     return '';
-  }
-
-  function displayName(disease) {
-    const parts = disease.split('||');
-    const isComposite = parts.length === 2;
-    const rawDisease = isComposite ? parts[1] : disease;
-    const catId = isComposite ? parts[0] : findCat(rawDisease);
-    const spec = otherSpecs[catId + '||' + rawDisease];
-    if (spec) return spec;
-    const codeMatch = rawDisease.match(/\(([^)]+)\)$/);
-    return codeMatch ? rawDisease.slice(0, rawDisease.lastIndexOf('(')).trim() : rawDisease;
   }
 
   function addDisease(fi, disease) {
@@ -351,23 +352,39 @@
       for (const disease of list) {
         const data = registered[disease];
         const parts = disease.split('||');
-        const rawDisease = parts.length === 2 ? parts[1] : disease;
-        const codeMatch = rawDisease.match(/\(([^)]+)\)$/);
-        const code = codeMatch ? codeMatch[1] : '';
-        const name = codeMatch ? rawDisease.slice(0, rawDisease.lastIndexOf('(')).trim() : rawDisease;
-        const shown = displayName(disease);
-        const isCustom = shown !== name;
-        html += `<div class="sdc">`;
-        html += `<div class="sdc-header"><span class="sdc-name">${isCustom ? shown + ' (' + name + ')' : shown}</span>${code ? `<span class="sdc-code">${code}</span>` : ''}</div>`;
-        html += `<div class="sdc-fams">`;
-        for (const [, fmLabel] of data.families) {
-          html += `<span class="sdc-fam-tag">${fmLabel}</span>`;
+        if (parts.length === 2) {
+          const sub = {};
+          for (const [fi, fmLabel] of data.families) {
+            const specKey = disease + '||' + fi;
+            const norm = normSpec(otherSpecs[specKey]);
+            if (!sub[norm]) sub[norm] = { text: capSpec(otherSpecs[specKey]), families: new Map() };
+            sub[norm].families.set(fi, fmLabel);
+          }
+          for (const g of Object.values(sub)) {
+            const label = g.text ? g.text + ' (Otro)' : 'Otro';
+            html += sdcCard(label, g.families);
+          }
+        } else {
+          const codeMatch = disease.match(/\(([^)]+)\)$/);
+          const code = codeMatch ? codeMatch[1] : '';
+          const name = codeMatch ? disease.slice(0, disease.lastIndexOf('(')).trim() : disease;
+          html += sdcCard(name, data.families, code);
         }
-        html += `</div></div>`;
       }
       html += `</div>`;
     }
     body.innerHTML = html;
+  }
+
+  function sdcCard(name, families, code) {
+    let h = `<div class="sdc">`;
+    h += `<div class="sdc-header"><span class="sdc-name">${name}</span>${code ? `<span class="sdc-code">${code}</span>` : ''}</div>`;
+    h += `<div class="sdc-fams">`;
+    for (const [, fmLabel] of families) {
+      h += `<span class="sdc-fam-tag">${fmLabel}</span>`;
+    }
+    h += `</div></div>`;
+    return h;
   }
 
   function switchTab(i) {
@@ -428,9 +445,9 @@
         html += `<label class="disease-item" data-fi="${fi}" data-disease="${key.replace(/"/g, '&quot;')}" data-checkbox="1">`;
         html += `<input type="checkbox" ${chk ? 'checked' : ''}> ${name}${code ? `<span class="code">${code}</span>` : ''}</label>`;
         if (isOther) {
-          const specKey = c.id + '||' + d;
+          const specKey = c.id + '||' + d + '||' + fi;
           html += `<div class="other-spec" id="spec_${fi}_${c.id}" style="${chk ? '' : 'display:none'}">`;
-          html += `<input type="text" placeholder="Especifique..." value="${(otherSpecs[specKey] || '').replace(/"/g, '&quot;')}" oninput="setSpec('${c.id}','${d.replace(/'/g, "\\'")}',this.value)">`;
+          html += `<input type="text" placeholder="Especifique..." value="${(otherSpecs[specKey] || '').replace(/"/g, '&quot;')}" oninput="this.value=capFirst(this.value); setSpec(${fi},'${c.id}','${d.replace(/'/g, "\\'")}',this.value)" onblur="this.value=capSpec(this.value); setSpec(${fi},'${c.id}','${d.replace(/'/g, "\\'")}',this.value)">`;
           html += `</div>`;
         }
         html += `</div>`;
