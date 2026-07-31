@@ -196,8 +196,37 @@
 </template>
 
 <script>
+  // =========================================================================
+  // FAMILY-FIRST VIEW (Antecedentes Familiares)
+  // -------------------------------------------------------------------------
+  // UX model: the user navigates ONE FAMILY MEMBER at a time (tabs) and
+  // checks diseases per category. The right SIDEBAR accumulates every checked
+  // disease across all members ("Padecimientos registrados"), grouped by
+  // category.
+  //
+  // Key data structures:
+  //  - `registered[diseaseKey]` -> { families: Map<fi, label> }
+  //    * Standard diseases use the plain disease name as the key.
+  //    * The catch-all option uses the COMPOSITE key `catId||Otro` so that
+  //      "Otro" in different categories never collides (same convention as
+  //      condition_first.html / matrix.html).
+  //  - `otherSpecs[catId||disease||fi]` -> custom "Otro" free text.
+  //    Per-family-member keying (trailing `||fi`) lets each relative type a
+  //    DIFFERENT custom padecimiento without overwriting the others.
+  //  - `viveState[fi]` -> { vive: boolean|null, cause: string }
+  //    Alive/deceased + cause of death per family member.
+  //
+  // The sidebar splits composite "Otro" entries into sub-groups by the
+  // NORMALIZED custom text (trim + lowercase): equal texts group into one
+  // card; different texts render as separate cards.
+  // =========================================================================
+
+  // Shown in the sidebar while nothing has been registered yet.
   const EMPTY_SIDEBAR = '<div class="sidebar-empty"><span class="icon">📋</span>Selecciona un padecimiento en los familiares<br>para agregarlo aquí</div>';
 
+  // The six family members. `fi` (array index) is the stable identifier used
+  // everywhere; `id` is a slug and `label` is the human-readable name shown
+  // in tabs and sidebar tags.
   const familyMembers = [
     { id: 'padre',    label: 'Padre' },
     { id: 'madre',    label: 'Madre' },
@@ -207,6 +236,10 @@
     { id: 'abuela_p', label: 'Abuela paterna' },
   ];
 
+  // Disease catalog. Each category has a stable `id` (`c4_N`), a label and a
+  // list of diseases. Most end with an "Otro"/"Otro (Especifique)" catch-all
+  // option. The trailing `(CODE)` on each disease is a FHIR/ICD reference that
+  // is parsed out for display as a pill badge.
   const categories = [
     { id: 'c4_1', label: '4.1 Diabetes, colesterol y metabolismo', diseases: [
       'Diabetes (Block 2-5A1)', 'Prediabetes (5A40)', 'Obesidad (5B81)',
@@ -265,16 +298,25 @@
     ]},
   ];
 
+  // ---- State --------------------------------------------------------------
+  // `registered` is the source of truth for the sidebar: disease key -> which
+  // family members have it. `otherSpecs` holds the custom "Otro" free text per
+  // (category, disease, member). `viveState` holds the alive/deceased answers.
+  // `activeTab` is the currently visible family member tab.
   const registered = {};
   const otherSpecs = {};
   const viveState = {};
   let activeTab = 0;
 
+  // Toggles the off-canvas sidebar on narrow screens (<=820px).
   function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('overlay').classList.toggle('visible');
   }
 
+  // Stores alive/deceased per member and reveals/hides the cause-of-death
+  // field. Two ids are toggled because the field is rendered once per tab
+  // ("cause_tab_") and once inside the sidebar ("cause_all_").
   function setVive(fi, val) {
     if (!viveState[fi]) viveState[fi] = { vive: null, cause: '' };
     viveState[fi].vive = val;
@@ -285,28 +327,49 @@
     });
   }
 
+  // Persists the cause-of-death text per member.
   function setCause(fi, val) {
     if (!viveState[fi]) viveState[fi] = { vive: null, cause: '' };
     viveState[fi].cause = val;
   }
 
+  // capSpec: final form used for STORAGE and sidebar display. Trims both ends
+  // and capitalizes the first letter of every word ("otro padre" -> "Otro
+  // Padre"). The capitalized value is the REAL stored value so exports (e.g.
+  // Excel) receive already-formatted text. No CSS text-transform is used.
   function capSpec(s) {
     return (s || '').trim().replace(/(^|\s)(\S)/g, (_, p1, p2) => p1 + p2.toUpperCase());
   }
 
+  // capFirst: LIVE version used inside oninput while the user is typing. It
+  // capitalizes words but deliberately does NOT trim the trailing space —
+  // trimming on every keystroke would eat the space between words and prevent
+  // multi-word input ("otro padre" would become "Otropadre"). The final trim
+  // happens on blur via capSpec.
   function capFirst(s) {
     return (s || '').replace(/(^|\s)(\S)/g, (_, p1, p2) => p1 + p2.toUpperCase());
   }
 
+  // normSpec: normalization key used to DECIDE whether two custom "Otro"
+  // texts are the same (trim + lowercase). This makes grouping case- and
+  // space-insensitive: "OTRO en padre" == "otro en padre".
   function normSpec(s) {
     return (s || '').trim().toLowerCase();
   }
 
+  // Saves the custom "Otro" text. The key MUST include `||fi` so each family
+  // member owns its own text; otherwise a member's text would overwrite
+  // another member's (the original bug this design fixes). Only the sidebar
+  // re-renders here (not the main panel) so the input keeps focus while
+  // typing.
   function setSpec(fi, catId, disease, val) {
     otherSpecs[catId + '||' + disease + '||' + fi] = capSpec(val);
     renderSidebar();
   }
 
+  // Resolves which category a disease key belongs to. Composite keys
+  // (`catId||disease`) carry the category as their first segment; plain
+  // disease names are located by scanning the catalog.
   function findCat(disease) {
     const parts = disease.split('||');
     if (parts.length === 2) return parts[0];
@@ -314,12 +377,16 @@
     return '';
   }
 
+  // Registers a disease for a member. Creating the entry if needed; members
+  // are stored in a Map keyed by `fi` (value = display label for sidebar tags).
   function addDisease(fi, disease) {
     if (!registered[disease]) registered[disease] = { families: new Map() };
     registered[disease].families.set(fi, familyMembers[fi].label);
     sync();
   }
 
+  // Unregisters a disease for a member; removes the whole entry when no
+  // member has it left, keeping `registered` clean.
   function removeDisease(fi, disease) {
     if (!registered[disease]) return;
     registered[disease].families.delete(fi);
@@ -327,10 +394,21 @@
     sync();
   }
 
+  // True when `fi` has the given disease checked. Uses optional chaining so an
+  // unknown disease key safely returns false.
   function isChecked(fi, disease) {
     return registered[disease]?.families.has(fi) ?? false;
   }
 
+  // Renders the right sidebar ("Padecimientos registrados").
+  // 1. Groups registered diseases by category (keeping catalog order).
+  // 2. Composite keys (`catId||Otro`) are split into sub-groups by the
+  //    NORMALIZED custom text:
+  //    - members with the same text (case/space-insensitive) share ONE card
+  //    - members with different texts get SEPARATE cards, each with its own
+  //      family tags — this is the intended fix for the "Otro" collision.
+  //    - members who checked "Otro" but typed nothing group under plain "Otro".
+  // 3. Plain diseases render one card per disease with all their family tags.
   function renderSidebar() {
     const body = document.getElementById('sidebarBody');
     document.getElementById('regCount').textContent = Object.keys(registered).length;
@@ -353,6 +431,9 @@
         const data = registered[disease];
         const parts = disease.split('||');
         if (parts.length === 2) {
+          // Composite "Otro" entry: partition members by normalized text.
+          // `sub` is keyed by normSpec; each bucket keeps the display text
+          // (capSpec) plus the members that wrote that exact text.
           const sub = {};
           for (const [fi, fmLabel] of data.families) {
             const specKey = disease + '||' + fi;
@@ -365,6 +446,7 @@
             html += sdcCard(label, g.families);
           }
         } else {
+          // Standard disease: strip the trailing code for the name pill.
           const codeMatch = disease.match(/\(([^)]+)\)$/);
           const code = codeMatch ? codeMatch[1] : '';
           const name = codeMatch ? disease.slice(0, disease.lastIndexOf('(')).trim() : disease;
@@ -376,6 +458,8 @@
     body.innerHTML = html;
   }
 
+  // Shared sidebar card builder: name (+ optional code badge) and the family
+  // member tags that registered it. Used by both plain and "Otro" entries.
   function sdcCard(name, families, code) {
     let h = `<div class="sdc">`;
     h += `<div class="sdc-header"><span class="sdc-name">${name}</span>${code ? `<span class="sdc-code">${code}</span>` : ''}</div>`;
@@ -387,12 +471,16 @@
     return h;
   }
 
+  // Switches the visible tab by toggling .active on the button and its panel.
+  // (State is never destroyed on switch — vive/cause persist in viveState.)
   function switchTab(i) {
     activeTab = i;
     document.querySelectorAll('.tab-btn').forEach((b, j) => b.classList.toggle('active', j === i));
     document.querySelectorAll('.panel').forEach((p, j) => p.classList.toggle('active', j === i));
   }
 
+  // Builds the tab buttons and one panel per family member. Called once at
+  // startup (and on reset); tab content is refreshed later via sync().
   function render() {
     const tabC = document.getElementById('tabContainer');
     const panelC = document.getElementById('panelContainer');
@@ -414,6 +502,8 @@
     });
   }
 
+  // HTML for one member's panel: the "¿Vive actualmente?" section followed by
+  // the collapsible disease categories. Radio values come from viveState.
   function renderTabHTML(fi) {
     const fm = familyMembers[fi];
     const vs = viveState[fi] || {};
@@ -427,6 +517,13 @@
     return html;
   }
 
+  // HTML for the collapsible category cards of one member.
+  // - Each disease renders a checkbox label (`data-disease` carries the key:
+  //   plain name, or `catId||Otro` composite for the catch-all).
+  // - For "Otro" rows, an inline spec input appears when checked. The key
+  //   `catId||d||fi` is per-member, and the value is read from otherSpecs.
+  //   oninput uses capFirst (space-preserving live capitalization) and onblur
+  //   uses capSpec (final trim + capitalize), both persisting via setSpec.
   function renderCategoriesHTML(fi) {
     let html = '';
     categories.forEach(c => {
@@ -457,12 +554,17 @@
     return html;
   }
 
+  // Refresh: re-renders the sidebar (accumulated diseases) and rebuilds ONLY
+  // the active tab's panel HTML. Other panels keep their state because data
+  // lives in `registered` / `otherSpecs` / `viveState`, not in the DOM.
   function sync() {
     renderSidebar();
     const p = document.getElementById('panel_' + familyMembers[activeTab].id);
     if (p) p.innerHTML = renderTabHTML(activeTab);
   }
 
+  // Wipes all interaction state (selections, custom texts, alive/deceased)
+  // after a confirmation, then rebuilds tabs and sidebar from scratch.
   function resetAll() {
     if (!confirm('¿Borrar todos los datos ingresados?\nEsta acción eliminará todas las selecciones y textos especificados.')) return;
     Object.keys(registered).forEach(k => delete registered[k]);
@@ -472,6 +574,9 @@
     sync();
   }
 
+  // Populates the top action bar with the red "Limpiar todo" button. Called
+  // once at startup only — calling it inside resetAll() would duplicate the
+  // button each reset.
   function renderFilterBar() {
     const bar = document.getElementById('filterBar');
     const resetBtn = document.createElement('button');
@@ -481,6 +586,9 @@
     bar.appendChild(resetBtn);
   }
 
+  // Event delegation for checkbox labels: clicking anywhere on a disease-item
+  // (except the native input itself) toggles the checkbox manually. This lets
+  // the whole row act as the click target.
   document.addEventListener('click', function(e) {
     const item = e.target.closest('.disease-item[data-checkbox]');
     if (item && !e.target.matches('input')) {
@@ -493,6 +601,9 @@
     }
   });
 
+  // Native change handler for the checkbox inputs (keyboard / direct click on
+  // the input). Both paths funnel into addDisease/removeDisease so the
+  // sidebar and state stay in sync.
   document.addEventListener('change', function(e) {
     if (e.target.matches('.disease-item[data-checkbox] input')) {
       const item = e.target.closest('.disease-item[data-checkbox]');
@@ -503,9 +614,10 @@
     }
   });
 
-  render();
-  renderSidebar();
-  renderFilterBar();
+  // ---- Startup -------------------------------------------------------------
+  render();            // build all member tabs + panels
+  renderSidebar();     // empty sidebar placeholder
+  renderFilterBar();   // "Limpiar todo" button (single call)
 </script>
 </body>
 </html>

@@ -117,9 +117,37 @@
 </div>
 
 <script>
+  // =========================================================================
+  // MATRIX VIEW (Antecedentes Familiares)
+  // -------------------------------------------------------------------------
+  // UX model: a single 2D GRID renders every disease (rows, grouped by
+  // category) against every family member (columns). The user ticks the cell
+  // where a member has a disease. Custom "Otro" entries turn the cell into a
+  // free-text input instead of a checkbox.
+  //
+  // Key data structures:
+  //  - `matrix[diseaseKey]` -> Set<fi>
+  //    `fi` is the family-member array index. EVERY disease key is COMPOSITE
+  //    (`catId||disease`) — including standard diseases — so "Otro" in
+  //    different categories can never collide (the original bug this design
+  //    fixes). The entry exists only while at least one member is checked.
+  //  - `otherSpecs[catId||Otro||fi]` -> custom "Otro" free text.
+  //    Keyed PER COORDINATE (trailing `||fi`) so each member's custom text
+  //    lives in its own cell and never overwrites another member's.
+  //  - `catStates[catId]` -> boolean (undefined = open) for category collapse.
+  //  - `activeFilter` -> currently selected category filter id (or null).
+  // =========================================================================
+
+  // The six family members. `fi` (array index) is the stable identifier used
+  // everywhere (Set members, data-attributes, otherSpecs keys).
   const familyMembers = [
     'Padre', 'Madre', 'Abuelo materno', 'Abuelo paterno', 'Abuela materna', 'Abuela paterna'
   ];
+
+  // Disease catalog. Each category has a stable `id` (`c4_N`), a label and a
+  // list of diseases. Most end with an "Otro"/"Otro (Especifique)" catch-all
+  // option. The trailing `(CODE)` on each disease is a FHIR/ICD reference that
+  // is parsed out for display as a pill badge.
   const categories = [
     { id: 'c4_1', label: '4.1 Diabetes, colesterol y metabolismo', diseases: [
       'Diabetes (Block 2-5A1)', 'Prediabetes (5A40)', 'Obesidad (5B81)',
@@ -178,11 +206,19 @@
     ]},
   ];
 
+  // ---- State --------------------------------------------------------------
+  // `matrix` maps a composite disease key to the Set of members that have it.
+  // `otherSpecs` holds the custom "Otro" text per coordinate. `activeFilter`
+  // drives the category quick filters; `catStates` remembers collapsed
+  // categories across re-renders.
   const matrix = {};
   const otherSpecs = {};
   let activeFilter = null;
   let catStates = {};
 
+  // Toggles a standard (non-"Otro") disease for a member in the matrix Set and
+  // refreshes only the summary counter — the grid itself is NOT rebuilt here,
+  // so the checkbox keeps the browser's native toggle animation.
   function toggleCheck(fi, disease) {
     if (!matrix[disease]) matrix[disease] = new Set();
     const s = matrix[disease];
@@ -192,10 +228,18 @@
     updateCount();
   }
 
+  // True when `fi` has the given disease checked. Uses optional chaining so an
+  // unknown disease key safely returns false.
   function isChecked(fi, disease) {
     return matrix[disease]?.has(fi) ?? false;
   }
 
+  // Toggles a custom "Otro" cell for (member, category):
+  //  - First click: creates the coordinate key with an empty string, then
+  //    re-renders and focuses the fresh spec input so the user can type
+  //    immediately.
+  //  - Second click (while a spec exists): deletes the entry and re-renders,
+  //    reverting the cell back to a checkbox.
   function toggleOther(fi, catId, disease) {
     const key = catId + '||' + disease + '||' + fi;
     if (otherSpecs[key] !== undefined) {
@@ -211,6 +255,8 @@
     }
   }
 
+  // Wipes all interaction state (matrix ticks, custom texts, collapsed
+  // categories) after a confirmation, then rebuilds the grid from scratch.
   function resetAll() {
     if (!confirm('¿Borrar todos los datos ingresados?\nEsta acción eliminará todas las selecciones y textos especificados en la matriz.')) return;
     Object.keys(matrix).forEach(k => delete matrix[k]);
@@ -220,6 +266,8 @@
     updateCount();
   }
 
+  // Global total shown in the app bar: every member in the matrix Sets plus
+  // one for each custom "Otro" coordinate that has an entry.
   function updateCount() {
     let total = 0;
     for (const disease in matrix) total += matrix[disease].size;
@@ -227,6 +275,33 @@
     document.getElementById('totalChecked').textContent = total;
   }
 
+  // capSpec: final form used for STORAGE. Trims both ends and capitalizes the
+  // first letter of every word ("otro padre" -> "Otro Padre"). The capitalized
+  // value is the REAL stored value so exports (e.g. Excel) receive
+  // already-formatted text. No CSS text-transform is used.
+  function capSpec(s) {
+    return (s || '').trim().replace(/(^|\s)(\S)/g, (_, p1, p2) => p1 + p2.toUpperCase());
+  }
+
+  // capFirst: LIVE version used inside oninput while the user is typing. It
+  // capitalizes words but deliberately does NOT trim the trailing space —
+  // trimming on every keystroke would eat the space between words and prevent
+  // multi-word input ("otro padre" would become "Otropadre"). The final trim
+  // happens on blur via capSpec.
+  function capFirst(s) {
+    return (s || '').replace(/(^|\s)(\S)/g, (_, p1, p2) => p1 + p2.toUpperCase());
+  }
+
+  // Builds the whole grid HTML:
+  //  1. Header row: "Padecimiento" + one column per family member.
+  //  2. One `.mg-cat` banner per category (collapsible via catStates) followed
+  //     by one `.mg-row` per disease. Every cell is a checkbox carrying
+  //     `data-fi` + `data-disease` (composite key). "Otro" rows read their
+  //     coordinate from otherSpecs: if an entry exists the cell becomes a
+  //     `.spec-input` (with the text as a `title` tooltip), otherwise a plain
+  //     checkbox. `data-spec` carries the coordinate key for the input/change
+  //     listeners.
+  //  3. Summary row with the per-member totals (standard ticks + "Otro" cells).
   function render() {
     const grid = document.getElementById('matrixGrid');
     let html = '';
@@ -283,6 +358,9 @@
     grid.innerHTML = html;
   }
 
+  // Collapses/expands a category banner. Rows are hidden via inline
+  // `display:none` (state is remembered in catStates so it survives re-renders
+  // triggered by checkboxes/inputs) and the chevron flips via `.closed`.
   function toggleCat(catId) {
     catStates[catId] = catStates[catId] === false ? true : false;
     const rows = document.querySelectorAll(`.mg-row[data-cat="${catId}"]`);
@@ -290,6 +368,10 @@
     document.getElementById('catHdr_' + catId).classList.toggle('closed');
   }
 
+  // Immediate (non-debounced) filter: hides rows whose disease name doesn't
+  // match the search query AND/OR the active category filter. Unlike the other
+  // two views there are no wrapping category cards to hide, so rows are toggled
+  // directly.
   function filterDiseases() {
     const q = document.getElementById('searchInput')?.value?.toLowerCase() || '';
     document.querySelectorAll('.mg-row').forEach(row => {
@@ -300,6 +382,9 @@
     });
   }
 
+  // Populates the filter bar: a search input + "Todas" + one quick button per
+  // category + the red "Limpiar todo" button. Called once at startup only —
+  // calling it inside resetAll() would duplicate the controls on each reset.
   function renderFilterBar() {
     const bar = document.getElementById('filterBar');
     const search = document.createElement('input');
@@ -329,6 +414,10 @@
     bar.appendChild(resetBtn);
   }
 
+  // Change listener for the grid checkboxes. Distinguishes the two cases from
+  // the disease key's second segment:
+  //  - "Otro"/"Otro (Especifique)" -> toggleOther (turns the cell into an input)
+  //  - standard disease -> toggleCheck + re-render (to refresh summary state)
   document.addEventListener('change', function(e) {
     if (e.target.matches('.mg-row input[type="checkbox"]')) {
       const fi = parseInt(e.target.dataset.fi);
@@ -344,22 +433,38 @@
     }
   });
 
+  // Live input listener for the custom "Otro" fields: capitalizes in real time
+  // (capFirst), persists the text into otherSpecs and mirrors it to the
+  // `title` tooltip (the column is too narrow to read long values inline). No
+  // re-render, so the input keeps focus.
   document.addEventListener('input', function(e) {
     if (e.target.matches('.spec-input')) {
+      e.target.value = capFirst(e.target.value);
       otherSpecs[e.target.dataset.spec] = e.target.value;
       e.target.title = e.target.value;
     }
   });
 
+  // When a custom "Otro" field is blurred: an EMPTY value is treated as if the
+  // cell were never activated (entry removed, grid re-renders, cell reverts to
+  // a checkbox); a non-empty value is finalized with capSpec (trim + capitalize
+  // the last word), stored and shown, so storage always keeps the clean form.
   document.addEventListener('focusout', function(e) {
-    if (e.target.matches('.spec-input') && e.target.value === '') {
-      delete otherSpecs[e.target.dataset.spec];
-      render();
+    if (e.target.matches('.spec-input')) {
+      if (e.target.value === '') {
+        delete otherSpecs[e.target.dataset.spec];
+        render();
+      } else {
+        e.target.value = capSpec(e.target.value);
+        otherSpecs[e.target.dataset.spec] = e.target.value;
+        e.target.title = e.target.value;
+      }
     }
   });
 
-  renderFilterBar();
-  render();
+  // ---- Startup -------------------------------------------------------------
+  renderFilterBar();   // search + filters + "Limpiar todo" (single call)
+  render();            // initial grid render
 </script>
 </body>
 </html>
