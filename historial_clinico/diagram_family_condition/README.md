@@ -16,17 +16,17 @@
 
 ## Vistas interactivas (HTML autónomos)
 
-Las tres vistas capturan los mismos datos y comparten reglas:
+Las **cinco vistas** capturan los mismos datos y comparten las mismas reglas de captura:
 
 - **"Otro"**: cada categoría termina en una opción `Otro` que despliega un input de texto libre con **capitalización automática** (`capFirst` al escribir, `capSpec` al salir). Las claves de estado son compuestas (`catId||disease[||fi]`) para evitar colisiones entre categorías y familiares.
 - **"¿Vive actualmente?"**: respondido **una vez por familiar** (no por padecimiento), evitando redundancia. Si responde "No", aparece el campo de causa de fallecimiento.
-- **Barra de acción superior** (separada de los tabs de filtro): botón **"Exportar CSV"** y **"Limpiar todo"** (con confirmación).
-- **Filtros**: búsqueda por texto y tabs de categorías (Todas + 4.1–4.13).
+- **Barra de acción superior**: botón **"Exportar CSV"** y **"Limpiar todo"** (con confirmación). En las vistas listadas, separada de los tabs de filtro; en el árbol, anclada en la barra superior.
+- **Filtros**: búsqueda por texto (tabs de categorías "Todas + 4.1–4.13" en las vistas listadas; en el árbol, la búsqueda vive dentro del panel lateral).
 - Fila **"¿Aún vive?"** en matrix: los checkboxes están **marcados por defecto** (viven); al desmarcar uno aparece el input de causa en esa celda.
 
 ### Export CSV
 
-Las tres vistas exportan el **mismo formato transpuesto** (por eso el nombre del archivo no revela la vista de origen):
+Las cinco vistas exportan el **mismo formato transpuesto** (por eso el nombre del archivo no revela la vista de origen):
 
 - **Columnas**: los 6 familiares.
 - **Filas**: `¿Aún vive?` (`Sí`/`No`, vacío si no se respondió) → `Causa de muerte` → una fila separadora por categoría → una fila por padecimiento.
@@ -55,7 +55,7 @@ En el flujo `condition_first_matrix.md` el usuario navega por padecimientos y se
 1. Usuario selecciona "Diabetes" → marca "Padre" → se pregunta "¿Padre vive?"
 2. Usuario selecciona "Hipertensión" → vuelve a marcar "Padre" → se preguntaría "¿Padre vive?" de nuevo
 
-**Solución implementada:** La pregunta "¿Vive?" está elevada al ámbito del familiar, no del padecimiento. Se responde **una vez por familiar** y el estado se conserva durante la sesión (en condition-first y family-first dentro de la tarjeta del familiar en el sidebar; en matrix como fila fija "¿Aún vive?" bajo la cabecera).
+**Solución implementada:** La pregunta "¿Vive?" está elevada al ámbito del familiar, no del padecimiento. Se responde **una vez por familiar** y el estado se conserva durante la sesión (en condition-first y family-first dentro de la tarjeta del familiar en el sidebar; en matrix como fila fija "¿Aún vive?" bajo la cabecera; en el árbol, dentro del panel lateral del familiar).
 
 ### Mapa de almacenamiento por vista
 
@@ -66,10 +66,13 @@ Cada vista define su estado en memoria; el esquema exacto está comentado en el 
 | `condition_first.html` | nombre plano; `catId\|\|disease` solo para "Otro" | `otherSpecs[catId\|\|disease]` — **compartido por categoría** | `sidebar[fi].vive` (boolean o null) + `sidebar[fi].cause` |
 | `family_first.html` | nombre plano; `catId\|\|disease` solo para "Otro" | `otherSpecs[catId\|\|disease\|\|fi]` — **por miembro** | `viveState[fi] = { vive, cause }` |
 | `matrix.html` | `catId\|\|disease` **para todos** (anti-colisión) | `otherSpecs[catId\|\|Otro\|\|fi]` — **por coordenada** | `viveState[fi] = { dead, cause }` (fila "¿Aún vive?" marcada por defecto) |
+| `family_tree.html` | nombre plano; `catId\|\|disease` solo para "Otro" | `otherSpecs[catId\|\|disease\|\|fi]` — **por miembro** | `viveState[fi] = { vive, cause }` |
+| `family_tree_v2.html` | nombre plano; `catId\|\|disease` solo para "Otro" | `otherSpecs[catId\|\|disease\|\|fi]` — **por miembro** | `viveState[fi] = { vive, cause }` |
 
 Diferencias clave a recordar antes de modificar:
-- El texto "Otro" **no** se almacena igual en las tres vistas (por categoría vs por miembro vs por coordenada).
-- En matrix **todas** las claves son compuestas; en las otras dos solo las de "Otro".
+- El texto "Otro" **no** se almacena igual en todas las vistas (por categoría vs por miembro vs por coordenada).
+- En matrix **todas** las claves son compuestas; en las demás solo las de "Otro".
+- El árbol (`family_tree.html` / `family_tree_v2.html`) guarda el texto "Otro" **por miembro** (igual que `family_first`) y usa los mismos acordeones del catálogo dentro de un panel lateral.
 - La capitalización del texto libre se hace en JS (`capFirst` en vivo, `capSpec` al salir), no con CSS, para que el valor exportado ya llegue formateado.
 
 ## Origen de los datos

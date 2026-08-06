@@ -73,6 +73,10 @@ Diabetes     |   X   |       |       X        | ...
 - El almacenamiento del texto "Otro" difiere por vista (por categoría vs por miembro vs por coordenada), lo que exige leer el bloque de comentarios de cada archivo antes de modificarlo.
 - La vista `condition_first.html` comparte el texto "Otro" por categoría: no permite textos distintos por familiar en un mismo "Otro".
 
+## Actualización (2026-07-31): genograma interactivo
+
+Posteriormente se añadieron dos versiones de un **árbol genealógico interactivo** — `family_tree.html` (Material You) y `family_tree_v2.html` (Light Glassmorphism) — en el mismo directorio, como cuarta/quinta representación de exploración del flujo. Mantienen las reglas de este ADR (claves compuestas para el "Otro", "¿Vive?" elevado al ámbito del familiar, capitalización del texto libre en JS y export CSV transpuesto uniforme) y añaden un panel lateral de captura por familiar, insignias de categoría con tooltip y líneas SVG conectoras. La granularidad del texto "Otro" es **por miembro** (`catId||disease||fi`), igual que en `family_first.html`. Ver [reporte 2026-07-31](../reports/2026-07-31_FEATURE_prototipo-arbol-genealogico-antecedentes-familiares.md).
+
 ## Referencias
 - Diagrama fuente: `docs/historial_clinico/diagram_family_condition/Diagram_family-condition-matrix.drawio`
 - Documentación de la propuesta: `docs/historial_clinico/diagram_family_condition/README.md`

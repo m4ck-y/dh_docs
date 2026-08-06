@@ -1091,9 +1091,9 @@
   const viveState = {};
   let currentDrawerFi = null;
 
-  // Capitalization Helpers
-  function capFirst(s) { return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
-  function capSpec(s) { s = s.trim(); return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+  // Capitalization Helpers (mismo comportamiento que las demás vistas: capitaliza cada palabra)
+  function capFirst(s) { return (s || '').replace(/(^|\s)(\S)/g, (_, p1, p2) => p1 + p2.toUpperCase()); }
+  function capSpec(s) { return (s || '').trim().replace(/(^|\s)(\S)/g, (_, p1, p2) => p1 + p2.toUpperCase()); }
 
   function isChecked(fi, key) {
     return registered[key]?.families.has(fi) ?? false;
