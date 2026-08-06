@@ -11,6 +11,8 @@
 | `condition_first.html` | Vista interactiva (autónoma) | Condición primero: se navega por padecimientos y se marcan los familiares |
 | `family_first.html` | Vista interactiva (autónoma) | Familiar primero: tabs por miembro con categorías desplegables |
 | `matrix.html` | Vista interactiva (autónoma) | Matriz 2D: filas = padecimientos, columnas = familiares |
+| `family_tree.html` | Vista interactiva (autónoma) | Árbol genealógico interactivo (Material You): genograma visual con panel lateral |
+| `family_tree_v2.html` | Vista interactiva (autónoma) | Árbol genealógico v2 (Light Glassmorphism): diseño claro con íconos vectoriales online (man, woman, elderly, person) |
 
 ## Vistas interactivas (HTML autónomos)
 

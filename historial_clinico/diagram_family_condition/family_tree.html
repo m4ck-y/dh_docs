@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antecedentes Heredofamiliares — Árbol Genealógico Interactivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --primary: #6750A4;
+    --on-primary: #FFFFFF;
+    --primary-container: #EADDFF;
+    --on-primary-container: #21005E;
+    
+    --secondary: #625B71;
+    --secondary-container: #E8DEF8;
+    --on-secondary-container: #1D192B;
+    
+    --tertiary: #7D5260;
+    --tertiary-container: #FFD8E4;
+    --on-tertiary-container: #31111D;
+    
+    --surface: #FFFBFE;
+    --surface-dim: #F4EFF4;
+    --surface-container-lowest: #FFFFFF;
+    --surface-container-low: #F7F2FA;
+    --surface-container: #F3EDF7;
+    --surface-container-high: #ECE6F0;
+    --surface-container-highest: #E6E0E9;
+    
+    --on-surface: #1C1B1F;
+    --on-surface-variant: #49454F;
+    --outline: #79747E;
+    --outline-variant: #CAC4D0;
+    
+    --error: #B3261E;
+    --error-container: #F9DEDC;
+    --on-error-container: #410E0B;
+    
+    --success: #2e7d32;
+    --success-container: #d1e7dd;
+    --on-success-container: #0f5132;
+    
+    --radius-xs: 4px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    
+    --shadow-1: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.12);
+    --shadow-2: 0 4px 12px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.06);
+    --shadow-3: 0 8px 24px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08);
+    
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--surface-dim);
+    color: var(--on-surface);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* Top App Bar */
+  .app-bar {
+    background: rgba(255, 251, 254, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 12px 24px;
+    box-shadow: var(--shadow-1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--outline-variant);
+  }
+
+  .app-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .app-title-group .icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--primary-container);
+    color: var(--on-primary-container);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-title-group h1 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--on-surface);
+    line-height: 1.2;
+  }
+
+  .app-title-group .subtitle {
+    font-size: 0.75rem;
+    color: var(--on-surface-variant);
+  }
+
+  .app-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .md-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: var(--radius-full);
+    font-family: var(--font);
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .md-button.filled {
+    background: var(--primary);
+    color: var(--on-primary);
+    box-shadow: var(--shadow-1);
+  }
+  .md-button.filled:hover {
+    background: #523b8e;
+    box-shadow: var(--shadow-2);
+  }
+
+  .md-button.tonal {
+    background: var(--secondary-container);
+    color: var(--on-secondary-container);
+  }
+  .md-button.tonal:hover {
+    background: #dcd0f0;
+  }
+
+  .md-button.outlined {
+    background: transparent;
+    border: 1px solid var(--outline);
+    color: var(--on-surface-variant);
+  }
+  .md-button.outlined:hover {
+    background: var(--surface-container-high);
+  }
+
+  .md-button.error {
+    background: var(--error-container);
+    color: var(--on-error-container);
+  }
+  .md-button.error:hover {
+    background: #f2c7c5;
+  }
+
+  /* Main Container */
+  .main-container {
+    flex: 1;
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Instruction Banner */
+  .info-banner {
+    background: var(--surface-container-low);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: var(--shadow-1);
+  }
+
+  .info-banner .icon {
+    color: var(--primary);
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .info-banner .content {
+    font-size: 0.85rem;
+    color: var(--on-surface-variant);
+    line-height: 1.5;
+  }
+
+  .info-banner .content strong {
+    color: var(--on-surface);
+  }
+
+  /* Stats Counter Bar */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .stat-chip {
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-1);
+  }
+
+  .stat-chip strong {
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  /* Genogram / Family Tree Canvas */
+  .tree-wrapper {
+    background: var(--surface-container-lowest);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--outline-variant);
+    padding: 30px 20px;
+    box-shadow: var(--shadow-2);
+    position: relative;
+    overflow-x: auto;
+  }
+
+  .tree-canvas {
+    min-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+  }
+
+  /* SVG Lines Layer */
+  .tree-svg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .tree-svg-layer path {
+    stroke: var(--outline-variant);
+    stroke-width: 2px;
+    fill: none;
+    stroke-dasharray: 4, 4;
+    transition: stroke var(--transition-medium), stroke-width var(--transition-medium);
+  }
+
+  .tree-level {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    z-index: 2;
+  }
+
+  .tree-level.grandparents { gap: 40px; }
+  .tree-level.parents { gap: 180px; }
+  .tree-level.patient { gap: 0; }
+
+  .tree-branch-group {
+    display: flex;
+    gap: 20px;
+  }
+
+  /* Member Node Card */
+  .node-card {
+    background: var(--surface-container-low);
+    border: 2px solid var(--outline-variant);
+    border-radius: var(--radius-lg);
+    width: 200px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: var(--transition-medium);
+    position: relative;
+    box-shadow: var(--shadow-1);
+    user-select: none;
+  }
+
+  .node-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-3);
+    background: var(--surface-container-lowest);
+  }
+
+  .node-card.active-registered {
+    border-color: var(--primary);
+    background: var(--primary-container);
+  }
+
+  .node-card.patient-node {
+    border-color: var(--secondary);
+    background: var(--secondary-container);
+    cursor: default;
+  }
+  .node-card.patient-node:hover {
+    transform: none;
+    box-shadow: var(--shadow-1);
+  }
+
+  .node-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-full);
+    background: var(--surface-container-high);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    position: relative;
+    transition: var(--transition-fast);
+  }
+
+  .node-card:hover .node-avatar {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+
+  .node-card.active-registered .node-avatar {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+
+  /* Status Indicator Halo */
+  .status-badge {
+    position: absolute;
+    bottom: 0;
+    right: -2px;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--surface);
+  }
+
+  .status-badge.alive { background: var(--success); }
+  .status-badge.deceased { background: var(--error); }
+  .status-badge.unknown { background: var(--outline); }
+
+  .node-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--on-surface);
+    text-align: center;
+  }
+
+  .node-status-text {
+    font-size: 0.72rem;
+    color: var(--on-surface-variant);
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .node-badges-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+    width: 100%;
+    min-height: 24px;
+  }
+
+  .disease-tag-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-full);
+    background: var(--surface-container-highest);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    box-shadow: var(--shadow-1);
+    position: relative;
+  }
+
+  .disease-tag-icon[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--on-surface);
+    color: var(--surface);
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .node-card-footer {
+    font-size: 0.7rem;
+    color: var(--primary);
+    font-weight: 600;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Drawer Overlay & Panel */
+  .drawer-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-medium);
+  }
+
+  .drawer-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .drawer-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 520px;
+    max-width: 92vw;
+    background: var(--surface-container-lowest);
+    box-shadow: var(--shadow-3);
+    z-index: 201;
+    transform: translateX(100%);
+    transition: transform var(--transition-medium);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .drawer-overlay.active .drawer-panel {
+    transform: translateX(0);
+  }
+
+  /* Drawer Header */
+  .drawer-header {
+    padding: 20px 24px;
+    background: var(--surface-container-low);
+    border-bottom: 1px solid var(--outline-variant);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .drawer-header-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .drawer-header-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--primary-container);
+    color: var(--on-primary-container);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .drawer-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--on-surface);
+  }
+
+  .drawer-header p {
+    font-size: 0.78rem;
+    color: var(--on-surface-variant);
+  }
+
+  .close-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    border: none;
+    background: transparent;
+    color: var(--on-surface-variant);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+  }
+  .close-icon-btn:hover {
+    background: var(--surface-container-high);
+    color: var(--on-surface);
+  }
+
+  /* Drawer Content Body */
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Section Box */
+  .section-card {
+    background: var(--surface-container-low);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .section-card-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Segmented Toggle for ¿Vive? */
+  .segmented-toggle {
+    display: flex;
+    background: var(--surface-container-high);
+    padding: 4px;
+    border-radius: var(--radius-full);
+    gap: 4px;
+  }
+
+  .segmented-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: var(--radius-full);
+    border: none;
+    background: transparent;
+    font-family: var(--font);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .segmented-btn.active.alive {
+    background: var(--success-container);
+    color: var(--on-success-container);
+    box-shadow: var(--shadow-1);
+  }
+
+  .segmented-btn.active.deceased {
+    background: var(--error-container);
+    color: var(--on-error-container);
+    box-shadow: var(--shadow-1);
+  }
+
+  .cause-input-wrap {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .cause-input-wrap.visible {
+    display: flex;
+  }
+
+  .cause-input-wrap label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+  }
+
+  .md-text-input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--outline);
+    background: var(--surface-container-lowest);
+    font-family: var(--font);
+    font-size: 0.85rem;
+    color: var(--on-surface);
+    outline: none;
+    transition: var(--transition-fast);
+  }
+
+  .md-text-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-container);
+  }
+
+  /* 80/20 Quick Chips */
+  .quick-chips-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .quick-chip {
+    padding: 8px 14px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container-lowest);
+    font-family: var(--font);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+
+  .quick-chip:hover {
+    background: var(--surface-container-high);
+    border-color: var(--primary);
+  }
+
+  .quick-chip.selected {
+    background: var(--primary-container);
+    border-color: var(--primary);
+    color: var(--on-primary-container);
+    font-weight: 700;
+  }
+
+  /* Search & Accordion Categories */
+  .drawer-search-box {
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .drawer-search-box input {
+    padding-left: 36px;
+  }
+
+  .drawer-search-box .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--on-surface-variant);
+    font-size: 20px;
+    pointer-events: none;
+  }
+
+  .category-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .accordion-item {
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-md);
+    background: var(--surface-container-lowest);
+    overflow: hidden;
+  }
+
+  .accordion-header {
+    padding: 12px 16px;
+    background: var(--surface-container);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--on-surface);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+
+  .accordion-header .chevron {
+    transition: transform var(--transition-fast);
+    font-size: 18px;
+  }
+
+  .accordion-item.open .accordion-header .chevron {
+    transform: rotate(180deg);
+  }
+
+  .accordion-body {
+    display: none;
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid var(--outline-variant);
+  }
+
+  .accordion-item.open .accordion-body {
+    display: flex;
+  }
+
+  .disease-checkbox-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.82rem;
+    color: var(--on-surface);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+
+  .disease-checkbox-item input[type="checkbox"] {
+    accent-color: var(--primary);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin-top: 2px;
+  }
+
+  .disease-code {
+    font-size: 0.68rem;
+    color: var(--on-surface-variant);
+    background: var(--surface-container-high);
+    padding: 1px 6px;
+    border-radius: var(--radius-full);
+    margin-left: 6px;
+  }
+
+  .other-spec-box {
+    margin-top: 4px;
+    margin-left: 28px;
+    display: none;
+  }
+
+  .other-spec-box.visible {
+    display: block;
+  }
+
+  /* Drawer Footer */
+  .drawer-footer {
+    padding: 16px 24px;
+    background: var(--surface-container-low);
+    border-top: 1px solid var(--outline-variant);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  /* Confirmation Modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-card {
+    background: var(--surface-container-lowest);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    width: 400px;
+    max-width: 100%;
+    box-shadow: var(--shadow-3);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .modal-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--on-surface);
+  }
+
+  .modal-card p {
+    font-size: 0.85rem;
+    color: var(--on-surface-variant);
+  }
+
+  .modal-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .app-bar { padding: 10px 16px; }
+    .main-container { padding: 12px; }
+    .tree-canvas { min-width: 780px; }
+    .drawer-panel { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Top App Bar -->
+  <header class="app-bar">
+    <div class="app-title-group">
+      <div class="icon-box">
+        <span class="material-symbols-rounded">account_tree</span>
+      </div>
+      <div>
+        <h1>Antecedentes Heredofamiliares</h1>
+        <div class="subtitle">Árbol Genealógico Interactivo • LiberSalus</div>
+      </div>
+    </div>
+    <div class="app-actions" id="filterBar">
+      <!-- Buttons will be injected via JS -->
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- Instruction Banner -->
+    <div class="info-banner">
+      <span class="material-symbols-rounded icon">touch_app</span>
+      <div class="content">
+        <strong>¿Cómo funciona?</strong> Toca sobre la tarjeta de cualquier familiar en el árbol (Padre, Madre, Abuelos) para desplegar su panel lateral. Podrás registrar si vive actualmente, su causa de fallecimiento y marcar sus enfermedades rápidamente.
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-chip">
+        <span class="material-symbols-rounded" style="color:var(--primary); font-size:18px;">group</span>
+        Familiares registrados: <strong id="statRelatives">0 / 6</strong>
+      </div>
+      <div class="stat-chip">
+        <span class="material-symbols-rounded" style="color:var(--primary); font-size:18px;">medical_information</span>
+        Padecimientos marcados: <strong id="statConditions">0</strong>
+      </div>
+    </div>
+
+    <!-- Genogram Canvas -->
+    <div class="tree-wrapper">
+      <div class="tree-canvas" id="treeCanvas">
+        <svg class="tree-svg-layer" id="treeSvg"></svg>
+
+        <!-- Level 1: Grandparents -->
+        <div class="tree-level grandparents">
+          <!-- Paternal Grandparents -->
+          <div class="tree-branch-group">
+            <div class="node-card" id="node_3" onclick="openDrawer(3)">
+              <div class="node-avatar">👴<div class="status-badge unknown" id="badge_3"></div></div>
+              <div class="node-title">Abuelo Paterno</div>
+              <div class="node-status-text" id="status_3">Sin registrar</div>
+              <div class="node-badges-grid" id="icons_3"></div>
+              <div class="node-card-footer"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+            </div>
+            <div class="node-card" id="node_5" onclick="openDrawer(5)">
+              <div class="node-avatar">👵<div class="status-badge unknown" id="badge_5"></div></div>
+              <div class="node-title">Abuela Paterna</div>
+              <div class="node-status-text" id="status_5">Sin registrar</div>
+              <div class="node-badges-grid" id="icons_5"></div>
+              <div class="node-card-footer"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+            </div>
+          </div>
+
+          <!-- Maternal Grandparents -->
+          <div class="tree-branch-group">
+            <div class="node-card" id="node_2" onclick="openDrawer(2)">
+              <div class="node-avatar">👴<div class="status-badge unknown" id="badge_2"></div></div>
+              <div class="node-title">Abuelo Materno</div>
+              <div class="node-status-text" id="status_2">Sin registrar</div>
+              <div class="node-badges-grid" id="icons_2"></div>
+              <div class="node-card-footer"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+            </div>
+            <div class="node-card" id="node_4" onclick="openDrawer(4)">
+              <div class="node-avatar">👵<div class="status-badge unknown" id="badge_4"></div></div>
+              <div class="node-title">Abuela Materna</div>
+              <div class="node-status-text" id="status_4">Sin registrar</div>
+              <div class="node-badges-grid" id="icons_4"></div>
+              <div class="node-card-footer"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Level 2: Parents -->
+        <div class="tree-level parents">
+          <div class="node-card" id="node_0" onclick="openDrawer(0)">
+            <div class="node-avatar">👨<div class="status-badge unknown" id="badge_0"></div></div>
+            <div class="node-title">Padre</div>
+            <div class="node-status-text" id="status_0">Sin registrar</div>
+            <div class="node-badges-grid" id="icons_0"></div>
+            <div class="node-card-footer"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+          </div>
+          <div class="node-card" id="node_1" onclick="openDrawer(1)">
+            <div class="node-avatar">👩<div class="status-badge unknown" id="badge_1"></div></div>
+            <div class="node-title">Madre</div>
+            <div class="node-status-text" id="status_1">Sin registrar</div>
+            <div class="node-badges-grid" id="icons_1"></div>
+            <div class="node-card-footer"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+          </div>
+        </div>
+
+        <!-- Level 3: Patient Anchor -->
+        <div class="tree-level patient">
+          <div class="node-card patient-node">
+            <div class="node-avatar">👤</div>
+            <div class="node-title">Paciente (Tú)</div>
+            <div class="node-status-text">Punto de referencia</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Side Drawer Overlay -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()">
+    <div class="drawer-panel" onclick="event.stopPropagation()">
+      <div class="drawer-header">
+        <div class="drawer-header-info">
+          <div class="drawer-header-avatar" id="drawerAvatar">👨</div>
+          <div>
+            <h2 id="drawerTitle">Padre</h2>
+            <p>Antecedentes personales de salud</p>
+          </div>
+        </div>
+        <button class="close-icon-btn" onclick="closeDrawer()"><span class="material-symbols-rounded">close</span></button>
+      </div>
+
+      <div class="drawer-body">
+
+        <!-- 1. Estado Vital -->
+        <div class="section-card">
+          <div class="section-card-title">
+            <span class="material-symbols-rounded">favorite</span> ¿Vive actualmente?
+          </div>
+          <div class="segmented-toggle">
+            <button class="segmented-btn" id="btnViveYes" onclick="setDrawerVive(true)">
+              <span class="material-symbols-rounded" style="font-size:18px;">check_circle</span> Sí, vive
+            </button>
+            <button class="segmented-btn" id="btnViveNo" onclick="setDrawerVive(false)">
+              <span class="material-symbols-rounded" style="font-size:18px;">cancel</span> No, falleció
+            </button>
+          </div>
+          <div class="cause-input-wrap" id="causeInputWrap">
+            <label>Causa de fallecimiento</label>
+            <input type="text" class="md-text-input" id="drawerCauseInput" placeholder="Ej. Paro cardíaco, Senectud..." oninput="onDrawerCauseInput(this.value)" onblur="onDrawerCauseBlur(this.value)">
+          </div>
+        </div>
+
+        <!-- 2. Acceso Rápido 80/20 -->
+        <div class="section-card">
+          <div class="section-card-title">
+            <span class="material-symbols-rounded">bolt</span> Acceso Rápido — Padecimientos Frecuentes
+          </div>
+          <div class="quick-chips-grid" id="quickChipsGrid">
+            <!-- Chips injected via JS -->
+          </div>
+        </div>
+
+        <!-- 3. Todas las Categorías (4.1 – 4.13) -->
+        <div class="section-card">
+          <div class="section-card-title">
+            <span class="material-symbols-rounded">list_alt</span> Catálogo Completo por Categorías (CIE-11)
+          </div>
+          <div class="drawer-search-box">
+            <span class="material-symbols-rounded search-icon">search</span>
+            <input type="text" class="md-text-input" placeholder="Buscar enfermedad..." oninput="filterDrawerCategories(this.value)">
+          </div>
+          <div class="category-accordion" id="categoryAccordion">
+            <!-- Accordion items injected via JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <div class="drawer-footer">
+        <button class="md-button filled" onclick="closeDrawer()">
+          <span class="material-symbols-rounded">check</span> Listo / Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal for Reset -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-card">
+      <h3>¿Limpiar todos los datos?</h3>
+      <p>Se borrarán los registros de antecedentes de los 6 familiares. Esta acción no se puede deshacer.</p>
+      <div class="modal-card-actions">
+        <button class="md-button outlined" onclick="closeResetModal()">Cancelar</button>
+        <button class="md-button error" onclick="executeReset()">Sí, borrar todo</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Dynamic Icon Mapping per Disease Category
+  const categoryIcons = {
+    '4.1': { icon: '🩸', label: 'Metabolismo' },
+    '4.2': { icon: '❤️', label: 'Corazón' },
+    '4.3': { icon: '🧠', label: 'Cerebro' },
+    '4.4': { icon: '💭', label: 'Mente' },
+    '4.5': { icon: '🫁', label: 'Pulmones' },
+    '4.6': { icon: '👁️', label: 'Visión' },
+    '4.7': { icon: '🥖', label: 'Digestión' },
+    '4.8': { icon: '🫘', label: 'Hígado/Riñón' },
+    '4.9': { icon: '🦴', label: 'Huesos' },
+    '4.10': { icon: '✨', label: 'Piel' },
+    '4.11': { icon: '🎗️', label: 'Cáncer' },
+    '4.12': { icon: '🧬', label: 'Hereditarias' },
+    '4.13': { icon: '🩺', label: 'Sangre' }
+  };
+
+  const familyMembers = [
+    { id: 'father', label: 'Padre', avatar: '👨', level: 'parents' },
+    { id: 'mother', label: 'Madre', avatar: '👩', level: 'parents' },
+    { id: 'mgfather', label: 'Abuelo Materno', avatar: '👴', level: 'grandparents' },
+    { id: 'pgfather', label: 'Abuelo Paterno', avatar: '👴', level: 'grandparents' },
+    { id: 'mgmother', label: 'Abuela Materna', avatar: '👵', level: 'grandparents' },
+    { id: 'pgmother', label: 'Abuela Paterna', avatar: '👵', level: 'grandparents' }
+  ];
+
+  const quickConditions = [
+    { key: 'Diabetes (Block 2-5A1)', label: '🩸 Diabetes', catId: '4.1' },
+    { key: 'Presión alta (BA00)', label: '❤️ Presión Alta', catId: '4.2' },
+    { key: 'Infarto (BlockL1-BA4)', label: '💔 Infarto', catId: '4.2' },
+    { key: 'Cáncer de mama (BlockL3-2C6)', label: '🎗️ Cáncer de Mama', catId: '4.11' },
+    { key: 'Alzheimer (8A20)', label: '🧠 Alzheimer', catId: '4.3' },
+    { key: 'Asma (CA23)', label: '🫁 Asma', catId: '4.5' },
+    { key: 'Colesterol o triglicéridos altos (5C80)', label: '🧪 Colesterol Alto', catId: '4.1' },
+    { key: 'Artritis reumatoide (BlockL2-FA2)', label: '🦴 Artritis', catId: '4.9' }
+  ];
+
+  const categories = [
+    { id: '4.1', label: '4.1 Diabetes, colesterol y metabolismo', diseases: ['Diabetes (Block 2-5A1)', 'Prediabetes (5A40)', 'Obesidad (5B81)', 'Colesterol o triglicéridos altos (5C80)', 'Hipotiroidismo (5A00)', 'Hipertiroidismo (5A02)', 'Otro'] },
+    { id: '4.2', label: '4.2 Presión alta y corazón', diseases: ['Presión alta (BA00)', 'Infarto (BlockL1-BA4)', 'Arritmias (BlockL1-BC6)', 'Insuficiencia cardiaca (BlockL1-BD1)', 'Otro'] },
+    { id: '4.3', label: '4.3 Cerebro y sistema nervioso', diseases: ['Migraña (8A80)', 'Embolia o derrame cerebral (BlockL1-8B0)', 'Alzheimer (8A20)', 'Demencia / Problemas de memoria (BlockL1-6D7)', 'Parkinson (8A00)', 'Epilepsias (BlockL1-8A6)', 'Enfermedad de Huntington (8A01.10)', 'Otro'] },
+    { id: '4.4', label: '4.4 Mente, emociones y aprendizaje', diseases: ['Depresión (BlockL2-6A7)', 'Ansiedad (BlockL1-6B0)', 'Trastorno bipolar (BlockL2-6A6)', 'Autismo (6A02)', 'TDAH (6A05)', 'Esquizofrenia (6A20)', 'Otro'] },
+    { id: '4.5', label: '4.5 Pulmones y respiración', diseases: ['Asma (CA23)', 'EPOC (CA22)', 'Rinitis alérgica (CA08)', 'Ronquidos (7A41)', 'Fibrosis pulmonar (BlockL1-CB0)', 'Otro (Especifique)'] },
+    { id: '4.6', label: '4.6 Visión y ojos', diseases: ['Cataratas (9B10)', 'Glaucoma (BlockL1-9C6)', 'Problemas de graduación (9D00)', 'Retinopatía diabética (9B71.0)', 'Otro (Especifique)'] },
+    { id: '4.7', label: '4.7 Estómago, intestino y digestión', diseases: ['Gastritis o úlceras (DA42)', 'Reflujo (DA22)', 'Colitis o intestino irritable (DD91.0)', 'Enfermedad inflamatoria intestinal (BlockL1-DD7)', 'Piedras en la vesícula (DC11)', 'Otro'] },
+    { id: '4.8', label: '4.8 Hígado, riñón y páncreas', diseases: ['Hígado graso no alcohólico (DB92)', 'Hígado graso por alcohol (DB94)', 'Hepatitis por virus (BlockL1-1E5)', 'Cirrosis o daño hepático (DB93)', 'Enfermedad renal crónica (GB61)', 'Piedras en los riñones (GB70.0)', 'Pancreatitis (BlockL1-DC3)', 'Otro'] },
+    { id: '4.9', label: '4.9 Huesos, músculos y articulaciones', diseases: ['Artritis reumatoide (BlockL2-FA2)', 'Osteoporosis / Huesos frágiles (FB83)', 'Desgaste de articulaciones (BlockL2-FA0)', 'Fibromialgia (MG30.01)', 'Otro (Especifique)'] },
+    { id: '4.10', label: '4.10 Piel, cabello y uñas', diseases: ['Piel sensible o dermatitis (BlockL2-EA8)', 'Psoriasis (EA90)', 'Vitiligo (ED63.0)', 'Alopecia o caída del pelo (ED70)', 'Otro (Especifique)'] },
+    { id: '4.11', label: '4.11 Cáncer y tumores', diseases: ['Cáncer de mama (BlockL3-2C6)', 'Cáncer de próstata (2C82)', 'Cáncer de colon (2B90)', 'Leucemia (2B33)', 'Cáncer de ovario (2C73)', 'Otro (Especifique)'] },
+    { id: '4.12', label: '4.12 Enfermedades hereditarias y autoinmunes', diseases: ['Síndrome de Down (LD40.0)', 'Lupus (4A40)', 'Esclerosis múltiple (8A40)', 'Fibrosis quística (CA25)', 'Otro (Especifique)'] },
+    { id: '4.13', label: '4.13 Enfermedades de la sangre', diseases: ['Anemia (BlockL1-3A0)', 'Problemas de coagulación (BlockL1-3B1)', 'Várices (BD74)', 'Trombosis venosa (BD71)', 'Otro (Especifique)'] }
+  ];
+
+  // Global State
+  const registered = {};
+  const otherSpecs = {};
+  const viveState = {};
+  let currentDrawerFi = null;
+
+  // Capitalization Helpers
+  function capFirst(s) { return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+  function capSpec(s) { s = s.trim(); return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+  function isChecked(fi, key) {
+    return registered[key]?.families.has(fi) ?? false;
+  }
+
+  function toggleDisease(fi, key, catId, rawName) {
+    if (!registered[key]) {
+      registered[key] = { label: rawName, category: catId, families: new Set() };
+    }
+    const set = registered[key].families;
+    if (set.has(fi)) {
+      set.delete(fi);
+      if (set.size === 0) delete registered[key];
+    } else {
+      set.add(fi);
+    }
+    sync();
+    if (currentDrawerFi === fi) renderDrawerContent();
+  }
+
+  function setSpec(fi, catId, disease, value) {
+    const specKey = catId + '||' + disease + '||' + fi;
+    if (value) {
+      otherSpecs[specKey] = value;
+    } else {
+      delete otherSpecs[specKey];
+    }
+    sync();
+  }
+
+  function setVive(fi, vive) {
+    if (!viveState[fi]) viveState[fi] = { vive: null, cause: '' };
+    viveState[fi].vive = vive;
+    sync();
+    if (currentDrawerFi === fi) updateDrawerViveUI();
+  }
+
+  function setCause(fi, cause) {
+    if (!viveState[fi]) viveState[fi] = { vive: null, cause: '' };
+    viveState[fi].cause = cause;
+    sync();
+  }
+
+  // Draw Connector Lines SVG
+  function drawConnectorLines() {
+    const svg = document.getElementById('treeSvg');
+    svg.innerHTML = '';
+    const canvasRect = document.getElementById('treeCanvas').getBoundingClientRect();
+
+    const getCenterPos = (elId) => {
+      const el = document.getElementById(elId);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return {
+        x: r.left + r.width / 2 - canvasRect.left,
+        y: r.top + r.height / 2 - canvasRect.top,
+        top: r.top - canvasRect.top,
+        bottom: r.bottom - canvasRect.top
+      };
+    };
+
+    // Connections:
+    // Paternal Grandparents (3, 5) -> Father (0)
+    // Maternal Grandparents (2, 4) -> Mother (1)
+    // Father (0) & Mother (1) -> Patient
+    const connections = [
+      { from: 'node_3', to: 'node_0' },
+      { from: 'node_5', to: 'node_0' },
+      { from: 'node_2', to: 'node_1' },
+      { from: 'node_4', to: 'node_1' }
+    ];
+
+    connections.forEach(c => {
+      const p1 = getCenterPos(c.from);
+      const p2 = getCenterPos(c.to);
+      if (p1 && p2) {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const midY = (p1.bottom + p2.top) / 2;
+        const d = `M ${p1.x} ${p1.bottom} L ${p1.x} ${midY} L ${p2.x} ${midY} L ${p2.x} ${p2.top}`;
+        path.setAttribute('d', d);
+        svg.appendChild(path);
+      }
+    });
+  }
+
+  // Synchronize Nodes UI & Counters
+  function sync() {
+    let totalConditions = 0;
+    let registeredCount = 0;
+
+    familyMembers.forEach((fm, fi) => {
+      const vs = viveState[fi] || {};
+      const badgeEl = document.getElementById(`badge_${fi}`);
+      const statusEl = document.getElementById(`status_${fi}`);
+      const iconsEl = document.getElementById(`icons_${fi}`);
+      const nodeEl = document.getElementById(`node_${fi}`);
+
+      // Status Badge
+      badgeEl.className = 'status-badge ' + (vs.vive === true ? 'alive' : vs.vive === false ? 'deceased' : 'unknown');
+      
+      // Status Text
+      if (vs.vive === true) statusEl.textContent = '🟢 Vive actualmente';
+      else if (vs.vive === false) statusEl.textContent = '⚪ Fallecido' + (vs.cause ? `: ${vs.cause}` : '');
+      else statusEl.textContent = 'Sin registrar';
+
+      // Gather conditions for member
+      const memberCats = new Set();
+      let memberCondCount = 0;
+
+      Object.entries(registered).forEach(([key, data]) => {
+        if (data.families.has(fi)) {
+          memberCondCount++;
+          memberCats.add(data.category);
+        }
+      });
+
+      if (vs.vive !== null || memberCondCount > 0) registeredCount++;
+
+      // Active Node Card Highlight
+      nodeEl.classList.toggle('active-registered', memberCondCount > 0 || vs.vive !== null);
+
+      // Render Category Icons Badges
+      iconsEl.innerHTML = '';
+      memberCats.forEach(catId => {
+        const catInfo = categoryIcons[catId] || { icon: '🩺', label: 'Salud' };
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'disease-tag-icon';
+        iconDiv.innerHTML = catInfo.icon;
+        iconDiv.setAttribute('title', catInfo.label);
+        iconsEl.appendChild(iconDiv);
+      });
+
+      totalConditions += memberCondCount;
+    });
+
+    document.getElementById('statRelatives').textContent = `${registeredCount} / 6`;
+    document.getElementById('statConditions').textContent = totalConditions;
+
+    drawConnectorLines();
+  }
+
+  // Drawer Operations
+  function openDrawer(fi) {
+    currentDrawerFi = fi;
+    const fm = familyMembers[fi];
+    document.getElementById('drawerAvatar').textContent = fm.avatar;
+    document.getElementById('drawerTitle').textContent = fm.label;
+
+    updateDrawerViveUI();
+    renderQuickChips();
+    renderAccordionCategories();
+
+    document.getElementById('drawerOverlay').classList.add('active');
+  }
+
+  function closeDrawer() {
+    document.getElementById('drawerOverlay').classList.remove('active');
+    currentDrawerFi = null;
+  }
+
+  function updateDrawerViveUI() {
+    if (currentDrawerFi === null) return;
+    const vs = viveState[currentDrawerFi] || {};
+    const btnYes = document.getElementById('btnViveYes');
+    const btnNo = document.getElementById('btnViveNo');
+    const causeWrap = document.getElementById('causeInputWrap');
+    const causeInput = document.getElementById('drawerCauseInput');
+
+    btnYes.className = 'segmented-btn' + (vs.vive === true ? ' active alive' : '');
+    btnNo.className = 'segmented-btn' + (vs.vive === false ? ' active deceased' : '');
+
+    if (vs.vive === false) {
+      causeWrap.classList.add('visible');
+      causeInput.value = vs.cause || '';
+    } else {
+      causeWrap.classList.remove('visible');
+    }
+  }
+
+  function setDrawerVive(vive) {
+    if (currentDrawerFi === null) return;
+    setVive(currentDrawerFi, vive);
+  }
+
+  function onDrawerCauseInput(val) {
+    if (currentDrawerFi === null) return;
+    const formatted = capFirst(val);
+    document.getElementById('drawerCauseInput').value = formatted;
+    setCause(currentDrawerFi, formatted);
+  }
+
+  function onDrawerCauseBlur(val) {
+    if (currentDrawerFi === null) return;
+    const formatted = capSpec(val);
+    document.getElementById('drawerCauseInput').value = formatted;
+    setCause(currentDrawerFi, formatted);
+  }
+
+  function renderQuickChips() {
+    const grid = document.getElementById('quickChipsGrid');
+    grid.innerHTML = '';
+    if (currentDrawerFi === null) return;
+
+    quickConditions.forEach(qc => {
+      const chk = isChecked(currentDrawerFi, qc.key);
+      const chip = document.createElement('div');
+      chip.className = 'quick-chip' + (chk ? ' selected' : '');
+      chip.innerHTML = `${qc.label} ${chk ? '<span class="material-symbols-rounded" style="font-size:16px;">check</span>' : ''}`;
+      chip.onclick = () => {
+        toggleDisease(currentDrawerFi, qc.key, qc.catId, qc.key);
+      };
+      grid.appendChild(chip);
+    });
+  }
+
+  function renderAccordionCategories(filterText = '') {
+    const container = document.getElementById('categoryAccordion');
+    container.innerHTML = '';
+    if (currentDrawerFi === null) return;
+
+    const query = filterText.toLowerCase().trim();
+
+    categories.forEach(c => {
+      const matchingDiseases = c.diseases.filter(d => d.toLowerCase().includes(query) || c.label.toLowerCase().includes(query));
+      if (query && matchingDiseases.length === 0) return;
+
+      const accItem = document.createElement('div');
+      accItem.className = 'accordion-item' + (query ? ' open' : '');
+
+      let html = `<div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">`;
+      html += `<span>${c.label}</span><span class="material-symbols-rounded chevron">expand_more</span>`;
+      html += `</div><div class="accordion-body">`;
+
+      c.diseases.forEach(d => {
+        if (query && !d.toLowerCase().includes(query) && !c.label.toLowerCase().includes(query)) return;
+
+        const codeMatch = d.match(/\(([^)]+)\)$/);
+        const code = codeMatch ? codeMatch[1] : '';
+        const name = codeMatch ? d.slice(0, d.lastIndexOf('(')).trim() : d;
+        const isOther = d === 'Otro' || d === 'Otro (Especifique)';
+        const key = isOther ? c.id + '||' + d : d;
+        const chk = isChecked(currentDrawerFi, key);
+        const specKey = c.id + '||' + d + '||' + currentDrawerFi;
+
+        html += `<div>`;
+        html += `<label class="disease-checkbox-item">`;
+        html += `<input type="checkbox" ${chk ? 'checked' : ''} onchange="toggleDisease(${currentDrawerFi}, '${key.replace(/'/g, "\\'")}', '${c.id}', '${d.replace(/'/g, "\\'")}')">`;
+        html += `<span>${name}${code ? `<span class="disease-code">${code}</span>` : ''}</span>`;
+        html += `</label>`;
+
+        if (isOther) {
+          html += `<div class="other-spec-box ${chk ? 'visible' : ''}">`;
+          html += `<input type="text" class="md-text-input" placeholder="Especifique..." value="${(otherSpecs[specKey] || '').replace(/"/g, '&quot;')}" oninput="this.value=capFirst(this.value); setSpec(${currentDrawerFi},'${c.id}','${d.replace(/'/g, "\\'")}',this.value)" onblur="this.value=capSpec(this.value); setSpec(${currentDrawerFi},'${c.id}','${d.replace(/'/g, "\\'")}',this.value)">`;
+          html += `</div>`;
+        }
+        html += `</div>`;
+      });
+
+      html += `</div>`;
+      accItem.innerHTML = html;
+      container.appendChild(accItem);
+    });
+  }
+
+  function filterDrawerCategories(val) {
+    renderAccordionCategories(val);
+  }
+
+  function renderDrawerContent() {
+    renderQuickChips();
+    const searchVal = document.querySelector('.drawer-search-box input')?.value || '';
+    renderAccordionCategories(searchVal);
+  }
+
+  // Top Bar Actions
+  function renderTopActions() {
+    const bar = document.getElementById('filterBar');
+    bar.innerHTML = '';
+
+    const exportBtn = document.createElement('button');
+    exportBtn.className = 'md-button filled';
+    exportBtn.innerHTML = '<span class="material-symbols-rounded">download</span> Exportar CSV';
+    exportBtn.onclick = exportCSV;
+    bar.appendChild(exportBtn);
+
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'md-button error';
+    resetBtn.innerHTML = '<span class="material-symbols-rounded">refresh</span> Limpiar todo';
+    resetBtn.onclick = openResetModal;
+    bar.appendChild(resetBtn);
+  }
+
+  function openResetModal() { document.getElementById('confirmModal').classList.add('active'); }
+  function closeResetModal() { document.getElementById('confirmModal').classList.remove('active'); }
+  function executeReset() {
+    Object.keys(registered).forEach(k => delete registered[k]);
+    Object.keys(otherSpecs).forEach(k => delete otherSpecs[k]);
+    Object.keys(viveState).forEach(k => delete viveState[k]);
+    closeResetModal();
+    sync();
+  }
+
+  // CSV Export Logic (Matches Transposed Standard)
+  function exportCSV() {
+    const headers = ['Padecimiento', ...familyMembers.map(fm => fm.label)];
+    const rows = [];
+
+    rows.push(['¿Aún vive?', ...familyMembers.map((_, fi) => {
+      const vs = viveState[fi] || {};
+      return vs.vive === true ? 'Sí' : vs.vive === false ? 'No' : '';
+    })]);
+
+    rows.push(['Causa de muerte', ...familyMembers.map((_, fi) => {
+      const vs = viveState[fi] || {};
+      return vs.cause || '';
+    })]);
+
+    categories.forEach(c => {
+      rows.push([c.label, ...familyMembers.map(() => '')]);
+      c.diseases.forEach(d => {
+        const codeMatch = d.match(/\(([^)]+)\)$/);
+        const name = codeMatch ? d.slice(0, d.lastIndexOf('(')).trim() : d;
+        const isOther = d === 'Otro' || d === 'Otro (Especifique)';
+        const key = isOther ? c.id + '||' + d : d;
+        const cellVals = familyMembers.map((_, fi) => {
+          const has = registered[key]?.families.has(fi) ?? false;
+          if (!has) return '';
+          return isOther ? (otherSpecs[key + '||' + fi] || 'X') : 'X';
+        });
+        rows.push([name, ...cellVals]);
+      });
+    });
+
+    downloadCSV(headers, rows);
+  }
+
+  function csvCell(v) {
+    v = String(v == null ? '' : v);
+    return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+
+  function timestampPrefix() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  }
+
+  function downloadCSV(headers, rows) {
+    const content = [headers, ...rows].map(r => r.map(csvCell).join(',')).join('\r\n');
+    const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `export_family_conditions_${timestampPrefix()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Init
+  window.addEventListener('resize', drawConnectorLines);
+  document.addEventListener('DOMContentLoaded', () => {
+    renderTopActions();
+    sync();
+    setTimeout(drawConnectorLines, 200);
+  });
+</script>
+</body>
+</html>

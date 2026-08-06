@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antecedentes Heredofamiliares — Árbol Genealógico Light Glass v2</title>
+
+<!-- Online Fonts & Material Symbols CDN -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    
+    /* Light Mode Glass Palette */
+    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #eef2ff 40%, #f5f3ff 70%, #f8fafc 100%);
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-bg-hover: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.9);
+    --glass-border-subtle: rgba(226, 232, 240, 0.8);
+    --glass-border-active: rgba(99, 102, 241, 0.6);
+    --glass-shadow: 0 10px 30px 0 rgba(30, 41, 59, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+    
+    --primary: #4f46e5;
+    --primary-container: #e0e7ff;
+    --on-primary-container: #1e1b4b;
+    
+    --secondary: #7c3aed;
+    --accent-cyan: #0891b2;
+    --accent-emerald: #059669;
+    --accent-rose: #e11d48;
+    
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-full: 9999px;
+    
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Ambient Glow Orbs - Light Mode Pastels */
+  .ambient-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+  .orb-1 { width: 450px; height: 450px; background: #c7d2fe; top: -100px; left: -100px; }
+  .orb-2 { width: 500px; height: 500px; background: #fbcfe8; bottom: -150px; right: -100px; }
+  .orb-3 { width: 350px; height: 350px; background: #bae6fd; top: 40%; left: 50%; transform: translate(-50%, -50%); }
+
+  /* Light Glass App Bar */
+  .app-bar {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border-subtle);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .app-title-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .app-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+  }
+
+  .app-title-group h1 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.4px;
+  }
+
+  .app-title-group .subtitle {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .glass-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border-radius: var(--radius-full);
+    font-family: var(--font);
+    font-size: 0.82rem;
+    font-weight: 700;
+    border: 1px solid var(--glass-border-subtle);
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--text-primary);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    white-space: nowrap;
+    user-select: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+
+  .glass-btn:hover {
+    background: #ffffff;
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
+  }
+
+  .glass-btn.primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border: none;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+  }
+  .glass-btn.primary:hover {
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+    color: #fff;
+  }
+
+  .glass-btn.danger {
+    background: rgba(225, 29, 72, 0.1);
+    border-color: rgba(225, 29, 72, 0.2);
+    color: var(--accent-rose);
+  }
+  .glass-btn.danger:hover {
+    background: rgba(225, 29, 72, 0.2);
+  }
+
+  /* Main Container */
+  .main-container {
+    max-width: 1300px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Glass Info & Stats Banner */
+  .banner-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+  }
+
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    box-shadow: var(--glass-shadow);
+  }
+
+  .info-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .info-banner .icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: var(--primary-container);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+
+  .info-banner p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .info-banner strong { color: var(--text-primary); }
+
+  .stats-glass-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+
+  /* Tree Canvas Area */
+  .tree-container {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 40px 24px;
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow-x: auto;
+  }
+
+  .tree-canvas {
+    min-width: 960px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    position: relative;
+  }
+
+  /* SVG Connecting Lines */
+  .tree-svg-layer {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .tree-svg-layer path {
+    stroke: #818cf8;
+    stroke-width: 2.5px;
+    fill: none;
+    stroke-dasharray: 6, 6;
+    transition: var(--transition);
+  }
+
+  .tree-level {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    z-index: 2;
+  }
+
+  .tree-level.grandparents { gap: 50px; }
+  .tree-level.parents { gap: 200px; }
+  .tree-level.patient { gap: 0; }
+
+  .tree-branch-group {
+    display: flex;
+    gap: 24px;
+  }
+
+  /* Light Glass Relative Node Card */
+  .node-glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid var(--glass-border-subtle);
+    border-radius: var(--radius-md);
+    width: 210px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    user-select: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+
+  .node-glass-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    background: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 12px 28px rgba(79, 70, 229, 0.18);
+  }
+
+  .node-glass-card.registered {
+    border-color: var(--primary);
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.15);
+  }
+
+  .node-glass-card.patient-node {
+    border-color: var(--accent-cyan);
+    background: #f0fdf4;
+    cursor: default;
+  }
+  .node-glass-card.patient-node:hover { transform: none; box-shadow: none; }
+
+  /* Avatar Box with Font Icons */
+  .node-avatar-box {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, #e0e7ff, #fae8ff);
+    border: 1px solid var(--glass-border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    position: relative;
+    transition: var(--transition);
+  }
+
+  .node-avatar-box .material-symbols-rounded {
+    font-size: 32px;
+  }
+
+  .node-glass-card:hover .node-avatar-box {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+  }
+
+  .node-glass-card.registered .node-avatar-box {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+  }
+
+  .vital-status-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+  }
+  .vital-status-dot.alive { background: var(--accent-emerald); box-shadow: 0 0 8px var(--accent-emerald); }
+  .vital-status-dot.deceased { background: var(--accent-rose); box-shadow: 0 0 8px var(--accent-rose); }
+  .vital-status-dot.unknown { background: var(--text-muted); }
+
+  .node-title {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    text-align: center;
+  }
+
+  .node-subtext {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    text-align: center;
+    font-weight: 600;
+  }
+
+  /* Badge Icons Container */
+  .node-badges-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    min-height: 28px;
+  }
+
+  .category-badge-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full);
+    background: var(--primary-container);
+    border: 1px solid var(--glass-border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: var(--transition);
+  }
+
+  .category-badge-icon:hover {
+    transform: scale(1.2);
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .category-badge-icon[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 0.68rem;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .node-action-tag {
+    font-size: 0.7rem;
+    color: var(--primary);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Drawer Glass Slide-Over */
+  .drawer-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition);
+  }
+
+  .drawer-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .drawer-glass-panel {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 540px;
+    max-width: 95vw;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-left: 1px solid var(--glass-border-subtle);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+    z-index: 201;
+    transform: translateX(100%);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .drawer-backdrop.active .drawer-glass-panel {
+    transform: translateX(0);
+  }
+
+  /* Drawer Header */
+  .drawer-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--glass-border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(248, 250, 252, 0.8);
+  }
+
+  .drawer-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .drawer-avatar-lg {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+  }
+
+  .drawer-avatar-lg .material-symbols-rounded {
+    font-size: 32px;
+  }
+
+  .drawer-header h2 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .drawer-header p {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+  }
+
+  .close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border-subtle);
+    background: #ffffff;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+  }
+  .close-btn:hover { background: var(--primary-container); color: var(--primary); }
+
+  /* Drawer Body Content */
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .drawer-section-card {
+    background: #ffffff;
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+
+  .drawer-section-title {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Segmented Toggle */
+  .segmented-glass-toggle {
+    display: flex;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--glass-border-subtle);
+    gap: 4px;
+  }
+
+  .seg-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: var(--radius-full);
+    border: none;
+    background: transparent;
+    font-family: var(--font);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .seg-btn.active.alive {
+    background: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid var(--accent-emerald);
+  }
+
+  .seg-btn.active.deceased {
+    background: #f8d7da;
+    color: #842029;
+    border: 1px solid var(--accent-rose);
+  }
+
+  .glass-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--glass-border-subtle);
+    background: #f8fafc;
+    font-family: var(--font);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition);
+  }
+
+  .glass-input:focus {
+    border-color: var(--primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px var(--primary-container);
+  }
+
+  /* Accordion Categories */
+  .accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .accordion-card {
+    background: #ffffff;
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .accordion-card-header {
+    padding: 14px 18px;
+    background: #f8fafc;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+
+  .accordion-card-header .icon-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .accordion-card-header .chevron {
+    transition: var(--transition);
+    color: var(--text-secondary);
+  }
+
+  .accordion-card.open .accordion-card-header .chevron {
+    transform: rotate(180deg);
+    color: var(--primary);
+  }
+
+  .accordion-card-body {
+    display: none;
+    padding: 14px 18px;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid var(--glass-border-subtle);
+  }
+
+  .accordion-card.open .accordion-card-body { display: flex; }
+
+  .disease-item-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+
+  .disease-item-row input[type="checkbox"] {
+    accent-color: var(--primary);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin-top: 2px;
+  }
+
+  .code-pill {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    margin-left: 6px;
+  }
+
+  .drawer-footer {
+    padding: 20px 24px;
+    border-top: 1px solid var(--glass-border-subtle);
+    background: #f8fafc;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* Reset Modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(10px);
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal-glass-card {
+    background: #ffffff;
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    width: 420px;
+    max-width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  @media (max-width: 768px) {
+    .app-bar { padding: 12px 16px; }
+    .main-container { padding: 16px; }
+    .banner-grid { grid-template-columns: 1fr; }
+    .tree-canvas { min-width: 820px; }
+    .drawer-glass-panel { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Ambient Glow Orbs - Light Pastel Mode -->
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+  <div class="ambient-orb orb-3"></div>
+
+  <!-- Top App Bar -->
+  <header class="app-bar">
+    <div class="app-title-group">
+      <div class="app-logo">
+        <span class="material-symbols-rounded">account_tree</span>
+      </div>
+      <div>
+        <h1>Antecedentes Heredofamiliares</h1>
+        <div class="subtitle">Árbol Genealógico Light Glass v2 • LiberSalus</div>
+      </div>
+    </div>
+    <div class="app-actions" id="filterBar">
+      <!-- Injected via JS -->
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- Info & Stats Glass Grid -->
+    <div class="banner-grid">
+      <div class="glass-card info-banner">
+        <div class="icon-wrapper">
+          <span class="material-symbols-rounded" style="font-size:26px;">ads_click</span>
+        </div>
+        <p><strong>Genograma Interactivo:</strong> Toca la tarjeta de cualquier familiar en el árbol para desplegar su panel lateral. Puedes indicar si vive actualmente, registrar su causa de fallecimiento y marcar padecimientos con íconos diagnósticos en tiempo real.</p>
+      </div>
+
+      <div class="glass-card stats-glass-box">
+        <div class="stat-item">
+          <span class="stat-value" id="statRelatives">0 / 6</span>
+          <span class="stat-label">Familiares</span>
+        </div>
+        <div style="width:1px; height:32px; background:var(--glass-border-subtle);"></div>
+        <div class="stat-item">
+          <span class="stat-value" id="statConditions">0</span>
+          <span class="stat-label">Padecimientos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tree Canvas Area -->
+    <div class="tree-container">
+      <div class="tree-canvas" id="treeCanvas">
+        <svg class="tree-svg-layer" id="treeSvg"></svg>
+
+        <!-- Grandparents -->
+        <div class="tree-level grandparents">
+          <div class="tree-branch-group">
+            <div class="node-glass-card" id="node_3" onclick="openDrawer(3)">
+              <div class="node-avatar-box">
+                <span class="material-symbols-rounded">elderly</span>
+                <div class="vital-status-dot unknown" id="dot_3"></div>
+              </div>
+              <div class="node-title">Abuelo Paterno</div>
+              <div class="node-subtext" id="status_3">Sin registrar</div>
+              <div class="node-badges-list" id="icons_3"></div>
+              <div class="node-action-tag"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+            </div>
+            <div class="node-glass-card" id="node_5" onclick="openDrawer(5)">
+              <div class="node-avatar-box">
+                <span class="material-symbols-rounded">elderly_woman</span>
+                <div class="vital-status-dot unknown" id="dot_5"></div>
+              </div>
+              <div class="node-title">Abuela Paterna</div>
+              <div class="node-subtext" id="status_5">Sin registrar</div>
+              <div class="node-badges-list" id="icons_5"></div>
+              <div class="node-action-tag"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+            </div>
+          </div>
+
+          <div class="tree-branch-group">
+            <div class="node-glass-card" id="node_2" onclick="openDrawer(2)">
+              <div class="node-avatar-box">
+                <span class="material-symbols-rounded">elderly</span>
+                <div class="vital-status-dot unknown" id="dot_2"></div>
+              </div>
+              <div class="node-title">Abuelo Materno</div>
+              <div class="node-subtext" id="status_2">Sin registrar</div>
+              <div class="node-badges-list" id="icons_2"></div>
+              <div class="node-action-tag"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+            </div>
+            <div class="node-glass-card" id="node_4" onclick="openDrawer(4)">
+              <div class="node-avatar-box">
+                <span class="material-symbols-rounded">elderly_woman</span>
+                <div class="vital-status-dot unknown" id="dot_4"></div>
+              </div>
+              <div class="node-title">Abuela Materna</div>
+              <div class="node-subtext" id="status_4">Sin registrar</div>
+              <div class="node-badges-list" id="icons_4"></div>
+              <div class="node-action-tag"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Parents -->
+        <div class="tree-level parents">
+          <div class="node-glass-card" id="node_0" onclick="openDrawer(0)">
+            <div class="node-avatar-box">
+              <span class="material-symbols-rounded">man</span>
+              <div class="vital-status-dot unknown" id="dot_0"></div>
+            </div>
+            <div class="node-title">Padre</div>
+            <div class="node-subtext" id="status_0">Sin registrar</div>
+            <div class="node-badges-list" id="icons_0"></div>
+            <div class="node-action-tag"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+          </div>
+          <div class="node-glass-card" id="node_1" onclick="openDrawer(1)">
+            <div class="node-avatar-box">
+              <span class="material-symbols-rounded">woman</span>
+              <div class="vital-status-dot unknown" id="dot_1"></div>
+            </div>
+            <div class="node-title">Madre</div>
+            <div class="node-subtext" id="status_1">Sin registrar</div>
+            <div class="node-badges-list" id="icons_1"></div>
+            <div class="node-action-tag"><span class="material-symbols-rounded" style="font-size:14px;">edit</span> Registrar</div>
+          </div>
+        </div>
+
+        <!-- Patient -->
+        <div class="tree-level patient">
+          <div class="node-glass-card patient-node">
+            <div class="node-avatar-box" style="background:var(--primary-container); color:var(--primary);">
+              <span class="material-symbols-rounded">person</span>
+            </div>
+            <div class="node-title">Paciente (Tú)</div>
+            <div class="node-subtext">Punto de referencia</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Side Drawer Backdrop & Panel -->
+  <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()">
+    <div class="drawer-glass-panel" onclick="event.stopPropagation()">
+      <div class="drawer-header">
+        <div class="drawer-header-left">
+          <div class="drawer-avatar-lg" id="drawerAvatarBox">
+            <span class="material-symbols-rounded" id="drawerAvatarIcon">person</span>
+          </div>
+          <div>
+            <h2 id="drawerTitle">Padre</h2>
+            <p>Antecedentes de salud personales</p>
+          </div>
+        </div>
+        <button class="close-btn" onclick="closeDrawer()"><span class="material-symbols-rounded">close</span></button>
+      </div>
+
+      <div class="drawer-body">
+
+        <!-- Vital Status -->
+        <div class="drawer-section-card">
+          <div class="drawer-section-title">
+            <span class="material-symbols-rounded">favorite</span> ¿Vive actualmente?
+          </div>
+          <div class="segmented-glass-toggle">
+            <button class="seg-btn" id="btnViveYes" onclick="setDrawerVive(true)">
+              <span class="material-symbols-rounded" style="font-size:18px;">check_circle</span> Sí, vive
+            </button>
+            <button class="seg-btn" id="btnViveNo" onclick="setDrawerVive(false)">
+              <span class="material-symbols-rounded" style="font-size:18px;">cancel</span> No, falleció
+            </button>
+          </div>
+          <div id="causeInputWrap" style="display:none; flex-direction:column; gap:6px;">
+            <label style="font-size:0.75rem; color:var(--text-secondary); font-weight:600;">Causa de fallecimiento</label>
+            <input type="text" class="glass-input" id="drawerCauseInput" placeholder="Ej. Paro cardíaco..." oninput="onDrawerCauseInput(this.value)" onblur="onDrawerCauseBlur(this.value)">
+          </div>
+        </div>
+
+        <!-- Catalog Accordion -->
+        <div class="drawer-section-card">
+          <div class="drawer-section-title">
+            <span class="material-symbols-rounded">clinical_notes</span> Catálogo de Padecimientos (CIE-11)
+          </div>
+          <div style="position:relative;">
+            <input type="text" class="glass-input" placeholder="Buscar padecimiento..." oninput="filterDrawerCategories(this.value)">
+            <span class="material-symbols-rounded" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--text-muted);">search</span>
+          </div>
+          <div class="accordion-list" id="categoryAccordion">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <div class="drawer-footer">
+        <button class="glass-btn primary" onclick="closeDrawer()">
+          <span class="material-symbols-rounded">check</span> Guardar Cambios
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-glass-card">
+      <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary);">¿Limpiar todos los datos?</h3>
+      <p style="font-size:0.85rem; color:var(--text-secondary);">Se borrarán todos los antecedentes registrados de los 6 familiares. Esta acción no se puede deshacer.</p>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button class="glass-btn" onclick="closeResetModal()">Cancelar</button>
+        <button class="glass-btn danger" onclick="executeReset()">Sí, borrar todo</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Category Material Symbols Icons Online Mapping
+  const categoryIcons = {
+    '4.1': { symbol: 'water_drop', label: 'Metabolismo / Diabetes' },
+    '4.2': { symbol: 'ecg_heart', label: 'Corazón / Presión Alta' },
+    '4.3': { symbol: 'psychology', label: 'Cerebro / Sistema Nervioso' },
+    '4.4': { symbol: 'sentiment_satisfied', label: 'Mente y Emociones' },
+    '4.5': { symbol: 'pulmonology', label: 'Pulmones y Respiración' },
+    '4.6': { symbol: 'visibility', label: 'Visión y Ojos' },
+    '4.7': { symbol: 'nutrition', label: 'Estómago y Digestión' },
+    '4.8': { symbol: 'medical_services', label: 'Hígado / Riñón' },
+    '4.9': { symbol: 'orthopedics', label: 'Huesos y Músculos' },
+    '4.10': { symbol: 'spa', label: 'Piel y Cabello' },
+    '4.11': { symbol: 'oncology', label: 'Cáncer y Tumores' },
+    '4.12': { symbol: 'genetics', label: 'Hereditarias / Autoinmunes' },
+    '4.13': { symbol: 'bloodtype', label: 'Sangre' }
+  };
+
+  const familyMembers = [
+    { id: 'father', label: 'Padre', icon: 'man' },
+    { id: 'mother', label: 'Madre', icon: 'woman' },
+    { id: 'mgfather', label: 'Abuelo Materno', icon: 'elderly' },
+    { id: 'pgfather', label: 'Abuelo Paterno', icon: 'elderly' },
+    { id: 'mgmother', label: 'Abuela Materna', icon: 'elderly_woman' },
+    { id: 'pgmother', label: 'Abuela Paterna', icon: 'elderly_woman' }
+  ];
+
+  const categories = [
+    { id: '4.1', label: '4.1 Diabetes, colesterol y metabolismo', diseases: ['Diabetes (Block 2-5A1)', 'Prediabetes (5A40)', 'Obesidad (5B81)', 'Colesterol o triglicéridos altos (5C80)', 'Hipotiroidismo (5A00)', 'Hipertiroidismo (5A02)', 'Otro'] },
+    { id: '4.2', label: '4.2 Presión alta y corazón', diseases: ['Presión alta (BA00)', 'Infarto (BlockL1-BA4)', 'Arritmias (BlockL1-BC6)', 'Insuficiencia cardiaca (BlockL1-BD1)', 'Otro'] },
+    { id: '4.3', label: '4.3 Cerebro y sistema nervioso', diseases: ['Migraña (8A80)', 'Embolia o derrame cerebral (BlockL1-8B0)', 'Alzheimer (8A20)', 'Demencia / Problemas de memoria (BlockL1-6D7)', 'Parkinson (8A00)', 'Epilepsias (BlockL1-8A6)', 'Enfermedad de Huntington (8A01.10)', 'Otro'] },
+    { id: '4.4', label: '4.4 Mente, emociones y aprendizaje', diseases: ['Depresión (BlockL2-6A7)', 'Ansiedad (BlockL1-6B0)', 'Trastorno bipolar (BlockL2-6A6)', 'Autismo (6A02)', 'TDAH (6A05)', 'Esquizofrenia (6A20)', 'Otro'] },
+    { id: '4.5', label: '4.5 Pulmones y respiración', diseases: ['Asma (CA23)', 'EPOC (CA22)', 'Rinitis alérgica (CA08)', 'Ronquidos (7A41)', 'Fibrosis pulmonar (BlockL1-CB0)', 'Otro (Especifique)'] },
+    { id: '4.6', label: '4.6 Visión y ojos', diseases: ['Cataratas (9B10)', 'Glaucoma (BlockL1-9C6)', 'Problemas de graduación (9D00)', 'Retinopatía diabética (9B71.0)', 'Otro (Especifique)'] },
+    { id: '4.7', label: '4.7 Estómago, intestino y digestión', diseases: ['Gastritis o úlceras (DA42)', 'Reflujo (DA22)', 'Colitis o intestino irritable (DD91.0)', 'Enfermedad inflamatoria intestinal (BlockL1-DD7)', 'Piedras en la vesícula (DC11)', 'Otro'] },
+    { id: '4.8', label: '4.8 Hígado, riñón y páncreas', diseases: ['Hígado graso no alcohólico (DB92)', 'Hígado graso por alcohol (DB94)', 'Hepatitis por virus (BlockL1-1E5)', 'Cirrosis o daño hepático (DB93)', 'Enfermedad renal crónica (GB61)', 'Piedras en los riñones (GB70.0)', 'Pancreatitis (BlockL1-DC3)', 'Otro'] },
+    { id: '4.9', label: '4.9 Huesos, músculos y articulaciones', diseases: ['Artritis reumatoide (BlockL2-FA2)', 'Osteoporosis / Huesos frágiles (FB83)', 'Desgaste de articulaciones (BlockL2-FA0)', 'Fibromialgia (MG30.01)', 'Otro (Especifique)'] },
+    { id: '4.10', label: '4.10 Piel, cabello y uñas', diseases: ['Piel sensible o dermatitis (BlockL2-EA8)', 'Psoriasis (EA90)', 'Vitiligo (ED63.0)', 'Alopecia o caída del pelo (ED70)', 'Otro (Especifique)'] },
+    { id: '4.11', label: '4.11 Cáncer y tumores', diseases: ['Cáncer de mama (BlockL3-2C6)', 'Cáncer de próstata (2C82)', 'Cáncer de colon (2B90)', 'Leucemia (2B33)', 'Cáncer de ovario (2C73)', 'Otro (Especifique)'] },
+    { id: '4.12', label: '4.12 Enfermedades hereditarias y autoinmunes', diseases: ['Síndrome de Down (LD40.0)', 'Lupus (4A40)', 'Esclerosis múltiple (8A40)', 'Fibrosis quística (CA25)', 'Otro (Especifique)'] },
+    { id: '4.13', label: '4.13 Enfermedades de la sangre', diseases: ['Anemia (BlockL1-3A0)', 'Problemas de coagulación (BlockL1-3B1)', 'Várices (BD74)', 'Trombosis venosa (BD71)', 'Otro (Especifique)'] }
+  ];
+
+  const registered = {};
+  const otherSpecs = {};
+  const viveState = {};
+  const openAccordions = new Set();
+  let currentDrawerFi = null;
+
+  function capFirst(s) { return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+  function capSpec(s) { s = s.trim(); return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+  function isChecked(fi, key) {
+    return registered[key]?.families.has(fi) ?? false;
+  }
+
+  function toggleAccordion(catId, headerEl) {
+    const parent = headerEl.parentElement;
+    if (openAccordions.has(catId)) {
+      openAccordions.delete(catId);
+      parent.classList.remove('open');
+    } else {
+      openAccordions.add(catId);
+      parent.classList.add('open');
+    }
+  }
+
+  function toggleDisease(fi, key, catId, rawName) {
+    if (!registered[key]) {
+      registered[key] = { label: rawName, category: catId, families: new Set() };
+    }
+    const set = registered[key].families;
+    if (set.has(fi)) {
+      set.delete(fi);
+      if (set.size === 0) delete registered[key];
+    } else {
+      set.add(fi);
+    }
+    openAccordions.add(catId);
+    sync();
+    if (currentDrawerFi === fi) renderAccordionCategories();
+  }
+
+  function setSpec(fi, catId, disease, value) {
+    const specKey = catId + '||' + disease + '||' + fi;
+    if (value) otherSpecs[specKey] = value;
+    else delete otherSpecs[specKey];
+    sync();
+  }
+
+  function setVive(fi, vive) {
+    if (!viveState[fi]) viveState[fi] = { vive: null, cause: '' };
+    viveState[fi].vive = vive;
+    sync();
+    if (currentDrawerFi === fi) updateDrawerViveUI();
+  }
+
+  function setCause(fi, cause) {
+    if (!viveState[fi]) viveState[fi] = { vive: null, cause: '' };
+    viveState[fi].cause = cause;
+    sync();
+  }
+
+  function drawConnectorLines() {
+    const svg = document.getElementById('treeSvg');
+    svg.innerHTML = '';
+    const canvasRect = document.getElementById('treeCanvas').getBoundingClientRect();
+
+    const getCenterPos = (elId) => {
+      const el = document.getElementById(elId);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return {
+        x: r.left + r.width / 2 - canvasRect.left,
+        y: r.top + r.height / 2 - canvasRect.top,
+        top: r.top - canvasRect.top,
+        bottom: r.bottom - canvasRect.top
+      };
+    };
+
+    const connections = [
+      { from: 'node_3', to: 'node_0' },
+      { from: 'node_5', to: 'node_0' },
+      { from: 'node_2', to: 'node_1' },
+      { from: 'node_4', to: 'node_1' }
+    ];
+
+    connections.forEach(c => {
+      const p1 = getCenterPos(c.from);
+      const p2 = getCenterPos(c.to);
+      if (p1 && p2) {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const midY = (p1.bottom + p2.top) / 2;
+        const d = `M ${p1.x} ${p1.bottom} L ${p1.x} ${midY} L ${p2.x} ${midY} L ${p2.x} ${p2.top}`;
+        path.setAttribute('d', d);
+        svg.appendChild(path);
+      }
+    });
+  }
+
+  function sync() {
+    let totalConditions = 0;
+    let registeredCount = 0;
+
+    familyMembers.forEach((fm, fi) => {
+      const vs = viveState[fi] || {};
+      const dotEl = document.getElementById(`dot_${fi}`);
+      const statusEl = document.getElementById(`status_${fi}`);
+      const iconsEl = document.getElementById(`icons_${fi}`);
+      const nodeEl = document.getElementById(`node_${fi}`);
+
+      dotEl.className = 'vital-status-dot ' + (vs.vive === true ? 'alive' : vs.vive === false ? 'deceased' : 'unknown');
+
+      if (vs.vive === true) statusEl.textContent = '🟢 Vive actualmente';
+      else if (vs.vive === false) statusEl.textContent = '⚪ Fallecido' + (vs.cause ? `: ${vs.cause}` : '');
+      else statusEl.textContent = 'Sin registrar';
+
+      const memberCats = new Set();
+      let memberCondCount = 0;
+
+      Object.entries(registered).forEach(([key, data]) => {
+        if (data.families.has(fi)) {
+          memberCondCount++;
+          memberCats.add(data.category);
+        }
+      });
+
+      if (vs.vive !== null || memberCondCount > 0) registeredCount++;
+
+      nodeEl.classList.toggle('registered', memberCondCount > 0 || vs.vive !== null);
+
+      iconsEl.innerHTML = '';
+      memberCats.forEach(catId => {
+        const catInfo = categoryIcons[catId] || { symbol: 'medical_services', label: 'Salud' };
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'category-badge-icon';
+        iconDiv.innerHTML = `<span class="material-symbols-rounded">${catInfo.symbol}</span>`;
+        iconDiv.setAttribute('title', catInfo.label);
+        iconsEl.appendChild(iconDiv);
+      });
+
+      totalConditions += memberCondCount;
+    });
+
+    document.getElementById('statRelatives').textContent = `${registeredCount} / 6`;
+    document.getElementById('statConditions').textContent = totalConditions;
+
+    drawConnectorLines();
+  }
+
+  function openDrawer(fi) {
+    currentDrawerFi = fi;
+    const fm = familyMembers[fi];
+    document.getElementById('drawerAvatarIcon').textContent = fm.icon;
+    document.getElementById('drawerTitle').textContent = fm.label;
+
+    updateDrawerViveUI();
+    renderAccordionCategories();
+
+    document.getElementById('drawerBackdrop').classList.add('active');
+  }
+
+  function closeDrawer() {
+    document.getElementById('drawerBackdrop').classList.remove('active');
+    currentDrawerFi = null;
+  }
+
+  function updateDrawerViveUI() {
+    if (currentDrawerFi === null) return;
+    const vs = viveState[currentDrawerFi] || {};
+    const btnYes = document.getElementById('btnViveYes');
+    const btnNo = document.getElementById('btnViveNo');
+    const causeWrap = document.getElementById('causeInputWrap');
+    const causeInput = document.getElementById('drawerCauseInput');
+
+    btnYes.className = 'seg-btn' + (vs.vive === true ? ' active alive' : '');
+    btnNo.className = 'seg-btn' + (vs.vive === false ? ' active deceased' : '');
+
+    if (vs.vive === false) {
+      causeWrap.style.display = 'flex';
+      causeInput.value = vs.cause || '';
+    } else {
+      causeWrap.style.display = 'none';
+    }
+  }
+
+  function setDrawerVive(vive) {
+    if (currentDrawerFi === null) return;
+    setVive(currentDrawerFi, vive);
+  }
+
+  function onDrawerCauseInput(val) {
+    if (currentDrawerFi === null) return;
+    const formatted = capFirst(val);
+    document.getElementById('drawerCauseInput').value = formatted;
+    setCause(currentDrawerFi, formatted);
+  }
+
+  function onDrawerCauseBlur(val) {
+    if (currentDrawerFi === null) return;
+    const formatted = capSpec(val);
+    document.getElementById('drawerCauseInput').value = formatted;
+    setCause(currentDrawerFi, formatted);
+  }
+
+  function renderAccordionCategories(filterText = '') {
+    const container = document.getElementById('categoryAccordion');
+    container.innerHTML = '';
+    if (currentDrawerFi === null) return;
+
+    const query = filterText.toLowerCase().trim();
+
+    categories.forEach(c => {
+      const matchingDiseases = c.diseases.filter(d => d.toLowerCase().includes(query) || c.label.toLowerCase().includes(query));
+      if (query && matchingDiseases.length === 0) return;
+
+      const catIconInfo = categoryIcons[c.id] || { symbol: 'medical_services' };
+      const isOpen = query ? true : openAccordions.has(c.id);
+      const accItem = document.createElement('div');
+      accItem.className = 'accordion-card' + (isOpen ? ' open' : '');
+
+      let html = `<div class="accordion-card-header" onclick="toggleAccordion('${c.id}', this)">`;
+      html += `<div class="icon-label"><span class="material-symbols-rounded" style="color:var(--primary);">${catIconInfo.symbol}</span><span>${c.label}</span></div>`;
+      html += `<span class="material-symbols-rounded chevron">expand_more</span>`;
+      html += `</div><div class="accordion-card-body">`;
+
+      c.diseases.forEach(d => {
+        if (query && !d.toLowerCase().includes(query) && !c.label.toLowerCase().includes(query)) return;
+
+        const codeMatch = d.match(/\(([^)]+)\)$/);
+        const code = codeMatch ? codeMatch[1] : '';
+        const name = codeMatch ? d.slice(0, d.lastIndexOf('(')).trim() : d;
+        const isOther = d === 'Otro' || d === 'Otro (Especifique)';
+        const key = isOther ? c.id + '||' + d : d;
+        const chk = isChecked(currentDrawerFi, key);
+        const specKey = c.id + '||' + d + '||' + currentDrawerFi;
+
+        html += `<div>`;
+        html += `<label class="disease-item-row">`;
+        html += `<input type="checkbox" ${chk ? 'checked' : ''} onchange="toggleDisease(${currentDrawerFi}, '${key.replace(/'/g, "\\'")}', '${c.id}', '${d.replace(/'/g, "\\'")}')">`;
+        html += `<span>${name}${code ? `<span class="code-pill">${code}</span>` : ''}</span>`;
+        html += `</label>`;
+
+        if (isOther) {
+          html += `<div style="${chk ? 'display:block' : 'display:none'}; margin-top:6px; margin-left:30px;">`;
+          html += `<input type="text" class="glass-input" placeholder="Especifique..." value="${(otherSpecs[specKey] || '').replace(/"/g, '&quot;')}" oninput="this.value=capFirst(this.value); setSpec(${currentDrawerFi},'${c.id}','${d.replace(/'/g, "\\'")}',this.value)" onblur="this.value=capSpec(this.value); setSpec(${currentDrawerFi},'${c.id}','${d.replace(/'/g, "\\'")}',this.value)">`;
+          html += `</div>`;
+        }
+        html += `</div>`;
+      });
+
+      html += `</div>`;
+      accItem.innerHTML = html;
+      container.appendChild(accItem);
+    });
+  }
+
+  function filterDrawerCategories(val) {
+    renderAccordionCategories(val);
+  }
+
+  function renderTopActions() {
+    const bar = document.getElementById('filterBar');
+    bar.innerHTML = '';
+
+    const exportBtn = document.createElement('button');
+    exportBtn.className = 'glass-btn primary';
+    exportBtn.innerHTML = '<span class="material-symbols-rounded">download</span> Exportar CSV';
+    exportBtn.onclick = exportCSV;
+    bar.appendChild(exportBtn);
+
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'glass-btn danger';
+    resetBtn.innerHTML = '<span class="material-symbols-rounded">refresh</span> Limpiar todo';
+    resetBtn.onclick = openResetModal;
+    bar.appendChild(resetBtn);
+  }
+
+  function openResetModal() { document.getElementById('confirmModal').classList.add('active'); }
+  function closeResetModal() { document.getElementById('confirmModal').classList.remove('active'); }
+  function executeReset() {
+    Object.keys(registered).forEach(k => delete registered[k]);
+    Object.keys(otherSpecs).forEach(k => delete otherSpecs[k]);
+    Object.keys(viveState).forEach(k => delete viveState[k]);
+    closeResetModal();
+    sync();
+  }
+
+  function exportCSV() {
+    const headers = ['Padecimiento', ...familyMembers.map(fm => fm.label)];
+    const rows = [];
+
+    rows.push(['¿Aún vive?', ...familyMembers.map((_, fi) => {
+      const vs = viveState[fi] || {};
+      return vs.vive === true ? 'Sí' : vs.vive === false ? 'No' : '';
+    })]);
+
+    rows.push(['Causa de muerte', ...familyMembers.map((_, fi) => {
+      const vs = viveState[fi] || {};
+      return vs.cause || '';
+    })]);
+
+    categories.forEach(c => {
+      rows.push([c.label, ...familyMembers.map(() => '')]);
+      c.diseases.forEach(d => {
+        const codeMatch = d.match(/\(([^)]+)\)$/);
+        const name = codeMatch ? d.slice(0, d.lastIndexOf('(')).trim() : d;
+        const isOther = d === 'Otro' || d === 'Otro (Especifique)';
+        const key = isOther ? c.id + '||' + d : d;
+        const cellVals = familyMembers.map((_, fi) => {
+          const has = registered[key]?.families.has(fi) ?? false;
+          if (!has) return '';
+          return isOther ? (otherSpecs[key + '||' + fi] || 'X') : 'X';
+        });
+        rows.push([name, ...cellVals]);
+      });
+    });
+
+    downloadCSV(headers, rows);
+  }
+
+  function csvCell(v) {
+    v = String(v == null ? '' : v);
+    return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+
+  function timestampPrefix() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  }
+
+  function downloadCSV(headers, rows) {
+    const content = [headers, ...rows].map(r => r.map(csvCell).join(',')).join('\r\n');
+    const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `export_family_conditions_${timestampPrefix()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  window.addEventListener('resize', drawConnectorLines);
+  document.addEventListener('DOMContentLoaded', () => {
+    renderTopActions();
+    sync();
+    setTimeout(drawConnectorLines, 200);
+  });
+</script>
+</body>
+</html>
