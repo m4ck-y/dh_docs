@@ -70,5 +70,5 @@ CORS_ORIGINS=["*"]
 ## Referencias
 
 - [Deployment Port Mapping](../architecture/deployment-port-mapping.md)
-- [API Gateway docs](../../api_middleware/docs/)
+- [API Gateway docs](../../backend/api_middleware/docs/)
 - [STATUS](../../docs/STATUS.md)

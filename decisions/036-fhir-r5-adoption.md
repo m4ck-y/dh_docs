@@ -73,4 +73,4 @@ Recursos clinicos (fase 2): Encounter, Location, Observation, Condition, Allergy
 - [Reporte: Exploracion del estandar FHIR](../reports/2026-05-27_ARCH_exploracion-estandar-interoperabilidad-fhir.md)
 - [Reporte: Propuesta de mapeo NOM-024 a FHIR](../reports/2026-05-29_ARCH_propuesta-mapeo-nom024-fhir.md)
 - [HL7 FHIR R5 Specification](https://hl7.org/fhir/R5/)
-- [dh_shared FHIR AGENTS.md](../dh_shared/src/dh_shared/schemas/shared/fhir/AGENTS.md)
+- [dh_shared FHIR AGENTS.md](../../backend/dh_shared/src/dh_shared/schemas/shared/fhir/AGENTS.md)

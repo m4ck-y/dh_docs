@@ -138,4 +138,4 @@ PORT=8081
 
 - [docs/STATUS.md](../STATUS.md) — Estado general del proyecto
 - [docs/ARCHITECTURE_OVERVIEW.md](./ARCHITECTURE_OVERVIEW.md) — Matriz de propiedad de datos
-- [api_middleware/AGENTS.md](../../api_middleware/AGENTS.md) — Patrones del gateway
+- [api_middleware/AGENTS.md](../../backend/api_middleware/AGENTS.md) — Patrones del gateway

@@ -38,7 +38,7 @@ Todo URL hacia otro microservicio **debe** seguir el patrón `SERVICE_<NOMBRE>_U
 | `SERVICE_HEALTH_MONITORING_URL` | `app_health_monitoring` — signos vitales |
 | `SERVICE_WAITLIST_URL` | *(eliminado)* — la waitlist es un módulo interno de `dh_onboarding` |
 
-> Nunca hardcodear URLs en el código fuente. Ver `AGENTS.md`.
+> Nunca hardcodear URLs en el código fuente. Ver [backend/docs/STANDARDS.md](../../backend/docs/STANDARDS.md).
 
 ---
 

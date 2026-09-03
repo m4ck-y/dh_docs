@@ -6,7 +6,7 @@
 Implementar el núcleo de autenticación en `dh_core` basándose en la lógica de la plantilla. Este módulo será el encargado de generar y verificar los tokens JWT que usará todo el ecosistema (Middleware y Microservicios).
 
 ## Análisis de la Plantilla
-- **Ubicación**: `template_backend_python/app/auth`
+- **Ubicación**: `backend/template_backend_python/app/auth`
 - **Componentes**:
   - `application/auth.py`: Lógica de login y generación de tokens.
   - `domain/schemas.py`: Esquemas Pydantic para `Token`, `TokenData`, y `Login`.

@@ -88,4 +88,4 @@ user {
 
 - [ADR 010: Database ID Strategy](010-database-id-strategy.md)
 - [ADR 017: Referencias Cross-Service](017-referencias-cross-service.md)
-- [AGENTS.md: Backend Architecture](../AGENTS.md#backend-architecture)
+- [backend/docs/STANDARDS.md: Backend Architecture](../../backend/docs/STANDARDS.md#backend-architecture)

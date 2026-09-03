@@ -95,5 +95,5 @@ else:
 ## Referencias
 
 - [ADR 018: Migración User de People a Auth](018-migracion-user-people-a-auth.md)
-- [AGENTS.md: API Middleware Contract](../AGENTS.md#api-middleware-contract)
+- [backend/docs/STANDARDS.md: API Middleware Contract](../../backend/docs/STANDARDS.md#api-middleware-contract)
 - [STATUS.md: Estado del Proyecto](../STATUS.md)

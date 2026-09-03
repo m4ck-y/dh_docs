@@ -34,8 +34,8 @@ Implementar el estandar HL7 FHIR R5 como biblioteca compartida de schemas Pydant
 
 - [Research: Adopcion de HL7 FHIR R5](../../research/fhir-r5-interoperability.md)
 - [ADR 036: Adopcion de FHIR R5](../../decisions/036-fhir-r5-adoption.md)
-- [dh_fhir AGENTS.md](../../../dh_fhir/AGENTS.md)
-- [dh_shared FHIR Schema AGENTS.md](../../../dh_shared/src/dh_shared/schemas/shared/fhir/AGENTS.md)
+- [dh_fhir AGENTS.md](../../../backend/dh_fhir/AGENTS.md)
+- [dh_shared FHIR Schema AGENTS.md](../../../backend/dh_shared/src/dh_shared/schemas/shared/fhir/AGENTS.md)
 - [Reporte de inicio: Exploracion FHIR](../../reports/2026-05-27_ARCH_exploracion-estandar-interoperabilidad-fhir.md)
 - [Reporte de cierre: Medicacion y documentacion clinica](../../reports/2026-07-15_FEATURE_implementacion-recursos-medicacion-y-documentacion-clinica.md)
 

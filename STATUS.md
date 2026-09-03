@@ -269,7 +269,7 @@
 | Ideas/ borradores sin estado | `docs/ideas/propuesta-001-auth.md`, `docs/ideas/documents_expedient/*.md`, `docs/ideas/template-migracion.md`, `docs/ideas/measurements.md` | Marcados como SUPERSEDED/ARCHIVADO/BORRADOR; removidos emojis decorativos |
 | Archivo muerto | `docs/management/1_onboarding/0.overview.md` | Eliminado |
 | Codigo inconsistente con ADR 005 | `dh_logger/app/main.py`, `dh_logger/pyproject.toml` | Reemplazado `motor` por `pymongo.AsyncMongoClient`; eliminada dependencia `motor` |
-| Codigo inconsistente con ADR 005 | `app_health_monitoring/backend/app/main.py` | Reemplazado `@app.on_event("startup")` por `lifespan` context manager |
+| Codigo inconsistente con ADR 005 | `other_projects/app_health_monitoring/backend/app/main.py` | Reemplazado `@app.on_event("startup")` por `lifespan` context manager |
 | Recursos FHIR faltantes (gap analysis) | `docs/research/fhir-gap-analysis.md` | Identificados 7 recursos faltantes, 1 partial, 1 binding gap |
 | CareTeam no implementado | `resources/care_team.py` | Creado con CareTeamParticipant backbone, coverage[x] choice, CareTeamStatus enum |
 | Device no implementado | `resources/device.py` | Creado con 5 backbones, value[x] 7-way choice, 4 enums (device_status, device_name_type, udi_entry_type, device_availability_status) |
@@ -343,7 +343,7 @@
 
 | Issue | Ubicacion | Regla no aplicada |
 | :--- | :--- | :--- |
-| Archivos `.md` en espanol fuera de `docs/` | 87 archivos: `app_questionnaire/`, `app_health_monitoring/`, `template_backend_python/`, `dh_logger/`, `dh_onboarding/`, `dh_notify/`, `LLM_STUDIO.md` | `AGENTS.md` y `.agents/rules/WRITING.md`: todo fuera de `docs/` debe estar en ingles. |
+| Archivos `.md` en espanol fuera de `docs/` | 87 archivos: `other_projects/app_questionnaire/`, `other_projects/app_health_monitoring/`, `backend/template_backend_python/`, `dh_logger/`, `dh_onboarding/`, `dh_notify/`, `LLM_STUDIO.md` | `AGENTS.md` y `.agents/rules/WRITING.md`: todo fuera de `docs/` debe estar en ingles. |
 | Archivos `.md` en ingles dentro de `docs/` | 14 archivos: `docs/decisions/019-*.md`, `020-*.md`, `022-*.md`, `023-*.md`, `docs/historial_clinico/*.md`, `docs/management/1_onboarding_legacy/README.md`, `docs/ideas/measurements.md`, `docs/db/postgres/organizations/data_dictionary/*.md`, `docs/tasks/TASK-007-dh-storage/planning/*.md` | `.agents/rules/WRITING.md` y `.agents/rules/DOCS_PROJECT_STRUCTURE.md`: todo dentro de `docs/` debe estar en espanol. |
 | Emojis decorativos en `.md` | 77 archivos (5 dentro de `docs/`, 72 fuera de `docs/`) | `AGENTS.md` y ADR 032: emojis decorativos prohibidos; solo permitidos `🟢`, `🟡`, `🔴` como indicadores de estado. |
 
