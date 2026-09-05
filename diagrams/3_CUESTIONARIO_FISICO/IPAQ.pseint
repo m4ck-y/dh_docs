@@ -1,0 +1,83 @@
+Algoritmo IPAQ_Calculo_Nivel_Actividad
+
+// Definición de constantes MET
+Definir MET_VIGOROSA Como Real;
+Definir MET_MODERADA Como Real;
+Definir MET_CAMINAR Como Real;
+
+MET_VIGOROSA = 8.0;
+MET_MODERADA = 4.0;
+MET_CAMINAR = 3.3;
+
+// Variables de entrada
+Definir dias_vig, min_vig, dias_mod, min_mod, dias_cam, min_cam Como Entero;
+Definir total_vig, total_mod, total_cam, total_mets Como Real;
+Definir nivel Como Cadena;
+
+// Entrada de datos
+Escribir "Días con actividad vigorosa (>=10 min seguidos):"
+Leer dias_vig
+Si dias_vig > 0 Entonces
+Escribir "horas COMPLETAS por día de actividad vigorosa (si no aplica, ingrese 0):"
+Leer horas_vig
+Escribir "Minutos por día de actividad vigorosa:"
+Leer min_vig
+min_vig <- (horas_vig * 60) + min_vig
+SiNo
+min_vig <- 0
+FinSi
+
+Escribir "Días con actividad moderada (>=10 min seguidos):"
+Leer dias_mod
+Si dias_mod > 0 Entonces
+Escribir "horas COMPLETAS por día de actividad moderada (si no aplica, ingrese 0):"
+Leer horas_mod
+Escribir "Minutos por día de actividad moderada:"
+Leer min_mod
+min_mod <- (horas_mod * 60) + min_mod
+SiNo
+min_mod <- 0
+FinSi
+
+Escribir "Días que caminó (>=10 min seguidos):"
+Leer dias_cam
+Si dias_cam > 0 Entonces
+Escribir "horas COMPLETAS por día de caminata (si no aplica, ingrese 0):"
+Leer horas_cam
+Escribir "Minutos por día de caminata:"
+Leer min_cam
+min_cam <- (horas_cam * 60) + min_cam
+SiNo
+min_cam <- 0
+FinSi
+
+
+// Cálculo de MET-min/semana
+total_vig <- MET_VIGOROSA * min_vig * dias_vig;
+total_mod <- MET_MODERADA * min_mod * dias_mod;
+total_cam <- MET_CAMINAR * min_cam * dias_cam;
+total_mets <- total_vig + total_mod + total_cam;
+
+// Clasificación según IPAQ
+// Nivel Alto
+Si (dias_cam + dias_mod + dias_vig) >= 7 Y total_mets >= 3000 O (dias_vig >= 3 Y total_vig >= 1500) Entonces
+nivel <- "Alto";
+// Nivel Moderado
+SiNo
+Si (dias_vig >= 3 Y min_vig >= 20) O ((dias_mod + dias_cam) >= 5 Y (min_mod + min_cam) >= 30) O ((dias_cam + dias_mod + dias_vig) >= 5 Y total_mets >= 600) Entonces
+nivel <- "Moderado";
+// Nivel Bajo (cualquier otro caso)
+SiNo
+nivel <- "Bajo";
+FinSi
+FinSi
+
+// Salida de resultados
+Escribir "Resultados:";
+Escribir "MET-min/semana - Vigorosa: ", total_vig;
+Escribir "MET-min/semana - Moderada: ", total_mod;
+Escribir "MET-min/semana - Caminata: ", total_cam;
+Escribir "Total MET-min/semana: ", total_mets;
+Escribir "Nivel de actividad física: ", nivel;
+
+FinAlgoritmo

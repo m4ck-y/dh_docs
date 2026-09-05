@@ -1,0 +1,24 @@
+flowchart TD
+%% Fuente: docs/diagrams/3_CUESTIONARIO_FISICO/3_DEMO_CUESTIONARIOS_FISICO.drawio (tab "IPAQ")
+%% Convención: un nodo por pregunta + opciones de captura.
+%% IPAQ (International Physical Activity Questionnaire) — versión corta.
+%% Población: Adultos de 18-65 años. Registro en minutos/semana compatibles con
+%% recomendaciones de actividad física; revisar registro de METs.
+%% Nota del drawio: actividad moderada = incremento moderado en respiración, FC
+%% y sudoración ≥10 min continuos; actividad vigorosa = incremento mayor ≥10 min.
+
+    start(["IPAQ Adultos de 18-65 años"]) --> def
+    def["Definiciones: actividad moderada = incremento moderado en respiración, frecuencia cardíaca y sudoración ≥10 min; actividad vigorosa = incremento mayor, ≥10 min."] --> s1
+
+    s1["1. Durante los últimos 7 días, ¿cuántos días realizó usted actividades físicas vigorosas como levantar objetos pesados, excavar, aeróbicos o pedalear rápido en bicicleta?<br/>_ Días por semana (rango 1-7)<br/>Ninguna actividad física vigorosa"] --> s2
+    s2["2. ¿Cuánto tiempo en total usualmente le tomó realizar actividades físicas vigorosas en uno de esos días que las realizó?<br/>_ horas por día (1-12)<br/>_ minutos por día (1-59)<br/>No sabe / no está seguro"] --> s3
+
+    s3["3. (Actividades moderadas) Durante los últimos 7 días, ¿cuántos días hizo usted actividades físicas moderadas tal como cargar objetos livianos, pedalear en bicicleta a paso regular, o jugar dobles de tenis? No incluya caminatas.<br/>_ Días por semana (rango 1-7)<br/>Ninguna actividad física moderada"] --> s4
+    s4["4. Usualmente, ¿cuánto tiempo dedica usted en uno de esos días haciendo actividades físicas moderadas?<br/>_ horas por día (1-12)<br/>_ minutos por día (1-59)<br/>No sabe / no está seguro"] --> s5
+
+    s5["5. (Caminata) Durante los últimos 7 días, ¿cuántos días caminó usted por al menos 10 minutos continuos?<br/>_ Días por semana (rango 1-7)<br/>No caminó"] --> s6
+    s6["6. Usualmente, ¿cuánto tiempo gastó usted en uno de esos días caminando?<br/>_ horas por día (1-12)<br/>_ minutos por día (1-59)<br/>No sabe / no está seguro"] --> s7
+
+    s7["7. (Tiempo sentado) Durante los últimos 7 días, ¿cuánto tiempo permaneció sentado(a) en un día en la semana?<br/>_ horas por día (1-24)<br/>_ minutos por día (1-59)"] --> res
+
+    res(["Resultados IPAQ"]) --> note["*Registro en minutos por semana, compatible con recomendaciones de actividad propuestas en los programas de salud pública. *Revisar registro de METS."]

@@ -1,0 +1,32 @@
+flowchart TD
+%% Fuente: docs/diagrams/0_HISTORIA_CLINICA/0_DEMO_HISTORIA_CLINICA.drawio (tab "E - PADECIMIENTO ACTUAL")
+%% Convención: flowchart estructural. Motivo de consulta y caracterización del síntoma.
+%% Nota del drawio: el título interno dice "B. PADECIMIENTO ACTUAL"; los campos
+%% 20.0 y 21.0 se repiten (el drawio duplica "Antecedentes relacionados").
+
+    e(["PADECIMIENTO ACTUAL"]) --> e0["1.0 Para brindar una atención más completa y personalizada, se le harán algunas preguntas sobre su situación actual."]
+
+    e0 --> e2["2.0 Para comenzar, ¿qué le gustaría atender en este momento?<br/>2.1 Presenta alguna molestia o síntoma / 2.2 Dar seguimiento a un problema de salud / 2.3 Cuidar su salud y prevenir problemas → 2.3.1 ¿Actualmente presenta alguna molestia o síntoma? (Sí/No) / 2.4 Realizar un chequeo general"]
+
+    e2 --> e3["3.0 Motivo de consulta: ¿Cuál es la principal molestia o síntoma que presenta en este momento?"]
+    e3 --> e4["4.0 Inicio del problema: ¿Desde cuándo presenta esta molestia o síntoma?<br/>4.1 Inició hoy / 4.2 Hace algunos días / 4.3 Hace semanas / 4.4 Hace meses / 4.5 Hace más tiempo"]
+    e4 --> e5["5.0 Forma de inicio: ¿Cómo comenzó esta molestia o síntoma?<br/>5.1 De forma repentina / 5.2 De manera gradual / 5.3 Aparece y desaparece / 5.4 No lo recuerda"]
+    e5 --> e6["6.0 Causa real o aparente: ¿Ha notado alguna situación, actividad o evento que relacione con el inicio de esta molestia?<br/>6.1 Actividad física o esfuerzo / 6.2 Estrés o emociones / 6.3 Algún golpe o lesión / 6.4 Contacto con alguna sustancia o alimento / 6.5 Enfermedad previa / 6.6 Medicamento o tratamiento / 6.7 Ninguna / 6.8 Otro"]
+    e6 --> e7["7.0 Evolución: Desde que comenzó, ¿cómo ha evolucionado?<br/>7.1 Ha mejorado / 7.2 Ha empeorado / 7.3 Se ha mantenido igual / 7.4 Aparece y desaparece"]
+    e7 --> e8["8.0 Caracterización del síntoma: preguntas más específicas sobre la molestia o síntoma actual."]
+    e8 --> e9["9.0 Localización: ¿En qué parte del cuerpo presenta la molestia? (selector corporal visual por zonas)"]
+    e9 --> e10["10.0 Irradiación: ¿La molestia se extiende a otra parte del cuerpo?"]
+    e10 --> e11["11.0 Tipo de molestia: ¿Cómo describiría la molestia?"]
+    e11 --> e12["12.0 Intensidad: En una escala del 0 al 10 (0 ninguna, 10 mayor intensidad), ¿qué tan intensa es?"]
+    e12 --> e13["13.0 Frecuencia: ¿Con qué frecuencia presenta esta molestia?"]
+    e13 --> e14["14.0 Duración: Cuando aparece, ¿cuánto tiempo dura?"]
+    e14 --> e15["15.0 Factores que empeoran: ¿Ha notado algo que la empeore?"]
+    e15 --> e16["16.0 Factores que alivian: ¿Hay algo que la alivie?"]
+    e16 --> e17["17.0 Síntomas asociados: ¿Además de esta molestia, ha presentado algún otro? → 17.0A ¿Estos síntomas acompañantes continúan actualmente? (17.1A Sí, todos / 17.2A Algunos / 17.3A No)"]
+    e17 --> e18["18.0 Impacto funcional: ¿Esta molestia ha afectado sus actividades diarias?"]
+    e18 --> e19["19.0 Acciones previas: ¿Ha realizado alguna acción para aliviar esta molestia?"]
+    e19 --> e20["20.0 Antecedentes relacionados: ¿Había presentado esta molestia anteriormente?"]
+    e20 --> e21["21.0 Antecedentes relacionados: ¿Había presentado esta molestia anteriormente? (duplicado en el drawio)"]
+    e21 --> e22["22.0 Estudios previos: ¿Se ha realizado estudio, análisis o revisiones relacionados con esta situación?<br/>22.1 Sí → 22.1.1 Especifique (conectar con BD de estudios) / 22.2 No"]
+    e22 --> e23["23.0 Acciones o tratamiento previo: ¿Ha tomado algún tratamiento o realizado alguna acción para aliviar esta molestia?<br/>23.1 Medicamentos / 23.2 Atención médica / 23.3 Remedios caseros / 23.4 Terapias / 23.5 Ninguna"]
+    e23 --> ef(["Fin"])

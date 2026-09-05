@@ -1,0 +1,44 @@
+flowchart LR
+%% Fuente: docs/diagrams/0_HISTORIA_CLINICA/0_DEMO_HISTORIA_CLINICA.drawio (tab "ANEXO C")
+%% Rúbrica de activación: condición → cuestionario habilitado.
+%% Columnas originales: Pregunta de condición | Respuesta | Pregunta | Respuesta |
+%% Cuestionario que se habilita. Una flecha por línea.
+
+subgraph PSICO["PSICOLOGÍA"]
+    p1["A.1.0 + resp 1.1"] --> zarit["ZARIT-CBI"]
+
+    p2["B.2.0 + resp 2.1"] --> sf12["SF-12"]
+    p3["B.2.0 + resp 2.2"] --> sf12
+    p4["B.2.0 + resp 2.3"] --> sf12
+    p5["B.2.0 + resp 2.4"] --> sf12
+
+    p6["B.2.0 + resp 2.2"] --> asq["ASQ-15"]
+    p7["B.2.0 + resp 2.3"] --> asq
+    p8["B.2.0 + resp 2.4"] --> asq
+
+    p9["C.1.1 + resp 1.1.1"] --> hads["HADS"]
+    p10["C.2.1 + resp 2.1.8"] --> phq["PHQ-9"]
+    p11["A.1.2.13 = <18 AND C.2.1 + 2.1.8"] --> cdi["CDI"]
+    p12["A.1.2.13 = >60 AND C.2.1 + 2.1.8"] --> gds["GDS"]
+    p13["C.2.1 + resp 2.1.12"] --> gad["GAD-7"]
+    p14["C.2.1 + resp 2.1.13"] --> aes["AES-S"]
+    p15["C.2.1 + resp 2.1.14"] --> cth["CTH"]
+    p16["C.2.1 + resp 2.1.15"] --> asrs["ASRS-V1.1"]
+    p17["A.1.2.13 = 6-12 AND C.2.1 + 2.1.15"] --> edah["EDAH"]
+    p18["C.2.1 + resp 2.1.16"] --> dts["DTS"]
+    p19["C.2.1 + resp 2.1.17"] --> spin["SPIN"]
+    p20["C.2.1 + resp 2.1.18"] --> tas["TAS-20"]
+
+    p21["C.2.2.1.1.1 + Haloperidol"] --> dai["DAI-10"]
+    p22["C.2.2.1.1.1 + Clorpromazina"] --> dai
+    p23["C.2.2.1.1.1 + Flufenacina"] --> dai
+    p24["C.2.2.1.1.1 + Risperidona"] --> dai
+    p25["C.2.2.1.1.1 + Olanzapina"] --> dai
+    p26["C.2.2.1.1.1 + Quetiapina"] --> dai
+    p27["C.2.2.1.1.1 + Aripiprazol"] --> dai
+    p28["C.2.2.1.1.1 + Clozapina"] --> dai
+end
+
+subgraph NUTRI["NUTRICIÓN"]
+    n1["j-2.0 + J-2.1"] --> ipaq["IPAQ"]
+end

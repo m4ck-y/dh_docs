@@ -1,0 +1,19 @@
+flowchart TD
+%% Fuente: docs/diagrams/0_HISTORIA_CLINICA/0_DEMO_HISTORIA_CLINICA.drawio (tab "B - ANTECEDENTES HEREDOFAMILIARES")
+%% Convención: flowchart estructural. Registro de enfermedades en familiares
+%% (padres, hijos, abuelos) por categoría de salud y familiar.
+%% Nota del drawio: "número máximo de repetición de llenado, sólo hijos".
+
+    b(["ANTECEDENTES HEREDO-FAMILIARES"]) --> b0["1.0 Registre aquí las enfermedades o condiciones de salud que conozca en sus familiares (padres, hijos o abuelos). Esta información ayuda a su médico a entender mejor sus antecedentes."]
+
+    b0 --> b2["2.0 Seleccione el familiar sobre el que desea proporcionar información de salud<br/>2.1 Padre / 2.2 Madre / 2.3 Hijos / 2.4 Abuelo materno / 2.5 Abuelo paterno / 2.6 Abuela materna / 2.7 Abuela paterna<br/>(repetible, solo hijos)"]
+
+    b2 --> b3["3.0 ¿Esta persona vive actualmente?<br/>3.1 Sí / 3.2 No → 3.2.1 ¿Cuál fue la causa de su fallecimiento? (texto libre / 3.2.1.2 No lo sé)"]
+
+    b3 --> b4["4.0 Seleccione la categoría de salud donde desea registrar un padecimiento.<br/>4.1 Diabetes, colesterol y metabolismo / 4.2 Presión alta y corazón / 4.3 Cerebro y sistema nervioso / 4.4 Mente, emociones y aprendizaje / 4.5 Pulmones y respiración / 4.6 Visión y ojos / 4.7 Estómago, intestino y digestión / 4.8 Hígado, riñón y páncreas / 4.9 Huesos, músculos y articulaciones / 4.10 Piel, cabello y uñas / 4.11 Cáncer y tumores / 4.12 Enfermedades hereditarias y autoinmunes / 4.13 Enfermedades de la sangre"]
+
+    b4 --> b4a["4.1A-4.13A Seleccione la enfermedad o enfermedades que presenta o presentó su familiar."]
+
+    b4a --> b5["5.0 ¿Desea completar los antecedentes de otro familiar?<br/>5.1 Sí (repite flujo) / 5.2 No"]
+
+    b5 -->|"5.2 No"| b6(["6.0 Guardar"])

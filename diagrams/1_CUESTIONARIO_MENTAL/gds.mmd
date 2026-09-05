@@ -1,0 +1,26 @@
+flowchart TD
+%% Fuente: docs/diagrams/1_CUESTIONARIO_MENTAL/1_DEMO_CUESTIONARIOS_MENTAL.drawio (tab "GDS")
+%% Convención: un nodo por ítem + opciones (SÍ/NO) con valor 0/1.
+%% GDS-15 (Geriatric Depression Scale, 15 ítems Sí/No).
+%% Los ítems con sentido inverso (1, 5, 7, 11, 13) puntúan NO=1; el resto SÍ=1.
+%% Raridad del drawio: el ítem 11 solo conecta valor al "NO"; ver review.
+
+    start(["Cuestionario GDS"]) --> intro["En la última semana"]
+    intro --> g1
+
+    g1["1. ¿Está Ud. básicamente satisfecho con su vida?<br/>1.1. SÍ (0)<br/>1.2. NO (1)"] --> g2
+    g2["2. ¿Ha disminuido o abandonado muchos de sus intereses o actividades previas?<br/>2.1. SÍ (1)<br/>2.2. NO (0)"] --> g3
+    g3["3. ¿Siente que su vida está vacía?<br/>3.1. SÍ (1)<br/>3.2. NO (0)"] --> g4
+    g4["4. ¿Se siente aburrido frecuentemente?<br/>4.1. SÍ (1)<br/>4.2. NO (0)"] --> g5
+    g5["5. ¿Está Ud. de buen ánimo la mayoría del tiempo?<br/>5.1. SÍ (0)<br/>5.2. NO (1)"] --> g6
+    g6["6. ¿Está preocupado o teme que algo malo le va a pasar?<br/>6.1. SÍ (1)<br/>6.2. NO (0)"] --> g7
+    g7["7. ¿Se siente feliz la mayor parte del tiempo?<br/>7.1. SÍ (0)<br/>7.2. NO (1)"] --> g8
+    g8["8. ¿Se siente con frecuencia desamparado?<br/>8.1. SÍ (1)<br/>8.2. NO (0)"] --> g9
+    g9["9. ¿Prefiere Ud. quedarse en casa a salir a hacer cosas nuevas?<br/>9.1. SÍ (1)<br/>9.2. NO (0)"] --> g10
+    g10["10. ¿Siente Ud. que tiene más problemas con su memoria que otras personas de su edad?<br/>10.1. SÍ (1)<br/>10.2. NO (0)"] --> g11
+    g11["11. ¿Cree Ud. que es maravilloso estar vivo?<br/>11.1. SÍ (0)<br/>11.2. NO (1)"] --> g12
+    g12["12. ¿Se siente inútil o despreciable con está Ud. actualmente?<br/>12.1. SÍ (1)<br/>12.2. NO (0)"] --> g13
+    g13["13. ¿Se siente lleno de energía?<br/>13.1. SÍ (0)<br/>13.2. NO (1)"] --> g14
+    g14["14. ¿Se encuentra sin esperanza ante su situación actual?<br/>14.1. SÍ (1)<br/>14.2. NO (0)"] --> res
+
+    res(["Resultados GDS"]) --> fin(["Fin del cuestionario GDS"])

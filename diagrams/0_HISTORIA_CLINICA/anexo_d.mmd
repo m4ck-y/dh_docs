@@ -1,0 +1,85 @@
+flowchart TD
+%% Fuente: docs/diagrams/0_HISTORIA_CLINICA/0_DEMO_HISTORIA_CLINICA.drawio (tab "ANEXO D")
+%% Flujo de derivación: según respuestas, se habilita un instrumento de PSICOLOGÍA.
+%% (ZARIT-CBI, SF-12, HADS, GAD-7, PSS, CTH, DTS, SPIN, TAS-20, CDI/GDS/PHQ-9
+%%  por edad, EDAH/ASRS-V1.1, DAI-10 por antipsicótico, CRAFT por sustancias).
+%% Convención: una flecha por línea; nodos no redeclarados.
+
+    ps(["PSICOLOGÍA"])
+
+    ps --> a(["A. REGISTRO"])
+    a --> a0["1.0 ¿Requiere apoyo de tutor o responsable?"]
+    a0 --> a1(["1.1 Sí"])
+    a1 --> zarit(["ZARIT-CBI"])
+
+    ps --> b(["B. PADECIMIENTO ACTUAL"])
+    b --> b0["2.0 Para comenzar, ¿qué le gustaría atender en este momento?"]
+    b0 --> b1(["2.1 Presenta alguna molestia o síntomas"])
+    b0 --> b2(["2.2 Dar seguimiento a un problema de salud"])
+    b0 --> b3(["2.3 Cuidar su salud y prevenir problemas"])
+    b0 --> b4(["2.4 Realizar un chequeo general"])
+    b1 --> sf12(["SF-12"])
+    b2 --> sf12
+    b3 --> sf12
+    b4 --> sf12
+
+    ps --> c(["C. ANTECEDENTES PERSONALES PATOLÓGICOS"])
+    c --> c0["1.0 ¿Tienes algunos de los siguientes problemas?"]
+    c0 --> c1(["1.1 MENTAL"])
+    c1 --> c11(["1.1.1 SÍ"])
+    c11 --> hads(["HADS"])
+
+    c --> d0["2.0 ¿Padece o ha padecido alguna de las siguientes enfermedades alguna vez en tu vida?"]
+    d0 --> d1["2.1 Enfermedades transmisibles y no transmisibles"]
+
+    d1 --> ans(["2.1.12 Ansiedad"])
+    ans --> gad(["GAD-7"])
+    d1 --> estr(["2.1.13 Estrés"])
+    estr --> pss(["PSS"])
+    d1 --> bip(["2.1.14 Bipolaridad"])
+    bip --> cth(["CTH"])
+    d1 --> tdah(["2.1.15 TDAH"])
+    d1 --> tept(["2.1.16 Estrés postraumático"])
+    tept --> dts(["DTS"])
+    d1 --> fob(["2.1.17 Fobia social"])
+    fob --> spin(["SPIN"])
+    d1 --> alex(["2.1.18 Alexitimia"])
+    alex --> tas(["TAS-20"])
+
+    d1 --> dep(["2.1.6 Depresión"])
+    dep --> edadDep{"¿Edad?"}
+    edadDep -->|"<18"| cdi(["CDI"])
+    edadDep -->|">60"| gds(["GDS"])
+    edadDep -->|"18-60"| phq(["PHQ-9"])
+
+    tdah --> edadTdah{"¿Edad 6-12?"}
+    edadTdah -->|"Sí"| edah(["EDAH"])
+    edadTdah -->|"No"| asrs(["ASRS-V1.1"])
+
+    c --> med0["2.2.1.1.1 Indique los medicamentos que correspondan"]
+    med0 --> med1(["Haloperidol (Haldol)"])
+    med0 --> med2(["Clorpromazina"])
+    med0 --> med3(["Flufenacina"])
+    med0 --> med4(["Risperidona (Risperdal)"])
+    med0 --> med5(["Olanzapina (Zyprexa)"])
+    med0 --> med6(["Quetiapina (Seroquel)"])
+    med0 --> med7(["Aripiprazol (Abilify)"])
+    med0 --> med8(["Clozapina"])
+    med1 --> dai(["DAI-10"])
+    med2 --> dai
+    med3 --> dai
+    med4 --> dai
+    med5 --> dai
+    med6 --> dai
+    med7 --> dai
+    med8 --> dai
+
+    c --> fumo0["3.0 ¿Fuma?"]
+    fumo0 --> fumo1(["3.1 Sí"])
+    c --> alc0["4.0 ¿Consume bebidas alcohólicas?"]
+    alc0 --> alc1(["4.1 Sí"])
+    c --> drg0["5.0 ¿Ha consumido algún tipo de droga?"]
+    drg0 --> drg1(["5.1 Sí"])
+    fumo1 --> craft(["CRAFT"])
+    alc1 --> craft
+    drg1 --> craft

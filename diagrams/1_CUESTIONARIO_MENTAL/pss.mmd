@@ -1,0 +1,25 @@
+flowchart TD
+%% Fuente: docs/diagrams/1_CUESTIONARIO_MENTAL/1_DEMO_CUESTIONARIOS_MENTAL.drawio (tab "PSS")
+%% Convención: un nodo por ítem + opciones numeradas con valor.
+%% PSS (Perceived Stress Scale): 14 ítems, 5 opciones (0-4).
+%% Los ítems invertidos (4, 5, 6, 7, 9, 10, 13) puntúan a la inversa: Nunca=4 ... Muy a menudo=0.
+
+    start(["Cuestionario PSS"]) --> intro["En el último mes"]
+    intro --> p1
+
+    p1["1. ¿Con qué frecuencia ha estado afectado por algo que me ha ocurrido inesperadamente?<br/>1.1. Nunca (0)<br/>1.2. Casi nunca (1)<br/>1.3. De vez en cuando (2)<br/>1.4. A menudo (3)<br/>1.5. Muy a menudo (4)"] --> p2
+    p2["2. ¿Con qué frecuencia se ha sentido incapaz de controlar las cosas importantes en su vida?<br/>2.1. Nunca (0)<br/>2.2. Casi nunca (1)<br/>2.3. De vez en cuando (2)<br/>2.4. A menudo (3)<br/>2.5. Muy a menudo (4)"] --> p3
+    p3["3. ¿Con qué frecuencia se ha sentido nervioso o estresado?<br/>3.1. Nunca (0)<br/>3.2. Casi nunca (1)<br/>3.3. De vez en cuando (2)<br/>3.4. A menudo (3)<br/>3.5. Muy a menudo (4)"] --> p4
+    p4["4. ¿Con qué frecuencia ha manejado con éxito los pequeños problemas irritantes de la vida? (invertido)<br/>4.1. Nunca (4)<br/>4.2. Casi nunca (3)<br/>4.3. De vez en cuando (2)<br/>4.4. A menudo (1)<br/>4.5. Muy a menudo (0)"] --> p5
+    p5["5. ¿Con qué frecuencia ha sentido que ha afrontado efectivamente los cambios importantes que han estado ocurriendo en su vida? (invertido)<br/>5.1. Nunca (4)<br/>5.2. Casi nunca (3)<br/>5.3. De vez en cuando (2)<br/>5.4. A menudo (1)<br/>5.5. Muy a menudo (0)"] --> p6
+    p6["6. ¿Con qué frecuencia ha estado seguro sobre su capacidad para manejar sus problemas personales? (invertido)<br/>6.1. Nunca (4)<br/>6.2. Casi nunca (3)<br/>6.3. De vez en cuando (2)<br/>6.4. A menudo (1)<br/>6.5. Muy a menudo (0)"] --> p7
+    p7["7. ¿Con qué frecuencia ha sentido que las cosas le van bien? (invertido)<br/>7.1. Nunca (4)<br/>7.2. Casi nunca (3)<br/>7.3. De vez en cuando (2)<br/>7.4. A menudo (1)<br/>7.5. Muy a menudo (0)"] --> p8
+    p8["8. ¿Con qué frecuencia ha sentido que no podía afrontar todas las cosas que tenía que hacer?<br/>8.1. Nunca (0)<br/>8.2. Casi nunca (1)<br/>8.3. De vez en cuando (2)<br/>8.4. A menudo (3)<br/>8.5. Muy a menudo (4)"] --> p9
+    p9["9. ¿Con qué frecuencia ha podido controlar las dificultades de su vida? (invertido)<br/>9.1. Nunca (4)<br/>9.2. Casi nunca (3)<br/>9.3. De vez en cuando (2)<br/>9.4. A menudo (1)<br/>9.5. Muy a menudo (0)"] --> p10
+    p10["10. ¿Con qué frecuencia se ha sentido que tenia todo bajo control? (invertido)<br/>10.1. Nunca (4)<br/>10.2. Casi nunca (3)<br/>10.3. De vez en cuando (2)<br/>10.4. A menudo (1)<br/>10.5. Muy a menudo (0)"] --> p11
+    p11["11. ¿Con qué frecuencia ha estado enfadado porque las cosas que le han ocurrido estaban fuera de su control?<br/>11.1. Nunca (0)<br/>11.2. Casi nunca (1)<br/>11.3. De vez en cuando (2)<br/>11.4. A menudo (3)<br/>11.5. Muy a menudo (4)"] --> p12
+    p12["12. ¿Con qué frecuencia ha pensado sobre las cosas que le quedan por hacer?<br/>12.1. Nunca (0)<br/>12.2. Casi nunca (1)<br/>12.3. De vez en cuando (2)<br/>12.4. A menudo (3)<br/>12.5. Muy a menudo (4)"] --> p13
+    p13["13. ¿Con qué frecuencia ha podido controlar la forma de pasar el tiempo? (invertido)<br/>13.1. Nunca (4)<br/>13.2. Casi nunca (3)<br/>13.3. De vez en cuando (2)<br/>13.4. A menudo (1)<br/>13.5. Muy a menudo (0)"] --> p14
+    p14["14. ¿Con qué frecuencia ha sentido que la dificultades se acumulan tanto que no puede superarlas?<br/>14.1. Nunca (0)<br/>14.2. Casi nunca (1)<br/>14.3. De vez en cuando (2)<br/>14.4. A menudo (3)<br/>14.5. Muy a menudo (4)"] --> res
+
+    res(["Resultados PSS"]) --> fin(["Fin del cuestionario PSS"])

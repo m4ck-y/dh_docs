@@ -1,0 +1,50 @@
+flowchart TD
+%% Fuente: docs/diagrams/0_HISTORIA_CLINICA/0_DEMO_HISTORIA_CLINICA.drawio (tab "A - REGISTRO")
+%% Convención: flowchart estructural; cada nodo es un campo/pregunta con sus
+%% opciones numeradas. "1.1" = tutor/responsable, "1.2" = persona en seguimiento.
+%% TODO del drawio: "FALTA PONER GRUPO ÉTNICO".
+
+    a(["A. REGISTRO"]) --> a0["1.0 ¿Requiere apoyo de tutor o responsable?<br/>1.1 Sí / 1.2 No"]
+
+    a0 -->|"1.1 Sí"| tutor["Datos del tutor o responsable"]
+    tutor --> t1["1.1.2 Parentesco<br/>1.1.2.1 Madre / 1.1.2.2 Padre / 1.1.2.3 Cuidador(a) / 1.1.2.4 Tutor legal / 1.1.2.6 Otro → 1.1.2.6.1 Especifique"]
+    t1 --> t2["1.1.3 ¿Cuál es su relación en el cuidado y vida diaria del paciente?<br/>1.1.3.1 Vive con el usuario y participa en su cuidado diario / 1.1.3.2 Participa en su cuidado, pero no vive con él/ella / 1.1.3.3 Sólo brinda apoyo administrativo o legal"]
+    t2 --> t3["1.1.4 Domicilio actual (Calle, Manzana Lote o # Ext., # Int., Unidad, Colonia o Pueblo, Ciudad o Municipio, Entidad federativa, CP)"]
+    t3 --> t4["1.1.5 Fecha de nacimiento (dd, mmm, aaaa)"]
+    t4 --> t5["1.1.6 Lugar de nacimiento (Ciudad, Edo)"]
+    t5 --> t6["1.1.7 Teléfono fijo / 1.1.8 Celular / 1.1.9 Correo electrónico"]
+    t6 --> t7["1.1.10 Sexo al nacer<br/>1.1.10.1 Femenino / 1.1.10.2 Masculino / 1.1.10.3 Intersexual"]
+    t7 --> t8["1.1.11 EDAD"]
+    t8 --> t9["1.1.12 Religión<br/>1.1.12.1 Católica / 1.1.12.2 Cristiana / 1.1.12.3 Otra religión → 1.1.12.3.1 Especifique / 1.1.12.4 Ninguna / 1.1.12.5 Prefiere no decirlo"]
+    t9 --> t10["1.1.13 Escolaridad<br/>1.1.13.1 Sin estudios / 1.1.13.2 Primaria / 1.1.13.3 Secundaria / 1.1.13.4 Media superior / 1.1.13.5 Superior / 1.1.13.6 Posgrado / Prefiere no decirlo"]
+    t10 --> t11["1.1.14 Edo. civil<br/>1.1.14.1 Soltero/a / 1.1.14.2 Casado/a / 1.1.14.3 Unión libre / 1.1.14.4 Separado/a / 1.1.14.5 Divorciado/a / 1.1.14.6 Viudo/a / 1.1.14.7 Prefiere no decirlo"]
+    t11 --> t12["1.1.15 Ocupación<br/>1.1.15.1 Empleado/a / 1.1.15.2 Independiente / 1.1.15.3 Estudiante / 1.1.15.4 Trabajo del hogar / 1.1.15.5 Desempleado/a / 1.1.15.6 Jubilado/a o pensionado/a / 1.1.15.7 Otro / 1.1.15.8 Prefiere no decirlo"]
+    t12 --> t13["1.1.16 Ingresos<br/>1.1.16.1 Son suficientes para el cuidado de mi salud / 1.1.16.2 Cubren parcialmente / 1.1.16.3 Frecuentemente dificultan / 1.1.16.4 Prefiere no responder"]
+    t13 --> t14["1.1.17 ¿El usuario depende económicamente de usted?<br/>1.1.17.1 Sí / 1.1.17.2 Parcialmente / 1.1.17.3 No"]
+
+    a0 -->|"1.2 No / continua"| datos["Datos generales (persona en seguimiento)"]
+    datos --> d1["1.2.1 Nombre completo (Apellido Paterno, Apellido Materno, Nombre(s))"]
+    d1 --> d2["1.2.2 Domicilio actual"]
+    d2 --> d3["1.2.3 Fecha de nacimiento"]
+    d3 --> d4["1.2.4 Lugar de nacimiento (Ciudad, Edo)"]
+    d4 --> d5["1.2.5 Teléfono fijo / 1.2.6 Celular / 1.2.7 Correo electrónico"]
+
+    t14 --> emergencia["Contacto de emergencia (opcional)"]
+    d5 --> emergencia
+
+    emergencia --> e1["1.2.8B Nombre completo del contacto de emergencia"]
+    e1 --> e2["1.2.9 Parentesco<br/>1.2.9.1 Madre / 1.2.9.2 Padre / 1.2.9.3 Pareja / 1.2.9.4 Hermano(a) / 1.2.9.5 Hijo(a) / 1.2.9.6 Amigo(a) / 1.2.9.7 Cuidador(a) / 1.2.9.4 Otro → Especifique"]
+    e2 --> e3["1.2.10 Teléfono principal"]
+
+    e3 --> du["1.2.8A Continuemos con la información del usuario"]
+    du --> u1["1.2.11 Sexo al nacer<br/>1.2.11.1 Mujer / 1.2.11.2 Hombre / 1.2.11.3 Intersexual"]
+    u1 --> u2["1.2.12A Género<br/>1.2.12A.1 Femenino / 1.2.12A.2 Masculino / 1.2.12A.3 No binario / 1.2.12A.4 Otro (especifique) / 1.2.12A.5 Prefiere no decirlo"]
+    u2 --> u3["1.2.13 Edad"]
+    u3 --> u4["1.2.14 Religión<br/>1.2.14.1 Católica / 1.2.14.2 Cristiana / 1.2.14.3 Otra → Especifique / 1.2.14.4 Ninguna / 1.2.14.5 Prefiere no decirlo"]
+    u4 --> u5["1.2.15 Escolaridad<br/>1.2.15.1 Sin estudios / 1.2.15.2 Primaria / 1.2.15.3 Secundaria / 1.2.15.4 Media superior / 1.2.15.5 Superior / 1.2.15.6 Posgrado"]
+    u5 --> u6["1.2.16 Edo. civil<br/>1.2.16.1 Soltero/a / 1.2.16.2 Casado/a / 1.2.16.3 Unión libre / 1.2.16.4 Separado/a / 1.2.16.5 Divorciado/a / 1.2.16.6 Viudo/a / 1.2.16.7 Prefiere no decirlo"]
+    u6 --> u7["1.2.17 Ocupación<br/>1.2.17.1 Empleado/a / 1.2.17.2 Independiente / 1.2.17.3 Estudiante / 1.2.17.4 Trabajo del hogar / 1.2.17.5 Desempleado/a / 1.2.17.6 Jubilado/a o pensionado/a / 1.2.17.7 Otro / 1.2.17.8 Prefiere no decirlo"]
+    u7 --> u8["1.2.18 Ingresos<br/>1.2.18.1 Suficientes / 1.2.18.2 Cubren parcialmente / 1.2.18.3 Frecuentemente dificultan / 1.2.18.4 Prefiere no responder"]
+    u8 --> u9["1.2.19 ¿Cuántas personas dependen económicamente de usted?<br/>1.2.19.1 Ninguna / 1.2.19.2 1 / 1.2.19.3 2 / 1.2.19.4 3 o más / 1.2.19.5 Prefiere no decirlo"]
+
+    u9 --> fin(["Fin de registro"])

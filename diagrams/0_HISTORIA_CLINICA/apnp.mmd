@@ -1,0 +1,38 @@
+flowchart TD
+%% Fuente: docs/diagrams/0_HISTORIA_CLINICA/0_DEMO_HISTORIA_CLINICA.drawio (tab "C - APNP")
+%% Convención: flowchart estructural. ANTECEDENTES PERSONALES NO PATOLÓGICOS:
+%% vivienda, higiene, hábitos, sueño, actividad física, trabajo.
+
+    c(["ANTECEDENTES PERSONALES NO PATOLÓGICOS"]) --> c0["1.0 A continuación, se realizarán algunas preguntas sobre hábitos y aspectos de la vida diaria que pueden influir en su estado de salud y bienestar."]
+
+    c0 --> c1["1.0 ¿Qué tipo de vivienda tiene?<br/>1.1 Casa independiente / 1.2 Duplex/Triplex / 1.3 Casa en hilera / 1.4 Depto (1-3 pisos) / 1.5 Edificio alto (>3 pisos) / 1.6 Movil/Trailer / 1.7 Otro (especificar)"]
+    c1 --> c3["3.0 ¿Se usa como granja o rancho?<br/>3.1 Sí / 3.2 No"]
+    c3 --> c4["4.0 Edad aproximada del edificio (años)"]
+    c4 --> c5["5.0 ¿Cuándo empezó a vivir aquí? (año)"]
+    c5 --> c6["6.0 ¿Cuántas personas viven en esta dirección?<br/>6.1 1 / 6.2 2 / 6.3 3 / 6.4 4 / 6.5 5 o más"]
+    c6 --> c7["7.0 ¿Hay cochera cerrada?<br/>7.1 Sí → 7.0A ¿Se estacionan vehículos en la cochera? (7.1A Sí / 7.2A No) / 7.2 No"]
+    c7 --> c8["8.0 ¿Hay dispositivos de gas en cuartos o cochera?<br/>8.1 Sí / 8.2 No / 8.3 No sabe"]
+    c8 --> c9["9.0 ¿Ha habido humedad o fugas en los últimos 12 meses?<br/>9.1 Sí / 9.2 No / 9.3 No sabe"]
+    c9 --> c10["10.0 ¿Huele frecuentemente a moho?<br/>10.1 Sí / 10.2 No / 10.3 No sabe"]
+    c10 --> c11["11.0 ¿Usa aire acondicionado?<br/>11.1 Sí → 11.0A ¿Qué tipo de aire acondicionado usa? (11.1A Central / 11.2A Ventana/Pared / 11.3A Portátil) / 11.2 No"]
+    c11 --> c12["12.0 ¿Qué combustible usa para calefacción?<br/>12.1 Gas de tubería / 12.2 Gas LP / 12.3 Electricidad / 12.4 Queroseno / 12.5 Carbón / 12.6 Madera / 12.7 Solar / 12.8 Otro / 12.9 Ninguno / 12.10 No sabe"]
+    c12 --> c13["13.0 ¿Tiene calefacción central con ductos?<br/>13.1 Sí / 13.2 No"]
+    c13 --> c14["14.0 ¿Ha tenido animales dentro del hogar últimos 12 meses?<br/>14.1 Sí → 14.0A ¿Qué tipo de animal? (14.1A Perro / 14.2A Gato / 14.3A Animal pequeño peludo / 14.4A Otro / 14.5A No sabe) / 14.2 No"]
+    c14 --> c15["15.0 ¿Con qué frecuencia se baña?<br/>15.1 Más de una vez al día / 15.2 A diario / 15.3 Varias veces a la semana / 15.4 Una vez a la semana o menos / 15.5 Rara vez o casi nunca"]
+    c15 --> c16["16.0 ¿Con qué frecuencia cambia de ropa?<br/>16.1 Diario / 16.2 2-3 veces por semana / 16.3 Menos de 2 veces por semana"]
+    c16 --> c17["17.0 ¿En cuáles de estas situaciones acostumbra lavarse las manos? (seleccione todas)<br/>17.1 Antes de preparar alimentos / 17.2 Antes de comer o alimentar a otra persona / 17.3 Después de usar el baño / 17.4 Después de toser, estornudar o sonarse / 17.5 Cuando están visiblemente sucias"]
+    c17 --> c18["18.0 ¿Cuántas veces al día se cepilla los dientes?<br/>18.1 No se cepilla / 18.2 1 vez / 18.3 2 veces / 18.4 Más de 2 / 18.5 Esporádicamente / 18.6 No aplica / 18.7 1 o 2 veces / 18.8 No sabe"]
+    c18 --> c19["19.0 ¿Usa hilo dental?<br/>19.1 No / 19.2 Rara vez / 19.3 1-3 veces/semana / 19.4 Diario"]
+    c19 --> c20["20.0 ¿Hace cuánto fue su última visita al dentista?<br/>20.1 6 meses o menos / 20.2 6-12 meses / 20.3 1-2 años / 20.4 2-3 años / 20.5 3-5 años / 20.6 Más de 5 años / 20.7 Nunca ha ido"]
+    c20 --> c21["21.0 ¿En qué horario o turno trabaja?<br/>21.1 Diurno / 21.2 Vespertino / 21.3 Nocturno / 21.4 Rotativo (21.4A Con noches / 21.4B Sin noches) / 21.5 Otro"]
+    c21 --> c22["22.0 ¿Cuántas horas trabaja al día en promedio?<br/>22.1 8 horas o menos / 22.2 9 a 12 horas / 22.3 Más de 12 horas"]
+    c22 --> c23["23.0 ¿Cuántos días a la semana trabaja?"]
+    c23 --> c24["24.0 ¿A cuál de los siguientes riesgos laborales está expuesto? (seleccione todas)<br/>24.1 Químicos / 24.2 Biológicos / 24.3 Físicos / 24.4 Ergonómicos / 24.5 Psicosociales / 24.6 Seguridad/mecánicos"]
+    c24 --> c25["25.0 ¿Con qué frecuencia realiza actividad física?<br/>25.1 Todos o casi todos los días / 25.2 Algunas veces por semana / 25.3 Ocasionalmente / 25.4 No realiza"]
+    c25 --> c26["26.0 ¿Cómo considera su alimentación actualmente?<br/>26.1 Excelente / 26.2 Muy buena / 26.3 Buena / 26.4 Regular / 26.5 Mala"]
+    c26 --> c27["27.0 En promedio, ¿cómo considera la calidad de su sueño?<br/>27.1 Buena / 27.2 Regular / 27.3 Mala"]
+    c27 --> c28["28.0 En promedio, ¿cuántas horas duerme al día?<br/>28.1 Menos de 5 / 28.2 Entre 5 y 6 / 28.3 Entre 7 y 9 / 28.4 Más de 9 / 28.5 Horario muy variable"]
+    c28 --> c28a["28.0A ¿Con qué frecuencia ha utilizado medicamentos para dormir?<br/>28.1A Nunca / 28.2A Una o dos veces / 28.3A Mensual / 28.4A Semanal"]
+    c28a --> c29["29.0 En los últimos años, ¿ha recibido vacunas o refuerzos recomendados?<br/>29.1 Sí / 29.2 No / 29.3 No lo recuerda"]
+    c29 --> c30["30.0 ¿Cuenta con información o registro reciente de sus vacunas?<br/>30.1 Sí / 30.2 No"]
+    c30 --> cf(["Fin APNP"])

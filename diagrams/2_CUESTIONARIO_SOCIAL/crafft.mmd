@@ -1,0 +1,28 @@
+flowchart TD
+%% Fuente: docs/diagrams/2_CUESTIONARIO_SOCIAL/2_DEMO_CUESTIONARIOS_SOCIAL.drawio (tab "CRAFFT")
+%% Convención: un nodo por pregunta + opciones SÍ/NO.
+%% CRAFFT: tamizaje de consumo de alcohol y drogas en adolescentes.
+%% Parte A = 3 preguntas de consumo (últimos 6 meses). Parte B = iniciales C-R-A-F-F-T.
+%% Cada "SÍ" de la parte B vale 1 punto.
+%% Notas del drawio (raridades):
+%%  - El ítem "F" (olvidar) está roto en el drawio: el nodo solo contiene el
+%%    texto "co" (quedó truncado).
+%%  - El último ítem de la parte B repite el texto de la pregunta "SOLO"
+%%    (debería ser la "T" de Trouble/problemas); se conserva tal cual.
+
+    start(["CRAFFT parte A"]) --> intro["En los últimos seis meses"]
+    intro --> a1
+
+    a1["¿Has consumido bebidas con ALCOHOL (cerveza, vino, ginebra, etc.)?<br/>Sí / No"] --> a2
+    a2["¿Has consumido MARIHUANA, HACHÍS, O MARIHUANA SINTÉTICA? Incluye fumada, vapeada o en cualquier tipo de alimento.<br/>Sí / No"] --> a3
+    a3["¿Has consumido OTRAS DROGAS para colocarte (drogas ilegales, medicamentos con o sin receta, cualquier otra droga inhalada, vapeada o esnifada)?<br/>Sí / No"] --> b
+
+    b["CRAFFT parte B"] --> b1
+    b1["C. ¿Alguna vez has andado en un AUTO manejado por alguien (incluyéndote a ti mismo) que estuviera «volado» o que estuviera consumiendo alcohol o drogas?<br/>Sí (1) / No (0)"] --> b2
+    b2["R. ¿Has usado alguna vez alcohol o drogas para RELAJARTE, sentirte mejor contigo mismo o para ser parte de un grupo?<br/>Sí (1) / No (0)"] --> b3
+    b3["A. ¿Has consumido alguna vez alcohol o drogas estando SOLO?<br/>Sí (1) / No (0)"] --> b4
+    b4["F. [texto truncado en el drawio: «co»] — ¿olvidaste cosas que hiciste mientras consumías alcohol o drogas?<br/>Sí (1) / No (0)"] --> b5
+    b5["F. ¿Te ha dicho tu familia o AMIGOS que debes disminuir el consumo de alcohol o drogas?<br/>Sí (1) / No (0)"] --> b6
+    b6["T. [el drawio repite el texto de «SOLO»] — ¿has tenido problemas por consumir alcohol o drogas?<br/>Sí (1) / No (0)"] --> res
+
+    res(["Resultados CRAFFT"]) --> fin(["Fin CRAFFT"])

@@ -1,0 +1,26 @@
+flowchart TD
+%% Fuente: docs/diagrams/1_CUESTIONARIO_MENTAL/1_DEMO_CUESTIONARIOS_MENTAL.drawio (tab "HADS")
+%% Convención: un nodo por ítem con enunciado + opciones numeradas con valor.
+%% Escala: HADS (Hospital Anxiety and Depression Scale).
+%% Subescala A (Ansiedad): ítems impares. Subescala D (Depresión): ítems pares.
+%% Cada opción vale 0-3; la cadena es secuencial (A.1 -> D.1 -> A.2 -> ...).
+
+    start(["Cuestionario HADS"]) --> intro["Lea cada pregunta y seleccione la respuesta que usted considere que coincide con su propio estado emocional en la última semana. No es necesario que piense mucho tiempo cada respuesta; en este cuestionario las respuestas espontáneas tienen más valor que las que se piensan mucho."]
+    intro --> hA1
+
+    hA1["A.1. Me siento tenso/a o nervioso/a<br/>A.1.1. Nunca (0)<br/>A.1.2. De vez en cuando (1)<br/>A.1.3. Gran parte del día (2)<br/>A.1.4. Casi todo el día (3)"] --> hD1
+    hD1["D.1. Sigo disfrutando de las cosas como siempre<br/>D.1.1. Ciertamente, igual que antes (0)<br/>D.1.2. No tanto como antes (1)<br/>D.1.3. Solamente un poco (2)<br/>D.1.4. Ya no disfruto con nada (3)"] --> hA2
+    hA2["A.2. Siento una especie de temor como si algo malo fuera a suceder<br/>A.2.1. No siento nada de eso (0)<br/>A.2.2. Sí, pero no me preocupa (1)<br/>A.2.3. Sí, pero no muy intenso (2)<br/>A.2.4. Sí, y muy intenso (3)"] --> hD2
+    hD2["D.2. Soy capaz de reírme y ver el lado gracioso de las cosas<br/>D.2.1. Igual que siempre (0)<br/>D.2.2. Actualmente, algo menos (1)<br/>D.2.3. Actualmente, mucho menos (2)<br/>D.2.4. Actualmente, en absoluto (3)"] --> hA3
+    hA3["A.3. Tengo la cabeza llena de preocupaciones<br/>A.3.1. Nunca (0)<br/>A.3.2. De vez en cuando (1)<br/>A.3.3. Gran parte del día (2)<br/>A.3.4. Casi todo el día (3)"] --> hD3
+    hD3["D.3. Me siento alegre<br/>D.3.1. Gran parte del día (0)<br/>D.3.2. En algunas ocasiones (1)<br/>D.3.3. Muy pocas veces (2)<br/>D.3.4. Nunca (3)"] --> hA4
+    hA4["A.4. Soy capaz de permanecer sentado/a tranquilo/a y relajado/a<br/>A.4.1. Siempre (0)<br/>A.4.2. A menudo (1)<br/>A.4.3. Raras veces (2)<br/>A.4.4. Nunca (3)"] --> hD4
+    hD4["D.4. Me siento lento/a y torpe<br/>D.4.1. Nunca (0)<br/>D.4.2. A veces (1)<br/>D.4.3. A menudo (2)<br/>D.4.4. Gran parte del día (3)"] --> hA5
+    hA5["A.5. Experimento una desagradable sensación de «nervios y hormigueos» en el estómago<br/>A.5.1. Nunca (0)<br/>A.5.2. Sólo en algunas ocasiones (1)<br/>A.5.3. A menudo (2)<br/>A.5.4. Muy a menudo (3)"] --> hD5
+    hD5["D.5. He perdido el interés por mi aspecto personal<br/>D.5.1. Me cuido como siempre lo he hecho (0)<br/>D.5.2. Es posible que no me cuide como debiera (1)<br/>D.5.3. No me cuido como debería hacerlo (2)<br/>D.5.4. Completamente (3)"] --> hA6
+    hA6["A.6. Me siento inquieto/a como si no pudiera parar de moverme<br/>A.6.1. En absoluto (0)<br/>A.6.2. No mucho (1)<br/>A.6.3. Bastante (2)<br/>A.6.4. Realmente mucho (3)"] --> hD6
+    hD6["D.6. Espero las cosas con ilusión<br/>D.6.1. Como siempre (0)<br/>D.6.2. Algo menos que antes (1)<br/>D.6.3. Mucho menos que antes (2)<br/>D.6.4. En absoluto (3)"] --> hA7
+    hA7["A.7. Experimento de repente sensaciones de gran angustia o temor<br/>A.7.1. Nunca (0)<br/>A.7.2. Raramente (1)<br/>A.7.3. Con cierta frecuencia (2)<br/>A.7.4. Muy a menudo (3)"] --> hD7
+    hD7["D.7. Soy capaz de disfrutar con un buen libro o con un buen programa de radio o televisión<br/>D.7.1. A menudo (0)<br/>D.7.2. Algunas veces (1)<br/>D.7.3. Pocas veces (2)<br/>D.7.4. Casi nunca (3)"] --> res
+
+    res(["Resultados HADS"]) --> fin(["Fin del cuestionario HADS"])
