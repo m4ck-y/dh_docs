@@ -2,10 +2,12 @@
 
 **Status:** En definición (pendiente)
 
-> Este documento define el modelo canónico del **catálogo de cuestionarios** (y,
-> próximamente, el de **respuestas**). Compara cuatro fuentes para unificar la
-> representación de los instrumentos antes de fijar los JSON finales por
-> cuestionario. Aún **no** se definen los JSON definitivos de cada instrumento.
+> Este documento define el modelo canónico del **catálogo de cuestionarios**.
+> El modelo de **respuestas** se define aparte en
+> `docs/features/questionnaires/ERD_responses.mmd` (ver el README de esa carpeta).
+> Compara cuatro fuentes para unificar la representación de los instrumentos antes
+> de fijar los JSON finales por cuestionario. Aún **no** se definen los JSON
+> definitivos de cada instrumento.
 
 ## 1. Propósito
 
@@ -136,17 +138,22 @@ El MVP ya implementa visibilidad condicional **más rica** que la referencia:
 | Anidación | Sí (`rules[]` puede contener `SchemaCondition`) | No (aplanado) |
 | Valores string | Comparación tipada estricta | Coerción numérica suave (`coerce`) |
 
-### Objeto `answer` (esqueleto — pendiente de definir)
+### Objeto `answer` (modelo persistido vs. memoria)
+
+El modelo persistido de respuestas ya está definido en
+`docs/features/questionnaires/ERD_responses.mmd`: `answer { id_assignment,
+id_question, answered_by, value (JSON) }`.
 
 ```ts
-// Definición preliminar; modelado formal de respuestas = PENDIENTE
+// Forma en memoria que usa el motor del frontend (independiente del ERD).
 type AnswerValue = number | number[] | string;
 type AnswerMap = Record<string, AnswerValue>; // { id_question: value }
 ```
 
 La referencia modela la respuesta persistida como `answer { id_assignment,
-id_question, answer(JSON tipo+valor) }`. Queda pendiente alinear esta forma con
-el `AnswerMap` en memoria que ya usa el motor del frontend.
+id_question, answer(JSON tipo+valor) }`. El ERD (`answer` con `answered_by` +
+`value JSON`) ya recoge esa forma; queda pendiente alinear el `AnswerMap` en
+memoria del frontend con el valor JSON persistido.
 
 ## 7. Scoring e interpretación
 
@@ -209,11 +216,16 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 ## 10. Pendientes
 
 - [ ] PHQ-9: fijar redacción del ítem 7.
-- [ ] Definir formalmente el modelo de **respuestas** (`answer`) y su persistencia.
+- [x] Definir formalmente el modelo de **respuestas** (`answer`): modelado en
+      `docs/features/questionnaires/ERD_responses.mmd` (modelo V2). Pendiente
+      alinear el DDL (`db_ddl.sql`) con este modelo.
 - [ ] Decidir forma única de scoring: rangos `interpretacion[]` vs `case/when`.
 - [ ] Cubrir gaps de `Instrument`: `target_sex`, `list_references`, `list_sections`.
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
-- [ ] Modelo de persistencia del catálogo: se deriva de `FormsFlow2.drawio` (fuente 4), cuyo destino pulido es `docs/features/questionnaires/ERD_questionnaires.mmd`. Pendiente consolidar respuestas/asignación.
+- [ ] Modelo de persistencia del catálogo: se deriva de `FormsFlow2.drawio` (fuente 4), cuyo destino pulido es `docs/features/questionnaires/ERD_questionnaires.mmd`.
+- [ ] Modelo de ejecución (V2) → DDL: reemplazar `form_direct_responses` /
+      `scheduled_responses` por el modelo `assignment` como tarea/evento con
+      `answer`, o marcar `db_ddl.sql` como legacy en su sección de ejecución.
 
 ## 11. Fuera de alcance (por ahora)
 

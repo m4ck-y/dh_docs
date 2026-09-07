@@ -1,0 +1,93 @@
+{
+  /*
+    Ejemplo de ejecucion bajo el modelo V2 (Evento / Tarea atomica).
+    Cada reevaluacion o renovacion genera un documento independiente en la coleccion de asignaciones.
+    En este escenario un medico programa el cuestionario al paciente.
+  */
+  "assignment": {
+    "id": "UUID-ASSIGNMENT-V2",
+    "id_form": "UUID-FORM-GDS15",
+    "id_person": "UUID-PACIENTE-JUAN",
+    "status": "SUBMITTED",
+    "started_by": "UUID-PACIENTE-JUAN",
+    "completed_by": "UUID-PACIENTE-JUAN",
+    "submitted_by": "UUID-PACIENTE-JUAN",
+    "started_at": "2026-09-02T10:00:00Z",
+    "completed_at": "2026-09-02T10:15:00Z",
+    "submitted_at": "2026-09-02T10:15:00Z",
+    "scoring_result": {
+      "score": 8,
+      "max_score": 15,
+      "calculation_method": "direct_sum"
+    },
+    "evaluation_result": {
+      "category": "depresion_leve",
+      "description": "Puntuacion sugestiva de depresion leve"
+    },
+    "form": {
+      "id": "UUID-FORM-GDS15",
+      "key": "gds-15",
+      "name": "Escala de Depresion Geriatrica (GDS-15)",
+      "description": "Cuestionario de cribado de depresion en adultos mayores"
+    },
+    "scheduled": {
+      "id": "UUID-SCHEDULED-01",
+      "id_assignment": "UUID-ASSIGNMENT-V2",
+      "assigned_by": "UUID-MEDICO-PEREZ",
+      "available_from": "2026-09-01T00:00:00Z",
+      "available_until": "2026-09-07T23:59:59Z",
+      "time_limit_minutes": 30
+    },
+    "answers": [
+      {
+        "id": "UUID-ANSWER-01",
+        "id_assignment": "UUID-ASSIGNMENT-V2",
+        "id_question": "gds-01",
+        "answered_by": "UUID-PACIENTE-JUAN",
+        "value": ["No"] // Respuesta de tipo SINGLE_CHOICE
+      },
+      {
+        "id": "UUID-ANSWER-02",
+        "id_assignment": "UUID-ASSIGNMENT-V2",
+        "id_question": "gds-peso",
+        "answered_by": "UUID-MEDICO-PEREZ", // Capturado por el medico durante la consulta
+        "value": 72 // Respuesta de tipo NUMBER
+      },
+      {
+        "id": "UUID-ANSWER-03",
+        "id_assignment": "UUID-ASSIGNMENT-V2",
+        "id_question": "gds-sintomas",
+        "answered_by": "UUID-TUTOR-MARIA", // Apoyado por el tutor en casa
+        "value": ["Insomnio", "Fatiga", "Perdida de apetito"] // MULTIPLE_CHOICE
+      },
+      {
+        "id": "UUID-ANSWER-04",
+        "id_assignment": "UUID-ASSIGNMENT-V2",
+        "id_question": "gds-observaciones",
+        "answered_by": "UUID-MEDICO-PEREZ",
+        "value": "Paciente refiere dificultad para conciliar el sueno" // TEXT / TEXT_LONG
+      },
+      {
+        "id": "UUID-ANSWER-05",
+        "id_assignment": "UUID-ASSIGNMENT-V2",
+        "id_question": "gds-fecha-inicio",
+        "answered_by": "UUID-PACIENTE-JUAN",
+        "value": "2026-08-26" // DATE
+      },
+      {
+        "id": "UUID-ANSWER-06",
+        "id_assignment": "UUID-ASSIGNMENT-V2",
+        "id_question": "gds-fecha-hora-consulta",
+        "answered_by": "UUID-MEDICO-PEREZ",
+        "value": "2026-08-26T14:30:00Z" // DATE_TIME
+      },
+      {
+        "id": "UUID-ANSWER-07",
+        "id_assignment": "UUID-ASSIGNMENT-V2",
+        "id_question": "gds-timer",
+        "answered_by": "UUID-PACIENTE-JUAN",
+        "value": "PT1H30M" // Duracion ISO 8601 (TIMER)
+      }
+    ]
+  }
+}

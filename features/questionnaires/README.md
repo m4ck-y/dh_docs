@@ -80,6 +80,45 @@ Al usar un diseño orientado a documentos hay que tener en cuenta:
 - Confirmar el nombre del schema PostgreSQL (`form` propuesto) y añadirlo a
   `ALL_SCHEMAS` (`dh_shared/base.py`).
 
+## Modelo de ejecución (V2)
+
+El flujo de respuestas se modela en `ERD_responses.mmd` con `assignment` como
+**tarea/evento** (no como registro maestro). Ver detalles en el encabezado y
+comentarios del propio ERD.
+
+### Entidades
+
+| Entidad | Rol |
+|---|---|
+| `form` | Plantilla inmutable del cuestionario (compartida con el catálogo). |
+| `assignment` | Tarea/evento único. Cada re-contestación o renovación crea una nueva `assignment`. |
+| `scheduled` | Ventana de disponibilidad **opcional** (solo si un profesional lo programó). |
+| `answer` | Respuesta a una pregunta individual, con `answered_by`. |
+
+### Cardinalidades
+
+| Relación | Cardinalidad | Justificación |
+|---|---|---|
+| `form → assignment` | `\|\|--\|{` | Un form tiene muchas assignments; cada assignment pertenece a un único form. |
+| `assignment → scheduled` | `\|\|--o\|` | Cero o una programación. `o` cubre el flujo directo (paciente auto-contesta, sin programar). |
+| `assignment → answer` | `\|\|--\|{` | Una assignment tiene muchas answers; cada answer pertenece a una única assignment. |
+
+### Decisiones técnicas
+
+| Tema | Decisión | Motivo |
+|---|---|---|
+| `assignment` como evento | No es registro maestro; cada contestación es un evento nuevo | Evita la ambigüedad entre "reintentos" y "actualizaciones de info". |
+| `assigned_by` solo en `scheduled` | El asignador se guarda en `scheduled`, no en `assignment` | En flujo directo no hay asignador (el paciente contesta por su cuenta). |
+| `answered_by` en `answer` | Auditoría por pregunta: quién ingresó cada respuesta | En salud, a veces el médico o tutor contesta por el paciente. |
+| `scoring_result` en `assignment` | No es cache, es el resultado del evento | `assignment` es la unidad que produce el resultado. |
+| `status` enum | `ENABLED`, `IN_PROGRESS`, `COMPLETED`, `SUBMITTED`, `EXPIRED` | Ciclo de vida de una tarea; ver comentarios del ERD. |
+
+### Nota sobre referencias a usuarios
+
+`assigned_by`, `answered_by`, `started_by`, `completed_by` y `submitted_by` son
+**referencias a la entidad de usuarios** (FK), no enums. Se escriben sin sufijo
+`id_`/`user` por convención de este dominio.
+
 ## Archivos
 
 | Archivo | Contenido |
@@ -88,14 +127,15 @@ Al usar un diseño orientado a documentos hay que tener en cuenta:
 | `ERD_questionnaires.mmd` | ERD del catálogo de cuestionarios (definición relacional). |
 | `CLASS_questionnaires.mmd` | Diagrama de clases del catálogo (vista de documentos/MongoDB). |
 | `questionnaire_example.jsonc` | Ejemplo de payload del catálogo (JSON con comentarios). |
-| `ERD_response.mmd` *(pendiente)* | ERD de ejecución/respuestas (`assignment`, `response`, `answer`). |
-| `response_example.jsonc` *(pendiente)* | Ejemplo de payload de respuesta. |
+| `ERD_responses.mmd` | ERD de ejecución: `assignment` (tarea/evento), `scheduled`, `answer`. |
+| `CLASS_responses.mmd` | Diagrama de clases de ejecución (vista de documentos/MongoDB). |
+| `response_example.jsonc` | Ejemplo de payload de ejecución/respuestas (modelo V2). |
 
 ## Convención de nombres
 
 - **`ERD_<dominio>.mmd`**: diagrama entidad-relación del dominio.
   - `questionnaires` = definición del instrumento (catálogo).
-  - `response` = ejecución y respuestas (`assignment`, `response`, `answer`).
+  - `responses` = ejecución y respuestas (`assignment`, `scheduled`, `answer`).
 - **`CLASS_<dominio>.mmd`**: diagrama de clases / vista de documentos del dominio.
 - **`<dominio>_example.jsonc`**: ejemplo de payload del dominio.
   - Extensión `.jsonc` porque incluye comentarios `/* */`.
@@ -104,7 +144,9 @@ Al usar un diseño orientado a documentos hay que tener en cuenta:
 ## Pendientes
 
 - Resolver PHQ-9 ítem 7 (contenido, no schema).
-- Modelar la ejecución (`assignment`/`response`/`answer`) como ERD aparte,
-  alineado al DDL.
+- Alinear el DDL (`db_ddl.sql`) con el modelo V2 de ejecución, o marcar
+  `db_ddl.sql` como legacy y reemplazar su sección de ejecución
+  (`form_direct_responses`/`scheduled_responses`) por el modelo `assignment`
+  como tarea/evento con `answer`.
 - Confirmar el nombre del schema PostgreSQL y añadirlo a `ALL_SCHEMAS`
   (`dh_shared/base.py`).

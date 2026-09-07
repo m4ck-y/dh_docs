@@ -1,0 +1,56 @@
+classDiagram
+    %% ===============================================================
+    %% Vista de documentos (MongoDB) del modelo de ejecución V2.
+    %% Cada 'assignment' es un evento/documento raíz; sus 'answers' van
+    %% embebidas. 'Form' se referencia (es compartido e inmutable).
+    %% ===============================================================
+
+    class Assignment {
+        +string id
+        +string id_form
+        +string id_person
+        +string status
+        +string started_by
+        +string completed_by
+        +string submitted_by
+        +string started_at
+        +string completed_at
+        +string submitted_at
+        +BJSON scoring_result
+        +BJSON evaluation_result
+        +Scheduled scheduled
+        +Answer[] answers
+    }
+
+    class Scheduled {
+        +string id
+        +string id_assignment
+        +string assigned_by
+        +string available_from
+        +string available_until
+        +int time_limit_minutes
+    }
+
+    class Answer {
+        +string id
+        +string id_assignment
+        +string id_question
+        +string answered_by
+        +JSON value
+    }
+
+    class Form {
+        +string id
+        +string key
+        +string name
+        +string description
+        +BJSON scoring_expression
+        +BJSON evaluation_expression
+    }
+
+    %% Assignment embebe sus answers (composición)
+    Assignment "1" *-- "0..*" Answer : contiene
+    %% Scheduled es un subdocumento opcional embebido (solo flujo programado)
+    Assignment "1" *-- "0..1" Scheduled : programa
+    %% Form se referencia (agregación), no se embebe
+    Assignment "1" o-- "1" Form : referencia
