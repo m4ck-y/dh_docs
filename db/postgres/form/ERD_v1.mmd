@@ -1,200 +1,216 @@
 erDiagram
+    %% SCHEMA form: catalogo de cuestionarios (definicion del instrumento)
+    %% Fuente: reference_projects/reference_questionnaire_v1_legacy/FormsFlow2.drawio (pestana "Página-1")
+    %% Todas las tablas heredan de BaseModel (agregados automaticamente, no se listan):
+    %%   id Integer PK interno incremental, uuid UUID externo, created_at, updated_at, deleted_at, *_by_id_user
+    %% Solo se listan las columnas especificas de cada entidad.
+    %% Las FK referencian el id Integer interno de la tabla destino.
+    %% Excepcion (decision de diseno): las tablas puente N:N conservan id propio.
+
+    %% ============ RELACIONES ============
+    form ||--o{ reference : "documented_by"
+    form ||--o{ form_condition : "gated_by"
+    form ||--o{ form_categories : "classified_as"
+    form_categories }o--|| category : "groups"
+    form ||--o{ estimated_duration : "estimated_in"
+    form ||--o{ target_age_groups : "targets_ages"
+    target_age_groups }o--|| age_group : "groups"
+    form ||--o{ section : "has"
+    form ||--o{ questions_form : "asks"
+    questions_form }o--|| question : "includes"
+    section ||--o{ questions_section : "groups"
+    questions_section }o--|| question : "includes"
+    question ||--o{ option : "offers"
+    option ||--o{ url : "links_to"
+    question ||--o{ conditional_logic : "gated_by"
+    form ||--o{ target_sex : "restricts_sex"
+    form ||--o{ form_population : "applies_to"
+    form_population }o--|| population : "targets"
+    form ||--o{ form_cie11_codes : "coded_with"
+    form_cie11_codes }o--|| cie11_code : "codes"
+    form ||--o{ form_evaluation_topics : "evaluates"
+    form_evaluation_topics }o--|| evaluation_topic : "topic_of"
+
+    %% ============ ENUMS ============
+    %% EBiologicalSex: compartido con schema health_profile (HOMBRE=1, MUJER=2, INTERSEXUAL=3)
+    EBiologicalSex {
+        Integer HOMBRE "1"
+        Integer MUJER "2"
+        Integer INTERSEXUAL "3"
+    }
+
+    %% EQuestionType: tipos de pregunta (segun referencia app_questionnaire)
+    EQuestionType {
+        String TEXT "TEXT"
+        String TEXT_LONG "TEXT_LONG"
+        String NUMBER "NUMBER"
+        String SINGLE_CHOICE "SINGLE_CHOICE"
+        String MULTIPLE_CHOICE "MULTIPLE_CHOICE"
+        String DATE "DATE"
+        String DATE_TIME "DATE_TIME"
+        String TIMER "TIMER"
+    }
+
+    %% EUrlType: tipo de recurso enlazado
+    EUrlType {
+        String LINK "LINK"
+        String FILE "FILE"
+        String IMAGE "IMAGE"
+    }
+
+    %% ============ ENTIDADES ============
+    form {
+        Integer id PK
+        String key
+        String name
+        Text description
+    }
 
     evaluation_topic {
-        bigint id PK
-        string name
+        Integer id PK
+        String name
     }
 
-    form_evaluation_topic {
-        bigint id PK
-        uuid id_form
-        uuid id_evaluation_topic
-    }
-
-    evaluation_topic ||--o{ form_evaluation_topic : ""
-    form_evaluation_topic }o--|| form : ""
-
-    form {
-        bigint id PK
-        string key
-        string name
-        string description
+    form_evaluation_topics {
+        Integer id PK
+        Integer id_form FK
+        Integer id_evaluation_topic FK
     }
 
     reference {
-        bigint id PK
-        uuid id_form FK
-        string url_reference
-        string name
-        string notes
-        string url_thumbnail
-        string type_media
+        Integer id PK
+        Integer id_form FK
+        String url_reference
+        String name
+        Text notes
+        String url_thumbnail
+        String type_media
     }
-
-    form ||--o{ reference : ""
 
     form_condition {
-        bigint id PK
-        uuid id_form FK
-        string expression
-        string description
+        Integer id PK
+        Integer id_form FK
+        Text expression
+        Text description
     }
 
-    form ||--o{ form_condition : ""
-    form ||--o{ form_categories : ""
-    
     form_categories {
-        bigint id PK
-        uuid id_form
-        uuid id_category
+        Integer id PK
+        Integer id_form FK
+        Integer id_category FK
     }
 
     category {
-        bigint id PK
-        string key_industry
-        string name
+        Integer id PK
+        String key_industry
+        String name
     }
-
-    form_categories }o--|| category : ""
 
     estimated_duration {
-        %% Alternativa tipado:
-        %% Duraciones en formato ISO 8601 (ejemplos de lo que guarda)
-        %%Ejemplo: timedelta(days=1, hours=2, minutes=30)
-
-        %% Future: ia, IA GENERATOR, sugerir desscription a partir del resto de data y al reves
-        %%f >> description
-        %%description >> f
-        bigint id PK
-        uuid id_form FK
-        int min_minutes
-        int max_minutes
-        string description
+        %% Alternativa de tipado: duraciones en formato ISO 8601.
+        %% Ejemplo: timedelta(days=1, hours=2, minutes=30)
+        %% Futuro (IA): sugerir description a partir del resto de los datos y viceversa (f >> description, description >> f)
+        Integer id PK
+        Integer id_form FK
+        Integer min_minutes
+        Integer max_minutes
+        Text description
     }
-
-    form ||--o{ estimated_duration : ""
 
     target_age_groups {
-        bigint id PK
-        uuid id_form
-        uuid id_age_group
+        Integer id PK
+        Integer id_form FK
+        Integer id_age_group FK
     }
-
-    form ||--o{ target_age_groups : ""
 
     age_group {
-        %% Future: proximamente sugerir "name" con ia a partit de los ages proporcionaddo y al reves
-        bigint id PK
-        string name
-        int min_age
-        int max_age
+        %% Futuro (IA): sugerir "name" a partir de las edades proporcionadas y viceversa
+        Integer id PK
+        String name
+        Integer min_age
+        Integer max_age
     }
 
-    target_age_groups }o--|| age_group : ""
-
-    form ||--o{ section : ""
-
     section {
-        bigint id PK
-        uuid id_form
-        string name
-        string description
-        int order
+        Integer id PK
+        Integer id_form FK
+        String name
+        Text description
+        Integer order
     }
 
     questions_form {
-        bigint id PK
-        uuid id_form
-        uuid id_question
+        Integer id PK
+        Integer id_form FK
+        Integer id_question FK
     }
-
-    form ||--o{ questions_form : ""
 
     questions_section {
-        bigint id PK
-        uuid id_section
-        uuid id_question
+        Integer id PK
+        Integer id_section FK
+        Integer id_question FK
     }
-
-    section ||--o{ questions_section : ""
 
     question {
-        bigint id PK
-        string type
-        string text
-        int order
+        Integer id PK
+        Enum(EQuestionType) type
+        Text text
+        Integer order
     }
-
-    questions_form }o--|| question : ""
-    questions_section }o--|| question : ""
 
     option {
-        bigint id PK
-        uuid id_question
-        string text
-        int value
+        Integer id PK
+        Integer id_question FK
+        String text
+        Integer value
     }
-
-    question ||--o{ option : ""
 
     url {
-        bigint id PK
-        uuid id_answer
-        string type
-        string url
+        Integer id PK
+        Integer id_option FK
+        Enum(EUrlType) type
+        String url
     }
-
-    option ||--o{ url : ""
 
     conditional_logic {
-        %% display_this_filed_if: {variable_name} > 100
-        bigint id PK
-        uuid id_question
-        uuid triggered_by_question
-        string formula
-        string description
+        %% Semantica: display_this_field_if {variable_name} > 100
+        Integer id PK
+        Integer id_question FK
+        Integer triggered_by_question FK
+        String formula
+        Text description
     }
-
-    question ||--o{ conditional_logic : ""
 
     target_sex {
-        bigint id PK
-        uuid id_form
-        uuid biological_sex
+        Integer id PK
+        Integer id_form FK
+        Enum(EBiologicalSex) type_biological_sex
     }
-
-    form ||--o{ target_sex : ""
 
     form_population {
-        bigint id PK
-        uuid id_form
-        uuid id_population
+        Integer id PK
+        Integer id_form FK
+        Integer id_population FK
     }
-
-    form ||--o{ form_population : ""
 
     population {
-        bigint id PK
-        string name
+        Integer id PK
+        String name
     }
 
-    form_population }o--|| population : ""
-
-    form_cie11_code {
-        bigint id PK
-        uuid id_form
-        uuid id_cie11_code
+    form_cie11_codes {
+        Integer id PK
+        Integer id_form FK
+        Integer id_cie11_code FK
     }
-
-    form ||--o{ form_cie11_code : ""
 
     cie11_code {
-        bigint id PK
-        string code
+        Integer id PK
+        String code
     }
 
-    form_cie11_code }o--|| cie11_code : ""
-
-
-%% Nota: redirect_to, es necesario? para saber donde te redirige despues de elegit una opcion de respuesta, despues de responder una pregunta, una section, un form?
-%% Agregar tecnic_desciption o hidden_description que solo es visible para otros roles que no son para el user paciente?
+    %% ============ NOTAS DE DISENO ============
+    %% redirect_to: es necesario? Para saber a donde redirige despues de elegir una opcion
+    %% de respuesta, despues de responder una pregunta, una seccion o un form.
+    %% Agregar technical_description o hidden_description, visible solo para roles
+    %% distintos al paciente.
