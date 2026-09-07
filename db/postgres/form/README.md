@@ -11,45 +11,19 @@ condiciones, scoring/interpretación) y, a futuro, el modelo de ejecución
 
 En definición — diseño en curso.
 
-## Diagramas
+## Modelado en curso
 
-- **ERD del catálogo**: en desarrollo en
-  [`features/questionnaires/ERD_questionnaires.mmd`](../features/questionnaires/ERD_questionnaires.mmd).
+El modelado completo del catálogo de cuestionarios —ERD relacional, diagrama de
+clases/documentos (MongoDB) y ejemplos JSON— se desarrolla en
+[`features/questionnaires/`](../features/questionnaires).
 
-## Diagrama de clases / modelo de documentos
+- **ERD del catálogo**:
+  [`features/questionnaires/ERD_questionnaires.mmd`](../features/questionnaires/ERD_questionnaires.mmd)
+- **Diagrama de clases / modelo de documentos**:
+  [`features/questionnaires/CLASS_questionnaires.mmd`](../features/questionnaires/CLASS_questionnaires.mmd)
 
-Además del ERD relacional, se mantiene
-[`CLASS_questionnaires.mmd`](../features/questionnaires/CLASS_questionnaires.mmd): una
-representación orientada a objetos/documentos del mismo dominio. Su propósito es mostrar cómo
-se vería el catálogo de cuestionarios si se persiste en una base de datos NoSQL
-(p. ej. MongoDB), donde `Form`, `Section`, `Question`, `Option`, `Conditional` y
-`Url` se modelan como documentos/subdocumentos embebidos en lugar de tablas
-normalizadas.
-
-- Las relaciones de composición (`◆`) indican subdocumentos embebidos.
-- Las relaciones de agregación/asociación (`◇`, `──>`) indican referencias a
-  otros documentos.
-- `CLASS_questionnaires.mmd` no reemplaza al ERD del catálogo (desarrollo en
-  curso en `features/questionnaires/`); son dos vistas del mismo modelo para dos
-  tecnologías de persistencia distintas.
-
-## Limitantes del modelo de documentos
-
-Al usar un diseño orientado a documentos hay que tener en cuenta:
-
-- **Límite de 16 MB por documento en MongoDB**: un cuestionario muy grande podría
-  acercarse a este tope si se embeben todas las preguntas, opciones y metadatos
-  en un solo documento. Para los instrumentos actuales (GDS-15, PHQ-9, etc.) no
-  es un problema.
-- **Embebido vs. referencia**: embeber es eficiente para lectura, pero dificulta
-  reutilizar preguntas/opciones entre formularios. Si se necesita reutilización,
-  conviene usar referencias a otra colección.
-- **Duplicación de datos**: metadatos como categorías, referencias, duración
-  estimada, grupos de edad, etc., pueden repetirse en cada documento si se
-  embeben. Evaluar si vale la pena normalizarlos en colecciones aparte.
-- **Ausencia de esquema rígido**: MongoDB no impone un esquema, por lo que
-  `CLASS_questionnaires.mmd` actúa como convenio de aplicación, no como
-  restricción de la base de datos.
+Una vez consolidado, el ERD PostgreSQL final se ubicará en esta carpeta
+(`docs/db/postgres/form/`).
 
 ## Convenciones
 
