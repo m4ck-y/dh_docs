@@ -4,6 +4,24 @@
 -- Se crean tipos ENUM para los campos status
 CREATE TYPE assignment_status_type AS ENUM ('DISABLED', 'ENABLED', 'IN_PROGRESS', 'COMPLETED');
 
+-- Tipos de pregunta (alineado con EQuestionType del ERD)
+CREATE TYPE question_type AS ENUM (
+    'TEXT',
+    'TEXT_LONG',
+    'NUMBER',
+    'SINGLE_CHOICE',
+    'MULTIPLE_CHOICE',
+    'DATE',
+    'DATE_TIME',
+    'TIMER'
+);
+
+-- Sexo biológico objetivo (alineado con EBiologicalSex del ERD)
+CREATE TYPE biological_sex AS ENUM ('HOMBRE', 'MUJER', 'INTERSEXUAL');
+
+-- Tipo de recurso enlazado (alineado con EUrlType del ERD)
+CREATE TYPE url_type AS ENUM ('LINK', 'FILE', 'IMAGE');
+
 -- ===================================================================
 -- TABLA: form
 -- Representa la plantilla inmutable de un cuestionario o formulario.
@@ -20,7 +38,7 @@ CREATE TABLE form (
     verified BOOLEAN NOT NULL DEFAULT false  -- Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable
 );
 
-COMMENT ON TABLE form IS 'Plantilla inmutable de un formulario. Define preguntas (vía tabla question), y lógica de cálculo mediante expresiones en JSONB.';
+COMMENT ON TABLE form IS 'Plantilla inmutable de un formulario. Define preguntas (vía questions_form y questions_section), y lógica de cálculo mediante expresiones en JSONB.';
 
 COMMENT ON COLUMN form.key IS 'Identificador semántico y estable (ej. "onboarding_survey_v3"). Útil para referencias en código o integraciones. No cambia aunque se modifique el nombre.';
 
@@ -32,31 +50,293 @@ COMMENT ON COLUMN form.scoring_expression IS 'Expresión en JSONB que define có
 
 COMMENT ON COLUMN form.evaluation_expression IS 'Expresión en JSONB que define cómo se interpreta el puntaje para generar una clasificación cualitativa. Ejemplo: {"if": [{"gte": ["score", 80]}, "excelente", {"gte": ["score", 60]}, "suficiente", "insuficiente"]}.';
 
-COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable. Una vez en true, no se deben permitir modificaciones en esta fila ni en sus preguntas asociadas (tabla question). La aplicación debe bloquear actualizaciones cuando verified = true.';
+COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable. Una vez en true, no se deben permitir modificaciones en esta fila ni en sus preguntas asociadas (vía questions_form / questions_section), opciones ni condicionales. La aplicación debe bloquear actualizaciones cuando verified = true.';
 
 -- ===================================================================
 -- TABLA: question
 -- Define cada pregunta dentro de un formulario.
--- Vinculada 1:N con form. Esencial para validar respuestas y renderizar el cuestionario.
+-- Las preguntas se vinculan a un formulario mediante questions_form (1:N) o a
+-- una seccion mediante questions_section (1:N).
+-- Esencial para validar respuestas y renderizar el cuestionario.
 -- ===================================================================
 CREATE TABLE question (
     id SERIAL PRIMARY KEY,
-    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
     key VARCHAR(100) NOT NULL,
     text TEXT NOT NULL,
-    question_type VARCHAR(50) NOT NULL,
-    config JSONB,
-    position INTEGER NOT NULL DEFAULT 0,
-    UNIQUE (id_form, key)
+    question_type question_type NOT NULL,
+    "order" INTEGER NOT NULL DEFAULT 0
 );
 
-COMMENT ON TABLE question IS 'Pregunta individual que forma parte de un formulario. Permite validar que las respuestas correspondan a preguntas reales y definir su comportamiento.';
+COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a formularios mediante questions_form y a secciones mediante questions_section. Permite validar respuestas y definir su comportamiento.';
 
-COMMENT ON COLUMN question.key IS 'Identificador único dentro del formulario (ej. "satisfaction_rating"). Se usa en las expresiones de scoring/evaluación y en las respuestas.';
+COMMENT ON COLUMN question.key IS 'Identificador único de la pregunta (ej. "satisfaction_rating"). Se usa en las expresiones de scoring/evaluación y en las respuestas.';
 
-COMMENT ON COLUMN question.question_type IS 'Tipo de pregunta: "text", "number", "single_choice", "multiple_choice", "boolean", etc. Define cómo se interpreta el campo "value" en la respuesta.';
+COMMENT ON COLUMN question.question_type IS 'Tipo de pregunta segun el enum question_type: TEXT, TEXT_LONG, NUMBER, SINGLE_CHOICE, MULTIPLE_CHOICE, DATE, DATE_TIME, TIMER.';
 
-COMMENT ON COLUMN question.config IS 'Configuración específica por tipo. Ejemplos: {"options": ["Sí", "No"]}, {"min": 0, "max": 10}, {"required": true}.';
+COMMENT ON COLUMN question."order" IS 'Orden de presentacion de la pregunta dentro de su contexto (formulario o seccion).';
+
+-- ===================================================================
+-- TABLA: section
+-- Agrupacion logica de preguntas dentro de un formulario.
+-- ===================================================================
+CREATE TABLE section (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    "order" INTEGER NOT NULL DEFAULT 0
+);
+
+COMMENT ON TABLE section IS 'Seccion de un formulario. Agrupa preguntas que se presentan juntas.';
+
+-- ===================================================================
+-- TABLA: questions_form
+-- Puente N:N entre form y question. Permite reutilizar preguntas en
+-- multiples formularios y controlar el orden por formulario.
+-- ===================================================================
+CREATE TABLE questions_form (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
+    UNIQUE (id_form, id_question)
+);
+
+COMMENT ON TABLE questions_form IS 'Vincula preguntas con formularios.';
+
+-- ===================================================================
+-- TABLA: questions_section
+-- Puente N:N entre section y question. Permite reutilizar preguntas en
+-- multiples secciones y controlar el orden por seccion.
+-- ===================================================================
+CREATE TABLE questions_section (
+    id SERIAL PRIMARY KEY,
+    id_section INTEGER NOT NULL REFERENCES section(id) ON DELETE CASCADE,
+    id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
+    UNIQUE (id_section, id_question)
+);
+
+COMMENT ON TABLE questions_section IS 'Vincula preguntas con secciones.';
+
+-- ===================================================================
+-- TABLA: option
+-- Opcion de respuesta para preguntas de tipo choice.
+-- ===================================================================
+CREATE TABLE option (
+    id SERIAL PRIMARY KEY,
+    id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
+    text VARCHAR(255) NOT NULL,
+    value INTEGER NOT NULL,
+    help TEXT
+);
+
+COMMENT ON TABLE option IS 'Opcion de respuesta para preguntas de tipo SINGLE_CHOICE o MULTIPLE_CHOICE.';
+
+COMMENT ON COLUMN option.help IS 'Texto de ayuda o descripcion tecnica de la opcion, visible solo para roles distintos al paciente.';
+
+-- ===================================================================
+-- TABLA: url
+-- Recurso enlazado a una opcion de respuesta (redireccion, archivo, imagen).
+-- ===================================================================
+CREATE TABLE url (
+    id SERIAL PRIMARY KEY,
+    id_option INTEGER NOT NULL REFERENCES option(id) ON DELETE CASCADE,
+    url VARCHAR(2048) NOT NULL,
+    type url_type NOT NULL
+);
+
+COMMENT ON TABLE url IS 'URL asociada a una opcion de respuesta. Puede ser un enlace, archivo o imagen.';
+
+-- ===================================================================
+-- TABLA: conditional_logic
+-- Condicion de visibilidad de una pregunta.
+-- ===================================================================
+CREATE TABLE conditional_logic (
+    id SERIAL PRIMARY KEY,
+    id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
+    triggered_by_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
+    formula TEXT NOT NULL,
+    description TEXT
+);
+
+COMMENT ON TABLE conditional_logic IS 'Condicion que determina si una pregunta se muestra u oculta en funcion de otra pregunta.';
+
+-- ===================================================================
+-- TABLA: form_condition
+-- Condicion de visibilidad a nivel formulario.
+-- ===================================================================
+CREATE TABLE form_condition (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    expression TEXT NOT NULL,
+    description TEXT
+);
+
+COMMENT ON TABLE form_condition IS 'Condicion que afecta la visibilidad o disponibilidad de todo el formulario.';
+
+-- ===================================================================
+-- TABLA: category
+-- Categoria del cuestionario (industria/clinica).
+-- ===================================================================
+CREATE TABLE category (
+    id SERIAL PRIMARY KEY,
+    key_industry VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL
+);
+
+COMMENT ON TABLE category IS 'Categoria del cuestionario (ej. bienestar emocional, nutricion). ';
+
+-- ===================================================================
+-- TABLA: form_categories
+-- Puente N:N entre form y category.
+-- ===================================================================
+CREATE TABLE form_categories (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    id_category INTEGER NOT NULL REFERENCES category(id) ON DELETE CASCADE,
+    UNIQUE (id_form, id_category)
+);
+
+COMMENT ON TABLE form_categories IS 'Vincula formularios con categorias.';
+
+-- ===================================================================
+-- TABLA: estimated_duration
+-- Duracion estimada de completar un formulario.
+-- ===================================================================
+CREATE TABLE estimated_duration (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    min_minutes INTEGER,
+    max_minutes INTEGER,
+    description TEXT
+);
+
+COMMENT ON TABLE estimated_duration IS 'Duracion estimada de completar un formulario.';
+
+-- ===================================================================
+-- TABLA: age_group
+-- Grupo etario (rango de edades).
+-- ===================================================================
+CREATE TABLE age_group (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    min_age INTEGER,
+    max_age INTEGER
+);
+
+COMMENT ON TABLE age_group IS 'Grupo etario definido por rango de edades.';
+
+-- ===================================================================
+-- TABLA: target_age_groups
+-- Puente N:N entre form y age_group.
+-- ===================================================================
+CREATE TABLE target_age_groups (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    id_age_group INTEGER NOT NULL REFERENCES age_group(id) ON DELETE CASCADE,
+    UNIQUE (id_form, id_age_group)
+);
+
+COMMENT ON TABLE target_age_groups IS 'Vincula formularios con grupos etarios objetivo.';
+
+-- ===================================================================
+-- TABLA: target_sex
+-- Sexo biologico objetivo de un formulario.
+-- ===================================================================
+CREATE TABLE target_sex (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    type_biological_sex biological_sex NOT NULL
+);
+
+COMMENT ON TABLE target_sex IS 'Sexo biologico objetivo de un formulario.';
+
+-- ===================================================================
+-- TABLA: population
+-- Poblacion objetivo de un formulario.
+-- ===================================================================
+CREATE TABLE population (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+COMMENT ON TABLE population IS 'Poblacion objetivo (ej. adultos mayores, adolescentes).';
+
+-- ===================================================================
+-- TABLA: form_population
+-- Puente N:N entre form y population.
+-- ===================================================================
+CREATE TABLE form_population (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    id_population INTEGER NOT NULL REFERENCES population(id) ON DELETE CASCADE,
+    UNIQUE (id_form, id_population)
+);
+
+COMMENT ON TABLE form_population IS 'Vincula formularios con poblaciones objetivo.';
+
+-- ===================================================================
+-- TABLA: cie11_code
+-- Codigo CIE-11 asociado al formulario.
+-- ===================================================================
+CREATE TABLE cie11_code (
+    id SERIAL PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE
+);
+
+COMMENT ON TABLE cie11_code IS 'Codigo CIE-11 asociado al formulario.';
+
+-- ===================================================================
+-- TABLA: form_cie11_codes
+-- Puente N:N entre form y cie11_code.
+-- ===================================================================
+CREATE TABLE form_cie11_codes (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    id_cie11_code INTEGER NOT NULL REFERENCES cie11_code(id) ON DELETE CASCADE,
+    UNIQUE (id_form, id_cie11_code)
+);
+
+COMMENT ON TABLE form_cie11_codes IS 'Vincula formularios con codigos CIE-11.';
+
+-- ===================================================================
+-- TABLA: evaluation_topic
+-- Tema de evaluacion asociado al formulario.
+-- ===================================================================
+CREATE TABLE evaluation_topic (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+COMMENT ON TABLE evaluation_topic IS 'Tema de evaluacion (ej. depresion, ansiedad).';
+
+-- ===================================================================
+-- TABLA: form_evaluation_topics
+-- Puente N:N entre form y evaluation_topic.
+-- ===================================================================
+CREATE TABLE form_evaluation_topics (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    id_evaluation_topic INTEGER NOT NULL REFERENCES evaluation_topic(id) ON DELETE CASCADE,
+    UNIQUE (id_form, id_evaluation_topic)
+);
+
+COMMENT ON TABLE form_evaluation_topics IS 'Vincula formularios con temas de evaluacion.';
+
+-- ===================================================================
+-- TABLA: reference
+-- Referencia bibliografica o documental del formulario.
+-- ===================================================================
+CREATE TABLE reference (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    url_reference VARCHAR(2048),
+    name VARCHAR(255) NOT NULL,
+    notes TEXT,
+    url_thumbnail VARCHAR(2048),
+    type_media url_type
+);
+
+COMMENT ON TABLE reference IS 'Referencia externa del formulario (articulo, guia, archivo).';
 
 -- ===================================================================
 -- TABLA: assignment
@@ -261,10 +541,33 @@ COMMENT ON COLUMN scheduled_responses.id_response IS 'Intento concreto de respue
 -- ===================================================================
 CREATE INDEX idx_assignment_form_person ON assignment (id_form, id_person);
 CREATE INDEX idx_answer_response ON answer (id_response);
-CREATE INDEX idx_question_form ON question (id_form);
+CREATE INDEX idx_question_key ON question (key);
+CREATE INDEX idx_section_form ON section (id_form);
+CREATE INDEX idx_questions_form_form ON questions_form (id_form);
+CREATE INDEX idx_questions_form_question ON questions_form (id_question);
+CREATE INDEX idx_questions_section_section ON questions_section (id_section);
+CREATE INDEX idx_questions_section_question ON questions_section (id_question);
+CREATE INDEX idx_option_question ON option (id_question);
+CREATE INDEX idx_url_option ON url (id_option);
+CREATE INDEX idx_conditional_logic_question ON conditional_logic (id_question);
+CREATE INDEX idx_conditional_logic_triggered ON conditional_logic (triggered_by_question);
+CREATE INDEX idx_form_condition_form ON form_condition (id_form);
+CREATE INDEX idx_form_categories_form ON form_categories (id_form);
+CREATE INDEX idx_form_categories_category ON form_categories (id_category);
+CREATE INDEX idx_estimated_duration_form ON estimated_duration (id_form);
+CREATE INDEX idx_target_age_groups_form ON target_age_groups (id_form);
+CREATE INDEX idx_target_age_groups_age_group ON target_age_groups (id_age_group);
+CREATE INDEX idx_target_sex_form ON target_sex (id_form);
+CREATE INDEX idx_form_population_form ON form_population (id_form);
+CREATE INDEX idx_form_population_population ON form_population (id_population);
+CREATE INDEX idx_form_cie11_codes_form ON form_cie11_codes (id_form);
+CREATE INDEX idx_form_cie11_codes_code ON form_cie11_codes (id_cie11_code);
+CREATE INDEX idx_form_evaluation_topics_form ON form_evaluation_topics (id_form);
+CREATE INDEX idx_form_evaluation_topics_topic ON form_evaluation_topics (id_evaluation_topic);
+CREATE INDEX idx_reference_form ON reference (id_form);
 CREATE INDEX idx_scheduled_assignment ON scheduled (id_assignment);
 
--- Índices para las nuevas tablas de relación
+-- Índices para las tablas de relación de ejecucion
 CREATE INDEX idx_form_direct_responses_assignment ON form_direct_responses (id_assignment);
 CREATE INDEX idx_form_direct_responses_response ON form_direct_responses (id_response);
 CREATE INDEX idx_scheduled_responses_scheduled ON scheduled_responses (id_scheduled);

@@ -30,15 +30,22 @@ Punto de entrada al modelo de datos del **catálogo de cuestionarios**: la
 > fue eliminado: era un híbrido no fiel al DDL ni al drawio. Sus ideas nunca
 > confirmadas quedan como decisiones abiertas.
 
-## Decisiones abiertas (el DDL no las resuelve)
+## Decisiones tomadas en el modelo
 
-| Tema | Opciones | Qué dice el DDL |
+| Tema | Decisión | Reflejo en el DDL |
 |---|---|---|
-| Opciones de respuesta | Tabla propia vs embebidas en `question.config` | Embebidas en `config` |
-| Condicional | Fórmula libre vs declarativo (`behavior`/`operator`/`value`) | Sin tabla propia (iría en `config`) |
-| Agrupación | `section` vs ítems anidados (`parent_item_id`) | No existe |
-| Schema PostgreSQL | `form` vs `catalog` | Sin schema explícito |
-| Metadatos (categorías, CIE-11, referencias, edad/sexo, duración) | Tablas normalizadas vs campos planos | No existen |
+| Opciones de respuesta | Tabla propia `option` | ✅ `option` (+ `url` asociada) |
+| Condicional | Fórmula libre en tabla propia | ✅ `conditional_logic` |
+| Agrupación | `section` + tablas puente | ✅ `section`, `questions_form`, `questions_section` |
+| Tipo de pregunta | Enum tipado | ✅ `question_type` |
+| Config por tipo | No aplica; opciones y condiciones en tablas | ✅ Se eliminó `question.config` |
+| Metadatos | Tablas normalizadas | ✅ `category`, `cie11_code`, `evaluation_topic`, `reference`, `estimated_duration`, `age_group`, `target_sex`, `population` + puentes |
+| Schema PostgreSQL | `form` vs `catalog` | ⚠️ Aún sin schema explícito en el DDL |
+
+## Decisiones abiertas
+
+- Confirmar el nombre del schema PostgreSQL (`form` propuesto) y añadirlo a
+  `ALL_SCHEMAS` (`dh_shared/base.py`).
 
 ## Archivos
 

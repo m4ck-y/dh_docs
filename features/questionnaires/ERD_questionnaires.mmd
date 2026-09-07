@@ -60,6 +60,8 @@ erDiagram
     }
 
     %% ============ ENTIDADES ============
+    %% form.key: UNIQUE NOT NULL
+    %% form.verified: DEFAULT false
     form {
         Integer id PK
         String key
@@ -218,6 +220,9 @@ erDiagram
     }
 
     %% ============ NOTAS DE DISENO ============
+    %% Alternativa de optimizacion: embeber options en question como JSONB
+    %% (question.options JSONB) en lugar de tabla option. Util cuando las preguntas
+    %% siempre se leen junto con sus opciones.
     %% redirect_to: es necesario? Para saber a donde redirige despues de elegir una opcion
     %% de respuesta, despues de responder una pregunta, una seccion o un form.
     %% Agregar technical_description o hidden_description, visible solo para roles
