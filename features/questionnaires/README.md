@@ -52,7 +52,8 @@ Punto de entrada al modelo de datos del **catálogo de cuestionarios**: la
 | Archivo | Contenido |
 |---|---|
 | `db_ddl.sql` | Fuente de verdad: DDL de definición + ejecución. |
-| `ERD_questionnaires.mmd` | ERD del catálogo de cuestionarios (definición). |
+| `ERD_questionnaires.mmd` | ERD del catálogo de cuestionarios (definición relacional). |
+| `CLASS_questionnaires.mmd` | Diagrama de clases del catálogo (vista de documentos/MongoDB). |
 | `questionnaire_example.jsonc` | Ejemplo de payload del catálogo (JSON con comentarios). |
 | `ERD_response.mmd` *(pendiente)* | ERD de ejecución/respuestas (`assignment`, `response`, `answer`). |
 | `response_example.jsonc` *(pendiente)* | Ejemplo de payload de respuesta. |
@@ -62,6 +63,7 @@ Punto de entrada al modelo de datos del **catálogo de cuestionarios**: la
 - **`ERD_<dominio>.mmd`**: diagrama entidad-relación del dominio.
   - `questionnaires` = definición del instrumento (catálogo).
   - `response` = ejecución y respuestas (`assignment`, `response`, `answer`).
+- **`CLASS_<dominio>.mmd`**: diagrama de clases / vista de documentos del dominio.
 - **`<dominio>_example.jsonc`**: ejemplo de payload del dominio.
   - Extensión `.jsonc` porque incluye comentarios `/* */`.
   - Si un ejemplo no necesita comentarios, puede usarse `.json`.

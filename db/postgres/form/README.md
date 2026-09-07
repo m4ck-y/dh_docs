@@ -18,8 +18,9 @@ En definición — diseño en curso.
 
 ## Diagrama de clases / modelo de documentos
 
-Además del ERD relacional, se mantiene `CLASS_V2.mmd`: una representación
-orientada a objetos/documentos del mismo dominio. Su propósito es mostrar cómo
+Además del ERD relacional, se mantiene
+[`CLASS_questionnaires.mmd`](../features/questionnaires/CLASS_questionnaires.mmd): una
+representación orientada a objetos/documentos del mismo dominio. Su propósito es mostrar cómo
 se vería el catálogo de cuestionarios si se persiste en una base de datos NoSQL
 (p. ej. MongoDB), donde `Form`, `Section`, `Question`, `Option`, `Conditional` y
 `Url` se modelan como documentos/subdocumentos embebidos en lugar de tablas
@@ -28,8 +29,8 @@ normalizadas.
 - Las relaciones de composición (`◆`) indican subdocumentos embebidos.
 - Las relaciones de agregación/asociación (`◇`, `──>`) indican referencias a
   otros documentos.
-- `CLASS_V2.mmd` no reemplaza al ERD del catálogo (desarrollo en curso en
-  `features/questionnaires/`); son dos vistas del mismo modelo para dos
+- `CLASS_questionnaires.mmd` no reemplaza al ERD del catálogo (desarrollo en
+  curso en `features/questionnaires/`); son dos vistas del mismo modelo para dos
   tecnologías de persistencia distintas.
 
 ## Limitantes del modelo de documentos
@@ -47,8 +48,8 @@ Al usar un diseño orientado a documentos hay que tener en cuenta:
   estimada, grupos de edad, etc., pueden repetirse en cada documento si se
   embeben. Evaluar si vale la pena normalizarlos en colecciones aparte.
 - **Ausencia de esquema rígido**: MongoDB no impone un esquema, por lo que
-  `CLASS_V2.mmd` actúa como convenio de aplicación, no como restricción de la
-  base de datos.
+  `CLASS_questionnaires.mmd` actúa como convenio de aplicación, no como
+  restricción de la base de datos.
 
 ## Convenciones
 
