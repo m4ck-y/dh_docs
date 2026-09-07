@@ -53,7 +53,7 @@
       ]
     }
   ],
-  /* list_what_it_evaluate corresponde a las tablas form_evaluation_topics (puente) y evaluation_topic del ERD_v1.mmd */
+  /* list_what_it_evaluate corresponde a las tablas form_evaluation_topics (puente) y evaluation_topic del ERD_questionnaires.mmd */
   "list_what_it_evaluate": [
     { "name": "string", "id": 0 }
   ],

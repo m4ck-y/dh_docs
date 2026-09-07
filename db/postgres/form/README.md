@@ -13,10 +13,8 @@ En definición — diseño en curso.
 
 ## Diagramas
 
-- **ERD (v1)**: [ERD_v1.mmd](./ERD_v1.mmd)
-
-> Convención de naming `v1`: el sufijo `v1` se eliminará cuando el diseño alcance
-> su forma definitiva ("absoluta").
+- **ERD del catálogo**: en desarrollo en
+  [`features/questionnaires/ERD_questionnaires.mmd`](../features/questionnaires/ERD_questionnaires.mmd).
 
 ## Diagrama de clases / modelo de documentos
 
@@ -30,8 +28,9 @@ normalizadas.
 - Las relaciones de composición (`◆`) indican subdocumentos embebidos.
 - Las relaciones de agregación/asociación (`◇`, `──>`) indican referencias a
   otros documentos.
-- `CLASS_V2.mmd` no reemplaza a `ERD_v1.mmd`; son dos vistas del mismo modelo
-  para dos tecnologías de persistencia distintas.
+- `CLASS_V2.mmd` no reemplaza al ERD del catálogo (desarrollo en curso en
+  `features/questionnaires/`); son dos vistas del mismo modelo para dos
+  tecnologías de persistencia distintas.
 
 ## Limitantes del modelo de documentos
 
@@ -73,7 +72,9 @@ Al usar un diseño orientado a documentos hay que tener en cuenta:
   aplanado), `anwers` (ejecución + DDL SQL + endpoints). Conservado en
   `reference_projects/reference_questionnaire_v1_legacy/`.
 
-El `ERD_v1.mmd` es la versión pulida derivada de esa fuente.
+El ERD del catálogo se desarrolla en
+`features/questionnaires/ERD_questionnaires.mmd`; una vez consolidado, se
+ubicará en esta carpeta.
 
 ## Relaciones Externas
 

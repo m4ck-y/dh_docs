@@ -24,7 +24,7 @@ No es una migración legacy→frontend; es una definición de dominio.
 | 1 | `other_projects/app_questionnaire/backend/docs/` | Modelo ejecutable de referencia (`.json` + `.ts` + tipos de expresiones + `conditional`) | **Referencia de modelado** |
 | 2 | `frontend/dh_frontend_app/src/domain/questionnaire-engine/` | Motor + bancos ya implementados en el MVP frontend (`types.ts`, `banks/*.ts`, `scoring.ts`, `conditions.ts`) | **Estado actual implementado** |
 | 3 | `docs/diagrams/` | `.mmd` + `-review.md` generados desde drawio | **Lógica de negocio / flujo** |
-| 4 | `reference_projects/reference_questionnaire_v1_legacy/FormsFlow2.drawio` | Diagrama drawio (3 pestañas: catálogo, detail-JSON, ejecución) | **Referencia de persistencia** → volcada a `docs/db/postgres/form/ERD_v1.mmd` |
+| 4 | `reference_projects/reference_questionnaire_v1_legacy/FormsFlow2.drawio` | Diagrama drawio (3 pestañas: catálogo, detail-JSON, ejecución) | **Referencia de persistencia** → volcada a `docs/features/questionnaires/ERD_questionnaires.mmd` |
 
 ## 3. Referencias
 
@@ -55,7 +55,9 @@ No es una migración legacy→frontend; es una definición de dominio.
 
 - `FormsFlow2.drawio` — 3 pestañas: `Página-1` (ERD de definición), `FORM_DETAIL-ERD-JSON` (JSON aplanado), `anwers` (ERD de ejecución + DDL SQL + endpoints FastAPI).
 - Conversión a Mermaid y documentación de código: `pagina_1.*`, `form_detail_erd_json.*`, `anwers.*`, `index.md` en la misma carpeta.
-- Destino pulido: `docs/db/postgres/form/ERD_v1.mmd`.
+- Destino pulido: `docs/features/questionnaires/ERD_questionnaires.mmd`.
+- Convención de nombres de ERDs y ejemplos JSON:
+  `docs/features/questionnaires/README.md`.
 
 > Nota: el `.drawio` es el **primer modelo de datos** (retomado), se **conserva**
 > como referencia histórica; su forma pulida se desarrolla en
@@ -211,7 +213,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 - [ ] Decidir forma única de scoring: rangos `interpretacion[]` vs `case/when`.
 - [ ] Cubrir gaps de `Instrument`: `target_sex`, `list_references`, `list_sections`.
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
-- [ ] Modelo de persistencia del catálogo: se deriva de `FormsFlow2.drawio` (fuente 4), cuyo destino pulido es `docs/db/postgres/form/ERD_v1.mmd`. Pendiente consolidar respuestas/asignación.
+- [ ] Modelo de persistencia del catálogo: se deriva de `FormsFlow2.drawio` (fuente 4), cuyo destino pulido es `docs/features/questionnaires/ERD_questionnaires.mmd`. Pendiente consolidar respuestas/asignación.
 
 ## 11. Fuera de alcance (por ahora)
 

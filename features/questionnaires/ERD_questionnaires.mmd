@@ -1,6 +1,7 @@
 erDiagram
     %% SCHEMA form: catalogo de cuestionarios (definicion del instrumento)
-    %% Fuente: reference_projects/reference_questionnaire_v1_legacy/FormsFlow2.drawio (pestana "Página-1")
+    %% Fuente de verdad: docs/features/questionnaires/db_ddl.sql (DDL de app_questionnaire)
+    %% Fuente legacy del diagrama: reference_projects/reference_questionnaire_v1_legacy/FormsFlow2.drawio (pestana "Página-1")
     %% Todas las tablas heredan de BaseModel (agregados automaticamente, no se listan):
     %%   id Integer PK interno incremental, uuid UUID externo, created_at, updated_at, deleted_at, *_by_id_user
     %% Solo se listan las columnas especificas de cada entidad.
@@ -65,6 +66,10 @@ erDiagram
         %% name == filename ej: test.frm
         String name
         Text description
+        Jsonb scoring_expression
+        Jsonb evaluation_expression
+        %% verified=true => inmutable (no modificar form ni sus questions)
+        Boolean verified
     }
 
     evaluation_topic {
