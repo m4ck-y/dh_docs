@@ -51,7 +51,7 @@ se modelan en un diagrama aparte.
 
 ## Pendientes (no bloquean este ERD)
 
-- Resolver GDS ítem 15 y PHQ-9 ítem 7 (contenido, no schema).
+- Resolver PHQ-9 ítem 7 (contenido, no schema).
 - Decidir forma canónica de scoring (JSONB/AST vs `interpretacion[]`).
 - Modelar respuestas + asignación (siguiente diagrama).
 - Confirmar el nombre del schema PostgreSQL (`catalog` propuesto; requiere

@@ -178,7 +178,7 @@ Instrumentos presentes en las tres fuentes y estado de alineación.
 | Instrumento | `docs/diagrams` | `banks/` (MVP) | Referencia `app_questionnaire` | Notas |
 |---|---|---|---|---|
 | PHQ-9 | ✅ `phq.mmd` | ✅ `phq9Instrument.ts` | ✅ `.json`/`.ts` | ⚠️ redacción ítem 7 difiere (ver §9) |
-| GDS | ✅ `gds.mmd` | ✅ `gdsInstrument.ts` (14 ítems) | ❌ solo CSV | ⚠️ ítem 15 pendiente |
+| GDS | ✅ `gds.mmd` | ✅ `gdsInstrument.ts` (15 ítems) | ❌ solo CSV | — |
 | HADS | ✅ `hads.mmd` | ✅ `hadsInstrument.ts` | ✅ solo CSV | — |
 | CDI | ✅ `cdi.mmd` | ✅ `cdiInstrument.ts` | ✅ solo CSV | ítem 25 invertido (ambos) |
 | GAD-7 | ✅ `gad.mmd` | ✅ `gad7Instrument.ts` | ✅ solo CSV | — |
@@ -191,10 +191,8 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 
 ## 9. Discrepancias detectadas
 
-1. **[URGENTE] GDS — ítem 15 faltante.** Drawio MVP y `gdsInstrument.ts` usan
-   14 ítems (máx. 14); la escala es GDS-15 (15 ítems). Bandas en conflicto:
-   drawio `0-5/6-9/10-15`, MVPM `0-5/6-9/10-14`, legacy `0-5/6-9/10-14`.
-   Detalle y pregunta al autor en `docs/diagrams/README.md`.
+1. ~~GDS — banco del MVP con 14 ítems.~~ Resuelto: drawio, Mermaid y
+   `gdsInstrument.ts` ya alineados a GDS-15 (15 ítems, bandas 0-4/5-9/10-15).
 
 2. **PHQ-9 ítem 7 — redacción divergente.**
    - MVP `phq9Instrument.ts` + legacy: "leer el **cuerpo del texto**".
@@ -208,7 +206,6 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 
 ## 10. Pendientes
 
-- [ ] GDS: resolver ítem 15 (pregunta al personal que generó el diagrama).
 - [ ] PHQ-9: fijar redacción del ítem 7.
 - [ ] Definir formalmente el modelo de **respuestas** (`answer`) y su persistencia.
 - [ ] Decidir forma única de scoring: rangos `interpretacion[]` vs `case/when`.

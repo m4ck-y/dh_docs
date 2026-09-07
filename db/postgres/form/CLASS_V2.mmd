@@ -1,0 +1,55 @@
+classDiagram
+    class Form {
+        +string id
+        +string key
+        +string name
+        +string description
+        +BJSON scoring_expression
+        +BJSON evaluation_expression
+        +Section[] sections
+        +Question[] questions
+    }
+
+    class Section {
+        +string id
+        +string name
+        +string description
+        +int order
+        +Question[] questions
+    }
+
+    class Question {
+        +string id
+        +string type
+        +string text
+        +int order
+        +Option[] options
+        +Conditional conditional
+    }
+
+    class Option {
+        +string id
+        +string text
+        +string value
+        +Url url
+    }
+
+    class Conditional {
+        +string id
+        +string trigerred_by_question
+        +string formula
+        +string description
+    }
+
+    class Url {
+        +string id
+        +string href
+        +string type
+    }
+
+    Form "1" *-- "0..*" Section : contiene
+    Form "1" *-- "0..*" Question : contiene
+    Section "1" *-- "0..*" Question : contiene
+    Question "1" *-- "0..*" Option : contiene
+    Question "1" *-- "0..1" Conditional : puede tener
+    Option "1" o-- "0..1" Url : puede tener

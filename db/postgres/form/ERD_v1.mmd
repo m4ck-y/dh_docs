@@ -21,7 +21,7 @@ erDiagram
     section ||--o{ questions_section : "groups"
     questions_section }o--|| question : "includes"
     question ||--o{ option : "offers"
-    option ||--o{ url : "links_to"
+    option ||--o| url : "links_to"
     question ||--o{ conditional_logic : "gated_by"
     form ||--o{ target_sex : "restricts_sex"
     form ||--o{ form_population : "applies_to"
@@ -62,6 +62,7 @@ erDiagram
     form {
         Integer id PK
         String key
+        %% name == filename ej: test.frm
         String name
         Text description
     }
@@ -134,6 +135,7 @@ erDiagram
     section {
         Integer id PK
         Integer id_form FK
+        %% name: autoincmetene ej: 1, +1, 2
         String name
         Text description
         Integer order
@@ -163,6 +165,7 @@ erDiagram
         Integer id_question FK
         String text
         Integer value
+        Text help
     }
 
     url {

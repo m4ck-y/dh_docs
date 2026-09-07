@@ -1,0 +1,91 @@
+{
+  "key": "ENCUESTA123",
+  "name": "Encuesta de Satisfacción",
+  "description": "Formulario para evaluar el servicio ofrecido",
+  "id": 0,
+  "list_questions": [
+    {
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cómo calificaría la atención recibida?",
+      "order": 1,
+      "id": 0,
+      "list_options": [
+        {
+          "text": "string",
+          "value": 0,
+          "id": 0,
+          "url": { "value": "http://wwww.pinterest.com/image.png", "type": "LINK", "id": 0 }
+        }
+      ],
+      "conditional_logic": {
+        "triggered_by_question_id": 1,
+        "formula": "A1 || A2",
+        "description": "Habilitar esta pregunta si la respuesta a la Pregunta 1 es 'Excelente' o 'Bueno'"
+      }
+    }
+  ],
+  "list_sections": [
+    {
+      "name": "Section 1",
+      "description": "Sección para recopilar datos personales del encuestado",
+      "order": 1,
+      "id": 0,
+      "list_questions": [
+        {
+          "type": "SINGLE_CHOICE",
+          "text": "¿Cómo calificaría la atención recibida?",
+          "order": 1,
+          "id": 0,
+          "list_options": [
+            {
+              "text": "string",
+              "value": 0,
+              "id": 0,
+              "url": { "value": "http://wwww.pinterest.com/image.png", "type": "LINK", "id": 0 }
+            }
+          ],
+          "conditional_logic": {
+            "triggered_by_question_id": 1,
+            "formula": "A1 || A2",
+            "description": "Habilitar esta pregunta si la respuesta a la Pregunta 1 es 'Excelente' o 'Bueno'"
+          }
+        }
+      ]
+    }
+  ],
+  /* list_what_it_evaluate corresponde a las tablas form_evaluation_topics (puente) y evaluation_topic del ERD_v1.mmd */
+  "list_what_it_evaluate": [
+    { "name": "string", "id": 0 }
+  ],
+  "list_references": [
+    {
+      "url_reference": "string",
+      "name": "string",
+      "notes": "string",
+      "url_thumbnail": "string",
+      "type": "FILE",
+      "id": 0
+    }
+  ],
+  "list_categories": [
+    { "key_industry": 0, "name": "string", "id": 0 }
+  ],
+  "estimated_duration": {
+    "min_minutes": 0,
+    "max_minutes": 0,
+    "description": "string",
+    "id": 0
+  },
+  "target_age_groups": [
+    {
+      "name": "string",
+      "min_age": 0,
+      "max_age": 0,
+      "id": 0
+    }
+  ],
+  "target_sex": {
+    "biological_sex": "HOMBRE",
+    "id": 0
+  }
+}
