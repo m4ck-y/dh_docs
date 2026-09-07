@@ -7,6 +7,7 @@ Cada carpeta representa un schema de PostgreSQL.
 | auth | Autenticacion y sesiones |
 | care | Relaciones de cuidado (responsable/cuidado) |
 | catalog | Catalogos (paises, estados, municipios, colonias, idiomas, religiones, etc) |
+| form | Cuestionarios (catalogo de definicion y ejecucion) |
 | storage | Documentos e identificadores (antes expedient) |
 | health_profile | Perfil biologico y clinico (sexo biologico, tipo de sangre, alergias, condiciones cronicas) |
 | iam | Control de acceso, roles y permisos |
@@ -26,6 +27,7 @@ La tabla `person` (schema `people`) es la entidad central del sistema. Los sigui
 | health_profile | `biological_profile`, `person_allergy`, `chronic_condition`, `vaccination_record` (id_person) |
 | iam | `membership` (id_person) |
 | mfa | `auth_factor`, `otp_challenge`, `recovery_code` (id_person) |
+| form | `assignment` (id_person), `response` (id_respondent) |
 
 ## Convenciones
 

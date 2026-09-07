@@ -1,0 +1,200 @@
+erDiagram
+
+    evaluation_topic {
+        bigint id PK
+        string name
+    }
+
+    form_evaluation_topic {
+        bigint id PK
+        uuid id_form
+        uuid id_evaluation_topic
+    }
+
+    evaluation_topic ||--o{ form_evaluation_topic : ""
+    form_evaluation_topic }o--|| form : ""
+
+    form {
+        bigint id PK
+        string key
+        string name
+        string description
+    }
+
+    reference {
+        bigint id PK
+        uuid id_form FK
+        string url_reference
+        string name
+        string notes
+        string url_thumbnail
+        string type_media
+    }
+
+    form ||--o{ reference : ""
+
+    form_condition {
+        bigint id PK
+        uuid id_form FK
+        string expression
+        string description
+    }
+
+    form ||--o{ form_condition : ""
+    form ||--o{ form_categories : ""
+    
+    form_categories {
+        bigint id PK
+        uuid id_form
+        uuid id_category
+    }
+
+    category {
+        bigint id PK
+        string key_industry
+        string name
+    }
+
+    form_categories }o--|| category : ""
+
+    estimated_duration {
+        %% Alternativa tipado:
+        %% Duraciones en formato ISO 8601 (ejemplos de lo que guarda)
+        %%Ejemplo: timedelta(days=1, hours=2, minutes=30)
+
+        %% Future: ia, IA GENERATOR, sugerir desscription a partir del resto de data y al reves
+        %%f >> description
+        %%description >> f
+        bigint id PK
+        uuid id_form FK
+        int min_minutes
+        int max_minutes
+        string description
+    }
+
+    form ||--o{ estimated_duration : ""
+
+    target_age_groups {
+        bigint id PK
+        uuid id_form
+        uuid id_age_group
+    }
+
+    form ||--o{ target_age_groups : ""
+
+    age_group {
+        %% Future: proximamente sugerir "name" con ia a partit de los ages proporcionaddo y al reves
+        bigint id PK
+        string name
+        int min_age
+        int max_age
+    }
+
+    target_age_groups }o--|| age_group : ""
+
+    form ||--o{ section : ""
+
+    section {
+        bigint id PK
+        uuid id_form
+        string name
+        string description
+        int order
+    }
+
+    questions_form {
+        bigint id PK
+        uuid id_form
+        uuid id_question
+    }
+
+    form ||--o{ questions_form : ""
+
+    questions_section {
+        bigint id PK
+        uuid id_section
+        uuid id_question
+    }
+
+    section ||--o{ questions_section : ""
+
+    question {
+        bigint id PK
+        string type
+        string text
+        int order
+    }
+
+    questions_form }o--|| question : ""
+    questions_section }o--|| question : ""
+
+    option {
+        bigint id PK
+        uuid id_question
+        string text
+        int value
+    }
+
+    question ||--o{ option : ""
+
+    url {
+        bigint id PK
+        uuid id_answer
+        string type
+        string url
+    }
+
+    option ||--o{ url : ""
+
+    conditional_logic {
+        %% display_this_filed_if: {variable_name} > 100
+        bigint id PK
+        uuid id_question
+        uuid triggered_by_question
+        string formula
+        string description
+    }
+
+    question ||--o{ conditional_logic : ""
+
+    target_sex {
+        bigint id PK
+        uuid id_form
+        uuid biological_sex
+    }
+
+    form ||--o{ target_sex : ""
+
+    form_population {
+        bigint id PK
+        uuid id_form
+        uuid id_population
+    }
+
+    form ||--o{ form_population : ""
+
+    population {
+        bigint id PK
+        string name
+    }
+
+    form_population }o--|| population : ""
+
+    form_cie11_code {
+        bigint id PK
+        uuid id_form
+        uuid id_cie11_code
+    }
+
+    form ||--o{ form_cie11_code : ""
+
+    cie11_code {
+        bigint id PK
+        string code
+    }
+
+    form_cie11_code }o--|| cie11_code : ""
+
+
+%% Nota: redirect_to, es necesario? para saber donde te redirige despues de elegit una opcion de respuesta, despues de responder una pregunta, una section, un form?
+%% Agregar tecnic_desciption o hidden_description que solo es visible para otros roles que no son para el user paciente?

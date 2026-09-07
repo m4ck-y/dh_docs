@@ -82,9 +82,19 @@ categorías** que le asigne esta columna.
 | Drawio | Estado |
 |---|---|
 | `0_HISTORIA_CLINICA` | ✅ Completo (7 páginas) |
-| `1_CUESTIONARIO_MENTAL` | ✅ Completo (6 cuestionarios) |
+| `1_CUESTIONARIO_MENTAL` | ⚠️ Parcial: GDS con 14/15 ítems (ver Pendientes) |
 | `2_CUESTIONARIO_SOCIAL` | ✅ CRAFFT (partes A y B + interpretación) |
 | `3_CUESTIONARIO_FISICO` | 🟡 Parcial (solo IPAQ) |
 
 > Nota: la conversión a Mermaid de la versión legacy monolítica (17 páginas)
 > vive en `reference_projects/reference_frontend_app_legacy/lsinciosesionweb/docs/historia_clinica/questionnaires/`.
+
+## Pendientes
+
+- **[URGENTE] GDS — ítem 15 faltante.** El drawio
+  `1_DEMO_CUESTIONARIOS_MENTAL.drawio` (tab GDS) contiene solo **14 ítems**
+  (g1→g14), pero la escala es **GDS-15** (15 ítems). Las bandas de
+  interpretación del drawio (`0-5 / 6-9 / 10-15`) son coherentes con 15 ítems.
+  **Pregunta abierta al personal que generó el diagrama:** ¿falta incluir el
+  ítem 15, o el instrumento se va a aplicar como GDS-14? Pendiente de
+  confirmación antes de programar.
