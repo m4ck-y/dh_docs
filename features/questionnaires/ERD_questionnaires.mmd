@@ -74,6 +74,15 @@ erDiagram
         Boolean verified
     }
 
+    %% question.key: NOT NULL (usado en scoring/evaluacion y respuestas)
+    question {
+        Integer id PK
+        String key
+        Enum(EQuestionType) type
+        Text text
+        Integer order
+    }
+
     evaluation_topic {
         Integer id PK
         String name
@@ -139,8 +148,10 @@ erDiagram
         Integer max_age
     }
 
+    %% section.key: opcional (identificador semantico de la seccion)
     section {
         Integer id PK
+        String key
         Integer id_form FK
         %% name: autoincmetene ej: 1, +1, 2
         String name
@@ -158,13 +169,6 @@ erDiagram
         Integer id PK
         Integer id_section FK
         Integer id_question FK
-    }
-
-    question {
-        Integer id PK
-        Enum(EQuestionType) type
-        Text text
-        Integer order
     }
 
     option {

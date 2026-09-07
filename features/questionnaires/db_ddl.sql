@@ -82,12 +82,15 @@ COMMENT ON COLUMN question."order" IS 'Orden de presentacion de la pregunta dent
 CREATE TABLE section (
     id SERIAL PRIMARY KEY,
     id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
+    key VARCHAR(100),
     name VARCHAR(255) NOT NULL,
     description TEXT,
     "order" INTEGER NOT NULL DEFAULT 0
 );
 
 COMMENT ON TABLE section IS 'Seccion de un formulario. Agrupa preguntas que se presentan juntas.';
+
+COMMENT ON COLUMN section.key IS 'Identificador semantico opcional de la seccion (ej. "datos_personales").';
 
 -- ===================================================================
 -- TABLA: questions_form
@@ -543,6 +546,7 @@ CREATE INDEX idx_assignment_form_person ON assignment (id_form, id_person);
 CREATE INDEX idx_answer_response ON answer (id_response);
 CREATE INDEX idx_question_key ON question (key);
 CREATE INDEX idx_section_form ON section (id_form);
+CREATE INDEX idx_section_key ON section (key);
 CREATE INDEX idx_questions_form_form ON questions_form (id_form);
 CREATE INDEX idx_questions_form_question ON questions_form (id_question);
 CREATE INDEX idx_questions_section_section ON questions_section (id_section);
