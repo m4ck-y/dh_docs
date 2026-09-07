@@ -10,8 +10,7 @@ Punto de entrada al modelo de datos del **catálogo de cuestionarios**: la
   `other_projects/app_questionnaire/backend/docs/db_ddl.sql`. Es la **única
   fuente de verdad/legacy** del modelo:
   - Definición: `form` (con `scoring_expression`, `evaluation_expression`,
-    `verified`) y `question` (con `key`, `question_type`, `config JSONB`,
-    `position`).
+    `verified`) y `question` (con `key`, `type`/`EQuestionType`, `order`).
   - Ejecución: `assignment`, `scheduled`, `response`, `answer`,
     `form_direct_responses`, `scheduled_responses` + triggers de exclusión
     directo/programado.
@@ -37,10 +36,11 @@ Punto de entrada al modelo de datos del **catálogo de cuestionarios**: la
 | Opciones de respuesta | Tabla propia `option` | ✅ `option` (+ `url` asociada) |
 | Condicional | Fórmula libre en tabla propia | ✅ `conditional_logic` |
 | Agrupación | `section` + tablas puente | ✅ `section`, `questions_form`, `questions_section` |
-| Tipo de pregunta | Enum tipado | ✅ `question_type` |
+| Tipo de pregunta | Enum tipado | ✅ Columna `"type"` de tipo `EQuestionType` |
 | Config por tipo | No aplica; opciones y condiciones en tablas | ✅ Se eliminó `question.config` |
 | Metadatos | Tablas normalizadas | ✅ `category`, `cie11_code`, `evaluation_topic`, `reference`, `estimated_duration`, `age_group`, `target_sex`, `population` + puentes |
-| Schema PostgreSQL | `form` vs `catalog` | ⚠️ Aún sin schema explícito en el DDL |
+| Schema PostgreSQL | `form` | ✅ Documentado en comentarios del DDL (`-- Schema: form`); aún no se ejecuta `CREATE SCHEMA form` |
+| Campos de auditoria | Heredados de `BaseModel` en Python | ✅ Documentado en comentarios del DDL (`uuid`, `created_at`, `updated_at`, `deleted_at`, `*_by_id_user`); el ORM los agrega |
 
 ## Decisiones abiertas
 

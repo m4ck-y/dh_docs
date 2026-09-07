@@ -2,10 +2,10 @@
 -- TIPOS DE ENUMERACIÓN
 -- ===================================================================
 -- Se crean tipos ENUM para los campos status
-CREATE TYPE assignment_status_type AS ENUM ('DISABLED', 'ENABLED', 'IN_PROGRESS', 'COMPLETED');
+CREATE TYPE EAssignmentStatus AS ENUM ('DISABLED', 'ENABLED', 'IN_PROGRESS', 'COMPLETED');
 
 -- Tipos de pregunta (alineado con EQuestionType del ERD)
-CREATE TYPE question_type AS ENUM (
+CREATE TYPE EQuestionType AS ENUM (
     'TEXT',
     'TEXT_LONG',
     'NUMBER',
@@ -17,10 +17,19 @@ CREATE TYPE question_type AS ENUM (
 );
 
 -- Sexo biológico objetivo (alineado con EBiologicalSex del ERD)
-CREATE TYPE biological_sex AS ENUM ('HOMBRE', 'MUJER', 'INTERSEXUAL');
+CREATE TYPE EBiologicalSex AS ENUM ('HOMBRE', 'MUJER', 'INTERSEXUAL');
 
 -- Tipo de recurso enlazado (alineado con EUrlType del ERD)
-CREATE TYPE url_type AS ENUM ('LINK', 'FILE', 'IMAGE');
+CREATE TYPE EUrlType AS ENUM ('LINK', 'FILE', 'IMAGE');
+
+-- ===================================================================
+-- CONVENCIONES DE SCHEMA Y MODELO BASE
+-- ===================================================================
+-- Schema: form (catalogo de cuestionarios).
+-- Todas las tablas heredan de BaseModel en Python:
+--   id (Integer PK interno incremental), uuid (UUID externo),
+--   created_at, updated_at, deleted_at, *_by_id_user.
+-- Estos campos se omiten del DDL por convencion; el ORM los agrega.
 
 -- ===================================================================
 -- TABLA: form
@@ -63,7 +72,7 @@ CREATE TABLE question (
     id SERIAL PRIMARY KEY,
     key VARCHAR(100) NOT NULL,
     text TEXT NOT NULL,
-    question_type question_type NOT NULL,
+    "type" EQuestionType NOT NULL,
     "order" INTEGER NOT NULL DEFAULT 0
 );
 
@@ -71,7 +80,7 @@ COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a for
 
 COMMENT ON COLUMN question.key IS 'Identificador único de la pregunta (ej. "satisfaction_rating"). Se usa en las expresiones de scoring/evaluación y en las respuestas.';
 
-COMMENT ON COLUMN question.question_type IS 'Tipo de pregunta segun el enum question_type: TEXT, TEXT_LONG, NUMBER, SINGLE_CHOICE, MULTIPLE_CHOICE, DATE, DATE_TIME, TIMER.';
+COMMENT ON COLUMN question."type" IS 'Tipo de pregunta segun el enum EQuestionType: TEXT, TEXT_LONG, NUMBER, SINGLE_CHOICE, MULTIPLE_CHOICE, DATE, DATE_TIME, TIMER.';
 
 COMMENT ON COLUMN question."order" IS 'Orden de presentacion de la pregunta dentro de su contexto (formulario o seccion).';
 
@@ -144,7 +153,7 @@ CREATE TABLE url (
     id SERIAL PRIMARY KEY,
     id_option INTEGER NOT NULL REFERENCES option(id) ON DELETE CASCADE,
     url VARCHAR(2048) NOT NULL,
-    type url_type NOT NULL
+    type EUrlType NOT NULL
 );
 
 COMMENT ON TABLE url IS 'URL asociada a una opcion de respuesta. Puede ser un enlace, archivo o imagen.';
@@ -248,7 +257,7 @@ COMMENT ON TABLE target_age_groups IS 'Vincula formularios con grupos etarios ob
 CREATE TABLE target_sex (
     id SERIAL PRIMARY KEY,
     id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
-    type_biological_sex biological_sex NOT NULL
+    type_biological_sex EBiologicalSex NOT NULL
 );
 
 COMMENT ON TABLE target_sex IS 'Sexo biologico objetivo de un formulario.';
@@ -336,7 +345,7 @@ CREATE TABLE reference (
     name VARCHAR(255) NOT NULL,
     notes TEXT,
     url_thumbnail VARCHAR(2048),
-    type_media url_type
+    type_media EUrlType
 );
 
 COMMENT ON TABLE reference IS 'Referencia externa del formulario (articulo, guia, archivo).';
@@ -372,7 +381,7 @@ CREATE TABLE assignment (
     id SERIAL PRIMARY KEY,
     id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
     id_person INTEGER NOT NULL,
-    status assignment_status_type NOT NULL DEFAULT 'ENABLED',
+    status EAssignmentStatus NOT NULL DEFAULT 'ENABLED',
     -- Progreso actual de la asignación
     n_questions_total INTEGER,                    -- Total de preguntas del formulario
     n_questions_answered INTEGER DEFAULT 0,       -- Preguntas respondidas en intento activo actual
@@ -385,7 +394,7 @@ COMMENT ON TABLE assignment IS 'Asignación lógica de un formulario a una perso
 
 COMMENT ON COLUMN assignment.id_person IS 'ID de la persona, estudiante, empleado o entidad a quien se le "asigna" el formulario. Puede ser distinto del usuario que responde (ver response.id_responder_user). Ej: un alumno (id_person=123) recibe una evaluación, pero su tutor (id_responder_user=456) la completa.';
 
-COMMENT ON COLUMN assignment.status IS 'Estado de la asignación basado en el enum EAssignmentStatus: "DISABLED", "ENABLED", "IN_PROGRESS", "COMPLETED". Útil para gestionar flujos sin eliminar registros. En caso de reasignaciones, las asignaciones anteriores pueden mantenerse con status "COMPLETED" o "DISABLED" para mantener historial.';
+COMMENT ON COLUMN assignment.status IS 'Estado de la asignación segun el enum EAssignmentStatus: DISABLED, ENABLED, IN_PROGRESS, COMPLETED. Útil para gestionar flujos sin eliminar registros. En caso de reasignaciones, las asignaciones anteriores pueden mantenerse con status COMPLETED o DISABLED para mantener historial.';
 
 COMMENT ON COLUMN assignment.n_questions_total IS 'Total de preguntas del formulario asignado. Se calcula al crear la asignación y se usa para calcular progreso.';
 
