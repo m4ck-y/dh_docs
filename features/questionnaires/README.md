@@ -11,9 +11,7 @@ Punto de entrada al modelo de datos del **catálogo de cuestionarios**: la
   fuente de verdad/legacy** del modelo:
   - Definición: `form` (con `scoring_expression`, `evaluation_expression`,
     `verified`) y `question` (con `key`, `type`/`EQuestionType`, `order`).
-  - Ejecución: `assignment`, `scheduled`, `response`, `answer`,
-    `form_direct_responses`, `scheduled_responses` + triggers de exclusión
-    directo/programado.
+  - Ejecución: `assignment` (tarea/evento), `scheduled` (0..1 opcional), `answer`.
 - Reglas de formato: `.agents/rules/DOCUMENTATION_ERD.md` y
   `.agents/rules/MERMAID_ENUM_REPRESENTATION.md`.
 - Referencia (no fuente de verdad): contrato del motor frontend en

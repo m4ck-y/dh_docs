@@ -2,6 +2,9 @@
   "key": "ENCUESTA123",
   "name": "Encuesta de Satisfacción",
   "description": "Formulario para evaluar el servicio ofrecido",
+  "verified": false,
+  "scoring_expression": { "op": "sum", "fields": ["q1", "q2"] },
+  "evaluation_expression": { "category": "satisfaccion" },
   "id": 0,
   "list_questions": [
     {
@@ -18,7 +21,7 @@
         }
       ],
       "conditional_logic": {
-        "triggered_by_question_id": 1,
+        "triggered_by_question": 1,
         "formula": "A1 || A2",
         "description": "Habilitar esta pregunta si la respuesta a la Pregunta 1 es 'Excelente' o 'Bueno'"
       }
@@ -45,7 +48,7 @@
             }
           ],
           "conditional_logic": {
-            "triggered_by_question_id": 1,
+            "triggered_by_question": 1,
             "formula": "A1 || A2",
             "description": "Habilitar esta pregunta si la respuesta a la Pregunta 1 es 'Excelente' o 'Bueno'"
           }
@@ -53,8 +56,8 @@
       ]
     }
   ],
-  /* list_what_it_evaluate corresponde a las tablas form_evaluation_topics (puente) y evaluation_topic del ERD_questionnaires.mmd */
-  "list_what_it_evaluate": [
+  /* list_evaluation_topics corresponde a las tablas form_evaluation_topics (puente) y evaluation_topic del ERD_questionnaires.mmd */
+  "list_evaluation_topics": [
     { "name": "string", "id": 0 }
   ],
   "list_references": [
@@ -63,12 +66,12 @@
       "name": "string",
       "notes": "string",
       "url_thumbnail": "string",
-      "type": "FILE",
+      "type_media": "FILE",
       "id": 0
     }
   ],
   "list_categories": [
-    { "key_industry": 0, "name": "string", "id": 0 }
+    { "key_industry": "string", "name": "string", "id": 0 }
   ],
   "estimated_duration": {
     "min_minutes": 0,
@@ -85,7 +88,7 @@
     }
   ],
   "target_sex": {
-    "biological_sex": "HOMBRE",
+    "type_biological_sex": "HOMBRE",
     "id": 0
   }
 }

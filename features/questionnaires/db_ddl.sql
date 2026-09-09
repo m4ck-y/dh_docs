@@ -17,7 +17,7 @@ CREATE TYPE EQuestionType AS ENUM (
 );
 
 -- Sexo biológico objetivo (alineado con EBiologicalSex del ERD)
-CREATE TYPE EBiologicalSex AS ENUM ('HOMBRE', 'MUJER', 'INTERSEXUAL');
+CREATE TYPE EBiologicalSex AS ENUM ('HOMBRE', 'MUJER', 'INTERSEXUAL');  -- PENDIENTE DE REVISION: ERD_questionnaires.mmd lo modela como codigos enteros (HOMBRE=1, MUJER=2, INTERSEXUAL=3); aqui se usa un ENUM de texto. Revisar y alinear (entero vs texto).
 
 -- Tipo de recurso enlazado (alineado con EUrlType del ERD)
 CREATE TYPE EUrlType AS ENUM ('LINK', 'FILE', 'IMAGE');

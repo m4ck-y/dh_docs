@@ -4,8 +4,8 @@ classDiagram
         +string key
         +string name
         +string description
-        +BJSON scoring_expression
-        +BJSON evaluation_expression
+        +Jsonb scoring_expression
+        +Jsonb evaluation_expression
         +Section[] sections
         +Question[] questions
     }
@@ -36,7 +36,7 @@ classDiagram
 
     class Conditional {
         +string id
-        +string trigerred_by_question
+        +string triggered_by_question
         +string formula
         +string description
     }
