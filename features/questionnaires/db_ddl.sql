@@ -372,6 +372,8 @@ CREATE TABLE assignment (
     id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
     id_person INTEGER NOT NULL,
     status EAssignmentStatus NOT NULL DEFAULT 'ENABLED',
+    -- Nota V2: el estado DISABLED del modelo V1 (bd_mermaid.mmd) se omite a proposito;
+    -- una asignacion deshabilitada se representa con soft-delete (deleted_at de BaseModel).
     -- Trazabilidad y auditoría de la sesión completa
     started_by INTEGER,                 -- Quién inició la sesión (usuario)
     completed_by INTEGER,               -- Quién marcó la sesión como completada
@@ -382,6 +384,8 @@ CREATE TABLE assignment (
     -- Resultado definitivo de ESTA assignment (evento)
     scoring_result JSONB,               -- Puntaje calculado de esta tarea
     evaluation_result JSONB             -- Clasificación cualitativa de esta tarea
+    -- Nota V2: n_questions_total / n_questions_answered del modelo V1 NO se persisten;
+    -- el progreso se calcula al vuelo desde answer.
 );
 
 COMMENT ON TABLE assignment IS 'Tarea/evento único de contestar un formulario por una persona o entidad (id_person). Cada reevaluación o renovación crea una nueva fila. No es una tabla maestra fija; el resultado (scoring_result/evaluation_result) pertenece a este evento y no es un cache de "último intento".';

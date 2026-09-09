@@ -99,9 +99,9 @@ comentarios del propio ERD.
 
 | Relación | Cardinalidad | Justificación |
 |---|---|---|
-| `form → assignment` | `\|\|--\|{` | Un form tiene muchas assignments; cada assignment pertenece a un único form. |
+| `form → assignment` | `\|\|--o{` | Cero o muchas: un form del catálogo puede existir sin asignaciones; cada assignment pertenece a un único form. |
 | `assignment → scheduled` | `\|\|--o\|` | Cero o una programación. `o` cubre el flujo directo (paciente auto-contesta, sin programar). |
-| `assignment → answer` | `\|\|--\|{` | Una assignment tiene muchas answers; cada answer pertenece a una única assignment. |
+| `assignment → answer` | `\|\|--o{` | Cero o muchas: una assignment `ENABLED` aún no tiene respuestas; cada answer pertenece a una única assignment. |
 
 ### Decisiones técnicas
 
@@ -112,6 +112,21 @@ comentarios del propio ERD.
 | `answered_by` en `answer` | Auditoría por pregunta: quién ingresó cada respuesta | En salud, a veces el médico o tutor contesta por el paciente. |
 | `scoring_result` en `assignment` | No es cache, es el resultado del evento | `assignment` es la unidad que produce el resultado. |
 | `status` enum | `ENABLED`, `IN_PROGRESS`, `COMPLETED`, `SUBMITTED`, `EXPIRED` | Ciclo de vida de una tarea; ver comentarios del ERD. |
+
+### Diferencias V1 → V2
+
+El modelo V1 (referencia `other_projects/app_questionnaire/backend/docs/bd_mermaid.mmd`)
+definía la ejecución con `response` intermedia y tablas puente. V2 los elimina:
+
+| Elemento V1 | Resolución en V2 |
+|---|---|
+| `response` (sesión intermedia con `status`/`attempt_number`) | Eliminada: la sesión vive en `assignment` (timestamps, status, resultados). |
+| `attempt_number` (reintentos dentro de una assignment) | Sin reintentos: cada re-contestación crea una nueva `assignment` (tarea/evento). |
+| Puentes `form_direct_responses` / `scheduled_responses` (+ triggers de exclusividad) | Eliminados: `scheduled` 0..1 opcional cubre el flujo directo. |
+| Estado `DISABLED` | Omitido del enum: se representa con soft-delete de `BaseModel` (`deleted_at`). Documentado como comentario en ERD y DDL. |
+| `n_questions_total` / `n_questions_answered` (cache de progreso) | No se persisten: se calculan desde `answer`. Documentado como comentario en ERD y DDL. |
+| `id_responder_user` (quién respondió la sesión) | `answered_by` por `answer` + `started_by`/`completed_by`/`submitted_by` en `assignment`. |
+| `assignment \|\|--o{ scheduled` (N ventanas por assignment) | `assignment \|\|--o\| scheduled`: una sola ventana; reprogramar = nueva assignment. |
 
 ### Nota sobre referencias a usuarios
 
@@ -144,9 +159,5 @@ comentarios del propio ERD.
 ## Pendientes
 
 - Resolver PHQ-9 ítem 7 (contenido, no schema).
-- Alinear el DDL (`db_ddl.sql`) con el modelo V2 de ejecución, o marcar
-  `db_ddl.sql` como legacy y reemplazar su sección de ejecución
-  (`form_direct_responses`/`scheduled_responses`) por el modelo `assignment`
-  como tarea/evento con `answer`.
 - Confirmar el nombre del schema PostgreSQL y añadirlo a `ALL_SCHEMAS`
   (`dh_shared/base.py`).

@@ -1,82 +1,105 @@
 erDiagram
     %% ===============================================================
-    %% DECISIÓN DE ARQUITECTURA: ASSIGNMENT COMO TAREA/EVENTO
-    %% Cada reevaluación o renovación (manual o programada) crea una 
-    %% nueva fila en 'assignment'. No se usa como tabla maestra fija.
+    %% SCHEMA form: ejecucion de cuestionarios (modelo V2: assignment
+    %% como tarea/evento). Fuente de verdad: db_ddl.sql (seccion de ejecucion).
+    %% ----
+    %% DECISION DE ARQUITECTURA: ASSIGNMENT COMO TAREA/EVENTO
+    %% Cada reevaluacion o renovacion (manual o programada) crea una nueva
+    %% fila en 'assignment'. No se usa como tabla maestra fija. El modelo V1
+    %% (bd_mermaid.mmd de la referencia app_questionnaire) usaba 'response'
+    %% intermedia con attempt_number y los puentes form_direct_responses /
+    %% scheduled_responses; en V2 se eliminan (ver README, Diferencias V1 -> V2).
+    %% ----
+    %% 'form' y 'question' estan definidas en ERD_questionnaires.mmd
+    %% (no se duplican bloques aqui).
+    %% ----
+    %% Todas las tablas heredan de BaseModel (agregados automaticamente, no se listan):
+    %%   id Integer PK interno incremental, uuid UUID externo, created_at, updated_at,
+    %%   deleted_at, *_by_id_user
+    %% Solo se listan las columnas especificas de cada entidad.
+    %% Las FK referencian el id Integer interno de la tabla destino.
+    %% Las columnas *_by (started_by, completed_by, submitted_by, assigned_by,
+    %% answered_by) son FK a la entidad de usuarios (otro schema); no se
+    %% dibuja la relacion aqui.
     %% ===============================================================
 
-    form {
-        string id PK
-        string key
-        string name
-        string description
-        BJSON scoring_expression
-        BJSON evaluation_expression
+    %% ============ RELACIONES ============
+    %% o{ = cero o muchos: un form del catalogo puede existir sin asignaciones.
+    form ||--o{ assignment : "se asigna en"
+    %% o| = cero o uno: solo si un profesional programo el cuestionario; el flujo
+    %% directo (paciente auto-contesta) no tiene scheduled.
+    assignment ||--o| scheduled : "se programa en"
+    %% o{ = cero o muchos: una assignment ENABLED (accion "Iniciar") aun no
+    %% tiene respuestas.
+    assignment ||--o{ answer : "contiene respuestas de"
+
+    %% ============ ENUMS ============
+    %% EAssignmentStatus: ciclo de vida de la tarea (CREATE TYPE en db_ddl.sql).
+    %% ENABLED      -> Front: "Cuestionario disponible" | Accion: Iniciar
+    %% IN_PROGRESS  -> Front: "Continuar cuestionario" | Accion: Continuar
+    %% COMPLETED    -> Front: "Revisa tus respuestas antes de enviar" | Accion: Enviar / Editar
+    %% SUBMITTED    -> Front: "Cuestionario enviado" | Accion: Ver resumen/resultados (solo lectura)
+    %% EXPIRED      -> Front: "El cuestionario vencio" | Accion: Ver respuestas incompletas (solo lectura)
+    %% Nota V2: el estado DISABLED del modelo V1 se omite a proposito; una asignacion
+    %% deshabilitada se representa con soft-delete (deleted_at de BaseModel).
+    EAssignmentStatus {
+        String ENABLED "ENABLED"
+        String IN_PROGRESS "IN_PROGRESS"
+        String COMPLETED "COMPLETED"
+        String SUBMITTED "SUBMITTED"
+        String EXPIRED "EXPIRED"
     }
 
+    %% ============ ENTIDADES ============
     assignment {
-        string id PK
-        string id_form FK
-        string id_person FK
-        %% status: ENABLED | IN_PROGRESS | COMPLETED | SUBMITTED | EXPIRED
-        %% ENABLED      -> Front: "Cuestionario disponible" | Accion: Iniciar
-        %% IN_PROGRESS  -> Front: "Continuar cuestionario" | Accion: Continuar
-        %% COMPLETED    -> Front: "Revisa tus respuestas antes de enviar" | Accion: Enviar / Editar
-        %% SUBMITTED    -> Front: "Cuestionario enviado" | Accion: Ver resumen/resultados (solo lectura)
-        %% EXPIRED      -> Front: "El cuestionario vencio" | Accion: Ver respuestas incompletas (solo lectura)
-        string status
-        %% Trazabilidad y auditoría de la sesión completa
-        string started_by
-        string completed_by
-        string submitted_by
-        string started_at
-        string completed_at
-        string submitted_at
+        %% id_person: persona/entidad a quien se asigna el form
+        %% (puede diferir de quien responde, ver answer.answered_by)
+        Integer id PK
+        Integer id_form FK
+        Integer id_person FK
+        Enum(EAssignmentStatus) status
+        %% Trazabilidad y auditoria de la sesion completa (FK a usuarios)
+        Integer started_by FK
+        Integer completed_by FK
+        Integer submitted_by FK
+        DateTime started_at
+        DateTime completed_at
+        DateTime submitted_at
         %% Resultado definitivo de ESTA assignment. No es cache: como cada
         %% assignment es un evento unico, el resultado le pertenece.
-        BJSON scoring_result
-        BJSON evaluation_result
+        Jsonb scoring_result
+        Jsonb evaluation_result
+        %% Nota V2: n_questions_total / n_questions_answered del modelo V1 NO se
+        %% persisten; el progreso se calcula al vuelo desde answer.
     }
 
     %% Ventana de disponibilidad temporal para cuestionarios programados.
     %% Solo existe si un profesional programo el cuestionario: en flujos
     %% directos (paciente auto-contesta) NO hay 'scheduled'.
     scheduled {
-        string id PK
-        string id_assignment FK
+        Integer id PK
+        Integer id_assignment FK
         %% Referencia al usuario (medico/enfermera/admin/sistema) que programo.
         %% No es un enum: es un FK a la entidad de usuarios.
-        string assigned_by
-        string available_from
-        string available_until
-        int time_limit_minutes
+        Integer assigned_by FK
+        DateTime available_from
+        DateTime available_until
+        Integer time_limit_minutes
     }
 
     %% ===============================================================
-    %% DECISIÓN DE ARQUITECTURA: TRAZABILIDAD POR PREGUNTA
-    %% 'answered_by' vive en cada answer individual para auditar 
-    %% si una pregunta específica la respondió el médico, tutor o paciente.
+    %% DECISION DE ARQUITECTURA: TRAZABILIDAD POR PREGUNTA
+    %% 'answered_by' vive en cada answer individual para auditar
+    %% si una pregunta especifica la respondio el medico, tutor o paciente.
     %% ===============================================================
     answer {
-        string id PK
-        string id_assignment FK
-        string id_question FK
+        Integer id PK
+        Integer id_assignment FK
+        Integer id_question FK
         %% Referencia al usuario que ingreso esta respuesta puntual.
         %% Permite auditar si la contesto el medico, tutor o paciente.
         %% No es un enum: es un FK a la entidad de usuarios.
-        string answered_by "ID del usuario (Médico / Tutor / Paciente)"
-        JSON value
+        Integer answered_by FK
+        %% value: JSONB normalizado {type, value} (CHECK en db_ddl.sql)
+        Jsonb value
     }
-
-    %% ===============================================================
-    %% CARDINALIDADES DEL MODELO
-    %% form --|| a |{-- assignment : un form tiene muchas assignments;
-    %%   cada assignment pertenece a un unico form.
-    %% assignment --o| a scheduled (cero o uno): un assignment tiene a lo
-    %%   sumo UNA programacion. 'o' cubre el flujo directo (sin programar).
-    %% assignment --|{ a answer : una assignment tiene muchas answers;
-    %%   cada answer pertenece a una unica assignment.
-    %% ===============================================================
-    form ||--|{ assignment : "se asigna en"
-    assignment ||--o| scheduled : "se programa en"
-    assignment ||--|{ answer : "contiene respuestas de"

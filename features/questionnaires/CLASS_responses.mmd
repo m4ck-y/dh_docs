@@ -16,8 +16,8 @@ classDiagram
         +string started_at
         +string completed_at
         +string submitted_at
-        +BJSON scoring_result
-        +BJSON evaluation_result
+        +Jsonb scoring_result
+        +Jsonb evaluation_result
         +Scheduled scheduled
         +Answer[] answers
     }
@@ -44,8 +44,8 @@ classDiagram
         +string key
         +string name
         +string description
-        +BJSON scoring_expression
-        +BJSON evaluation_expression
+        +Jsonb scoring_expression
+        +Jsonb evaluation_expression
     }
 
     %% Assignment embebe sus answers (composición)
