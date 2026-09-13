@@ -44,6 +44,7 @@
 | C6 | PHQ-9 ítem 7 | Contenido | ⏳ |
 | C7 | Scoring unificado | Modelo | ✅ |
 | C7b | METs IPAQ (scoring no lineal) | Modelo | ⏳ |
+| C7c | `value_expression` por pregunta | Modelo | ⏳ |
 | C8 | Gaps del contrato `Instrument` | Modelo | ✅ |
 | C9 | `AnswerMap` ↔ `answer.value` | Modelo | ⏳ |
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
@@ -172,6 +173,17 @@
   pero requiere definir cómo se declaran los dominios (grupos de preguntas).
 - **Refs**: `expressions/README.md` §9, `catalog/README.md` §9/§11,
   `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
+
+### C7c — `value_expression` por pregunta (valor autocalculado)
+
+- **Qué**: permitir que una **pregunta** tenga un valor **autocalculado** por una
+  expresión (idea de `app_questionnaire/.../types/chatgpt_.ts`,
+  `Question.calculation`), expresada con el **mismo AST** que el scoring.
+- **Forma propuesta**: `Question.value_expression` (un `OperandExpression`),
+  simétrico a `form.scoring_expression`.
+- **Duda abierta**: si una pregunta tiene `value_expression`, ¿su valor es
+  **solo lectura** (calculado) o editable por el usuario? Definir la semántica.
+- **Refs**: `expressions/README.md` §1 (puntos de aplicación del AST).
 
 ### C8 — Gaps del contrato `Instrument` ✅ (resuelto)
 

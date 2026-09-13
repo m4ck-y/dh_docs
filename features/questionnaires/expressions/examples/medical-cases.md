@@ -42,18 +42,8 @@ Ver [`phq9-evaluation.jsonc`](./phq9-evaluation.jsonc) y
               "subject": {
                 "entity": "question",
                 "property": "value",
-                "selector": {
-                  "property": "id",
-                  "expression": {
-                    "type": "comparison",
-                    "operator": "in",
-                    "args": [
-                      { "const": { "value": [1,2,3,4,5,6,7,8,9], "data_type": "array_number" } }
-                    ],
-                    "output_data_type": "boolean"
-                  },
-                  "output_data_type": "array_number"
-                }
+                "selector": "range",
+                "range": [1, 9]
               }
             },
             { "const": { "value": 0, "data_type": "number" } }
@@ -90,18 +80,8 @@ preguntas 1–3 es "Sí" (valor == 1).
               "subject": {
                 "entity": "question",
                 "property": "value",
-                "selector": {
-                  "property": "id",
-                  "expression": {
-                    "type": "comparison",
-                    "operator": "in",
-                    "args": [
-                      { "const": { "value": [1,2,3], "data_type": "array_number" } }
-                    ],
-                    "output_data_type": "boolean"
-                  },
-                  "output_data_type": "array_number"
-                }
+                "selector": "range",
+                "range": [1, 3]
               }
             },
             { "const": { "value": 1, "data_type": "number" } }

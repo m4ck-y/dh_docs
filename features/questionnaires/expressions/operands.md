@@ -41,8 +41,7 @@ interface OperandConst {
 interface SubjectReference {
   entity: string;                         // "question" | "person" | "form"
   property: string;                       // propiedad a leer
-  selector?: SubjectSelector;             // filtro de selección
-  group?: string;                         // grupo (ej. subescala)
+  selector?: SubjectSelector;             // filtro de selección (ver abajo)
   output_data_type?: SelectorOutputType;
 }
 ```
@@ -102,34 +101,84 @@ define `scoring_expression`. Ver [`operators/case.md`](./operators/case.md).
 
 ## Selectores
 
-```ts
-type SubjectSelector = "group" | "all" | SubjectSelectorCondition;
+El `selector` dice **qué** entidades del `entity` se toman. Se escribe como un
+**campo discriminante** (string) más los campos propios de cada forma:
 
-interface SubjectSelectorCondition extends OperandExpression {
-  property: string;   // propiedad sobre la que se filtra
+```ts
+type SubjectSelector =
+  | "all"                      // todas las entidades
+  | "id"                       // una pregunta concreta (requiere id)
+  | "range"                    // un rango de ids (requiere range)
+  | "group"                    // por grupo/subescala (requiere group)
+  | "condition";               // por condición (requiere property + expression)
+
+interface SubjectReference {
+  entity: string;
+  property: string;
+  selector?: SubjectSelector;
+  id?: number;                 // requerido si selector = "id"
+  range?: [number, number];    // requerido si selector = "range"
+  group?: string;              // requerido si selector = "group"
+  condition?: OperandExpression & { property: string };  // requerido si selector = "condition"
+  output_data_type?: SelectorOutputType;
 }
 ```
 
-- `"all"` — todas las entidades (ej. todas las preguntas).
-- `"group"` — por grupo (ej. subescala `A`).
-- **Condición personalizada** — filtra por una expresión sobre `property`:
+| Selector | Forma | Ejemplo de `subject` | Cuándo usarlo |
+|---|---|---|---|
+| todas | `"all"` | `{"entity":"question","property":"value","selector":"all"}` | Scoring total (aggregate) |
+| por grupo | `"group"` + `group` | `{"entity":"question","property":"value","selector":"group","group":"A"}` | Subescalas (A, D) |
+| por id | `"id"` + `id` | `{"entity":"question","property":"value","selector":"id","id":103}` | Una pregunta concreta |
+| por rango | `"range"` + `range` | `{"entity":"question","property":"value","selector":"range","range":[1,9]}` | Sumar un rango de preguntas |
+| condición | `"condition"` + `property` + `expression` | ver bloque siguiente | Filtro complejo |
+
+**Formas:**
+
+```jsonc
+{ "subject": { "entity": "question", "property": "value", "selector": "all" } }
+{ "subject": { "entity": "question", "property": "value", "selector": "group", "group": "A" } }
+{ "subject": { "entity": "question", "property": "value", "selector": "id", "id": 103 } }
+{ "subject": { "entity": "question", "property": "value", "selector": "range", "range": [1, 9] } }
+```
+
+Condición personalizada — filtra por una expresión sobre `property`:
 
 ```jsonc
 {
-  "selector": {
-    "property": "id",
-    "expression": {
-      "type": "comparison",
-      "operator": "in",
-      "args": [
-        { "const": { "value": [1,2,3,4,5,6,7,8,9], "data_type": "array_number" } }
-      ],
-      "output_data_type": "boolean"
-    },
-    "output_data_type": "array_number"
+  "subject": {
+    "entity": "question",
+    "property": "value",
+    "selector": "condition",
+    "condition": {
+      "property": "id",
+      "expression": {
+        "type": "comparison",
+        "operator": "in",
+        "args": [
+          { "const": { "value": [1,2,3,4,5,6,7,8,9], "data_type": "array_number" } }
+        ],
+        "output_data_type": "boolean"
+      },
+      "output_data_type": "array_number"
+    }
   }
 }
 ```
+
+### Default y regla de uso
+
+- El `selector` es **opcional**. Si se **omite**, el sujeto se toma **en
+  singular** (la pregunta/entidad del contexto).
+- Para operar sobre **varias** entidades se **exige selector explícito**
+  (`all`/`group`/`id`/`range`/`condition`).
+- En un `aggregate` (scoring), el selector **nunca se omite**: se usa `"all"` o
+  `"range"`.
+
+> Los selectores `id` y `range` se rescatan de
+> `app_questionnaire/.../types/chatgpt_.ts` (allí eran `selector: "id"` + `id`, y
+> `selector: "range"` + `id_range`). Aquí se unifican con el resto en una unión
+> discriminada. `group` absorbe el campo `group` que en `typescript.ts` iba
+> suelto en `SubjectReference`.
 
 ## Nota sobre aridad de `in`
 

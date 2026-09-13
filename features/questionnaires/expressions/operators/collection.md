@@ -22,6 +22,8 @@ interface CollectionOperator extends BaseOperator {
 
 ## Ejemplo — ¿alguna pregunta del PHQ-9 tiene síntomas?
 
+Con el selector `range` (ver [`../operands.md`](../operands.md)):
+
 ```jsonc
 {
   "expression": {
@@ -37,7 +39,41 @@ interface CollectionOperator extends BaseOperator {
               "subject": {
                 "entity": "question",
                 "property": "value",
-                "selector": {
+                "selector": "range",
+                "range": [1, 9]
+              }
+            },
+            { "const": { "value": 0, "data_type": "number" } }
+          ],
+          "output_data_type": "boolean"
+        }
+      }
+    ],
+    "output_data_type": "boolean"
+  }
+}
+```
+
+Con un selector de condición equivalente (más verboso; útil para filtros que no
+sean un rango contiguo):
+
+```jsonc
+{
+  "expression": {
+    "type": "collection",
+    "operator": "any",
+    "args": [
+      {
+        "expression": {
+          "type": "comparison",
+          "operator": ">",
+          "args": [
+            {
+              "subject": {
+                "entity": "question",
+                "property": "value",
+                "selector": "condition",
+                "condition": {
                   "property": "id",
                   "expression": {
                     "type": "comparison",

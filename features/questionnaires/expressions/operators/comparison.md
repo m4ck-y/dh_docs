@@ -40,5 +40,6 @@ interface ComparisonOperator extends BaseOperator {
 
 En la fuente hay una inconsistencia de aridad: `typescript.ts` pasa **sujeto y
 constante-array** (`[subject, const]`), mientras `expression.md` y `PHQ9.ts`
-pasan **solo la constante-array**. Al implementar hay que fijar una sola forma;
-este documento no la resuelve (es decisión de la fase de implementación).
+pasan **solo la constante-array**. Para seleccionar un conjunto de preguntas hoy
+es preferible el **selector** `range`/`condition` (ver
+[`../operands.md`](../operands.md)) antes que un `in` sobre `id`.

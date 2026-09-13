@@ -51,6 +51,17 @@ Así la fórmula del puntaje vive **una sola vez** (`scoring_expression`) y la
 evaluación la reutiliza. Con subescalas, el subject identifica el resultado por
 grupo (ver §4). Detalle en [`operators/case.md`](./operators/case.md).
 
+### Puntos de aplicación del AST
+
+El mismo lenguaje se aplica en varios lugares; hoy en dos, con un tercero
+propuesto:
+
+| Nivel | Campo | Qué produce | Estado |
+|---|---|---|---|
+| `form` | `scoring_expression` | Puntaje | ✅ |
+| `form` | `evaluation_expression` | Categoría | ✅ |
+| `question` | `value_expression` | Valor autocalculado de la pregunta | ⏳ pendiente (C7c) |
+
 ## 2. Alcance y frontera
 
 | Tema | Dónde vive |
@@ -127,7 +138,7 @@ una con su propio par de expresiones:
 - Un instrumento **sin** subescalas declara las expresiones a nivel del `form`.
 - Con subescalas, cada una lleva sus expresiones; el `evaluation_expression`
   consume el `scoring_result` de su subescala
-  (`{"entity": "form", "property": "scoring_result", "group": "A"}`).
+  (`{"entity": "form", "property": "scoring_result", "selector": "group", "group": "A"}`).
 - El puntaje global, si aplica, es otra expresión a nivel del `form`.
 
 Ejemplo: [`examples/hads-subscales.jsonc`](./examples/hads-subscales.jsonc).
