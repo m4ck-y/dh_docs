@@ -78,12 +78,13 @@ erDiagram
 
     %% question.key: NOT NULL (usado en scoring/evaluacion y respuestas)
     %% question.config: JSONB nullable; forma segun question.type (ver catalog/question_types/)
+    %% El ORDEN no vive aqui: pertenece a la relacion (questions_form / questions_section),
+    %% porque la pregunta es reutilizable y su posicion depende del contexto.
     question {
         Integer id PK
         String key
         Enum(EQuestionType) type
         Text text
-        Integer order
         Jsonb config
     }
 
@@ -163,16 +164,20 @@ erDiagram
         Integer order
     }
 
+    %% questions_form.order: posicion de la pregunta DENTRO de este formulario
     questions_form {
         Integer id PK
         Integer id_form FK
         Integer id_question FK
+        Integer order
     }
 
+    %% questions_section.order: posicion de la pregunta DENTRO de esta seccion
     questions_section {
         Integer id PK
         Integer id_section FK
         Integer id_question FK
+        Integer order
     }
 
     option {

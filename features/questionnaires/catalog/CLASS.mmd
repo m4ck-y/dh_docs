@@ -7,7 +7,7 @@ classDiagram
         +Jsonb scoring_expression
         +Jsonb evaluation_expression
         +Section[] sections
-        +Question[] questions
+        +FormQuestion[] questions
     }
 
     class Section {
@@ -15,14 +15,23 @@ classDiagram
         +string name
         +string description
         +int order
-        +Question[] questions
+        +SectionQuestion[] questions
+    }
+
+    class FormQuestion {
+        +Question question
+        +int order
+    }
+
+    class SectionQuestion {
+        +Question question
+        +int order
     }
 
     class Question {
         +string id
         +string type
         +string text
-        +int order
         +Jsonb config
         +Option[] options
         +Conditional conditional
@@ -30,6 +39,8 @@ classDiagram
 
     %% Question.config: JSONB nullable, forma segun Question.type
     %% (ver catalog/question_types/). Incluye "required" y parametros del tipo.
+    %% Question NO tiene order: su posicion vive en la relacion
+    %% (FormQuestion.order / SectionQuestion.order), porque es reutilizable.
 
     class Option {
         +string id
@@ -53,8 +64,10 @@ classDiagram
     }
 
     Form "1" *-- "0..*" Section : contiene
-    Form "1" *-- "0..*" Question : contiene
-    Section "1" *-- "0..*" Question : contiene
+    Form "1" *-- "0..*" FormQuestion : contiene
+    Section "1" *-- "0..*" SectionQuestion : contiene
+    FormQuestion "1" *-- "1" Question : referencia
+    SectionQuestion "1" *-- "1" Question : referencia
     Question "1" *-- "0..*" Option : contiene
     Question "1" *-- "0..1" Conditional : puede tener
     Option "1" o-- "0..1" Url : puede tener

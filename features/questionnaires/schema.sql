@@ -64,27 +64,26 @@ COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y
 
 -- ===================================================================
 -- TABLA: question
--- Define cada pregunta dentro de un formulario.
--- Las preguntas se vinculan a un formulario mediante questions_form (1:N) o a
--- una seccion mediante questions_section (1:N).
--- Esencial para validar respuestas y renderizar el cuestionario.
+-- Define cada pregunta reutilizable (atomo del catalogo).
+-- Las preguntas se vinculan a un formulario mediante questions_form o a
+-- una seccion mediante questions_section.
+-- El ORDEN de presentacion NO vive aqui: como una pregunta puede reutilizarse
+-- en varios formularios/secciones, su posicion pertenece a la RELACION
+-- (questions_form.order / questions_section.order).
 -- ===================================================================
 CREATE TABLE question (
     id SERIAL PRIMARY KEY,
     key VARCHAR(100) NOT NULL,
     text TEXT NOT NULL,
     "type" EQuestionType NOT NULL,
-    "order" INTEGER NOT NULL DEFAULT 0,
     config JSONB        -- Configuracion segun el tipo de pregunta (ver catalog/question_types/)
 );
 
-COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a formularios mediante questions_form y a secciones mediante questions_section. Permite validar respuestas y definir su comportamiento.';
+COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a formularios mediante questions_form y a secciones mediante questions_section. Permite validar respuestas y definir su comportamiento. El orden NO vive aqui: la pregunta es un atomo reutilizable y su posicion depende del contexto (ver questions_form.order y questions_section.order).';
 
 COMMENT ON COLUMN question.key IS 'Identificador único de la pregunta (ej. "satisfaction_rating"). Se usa en las expresiones de scoring/evaluación y en las respuestas.';
 
 COMMENT ON COLUMN question."type" IS 'Tipo de pregunta segun el enum EQuestionType: TEXT, TEXT_LONG, NUMBER, SINGLE_CHOICE, MULTIPLE_CHOICE, DATE, DATE_TIME, TIMER, RANGE.';
-
-COMMENT ON COLUMN question."order" IS 'Orden de presentacion de la pregunta dentro de su contexto (formulario o seccion).';
 
 COMMENT ON COLUMN question.config IS 'Configuracion en JSONB especifica del tipo de pregunta. Su forma depende de question.type (ver catalog/question_types/). Incluye el flag comun "required" y los limites/parametros propios del tipo. Ejemplos: RANGE {"required": true, "min_value": 0, "max_value": 7, "step": 1, "integer": true}; TIMER {"required": true, "min_value": "PT0M", "max_value": "PT24H", "precision": "minutes"}. La coherencia de la forma se valida en la capa de aplicacion (ej. Pydantic).';
 
@@ -108,30 +107,38 @@ COMMENT ON COLUMN section.key IS 'Identificador semantico opcional de la seccion
 -- ===================================================================
 -- TABLA: questions_form
 -- Puente N:N entre form y question. Permite reutilizar preguntas en
--- multiples formularios y controlar el orden por formulario.
+-- multiples formularios. El orden de la pregunta DENTRO de este formulario
+-- vive aqui (no en question), porque la posicion depende del contexto.
 -- ===================================================================
 CREATE TABLE questions_form (
     id SERIAL PRIMARY KEY,
     id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
     id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
+    "order" INTEGER NOT NULL DEFAULT 0,  -- Posicion de la pregunta dentro de ESTE formulario
     UNIQUE (id_form, id_question)
 );
 
-COMMENT ON TABLE questions_form IS 'Vincula preguntas con formularios.';
+COMMENT ON TABLE questions_form IS 'Vincula preguntas con formularios. La misma pregunta puede presentarse en posiciones distintas segun el formulario.';
+
+COMMENT ON COLUMN questions_form."order" IS 'Orden de presentacion de la pregunta dentro de ESTE formulario. Es la fuente de verdad del orden en el contexto de formulario (la pregunta puede reutilizarse en varios formularios con ordenes distintos).';
 
 -- ===================================================================
 -- TABLA: questions_section
 -- Puente N:N entre section y question. Permite reutilizar preguntas en
--- multiples secciones y controlar el orden por seccion.
+-- multiples secciones. El orden de la pregunta DENTRO de esta seccion
+-- vive aqui (no en question), porque la posicion depende del contexto.
 -- ===================================================================
 CREATE TABLE questions_section (
     id SERIAL PRIMARY KEY,
     id_section INTEGER NOT NULL REFERENCES section(id) ON DELETE CASCADE,
     id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
+    "order" INTEGER NOT NULL DEFAULT 0,  -- Posicion de la pregunta dentro de ESTA seccion
     UNIQUE (id_section, id_question)
 );
 
-COMMENT ON TABLE questions_section IS 'Vincula preguntas con secciones.';
+COMMENT ON TABLE questions_section IS 'Vincula preguntas con secciones. La misma pregunta puede presentarse en posiciones distintas segun la seccion.';
+
+COMMENT ON COLUMN questions_section."order" IS 'Orden de presentacion de la pregunta dentro de ESTA seccion. Es la fuente de verdad del orden en el contexto de seccion (la pregunta puede reutilizarse en varias secciones con ordenes distintos).';
 
 -- ===================================================================
 -- TABLA: option

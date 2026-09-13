@@ -148,7 +148,28 @@ Cada `question` tiene un `type` (`EQuestionType`) y una configuración `config`
 - La coherencia de `config` con `type` se valida en la capa de aplicación
   (Pydantic), igual que `answer.value`.
 
-## 7. Preguntas y condiciones
+## 7. Regla de orden (dónde vive `order`)
+
+**El orden pertenece a la relación, no a la entidad**, porque un mismo elemento
+puede reutilizarse en varios contextos con posiciones distintas.
+
+| Elemento | Dónde vive su `order` | Por qué |
+|---|---|---|
+| `option` | **En `option`** (entidad propia) | Una opción pertenece a una **única** pregunta; no se comparte. |
+| `question` | **En `questions_form` / `questions_section`** | La pregunta es un **átomo reutilizable**: su posición depende del formulario o sección que la usa. |
+
+- `question` **no tiene** columna `order`. Su orden se define en:
+  - `questions_form.order` → posición de la pregunta dentro de un formulario.
+  - `questions_section.order` → posición de la pregunta dentro de una sección.
+- `section.order` sí vive en la entidad, porque una sección pertenece a un único
+  formulario.
+- Una misma pregunta puede aparecer en el **Form A** en la posición 1 y en el
+  **Form B** en la posición 7: eso lo permite tener el orden en la puente.
+- `option.order` es el orden **canónico**; si la pregunta usa `shuffle`
+  (presentación aleatoria, ver §6), `option.order` sigue siendo la referencia
+  estable para scoring.
+
+## 8. Preguntas y condiciones
 
 El MVP ya implementa visibilidad condicional **más rica** que la referencia:
 
@@ -176,7 +197,7 @@ id_question, answer(JSON tipo+valor) }`. El ERD (`answer` con `answered_by` +
 `value JSON`) ya recoge esa forma; queda pendiente alinear el `AnswerMap` en
 memoria del frontend con el valor JSON persistido.
 
-## 8. Scoring e interpretación
+## 9. Scoring e interpretación
 
 Dos representaciones coexisten y deben unificarse:
 
@@ -201,13 +222,13 @@ Ambas coinciden; solo difieren en la representación (rangos cerrados vs `case/w
 (`caminar=3.3`, `moderada=4`, `vigorosa=8` × minutos × días). El MVP aún no
 modela scoring por METs; pendiente.
 
-## 9. Concordancia por instrumento compartido
+## 10. Concordancia por instrumento compartido
 
 Instrumentos presentes en las tres fuentes y estado de alineación.
 
 | Instrumento | `docs/diagrams` | `banks/` (MVP) | Referencia `app_questionnaire` | Notas |
 |---|---|---|---|---|
-| PHQ-9 | ✅ `phq.mmd` | ✅ `phq9Instrument.ts` | ✅ `.json`/`.ts` | ⚠️ redacción ítem 7 difiere (ver §10) |
+| PHQ-9 | ✅ `phq.mmd` | ✅ `phq9Instrument.ts` | ✅ `.json`/`.ts` | ⚠️ redacción ítem 7 difiere (ver §11) |
 | GDS | ✅ `gds.mmd` | ✅ `gdsInstrument.ts` (15 ítems) | ❌ solo CSV | — |
 | HADS | ✅ `hads.mmd` | ✅ `hadsInstrument.ts` | ✅ solo CSV | — |
 | CDI | ✅ `cdi.mmd` | ✅ `cdiInstrument.ts` | ✅ solo CSV | ítem 25 invertido (ambos) |
@@ -219,7 +240,7 @@ Instrumentos presentes en las tres fuentes y estado de alineación.
 Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 `dts`, `eag`, `edah`, `spin`, `tas20`.
 
-## 10. Discrepancias detectadas
+## 11. Discrepancias detectadas
 
 1. ~~GDS — banco del MVP con 14 ítems.~~ Resuelto: drawio, Mermaid y
    `gdsInstrument.ts` ya alineados a GDS-15 (15 ítems, bandas 0-4/5-9/10-15).
@@ -234,16 +255,16 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 
 4. **IPAQ scoring por METs** no modelado en el MVP (solo en la referencia).
 
-## 11. Pendientes de esta capa
+## 12. Pendientes de esta capa
 
 - [ ] PHQ-9: fijar redacción del ítem 7.
 - [ ] Decidir forma única de scoring: rangos `interpretacion[]` vs `case/when`.
 - [ ] Cubrir gaps de `Instrument`: `target_sex`, `list_references`, `list_sections`.
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
 - [ ] Alinear el `AnswerMap` en memoria del frontend con el valor JSON persistido
-      (ver §7).
+      (ver §8).
 
-## 12. Fuera de alcance (por ahora)
+## 13. Fuera de alcance (por ahora)
 
 - No se crean los JSON definitivos de cada cuestionario.
 - No se generan `.json`/`.ts` ejecutables nuevos en este documento.
