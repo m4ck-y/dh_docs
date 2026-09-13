@@ -4,12 +4,17 @@
 
 Esquema PostgreSQL para el **catálogo de cuestionarios** (encuestas y formularios
 de salud): definición de los instrumentos (form, preguntas, opciones, secciones,
-condiciones, scoring/interpretación) y, a futuro, el modelo de ejecución
-(asignación, agendamiento, respuesta y respuestas individuales).
+condiciones, scoring/interpretación) y el modelo de ejecución (`assignment` como
+tarea/evento, `scheduled` como ventana de disponibilidad opcional y `answer`
+como respuesta individual).
 
 ## Estado
 
 En definición — diseño en curso.
+El catálogo y la ejecución (V2) ya tienen DDL de referencia en `schema.sql`;
+quedan abiertos el condicional estructurado, el lenguaje de expresiones
+(`scoring_expression`/`evaluation_expression`) y el `config` definitivo de varios
+tipos de pregunta.
 
 ## Modelado en curso
 
@@ -42,6 +47,8 @@ Una vez consolidado, el ERD PostgreSQL final se ubicará en esta carpeta
 
 ## Fuente
 
+- **`schema.sql`** — DDL de referencia del modelo (definición + ejecución V2):
+  [`features/questionnaires/schema.sql`](../features/questionnaires/schema.sql).
 - **`FormsFlow2.drawio`** — primer modelo de datos del catálogo (retomado),
   3 pestañas: `Página-1` (ERD de definición), `FORM_DETAIL-ERD-JSON` (JSON
   aplanado), `anwers` (ejecución + DDL SQL + endpoints). Conservado en
@@ -53,5 +60,7 @@ ubicará en esta carpeta.
 
 ## Relaciones Externas
 
-- **people**: las entidades de ejecución (asignación/respuesta) referencian
-  `people.person`.
+- **people**: `assignment.id_person` referencia `people.person`.
+  **Nota**: `answer.answered_by` y los campos de auditoría de `assignment`
+  (`started_by`, `completed_by`, `submitted_by`) referencian la entidad de
+  **usuarios** (auth/iam), no `people.person`.

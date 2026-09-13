@@ -79,5 +79,3 @@ definía la ejecución con `response` intermedia y tablas puente. V2 los elimina
 
 - Confirmar el nombre del schema PostgreSQL (`form`) y añadirlo a `ALL_SCHEMAS`
   (`dh_shared/base.py`).
-- Modelo de ejecución (V2) → DDL: verificar que `schema.sql` no conserve
-  `form_direct_responses` / `scheduled_responses` del modelo V1.
