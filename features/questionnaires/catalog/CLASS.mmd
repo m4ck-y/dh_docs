@@ -12,6 +12,11 @@ classDiagram
     %% INVARIANTE DE COMPOSICION (ver ADR 038): Form se compone de
     %% 'questions' (preguntas directas) O de 'sections', NUNCA de ambas.
     %% La exclusividad la valida la capa de aplicacion.
+    %%
+    %% Las expresiones (scoring/evaluation/condition) se TIPAN como Expression
+    %% (AST embebido, no Jsonb opaco) y se enlazan por composicion. 'config' sigue
+    %% siendo Jsonb porque su forma depende de Question.type. Gramatica del AST:
+    %% features/questionnaires/expressions/README.md.
     %% ===============================================================
 
     class Form {
@@ -19,9 +24,9 @@ classDiagram
         +string key
         +string name
         +string description
-        +Jsonb scoring_expression
-        +Jsonb evaluation_expression
-        +Jsonb condition
+        +Expression scoring_expression
+        +Expression evaluation_expression
+        +Expression condition
         %% XOR: o 'sections' o 'questions', nunca ambos (ver ADR 038)
         +Section[] sections
         +Question[] questions
@@ -32,7 +37,7 @@ classDiagram
         +string name
         +string description
         +int order
-        +Jsonb condition
+        +Expression condition
         +Question[] questions
     }
 
@@ -42,7 +47,7 @@ classDiagram
         +string text
         +int order
         +Jsonb config
-        +Jsonb condition
+        +Expression condition
         +Option[] options
     }
 
@@ -50,9 +55,37 @@ classDiagram
     %% (ver catalog/question_types/). Incluye "required" y parametros del tipo.
     %% Question.order: aqui SI vive el orden (subdocumento embebido);
     %% en el ERD el orden vive en la puente (ver ERD.mmd).
-    %% condition (Form/Section/Question): condicion de visibilidad, AST booleano
-    %% embebido como JSONB (ver ADR 039 y expressions/conditions.md). No hay
-    %% clase compartida. Ausente = siempre visible.
+    %% Expression (Form/Section/Question): la expresion se EMBEBE como subdocumento
+    %% (AST). Form la usa para scoring/evaluation/condition; Section/Question solo
+    %% para condition. Ver ADR 039 y expressions/README.md.
+
+    %% Expression: nodo del AST (operador). type/operator/args/output_data_type son
+    %% comunes a todos; subject/cases/default son propios de case/when
+    %% (ver expressions/operators/case.md).
+    class Expression {
+        +string type
+        +string operator
+        +Operand[] args
+        +string output_data_type
+        +Operand subject
+        +CaseBranch[] cases
+        +Operand default
+    }
+
+    %% CaseBranch: una banda de case/when (when -> then).
+    class CaseBranch {
+        +Condition when
+        +Operand then
+    }
+
+    %% Operand: union de los 4 tipos de operando (ver expressions/operands.md).
+    %% 'expression' permite la recursion: un operando puede contener otra Expression.
+    class Operand {
+        +Subject subject
+        +Const const
+        +Expression expression
+        +TimeRange time_range
+    }
 
     class Option {
         +string id
@@ -73,3 +106,13 @@ classDiagram
     Section "1" *-- "0..*" Question : contiene
     Question "1" *-- "0..*" Option : contiene
     Option "1" o-- "0..1" Url : puede tener
+    Form "1" *-- "0..1" Expression : scoring
+    Form "1" *-- "0..1" Expression : evaluation
+    Form "1" *-- "0..1" Expression : condition
+    Section "1" *-- "0..1" Expression : condition
+    Question "1" *-- "0..1" Expression : condition
+    Expression "1" *-- "0..*" Operand : args
+    Expression "1" *-- "0..1" Operand : subject
+    Expression "1" *-- "0..1" Operand : default
+    Expression "1" *-- "0..*" CaseBranch : cases
+    Operand "1" *-- "0..1" Expression : expression
