@@ -10,7 +10,7 @@
         "subject": {
           "entity": "question",
           "property": "value",
-          "selector": "all"
+          "selector": { "all": true }
         }
       }
     ],

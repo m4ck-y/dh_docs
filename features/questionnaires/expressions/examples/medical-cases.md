@@ -12,7 +12,7 @@ Ver [`phq9-scoring.jsonc`](./phq9-scoring.jsonc) y
 
 ```jsonc
 { "expression": { "type": "aggregate", "operator": "sum",
-  "args": [{ "subject": { "entity": "question", "property": "value", "selector": "all" } }],
+  "args": [{ "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }],
   "output_data_type": "number" } }
 ```
 
@@ -42,8 +42,7 @@ Ver [`phq9-evaluation.jsonc`](./phq9-evaluation.jsonc) y
               "subject": {
                 "entity": "question",
                 "property": "value",
-                "selector": "range",
-                "range": [1, 9]
+                "selector": { "range": [1, 9] }
               }
             },
             { "const": { "value": 0, "data_type": "number" } }
@@ -80,8 +79,7 @@ preguntas 1–3 es "Sí" (valor == 1).
               "subject": {
                 "entity": "question",
                 "property": "value",
-                "selector": "range",
-                "range": [1, 3]
+                "selector": { "range": [1, 3] }
               }
             },
             { "const": { "value": 1, "data_type": "number" } }

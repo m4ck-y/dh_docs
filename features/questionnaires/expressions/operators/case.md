@@ -62,7 +62,7 @@ scoring_expression  →  scoring_result  →  evaluation_expression  →  evalua
 - El `subject` es un operando `OperandSubject` (`{"subject": {...}}`), de ahí el
   doble `subject` anidado en el JSON.
 - Con subescalas, el subject identifica el resultado por grupo:
-  `{"subject": {"entity": "form", "property": "scoring_result", "selector": "group", "group": "A"}}`.
+  `{"subject": {"entity": "form", "property": "scoring_result", "selector": {"group": "A"}}}`.
 - Si el `form` no define `scoring_expression`, no hay `scoring_result` que
   consumir: un `evaluation_expression` que lo referencie requiere scoring.
 

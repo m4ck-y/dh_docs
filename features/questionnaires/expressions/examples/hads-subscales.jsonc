@@ -18,8 +18,7 @@
               "subject": {
                 "entity": "question",
                 "property": "value",
-                "selector": "group",
-                "group": "A"
+                "selector": { "group": "A" }
               }
             }
           ],
@@ -30,7 +29,7 @@
         "expression": {
           "type": "case",
           "operator": "when",
-          "subject": { "subject": { "entity": "form", "property": "scoring_result", "selector": "group", "group": "A" } },
+          "subject": { "subject": { "entity": "form", "property": "scoring_result", "selector": { "group": "A" } } },
           "cases": [
             {
               "when": { "operator": "<=", "operand": { "const": { "value": 7, "data_type": "number" } } },
@@ -61,8 +60,7 @@
               "subject": {
                 "entity": "question",
                 "property": "value",
-                "selector": "group",
-                "group": "D"
+                "selector": { "group": "D" }
               }
             }
           ],
@@ -73,7 +71,7 @@
         "expression": {
           "type": "case",
           "operator": "when",
-          "subject": { "subject": { "entity": "form", "property": "scoring_result", "selector": "group", "group": "D" } },
+          "subject": { "subject": { "entity": "form", "property": "scoring_result", "selector": { "group": "D" } } },
           "cases": [
             {
               "when": { "operator": "<=", "operand": { "const": { "value": 7, "data_type": "number" } } },

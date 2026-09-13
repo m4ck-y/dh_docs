@@ -39,8 +39,7 @@ Con el selector `range` (ver [`../operands.md`](../operands.md)):
               "subject": {
                 "entity": "question",
                 "property": "value",
-                "selector": "range",
-                "range": [1, 9]
+                "selector": { "range": [1, 9] }
               }
             },
             { "const": { "value": 0, "data_type": "number" } }
@@ -72,18 +71,19 @@ sean un rango contiguo):
               "subject": {
                 "entity": "question",
                 "property": "value",
-                "selector": "condition",
-                "condition": {
-                  "property": "id",
-                  "expression": {
-                    "type": "comparison",
-                    "operator": "in",
-                    "args": [
-                      { "const": { "value": [1,2,3,4,5,6,7,8,9], "data_type": "array_number" } }
-                    ],
-                    "output_data_type": "boolean"
-                  },
-                  "output_data_type": "array_number"
+                "selector": {
+                  "condition": {
+                    "property": "id",
+                    "expression": {
+                      "type": "comparison",
+                      "operator": "in",
+                      "args": [
+                        { "const": { "value": [1,2,3,4,5,6,7,8,9], "data_type": "array_number" } }
+                      ],
+                      "output_data_type": "boolean"
+                    },
+                    "output_data_type": "array_number"
+                  }
                 }
               }
             },

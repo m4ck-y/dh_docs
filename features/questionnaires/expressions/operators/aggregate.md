@@ -27,7 +27,7 @@ interface AggregateOperator extends BaseOperator {
     "type": "aggregate",
     "operator": "sum",
     "args": [
-      { "subject": { "entity": "question", "property": "value", "selector": "all" } }
+      { "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }
     ],
     "output_data_type": "number"
   }

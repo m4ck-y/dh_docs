@@ -138,7 +138,7 @@ una con su propio par de expresiones:
 - Un instrumento **sin** subescalas declara las expresiones a nivel del `form`.
 - Con subescalas, cada una lleva sus expresiones; el `evaluation_expression`
   consume el `scoring_result` de su subescala
-  (`{"entity": "form", "property": "scoring_result", "selector": "group", "group": "A"}`).
+  (`{"entity": "form", "property": "scoring_result", "selector": {"group": "A"}}`).
 - El puntaje global, si aplica, es otra expresión a nivel del `form`.
 
 Ejemplo: [`examples/hads-subscales.jsonc`](./examples/hads-subscales.jsonc).
