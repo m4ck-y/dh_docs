@@ -18,9 +18,9 @@ clases/documentos (MongoDB) y ejemplos JSON— se desarrolla en
 [`features/questionnaires/`](../features/questionnaires).
 
 - **ERD del catálogo**:
-  [`features/questionnaires/ERD_questionnaires.mmd`](../features/questionnaires/ERD_questionnaires.mmd)
+  [`features/questionnaires/catalog/ERD.mmd`](../features/questionnaires/catalog/ERD.mmd)
 - **Diagrama de clases / modelo de documentos**:
-  [`features/questionnaires/CLASS_questionnaires.mmd`](../features/questionnaires/CLASS_questionnaires.mmd)
+  [`features/questionnaires/catalog/CLASS.mmd`](../features/questionnaires/catalog/CLASS.mmd)
 
 Una vez consolidado, el ERD PostgreSQL final se ubicará en esta carpeta
 (`docs/db/postgres/form/`).
@@ -48,7 +48,7 @@ Una vez consolidado, el ERD PostgreSQL final se ubicará en esta carpeta
   `reference_projects/reference_questionnaire_v1_legacy/`.
 
 El ERD del catálogo se desarrolla en
-`features/questionnaires/ERD_questionnaires.mmd`; una vez consolidado, se
+`features/questionnaires/catalog/ERD.mmd`; una vez consolidado, se
 ubicará en esta carpeta.
 
 ## Relaciones Externas

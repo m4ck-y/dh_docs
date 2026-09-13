@@ -1,7 +1,7 @@
 erDiagram
     %% ===============================================================
     %% SCHEMA form: ejecucion de cuestionarios (modelo V2: assignment
-    %% como tarea/evento). Fuente de verdad: db_ddl.sql (seccion de ejecucion).
+    %% como tarea/evento). Fuente de verdad: schema.sql (seccion de ejecucion).
     %% ----
     %% DECISION DE ARQUITECTURA: ASSIGNMENT COMO TAREA/EVENTO
     %% Cada reevaluacion o renovacion (manual o programada) crea una nueva
@@ -10,7 +10,7 @@ erDiagram
     %% intermedia con attempt_number y los puentes form_direct_responses /
     %% scheduled_responses; en V2 se eliminan (ver README, Diferencias V1 -> V2).
     %% ----
-    %% 'form' y 'question' estan definidas en ERD_questionnaires.mmd
+    %% 'form' y 'question' estan definidas en ../catalog/ERD.mmd
     %% (no se duplican bloques aqui).
     %% ----
     %% Todas las tablas heredan de BaseModel (agregados automaticamente, no se listan):
@@ -34,7 +34,7 @@ erDiagram
     assignment ||--o{ answer : "contiene respuestas de"
 
     %% ============ ENUMS ============
-    %% EAssignmentStatus: ciclo de vida de la tarea (CREATE TYPE en db_ddl.sql).
+    %% EAssignmentStatus: ciclo de vida de la tarea (CREATE TYPE en schema.sql).
     %% ENABLED      -> Front: "Cuestionario disponible" | Accion: Iniciar
     %% IN_PROGRESS  -> Front: "Continuar cuestionario" | Accion: Continuar
     %% COMPLETED    -> Front: "Revisa tus respuestas antes de enviar" | Accion: Enviar / Editar
@@ -100,6 +100,6 @@ erDiagram
         %% Permite auditar si la contesto el medico, tutor o paciente.
         %% No es un enum: es un FK a la entidad de usuarios.
         Integer answered_by FK
-        %% value: JSONB normalizado {type, value} (CHECK en db_ddl.sql)
+        %% value: JSONB normalizado {type, value} (CHECK en schema.sql)
         Jsonb value
     }

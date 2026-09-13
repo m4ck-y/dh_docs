@@ -282,6 +282,7 @@
 | Composition.type sin binding | `resources/composition.py` | Agregado `CodeableConcept[DocTypeCodes]` para el binding Preferred a FHIRDocumentTypeCodes |
 | Circular import preexistente | `resources/patient.py` ↔ `resources/related_person.py` | Identificado pero no corregido (pre-existente). model_rebuild agregado en __init__.py |
 | Sin dependencias Python | entorno | Verificacion de runtime no posible (no pip, no sqlalchemy). AST parse exitoso en 9/9 archivos |
+| Reorganizacion de `docs/features/` | `docs/features/**` | `features/` formalizado como especificaciones de modulos; `questionnaires/` dividido en capas `catalog/` y `responses/` con README por capa; `db_ddl.sql` renombrado a `schema.sql`; agregado indice `features/README.md`; `catalog-questionnaires.md` disuelto entre los nuevos READMEs |
 
 ## Objetivos Inmediatos
 

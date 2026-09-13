@@ -1,18 +1,16 @@
-# Catálogo de Cuestionarios — Definición de Modelo
+# Capa catálogo — Definición del instrumento
 
-**Status:** En definición (pendiente)
+Modelo canónico del **catálogo de cuestionarios**: la definición del instrumento
+(metadata + preguntas + scoring/interpretación + condiciones). Compara cuatro
+fuentes para unificar la representación antes de fijar los JSON finales por
+cuestionario. Aún **no** se definen los JSON definitivos de cada instrumento.
 
-> Este documento define el modelo canónico del **catálogo de cuestionarios**.
-> El modelo de **respuestas** se define aparte en
-> `docs/features/questionnaires/ERD_responses.mmd` (ver el README de esa carpeta).
-> Compara cuatro fuentes para unificar la representación de los instrumentos antes
-> de fijar los JSON finales por cuestionario. Aún **no** se definen los JSON
-> definitivos de cada instrumento.
+La capa de **ejecución** (respuestas) se documenta aparte en
+[`../responses/`](../responses/).
 
 ## 1. Propósito
 
-Definir una única forma de representar cada cuestionario (metadata + preguntas
-+ scoring/interpretación + condiciones) que sirva de base para:
+Definir una única forma de representar cada cuestionario que sirva de base para:
 
 1. El **mock del frontend** (motor de cuestionarios ya existente).
 2. El futuro **modelado de BD y API** del backend.
@@ -26,7 +24,7 @@ No es una migración legacy→frontend; es una definición de dominio.
 | 1 | `other_projects/app_questionnaire/backend/docs/` | Modelo ejecutable de referencia (`.json` + `.ts` + tipos de expresiones + `conditional`) | **Referencia de modelado** |
 | 2 | `frontend/dh_frontend_app/src/domain/questionnaire-engine/` | Motor + bancos ya implementados en el MVP frontend (`types.ts`, `banks/*.ts`, `scoring.ts`, `conditions.ts`) | **Estado actual implementado** |
 | 3 | `docs/diagrams/` | `.mmd` + `-review.md` generados desde drawio | **Lógica de negocio / flujo** |
-| 4 | `reference_projects/reference_questionnaire_v1_legacy/FormsFlow2.drawio` | Diagrama drawio (3 pestañas: catálogo, detail-JSON, ejecución) | **Referencia de persistencia** → volcada a `docs/features/questionnaires/ERD_questionnaires.mmd` |
+| 4 | `reference_projects/reference_questionnaire_v1_legacy/FormsFlow2.drawio` | Diagrama drawio (3 pestañas: catálogo, detail-JSON, ejecución) | **Referencia de persistencia** → volcada a `ERD.mmd` |
 
 ## 3. Referencias
 
@@ -57,9 +55,8 @@ No es una migración legacy→frontend; es una definición de dominio.
 
 - `FormsFlow2.drawio` — 3 pestañas: `Página-1` (ERD de definición), `FORM_DETAIL-ERD-JSON` (JSON aplanado), `anwers` (ERD de ejecución + DDL SQL + endpoints FastAPI).
 - Conversión a Mermaid y documentación de código: `pagina_1.*`, `form_detail_erd_json.*`, `anwers.*`, `index.md` en la misma carpeta.
-- Destino pulido: `docs/features/questionnaires/ERD_questionnaires.mmd`.
-- Convención de nombres de ERDs y ejemplos JSON:
-  `docs/features/questionnaires/README.md`.
+- Destino pulido: `ERD.mmd`.
+- Convención de nombres de ERDs y ejemplos JSON: [`../README.md`](../README.md).
 
 > Nota: el `.drawio` es el **primer modelo de datos** (retomado), se **conserva**
 > como referencia histórica; su forma pulida se desarrolla en
@@ -141,7 +138,7 @@ El MVP ya implementa visibilidad condicional **más rica** que la referencia:
 ### Objeto `answer` (modelo persistido vs. memoria)
 
 El modelo persistido de respuestas ya está definido en
-`docs/features/questionnaires/ERD_responses.mmd`: `answer { id_assignment,
+[`../responses/ERD.mmd`](../responses/ERD.mmd): `answer { id_assignment,
 id_question, answered_by, value (JSON) }`.
 
 ```ts
@@ -213,22 +210,25 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 
 4. **IPAQ scoring por METs** no modelado en el MVP (solo en la referencia).
 
-## 10. Pendientes
+## 10. Pendientes de esta capa
 
 - [ ] PHQ-9: fijar redacción del ítem 7.
-- [x] Definir formalmente el modelo de **respuestas** (`answer`): modelado en
-      `docs/features/questionnaires/ERD_responses.mmd` (modelo V2). Pendiente
-      alinear el DDL (`db_ddl.sql`) con este modelo.
 - [ ] Decidir forma única de scoring: rangos `interpretacion[]` vs `case/when`.
 - [ ] Cubrir gaps de `Instrument`: `target_sex`, `list_references`, `list_sections`.
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
-- [ ] Modelo de persistencia del catálogo: se deriva de `FormsFlow2.drawio` (fuente 4), cuyo destino pulido es `docs/features/questionnaires/ERD_questionnaires.mmd`.
-- [ ] Modelo de ejecución (V2) → DDL: reemplazar `form_direct_responses` /
-      `scheduled_responses` por el modelo `assignment` como tarea/evento con
-      `answer`, o marcar `db_ddl.sql` como legacy en su sección de ejecución.
+- [ ] Alinear el `AnswerMap` en memoria del frontend con el valor JSON persistido
+      (ver §6).
 
 ## 11. Fuera de alcance (por ahora)
 
 - No se crean los JSON definitivos de cada cuestionario.
 - No se generan `.json`/`.ts` ejecutables nuevos en este documento.
 - No se toca `migrations/` (su alcance es legacy→frontend).
+
+## Archivos de esta capa
+
+| Archivo | Contenido |
+|---|---|
+| `ERD.mmd` | ERD relacional de la definición (`form`, `question`, metadata, puentes). |
+| `CLASS.mmd` | Diagrama de clases / vista de documentos (MongoDB) del catálogo. |
+| `example.jsonc` | Ejemplo de payload del catálogo (JSON con comentarios). |
