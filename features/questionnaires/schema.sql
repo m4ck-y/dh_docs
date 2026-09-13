@@ -13,7 +13,8 @@ CREATE TYPE EQuestionType AS ENUM (
     'MULTIPLE_CHOICE',
     'DATE',
     'DATE_TIME',
-    'TIMER'
+    'TIMER',
+    'RANGE'
 );
 
 -- Sexo biológico objetivo (alineado con EBiologicalSex del ERD)
@@ -73,16 +74,19 @@ CREATE TABLE question (
     key VARCHAR(100) NOT NULL,
     text TEXT NOT NULL,
     "type" EQuestionType NOT NULL,
-    "order" INTEGER NOT NULL DEFAULT 0
+    "order" INTEGER NOT NULL DEFAULT 0,
+    config JSONB        -- Configuracion segun el tipo de pregunta (ver catalog/question_types/)
 );
 
 COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a formularios mediante questions_form y a secciones mediante questions_section. Permite validar respuestas y definir su comportamiento.';
 
 COMMENT ON COLUMN question.key IS 'Identificador único de la pregunta (ej. "satisfaction_rating"). Se usa en las expresiones de scoring/evaluación y en las respuestas.';
 
-COMMENT ON COLUMN question."type" IS 'Tipo de pregunta segun el enum EQuestionType: TEXT, TEXT_LONG, NUMBER, SINGLE_CHOICE, MULTIPLE_CHOICE, DATE, DATE_TIME, TIMER.';
+COMMENT ON COLUMN question."type" IS 'Tipo de pregunta segun el enum EQuestionType: TEXT, TEXT_LONG, NUMBER, SINGLE_CHOICE, MULTIPLE_CHOICE, DATE, DATE_TIME, TIMER, RANGE.';
 
 COMMENT ON COLUMN question."order" IS 'Orden de presentacion de la pregunta dentro de su contexto (formulario o seccion).';
+
+COMMENT ON COLUMN question.config IS 'Configuracion en JSONB especifica del tipo de pregunta. Su forma depende de question.type (ver catalog/question_types/). Incluye el flag comun "required" y los limites/parametros propios del tipo. Ejemplos: RANGE {"required": true, "min_value": 0, "max_value": 7, "step": 1, "integer": true}; TIMER {"required": true, "min_value": "PT0M", "max_value": "PT24H", "precision": "minutes"}. La coherencia de la forma se valida en la capa de aplicacion (ej. Pydantic).';
 
 -- ===================================================================
 -- TABLA: section
@@ -138,10 +142,13 @@ CREATE TABLE option (
     id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
     text VARCHAR(255) NOT NULL,
     value INTEGER NOT NULL,
+    "order" INTEGER NOT NULL DEFAULT 0,  -- Orden canonico/base de la opcion en su pregunta
     help TEXT
 );
 
 COMMENT ON TABLE option IS 'Opcion de respuesta para preguntas de tipo SINGLE_CHOICE o MULTIPLE_CHOICE.';
+
+COMMENT ON COLUMN option."order" IS 'Orden canonico/base de la opcion dentro de su pregunta. Si la pregunta usa shuffle (presentacion aleatoria), este orden sigue siendo la referencia estable para scoring y para cuando la aleatorizacion esta apagada.';
 
 COMMENT ON COLUMN option.help IS 'Texto de ayuda o descripcion tecnica de la opcion, visible solo para roles distintos al paciente.';
 

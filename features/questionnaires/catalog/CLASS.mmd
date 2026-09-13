@@ -23,14 +23,19 @@ classDiagram
         +string type
         +string text
         +int order
+        +Jsonb config
         +Option[] options
         +Conditional conditional
     }
+
+    %% Question.config: JSONB nullable, forma segun Question.type
+    %% (ver catalog/question_types/). Incluye "required" y parametros del tipo.
 
     class Option {
         +string id
         +string text
         +string value
+        +int order
         +Url url
     }
 

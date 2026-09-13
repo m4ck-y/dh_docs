@@ -124,7 +124,31 @@ interface Instrument {
 > `list_sections`) existen en la referencia pero aún no están tipados en el MVP;
 > pendientes de decidir si se incorporan.
 
-## 6. Preguntas y condiciones
+## 6. Tipos de pregunta y `config`
+
+Cada `question` tiene un `type` (`EQuestionType`) y una configuración `config`
+(JSONB) cuya **forma depende del tipo**. El detalle por tipo vive en
+[`question_types/`](./question_types/):
+
+| Tipo | `config` (campos propios) | `answer.value` |
+|---|---|---|
+| `TEXT` | required, max_length | `string` |
+| `TEXT_LONG` | required, max_length, multiline | `string` |
+| `NUMBER` | required, min_value, max_value, decimals | `number` |
+| `SINGLE_CHOICE` | required, shuffle | `number` |
+| `MULTIPLE_CHOICE` | required, shuffle, min_selected, max_selected | `number[]` |
+| `DATE` | required, min_date, max_date | `string` (`YYYY-MM-DD`) |
+| `DATE_TIME` | required, min_date, max_date | `string` (ISO 8601) |
+| `TIMER` | required, min_value, max_value, precision | `string` (ISO 8601 duration) |
+| `RANGE` | required, min_value, max_value, step, integer | `number` |
+
+- `required` es común a **todos** los tipos.
+- `RANGE` y `TIMER` fueron **rescatados** de `app_questionnaire`
+  (`my_arquitecture/question/types/`); evidencia de uso en `cuestionarios/IPAQ.json`.
+- La coherencia de `config` con `type` se valida en la capa de aplicación
+  (Pydantic), igual que `answer.value`.
+
+## 7. Preguntas y condiciones
 
 El MVP ya implementa visibilidad condicional **más rica** que la referencia:
 
@@ -152,7 +176,7 @@ id_question, answer(JSON tipo+valor) }`. El ERD (`answer` con `answered_by` +
 `value JSON`) ya recoge esa forma; queda pendiente alinear el `AnswerMap` en
 memoria del frontend con el valor JSON persistido.
 
-## 7. Scoring e interpretación
+## 8. Scoring e interpretación
 
 Dos representaciones coexisten y deben unificarse:
 
@@ -177,13 +201,13 @@ Ambas coinciden; solo difieren en la representación (rangos cerrados vs `case/w
 (`caminar=3.3`, `moderada=4`, `vigorosa=8` × minutos × días). El MVP aún no
 modela scoring por METs; pendiente.
 
-## 8. Concordancia por instrumento compartido
+## 9. Concordancia por instrumento compartido
 
 Instrumentos presentes en las tres fuentes y estado de alineación.
 
 | Instrumento | `docs/diagrams` | `banks/` (MVP) | Referencia `app_questionnaire` | Notas |
 |---|---|---|---|---|
-| PHQ-9 | ✅ `phq.mmd` | ✅ `phq9Instrument.ts` | ✅ `.json`/`.ts` | ⚠️ redacción ítem 7 difiere (ver §9) |
+| PHQ-9 | ✅ `phq.mmd` | ✅ `phq9Instrument.ts` | ✅ `.json`/`.ts` | ⚠️ redacción ítem 7 difiere (ver §10) |
 | GDS | ✅ `gds.mmd` | ✅ `gdsInstrument.ts` (15 ítems) | ❌ solo CSV | — |
 | HADS | ✅ `hads.mmd` | ✅ `hadsInstrument.ts` | ✅ solo CSV | — |
 | CDI | ✅ `cdi.mmd` | ✅ `cdiInstrument.ts` | ✅ solo CSV | ítem 25 invertido (ambos) |
@@ -195,7 +219,7 @@ Instrumentos presentes en las tres fuentes y estado de alineación.
 Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 `dts`, `eag`, `edah`, `spin`, `tas20`.
 
-## 9. Discrepancias detectadas
+## 10. Discrepancias detectadas
 
 1. ~~GDS — banco del MVP con 14 ítems.~~ Resuelto: drawio, Mermaid y
    `gdsInstrument.ts` ya alineados a GDS-15 (15 ítems, bandas 0-4/5-9/10-15).
@@ -210,16 +234,16 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 
 4. **IPAQ scoring por METs** no modelado en el MVP (solo en la referencia).
 
-## 10. Pendientes de esta capa
+## 11. Pendientes de esta capa
 
 - [ ] PHQ-9: fijar redacción del ítem 7.
 - [ ] Decidir forma única de scoring: rangos `interpretacion[]` vs `case/when`.
 - [ ] Cubrir gaps de `Instrument`: `target_sex`, `list_references`, `list_sections`.
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
 - [ ] Alinear el `AnswerMap` en memoria del frontend con el valor JSON persistido
-      (ver §6).
+      (ver §7).
 
-## 11. Fuera de alcance (por ahora)
+## 12. Fuera de alcance (por ahora)
 
 - No se crean los JSON definitivos de cada cuestionario.
 - No se generan `.json`/`.ts` ejecutables nuevos en este documento.
@@ -232,3 +256,4 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 | `ERD.mmd` | ERD relacional de la definición (`form`, `question`, metadata, puentes). |
 | `CLASS.mmd` | Diagrama de clases / vista de documentos (MongoDB) del catálogo. |
 | `example.jsonc` | Ejemplo de payload del catálogo (JSON con comentarios). |
+| `question_types/` | Un doc por tipo de pregunta (`question.type`) con su `config` y `answer.value`. |

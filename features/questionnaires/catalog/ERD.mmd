@@ -41,6 +41,7 @@ erDiagram
     }
 
     %% EQuestionType: tipos de pregunta (segun referencia app_questionnaire)
+    %% La configuracion por tipo vive en question.config (JSONB), ver catalog/question_types/
     EQuestionType {
         String TEXT "TEXT"
         String TEXT_LONG "TEXT_LONG"
@@ -50,6 +51,7 @@ erDiagram
         String DATE "DATE"
         String DATE_TIME "DATE_TIME"
         String TIMER "TIMER"
+        String RANGE "RANGE"
     }
 
     %% EUrlType: tipo de recurso enlazado
@@ -75,12 +77,14 @@ erDiagram
     }
 
     %% question.key: NOT NULL (usado en scoring/evaluacion y respuestas)
+    %% question.config: JSONB nullable; forma segun question.type (ver catalog/question_types/)
     question {
         Integer id PK
         String key
         Enum(EQuestionType) type
         Text text
         Integer order
+        Jsonb config
     }
 
     evaluation_topic {
@@ -176,6 +180,7 @@ erDiagram
         Integer id_question FK
         String text
         Integer value
+        Integer order
         Text help
     }
 

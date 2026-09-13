@@ -35,7 +35,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 | Condicional | Fórmula libre en tabla propia | ✅ `conditional_logic` |
 | Agrupación | `section` + tablas puente | ✅ `section`, `questions_form`, `questions_section` |
 | Tipo de pregunta | Enum tipado | ✅ Columna `"type"` de tipo `EQuestionType` |
-| Config por tipo | No aplica; opciones y condiciones en tablas | ✅ Se eliminó `question.config` |
+| Config por tipo | `config` JSONB en `question`, forma según `type` (ver `catalog/question_types/`) | ✅ `question.config` |
 | Metadatos | Tablas normalizadas | ✅ `category`, `cie11_code`, `evaluation_topic`, `reference`, `estimated_duration`, `age_group`, `target_sex`, `population` + puentes |
 | Schema PostgreSQL | `form` | ✅ Documentado en comentarios del DDL (`-- Schema: form`); aún no se ejecuta `CREATE SCHEMA form` |
 | Campos de auditoria | Heredados de `BaseModel` en Python | ✅ Documentado en comentarios del DDL (`uuid`, `created_at`, `updated_at`, `deleted_at`, `*_by_id_user`); el ORM los agrega |
@@ -54,6 +54,8 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 - **`example.jsonc`**: ejemplo de payload de la capa.
   - Extensión `.jsonc` porque incluye comentarios `/* */`.
   - Si un ejemplo no necesita comentarios, puede usarse `.json`.
+- **`question_types/`**: carpeta (en `catalog/`) con un doc por tipo de pregunta;
+  documenta la forma de `question.config` según `question.type`.
 - **`schema.sql`**: DDL consolidado del módulo, en la raíz.
 
 ## Archivos
@@ -66,7 +68,8 @@ questionnaires/
 │   ├── README.md
 │   ├── ERD.mmd
 │   ├── CLASS.mmd
-│   └── example.jsonc
+│   ├── example.jsonc
+│   └── question_types/  # Un doc por tipo de pregunta (config por tipo)
 └── responses/           # Capa ejecución / respuestas (V2)
     ├── README.md
     ├── ERD.mmd
@@ -81,3 +84,5 @@ questionnaires/
   (`dh_shared/base.py`).
 - Verificar que `schema.sql` no conserve remanentes del modelo V1
   (`form_direct_responses` / `scheduled_responses`).
+- Motor frontend: solo soporta `TEXT`, `SINGLE_CHOICE` y `MULTIPLE_CHOICE`
+  (`types.ts:1`); falta soporte para el resto de tipos (incluidos `RANGE` y `TIMER`).
