@@ -77,9 +77,9 @@ contra el contrato `Instrument` del MVP frontend (`types.ts`).
 | `target_age_group` `{name,min_age,max_age}` | ✅ | ✅ | Igual |
 | `list_questions[]` `{id,type,text,order,list_options,condition}` | ✅ | ✅ | Ver §6 |
 | `list_options` `{text,value,id,url}` | ✅ | ✅ (`url` opcional/extra) | Igual |
-| `list_sections` `[]` | ✅ | ❌ ausente | **gap** |
-| `list_references` `[]` | ✅ | ❌ ausente | **gap** |
-| `target_sex` | ✅ (`null`) | ❌ ausente | **gap** |
+| `list_sections` `[]` | ✅ (siempre vacío) | ✅ `Section[]` (espejo del ERD) | Forma propia del proyecto, ver §5 y ADR 038 |
+| `list_references` `[]` | ✅ | ✅ `Reference[]` | Resuelto (era gap) |
+| `target_sex` | ✅ (`null`) | ✅ objeto `{type_biological_sex,id}` | Inconsistencia corregida: el ejemplo ya lo modelaba así; no era gap (ver §11) |
 
 ### Extensiones del MVP (no existen en la referencia)
 
@@ -110,19 +110,37 @@ interface Instrument {
 
   estimated_duration?: { min_minutes?: number; max_minutes?: number; description?: string };
   target_age_group?: { name?: string; min_age?: number; max_age?: number };
-  target_sex?: null | string;                 // gap a cubrir
-  list_references?: { url_reference?: string; name?: string; type?: string }[]; // gap a cubrir
-  list_sections?: unknown[];                  // gap a cubrir
+  target_sex?: { type_biological_sex: EBiologicalSex; id?: number };   // espeja target_sex del ERD
+  list_references?: Reference[];
+  list_sections?: Section[];     // XOR con list_questions (ver §7 y ADR 038)
 
   scoring?: Scoring;                          // extensión MVP
   interpretacion?: InterpretationRange[];     // extensión MVP
-  list_questions: Question[];
+  list_questions: Question[];                 // preguntas directas (XOR con list_sections)
+}
+
+interface Reference {
+  id?: number;
+  url_reference?: string;
+  name?: string;
+  notes?: string;
+  url_thumbnail?: string;
+  type_media?: string;           // forma real en la referencia (PHQ9.json); ver §11
+}
+
+interface Section {
+  id: number;                    // uuid externo en el modelo relacional
+  key?: string;
+  name?: string;
+  description?: string;
+  order: number;                 // section.order (vive en la entidad, ver §7)
+  list_questions: Question[];    // preguntas embebidas, con order propio en la sección
 }
 ```
 
-> Los campos marcados como *"gap"* (`target_sex`, `list_references`,
-> `list_sections`) existen en la referencia pero aún no están tipados en el MVP;
-> pendientes de decidir si se incorporan.
+> **`list_sections` no es un gap**: su forma sale del ERD del proyecto (tabla
+> `section` + puente `questions_section`), no del `[]` vacío de la referencia.
+> Ver [ADR 038](../../decisions/038-formulario-preguntas-vs-secciones.md).
 
 ## 6. Tipos de pregunta y `config`
 
@@ -168,6 +186,18 @@ puede reutilizarse en varios contextos con posiciones distintas.
 - `option.order` es el orden **canónico**; si la pregunta usa `shuffle`
   (presentación aleatoria, ver §6), `option.order` sigue siendo la referencia
   estable para scoring.
+
+### Exclusividad: preguntas directas XOR secciones
+
+Un formulario se compone de **preguntas directas** (`list_questions` /
+`questions_form`) **o** de **secciones** (`list_sections` / `section` +
+`questions_section`), **nunca de ambas**. Las secciones agrupan sus propias
+preguntas; un formulario con secciones no tiene preguntas directas.
+
+- Es una **regla de aplicación** (Pydantic + `COMMENT` en el DDL), no un
+  constraint de BD: PostgreSQL no permite un `CHECK` XOR entre tablas.
+- En el payload, `list_sections` es el espejo del ERD; su forma se define en §5.
+- Justificación y consecuencias: [ADR 038](../../decisions/038-formulario-preguntas-vs-secciones.md).
 
 ## 8. Preguntas y condiciones
 
@@ -250,16 +280,29 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
    - Drawio MVP + referencia `.json`: "leer el **periódico**".
    - Por definir cuál es la fuente de verdad del copy.
 
-3. **Gaps del contrato `Instrument`** (presentes en referencia, ausentes en MVP):
-   `target_sex`, `list_references`, `list_sections`.
+3. **Gaps del contrato `Instrument`**: `list_references` y `list_sections`.
+   Resuelto: se incorporan al contrato (§4/§5). `list_sections` es el espejo del
+   ERD (no un gap real); `list_references` adopta la forma real de la referencia
+   (`id`, `notes`, `url_thumbnail`, `type_media`), corrigiendo el README §5 previo.
+   Ver [ADR 038](../../decisions/038-formulario-preguntas-vs-secciones.md).
 
-4. **IPAQ scoring por METs** no modelado en el MVP (solo en la referencia).
+4. ~~**`target_sex` inconsistente.**~~ Resuelto: el `example.jsonc` ya lo modelaba
+   como objeto `{type_biological_sex, id}` (espejo del ERD), mientras el README §5
+   lo declaraba `null | string` y como gap. Corregido en §5; no era un gap real.
+
+5. **IPAQ scoring por METs** no modelado en el MVP (solo en la referencia).
+
+6. **`type_media` vs `type` en `list_references`**: la referencia usa `type_media`
+   (`PHQ9.json`, `IA_DEVELOPMENT.json`); el ERD define `reference.type_media`
+   (enum `EUrlType`). Se adopta `type_media` en el contrato; el modelo V1/legacy
+   usaba `type`.
 
 ## 12. Pendientes de esta capa
 
 - [ ] PHQ-9: fijar redacción del ítem 7.
 - [ ] Decidir forma única de scoring: rangos `interpretacion[]` vs `case/when`.
-- [ ] Cubrir gaps de `Instrument`: `target_sex`, `list_references`, `list_sections`.
+- [x] Cubrir gaps de `Instrument`: `list_references` y `list_sections` (ADR 038).
+      `target_sex` no era gap: se corrigió la contradicción del ejemplo vs §5.
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
 - [ ] Alinear el `AnswerMap` en memoria del frontend con el valor JSON persistido
       (ver §8).

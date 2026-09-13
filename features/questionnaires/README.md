@@ -15,7 +15,8 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
   - Definición: `form` (con `scoring_expression`, `evaluation_expression`,
     `verified`) y `question` (con `key`, `type`/`EQuestionType`, `config`).
     El orden de la pregunta vive en las puentes `questions_form` /
-    `questions_section` (ver `catalog/README.md` §7).
+    `questions_section` (ver `catalog/README.md` §7). Un formulario se compone
+    de preguntas directas **XOR** de secciones (ver ADR 038).
   - Ejecución: `assignment` (tarea/evento), `scheduled` (0..1 opcional), `answer`.
 - Reglas de formato: `.agents/rules/DOCUMENTATION_ERD.md` y
   `.agents/rules/MERMAID_ENUM_REPRESENTATION.md`.
@@ -35,7 +36,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 |---|---|---|
 | Opciones de respuesta | Tabla propia `option` | ✅ `option` (+ `url` asociada) |
 | Condicional | Fórmula libre en tabla propia | ✅ `conditional_logic` |
-| Agrupación | `section` + tablas puente | ✅ `section`, `questions_form`, `questions_section` |
+| Agrupación | `section` + tablas puente; un form usa preguntas directas **XOR** secciones (ver ADR 038) | ✅ `section`, `questions_form`, `questions_section` |
 | Tipo de pregunta | Enum tipado | ✅ Columna `"type"` de tipo `EQuestionType` |
 | Config por tipo | `config` JSONB en `question`, forma según `type` (ver `catalog/question_types/`) | ✅ `question.config` |
 | Orden de pregunta | En la relación: `questions_form.order` / `questions_section.order` (la pregunta es reutilizable) | ✅ `order` en los puentes |
@@ -55,6 +56,8 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
   a la puente.
 - `Question` es un **subdocumento** (embebido en `Form` y `Section`), no una
   colección compartida.
+- `Form` se compone de `questions` (directas) **XOR** `sections`, nunca ambos
+  (ver ADR 038).
 
 ## Decisiones abiertas
 

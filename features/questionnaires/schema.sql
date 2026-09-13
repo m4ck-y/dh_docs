@@ -37,6 +37,12 @@ CREATE TYPE EUrlType AS ENUM ('LINK', 'FILE', 'IMAGE');
 -- Representa la plantilla inmutable de un cuestionario o formulario.
 -- Define su estructura lógica, pero NO almacena respuestas ni instancias.
 -- Una vez marcado como "verified", se considera inmutable y no debe modificarse.
+--
+-- INVARIANTE DE COMPOSICION (ver ADR 038):
+--   Un formulario se compone de preguntas directas (questions_form) O de
+--   secciones (section + questions_section), NUNCA de ambas. La exclusividad
+--   NO se garantiza en la BD (PostgreSQL no permite un CHECK XOR entre tablas);
+--   la valida la capa de aplicacion (Pydantic) antes de insertar.
 -- ===================================================================
 CREATE TABLE form (
     id SERIAL PRIMARY KEY,
@@ -48,7 +54,7 @@ CREATE TABLE form (
     verified BOOLEAN NOT NULL DEFAULT false  -- Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable
 );
 
-COMMENT ON TABLE form IS 'Plantilla inmutable de un formulario. Define preguntas (vía questions_form y questions_section), y lógica de cálculo mediante expresiones en JSONB.';
+COMMENT ON TABLE form IS 'Plantilla inmutable de un formulario. Se compone de preguntas directas (via questions_form) O de secciones (via section/questions_section), nunca de ambas (ver ADR 038). La exclusividad la valida la capa de aplicacion, no la BD. Define ademas la logica de calculo mediante expresiones en JSONB.';
 
 COMMENT ON COLUMN form.key IS 'Identificador semántico y estable (ej. "onboarding_survey_v3"). Útil para referencias en código o integraciones. No cambia aunque se modifique el nombre.';
 
@@ -66,7 +72,8 @@ COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y
 -- TABLA: question
 -- Define cada pregunta reutilizable (atomo del catalogo).
 -- Las preguntas se vinculan a un formulario mediante questions_form o a
--- una seccion mediante questions_section.
+-- una seccion mediante questions_section; ambos vinculos son EXCLUYENTES
+-- por formulario (ver ADR 038 e invariante en la tabla form).
 -- El ORDEN de presentacion NO vive aqui: como una pregunta puede reutilizarse
 -- en varios formularios/secciones, su posicion pertenece a la RELACION
 -- (questions_form.order / questions_section.order).
@@ -90,6 +97,8 @@ COMMENT ON COLUMN question.config IS 'Configuracion en JSONB especifica del tipo
 -- ===================================================================
 -- TABLA: section
 -- Agrupacion logica de preguntas dentro de un formulario.
+-- Su presencia implica que el formulario usa secciones, por lo que NO debe
+-- tener preguntas directas en questions_form (exclusividad, ver ADR 038).
 -- ===================================================================
 CREATE TABLE section (
     id SERIAL PRIMARY KEY,
@@ -100,7 +109,7 @@ CREATE TABLE section (
     "order" INTEGER NOT NULL DEFAULT 0
 );
 
-COMMENT ON TABLE section IS 'Seccion de un formulario. Agrupa preguntas que se presentan juntas.';
+COMMENT ON TABLE section IS 'Seccion de un formulario. Agrupa preguntas que se presentan juntas. Un formulario con secciones no debe tener preguntas directas (exclusividad, ver ADR 038).';
 
 COMMENT ON COLUMN section.key IS 'Identificador semantico opcional de la seccion (ej. "datos_personales").';
 
@@ -109,6 +118,8 @@ COMMENT ON COLUMN section.key IS 'Identificador semantico opcional de la seccion
 -- Puente N:N entre form y question. Permite reutilizar preguntas en
 -- multiples formularios. El orden de la pregunta DENTRO de este formulario
 -- vive aqui (no en question), porque la posicion depende del contexto.
+-- EXCLUSIVO con el uso de secciones: si el formulario tiene filas aqui,
+-- no debe tener filas en section (ver ADR 038).
 -- ===================================================================
 CREATE TABLE questions_form (
     id SERIAL PRIMARY KEY,
@@ -118,7 +129,7 @@ CREATE TABLE questions_form (
     UNIQUE (id_form, id_question)
 );
 
-COMMENT ON TABLE questions_form IS 'Vincula preguntas con formularios. La misma pregunta puede presentarse en posiciones distintas segun el formulario.';
+COMMENT ON TABLE questions_form IS 'Vincula preguntas con formularios (preguntas directas). La misma pregunta puede presentarse en posiciones distintas segun el formulario. Exclusivo con el uso de secciones en el mismo formulario (ver ADR 038).';
 
 COMMENT ON COLUMN questions_form."order" IS 'Orden de presentacion de la pregunta dentro de ESTE formulario. Es la fuente de verdad del orden en el contexto de formulario (la pregunta puede reutilizarse en varios formularios con ordenes distintos).';
 

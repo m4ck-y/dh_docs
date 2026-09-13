@@ -9,6 +9,10 @@ erDiagram
     %% Excepcion (decision de diseno): las tablas puente N:N conservan id propio.
 
     %% ============ RELACIONES ============
+    %% INVARIANTE DE COMPOSICION (ver ADR 038): un form se compone de
+    %% preguntas directas (form ||--o{ questions_form) O de secciones
+    %% (form ||--o{ section), NUNCA de ambas. Mermaid ERD no expresa XOR;
+    %% la exclusividad se valida en la capa de aplicacion (no en la BD).
     form ||--o{ reference : "documented_by"
     form ||--o{ form_condition : "gated_by"
     form ||--o{ form_categories : "classified_as"
@@ -154,6 +158,7 @@ erDiagram
     }
 
     %% section.key: opcional (identificador semantico de la seccion)
+    %% Su existencia implica que el form usa secciones (sin preguntas directas).
     section {
         Integer id PK
         String key
@@ -165,6 +170,7 @@ erDiagram
     }
 
     %% questions_form.order: posicion de la pregunta DENTRO de este formulario
+    %% Exclusivo con el uso de secciones en el mismo formulario (ver ADR 038).
     questions_form {
         Integer id PK
         Integer id_form FK

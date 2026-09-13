@@ -11,8 +11,9 @@ aplicación (Pydantic); el motor del frontend la interpreta para renderizar.
 - `shuffle` (en tipos choice) es **opcional/aditivo**: el orden canónico de las
   opciones vive en `option.order`, no en `config`.
 - En los ejemplos, el campo `"order"` de la **pregunta** representa su posición
-  dentro de un formulario/sección (payload), **no** una columna de `question`
-  (ver `catalog/README.md` §7).
+  dentro de un formulario **o** de una sección (payload), **no** una columna de
+  `question` (ver `catalog/README.md` §7). Un formulario usa preguntas directas
+  **o** secciones, nunca ambos (ver `catalog/README.md` §7 y ADR 038).
 - Identificadores en inglés; el copy de la pregunta/opciones en español.
 - El valor de respuesta (`answer.value`) también depende del tipo.
 

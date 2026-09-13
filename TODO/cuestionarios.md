@@ -16,6 +16,21 @@
   `.agents/rules/MERMAID_ENUM_REPRESENTATION.md`,
   `.agents/rules/DOCUMENTATION_CLASS_DIAGRAM.md`.
 
+## Alcance de esta fase
+
+> **Fase actual: DEFINICIÓN.** Solo se modelan schemas y contratos en `docs/`.
+> **No se toca el frontend** (`frontend/dh_frontend_app/`) ni el backend
+> (`backend/`) todavía.
+
+- Los pendientes de esta lista son, por ahora, **decisiones de modelo y
+  documentación**; su reflejo en código es posterior.
+- `frontend/` (motor del cuestionario, `types.ts`) y `backend/`
+  (`ALL_SCHEMAS`, SQLAlchemy) se mantienen **congelados** durante la definición.
+- Los pendientes marcados **Frontend** (p. ej. D12) o **Backend** (p. ej. F15)
+  describen el **destino** del modelo ya definido, no trabajo de esta fase.
+- Al cerrar la definición, cada pendiente se habilitará con su alcance real
+  (frontend y/o backend) y su propio ciclo de commit.
+
 ## Índice
 
 | # | Pendiente | Grupo | Estado |
@@ -28,7 +43,7 @@
 | C5 | `config` definitivo por tipo | Modelo | ⏳ |
 | C6 | PHQ-9 ítem 7 | Contenido | ⏳ |
 | C7 | Scoring unificado + METs | Modelo | ⏳ |
-| C8 | Gaps del contrato `Instrument` | Modelo | ⏳ |
+| C8 | Gaps del contrato `Instrument` | Modelo | ✅ |
 | C9 | `AnswerMap` ↔ `answer.value` | Modelo | ⏳ |
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
 | C11 | Remanentes V1 en `schema.sql` | Modelo | ✅ |
@@ -128,12 +143,23 @@
 - **Además**: IPAQ usa scoring no lineal por **METs** (no modelado en el MVP).
 - **Refs**: `catalog/README.md` §9 (scoring) y §12.
 
-### C8 — Gaps del contrato `Instrument`
+### C8 — Gaps del contrato `Instrument` ✅ (resuelto)
 
-- **Qué**: campos presentes en la referencia y ausentes en el MVP:
+- **Qué era**: campos presentes en la referencia y ausentes en el MVP:
   `target_sex`, `list_references`, `list_sections`.
-- **Refs**: `catalog/README.md` §4 y §11.
-- **A decidir**: si se incorporan al contrato `Instrument`.
+- **Decisión** ([ADR 038](../../decisions/038-formulario-preguntas-vs-secciones.md)):
+  - `list_references` → `{id?, url_reference?, name?, notes?, url_thumbnail?,
+    type_media?}[]` (forma real de `PHQ9.json`/`IA_DEVELOPMENT.json`).
+  - `list_sections` → `Section[]` (espejo del ERD; **no** era un gap inmodelable).
+  - `target_sex`: **no era gap**; el `example.jsonc` ya lo modelaba como objeto
+    `{type_biological_sex, id}` y el README §5 lo declaraba `null | string`.
+    Se corrigió la contradicción del README (ver §11 de `catalog/README.md`).
+- **Decisión de composición**: un formulario usa preguntas directas
+  (`list_questions`) **XOR** secciones (`list_sections`), nunca ambos. Regla de
+  aplicación (Pydantic + `COMMENT`), **no** constraint de BD (ADR 038).
+- **Reflejo**: `catalog/README.md` §4/§5/§7/§11, `catalog/example.jsonc`,
+  `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `schema.sql`,
+  `questionnaires/README.md`, `question_types/README.md`.
 
 ### C9 — `AnswerMap` ↔ `answer.value`
 

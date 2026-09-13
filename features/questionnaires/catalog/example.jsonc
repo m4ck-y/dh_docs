@@ -6,43 +6,10 @@
   "scoring_expression": { "op": "sum", "fields": ["q1", "q2"] },
   "evaluation_expression": { "category": "satisfaccion" },
   "id": 0,
-  "list_questions": [
-    {
-      "type": "SINGLE_CHOICE",
-      "text": "¿Cómo calificaría la atención recibida?",
-      "order": 1,
-      "id": 0,
-      "list_options": [
-        {
-          "text": "string",
-          "value": 0,
-          "order": 1,
-          "id": 0,
-          "url": { "value": "http://wwww.pinterest.com/image.png", "type": "LINK", "id": 0 }
-        }
-      ],
-      "conditional_logic": {
-        "triggered_by_question": 1,
-        "formula": "A1 || A2",
-        "description": "Habilitar esta pregunta si la respuesta a la Pregunta 1 es 'Excelente' o 'Bueno'"
-      }
-    },
-    {
-      /* config segun question.type (ver catalog/question_types/) */
-      "type": "RANGE",
-      "text": "Durante los últimos 7 días, ¿cuántos días realizó actividades físicas vigorosas?",
-      "order": 2,
-      "id": 0,
-      "config": { "required": true, "min_value": 0, "max_value": 7, "step": 1, "integer": true }
-    },
-    {
-      "type": "TIMER",
-      "text": "¿Cuánto tiempo en total dedicó a caminar en uno de esos días?",
-      "order": 3,
-      "id": 0,
-      "config": { "required": true, "min_value": "PT0M", "max_value": "PT24H", "precision": "minutes" }
-    }
-  ],
+  /* EXCLUSIVIDAD (ver ADR 038 y catalog/README.md §7):
+     un form usa list_questions (preguntas directas) O list_sections
+     (secciones con sus preguntas), nunca ambos. Este ejemplo ilustra el
+     caso con secciones, por lo que list_questions se omite. */
   "list_sections": [
     {
       "name": "Section 1",
@@ -69,6 +36,21 @@
             "formula": "A1 || A2",
             "description": "Habilitar esta pregunta si la respuesta a la Pregunta 1 es 'Excelente' o 'Bueno'"
           }
+        },
+        {
+          /* config segun question.type (ver catalog/question_types/) */
+          "type": "RANGE",
+          "text": "Durante los últimos 7 días, ¿cuántos días realizó actividades físicas vigorosas?",
+          "order": 2,
+          "id": 0,
+          "config": { "required": true, "min_value": 0, "max_value": 7, "step": 1, "integer": true }
+        },
+        {
+          "type": "TIMER",
+          "text": "¿Cuánto tiempo en total dedicó a caminar en uno de esos días?",
+          "order": 3,
+          "id": 0,
+          "config": { "required": true, "min_value": "PT0M", "max_value": "PT24H", "precision": "minutes" }
         }
       ]
     }
