@@ -97,8 +97,11 @@ questionnaires/
 │   ├── example.jsonc
 │   └── question_types/  # Un doc por tipo de pregunta (config por tipo)
 ├── expressions/         # Lenguaje de expresiones (AST)
-│   ├── README.md        # Gramática, scoring/evaluación, subescalas
-│   └── examples/        # Ejemplos .jsonc (phq9, hads, imc)
+│   ├── README.md        # Índice + cadena de evaluación (scoring→result→evaluation→result)
+│   ├── operands.md      # Operandos y selectores
+│   ├── factories.md     # Factory functions (referencia)
+│   ├── operators/       # Un doc por operador (math, case, aggregate, ...)
+│   └── examples/        # Ejemplos .jsonc + casos médicos
 └── responses/           # Capa ejecución / respuestas (V2)
     ├── README.md
     ├── ERD.mmd

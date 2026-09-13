@@ -18,16 +18,7 @@
     "expression": {
       "type": "case",
       "operator": "when",
-      "subject": {
-        "expression": {
-          "type": "aggregate",
-          "operator": "sum",
-          "args": [
-            { "subject": { "entity": "question", "property": "value", "selector": "all" } }
-          ],
-          "output_data_type": "number"
-        }
-      },
+      "subject": { "subject": { "entity": "form", "property": "scoring_result" } },
       "cases": [
         {
           "when": { "operator": "<=", "operand": { "const": { "value": 5, "data_type": "number" } } },

@@ -1,26 +1,13 @@
 {
   /* evaluation_expression del PHQ-9: clasificacion en 5 bandas.
-     Raiz: case/when. El subject es el scoring_expression (aggregate sum).
-     Bandas por umbral acumulativo (primera coincidencia gana).
-     Ver ../README.md §5. */
+     Raiz: case/when. El subject CONSUME form.scoring_result (no repite la
+     formula del scoring). Ver ../README.md §1 y ../operators/case.md.
+     Bandas por umbral acumulativo (primera coincidencia gana). */
   "expression": {
     "type": "case",
     "operator": "when",
     "subject": {
-      "expression": {
-        "type": "aggregate",
-        "operator": "sum",
-        "args": [
-          {
-            "subject": {
-              "entity": "question",
-              "property": "value",
-              "selector": "all"
-            }
-          }
-        ],
-        "output_data_type": "number"
-      }
+      "subject": { "entity": "form", "property": "scoring_result" }
     },
     "cases": [
       {

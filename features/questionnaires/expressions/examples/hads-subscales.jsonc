@@ -29,7 +29,7 @@
         "expression": {
           "type": "case",
           "operator": "when",
-          "subject": { "subject": { "entity": "form", "property": "subscale_score", "group": "A" } },
+          "subject": { "subject": { "entity": "form", "property": "scoring_result", "group": "A" } },
           "cases": [
             {
               "when": { "operator": "<=", "operand": { "const": { "value": 7, "data_type": "number" } } },
@@ -71,7 +71,7 @@
         "expression": {
           "type": "case",
           "operator": "when",
-          "subject": { "subject": { "entity": "form", "property": "subscale_score", "group": "D" } },
+          "subject": { "subject": { "entity": "form", "property": "scoring_result", "group": "D" } },
           "cases": [
             {
               "when": { "operator": "<=", "operand": { "const": { "value": 7, "data_type": "number" } } },

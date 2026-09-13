@@ -78,10 +78,13 @@
   gramática canónica de `scoring_expression` (raíz `aggregate`) y
   `evaluation_expression` (raíz `case/when`).
 - **Ubicación**: [`features/questionnaires/expressions/`](../features/questionnaires/expressions/)
-  (`README.md` + `examples/*.jsonc`). Se extrajo a la **raíz del módulo** (no en
-  `catalog/`) por ser transversal a definición y ejecución.
+  (`README.md` + `operators/*.md` + `operands.md` + `factories.md` +
+  `examples/*.jsonc`). Se extrajo a la **raíz del módulo** (no en `catalog/`) por
+  ser transversal a definición y ejecución.
 - **Frontera**: este doc cubre **solo** scoring/evaluación. Las **condiciones
   de visibilidad** siguen siendo A1 (pendiente aparte).
+- **Convención del `subject`**: el `evaluation_expression` **consume
+  `form.scoring_result`** (no repite la fórmula del scoring).
 - **Correcciones de la referencia**: `PHQ9.ts` usaba `avg` (debía ser `sum`);
   `expression.md` decía "6 operadores" y documenta 7.
 - **Reflejo**: `schema.sql` (ejemplos inválidos corregidos), `catalog/README.md`

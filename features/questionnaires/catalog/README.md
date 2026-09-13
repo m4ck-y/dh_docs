@@ -235,7 +235,8 @@ La forma **canónica** es el **AST de expresiones** del proyecto, documentado en
 - **`scoring_expression`** (form) → `aggregate` (`sum`/`avg`) que produce el
   puntaje numérico.
 - **`evaluation_expression`** (form) → `case/when` que clasifica el puntaje en
-  una categoría de texto.
+  una categoría de texto. Su `subject` **consume** `form.scoring_result` (no
+  repite la fórmula del scoring).
 - **Subescalas**: arreglo `subscales[]`, cada una con su par de expresiones.
 - **Resultados**: `assignment.scoring_result` / `evaluation_result` = `{value,
   data_type}` (espejan el `const` del AST).
