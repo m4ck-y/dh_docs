@@ -178,6 +178,14 @@ Reglas (`conditions.ts`):
 - `pruneHiddenAnswers` borra (en punto fijo) las respuestas de preguntas que
   quedaron ocultas, para que condicionales encadenados cascaden.
 
+> **Destino.** Este documento describe el **estado actual implementado** (forma
+> plana `{all}`/`{any}` + `ConditionRule[]`, solo a nivel de pregunta). El
+> **modelo canónico** definido para el catálogo es una **condición AST** booleana
+> en `form.condition` / `section.condition` / `question.condition` (ver
+> [ADR 039](../../../decisions/039-condicion-visibilidad-ast.md) y
+> `features/questionnaires/expressions/conditions.md`). La migración del motor al
+> AST es una fase posterior (D12).
+
 ---
 
 ## 5. Desbloqueo entre instrumentos (`unlock.ts`)

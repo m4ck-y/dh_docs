@@ -21,6 +21,7 @@ classDiagram
         +string description
         +Jsonb scoring_expression
         +Jsonb evaluation_expression
+        +Jsonb condition
         %% XOR: o 'sections' o 'questions', nunca ambos (ver ADR 038)
         +Section[] sections
         +Question[] questions
@@ -31,6 +32,7 @@ classDiagram
         +string name
         +string description
         +int order
+        +Jsonb condition
         +Question[] questions
     }
 
@@ -40,14 +42,17 @@ classDiagram
         +string text
         +int order
         +Jsonb config
+        +Jsonb condition
         +Option[] options
-        +Conditional conditional
     }
 
     %% Question.config: JSONB nullable, forma segun Question.type
     %% (ver catalog/question_types/). Incluye "required" y parametros del tipo.
     %% Question.order: aqui SI vive el orden (subdocumento embebido);
     %% en el ERD el orden vive en la puente (ver ERD.mmd).
+    %% condition (Form/Section/Question): condicion de visibilidad, AST booleano
+    %% embebido como JSONB (ver ADR 039 y expressions/conditions.md). No hay
+    %% clase compartida. Ausente = siempre visible.
 
     class Option {
         +string id
@@ -55,13 +60,6 @@ classDiagram
         +string value
         +int order
         +Url url
-    }
-
-    class Conditional {
-        +string id
-        +string triggered_by_question
-        +string formula
-        +string description
     }
 
     class Url {
@@ -74,5 +72,4 @@ classDiagram
     Form "1" *-- "0..*" Question : contiene (XOR sections)
     Section "1" *-- "0..*" Question : contiene
     Question "1" *-- "0..*" Option : contiene
-    Question "1" *-- "0..1" Conditional : puede tener
     Option "1" o-- "0..1" Url : puede tener

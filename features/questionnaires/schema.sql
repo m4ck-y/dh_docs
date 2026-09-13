@@ -49,8 +49,9 @@ CREATE TABLE form (
     key VARCHAR(100) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    scoring_expression JSONB,      -- Expresión de puntaje (AST). Ver expressions/README.md. Ej: {"expression":{"type":"aggregate","operator":"sum","args":[{"subject":{"entity":"question","property":"value","selector":"all"}}],"output_data_type":"number"}}
+    scoring_expression JSONB,      -- Expresión de puntaje (AST). Ver expressions/README.md. Ej: {"expression":{"type":"aggregate","operator":"sum","args":[{"subject":{"entity":"question","property":"value","selector":{"all":true}}}],"output_data_type":"number"}}
     evaluation_expression JSONB,   -- Expresión de clasificación (AST case/when). Su subject consume form.scoring_result. Ej: {"expression":{"type":"case","operator":"when","subject":{"subject":{"entity":"form","property":"scoring_result"}},"cases":[{"when":{"operator":"<","operand":{"const":{"value":5,"data_type":"number"}}},"then":{"const":{"value":"Leve","data_type":"string"}}}],"default":{"const":{"value":"Fuera de rango","data_type":"string"}},"output_data_type":"string","args":[]}}
+    condition JSONB,               -- Condición de visibilidad del formulario (AST booleano). Ausente = siempre visible. Ver expressions/conditions.md (ADR 039)
     verified BOOLEAN NOT NULL DEFAULT false  -- Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable
 );
 
@@ -66,7 +67,9 @@ COMMENT ON COLUMN form.scoring_expression IS 'Expresión de puntaje en JSONB, en
 
 COMMENT ON COLUMN form.evaluation_expression IS 'Expresión de clasificación en JSONB, en el lenguaje de expresiones del proyecto (AST). La raíz habitual es un operador case/when cuyo subject consume form.scoring_result (no repite la fórmula del scoring). Gramática completa: features/questionnaires/expressions/README.md. Ejemplo (PHQ-9, banda): {"expression": {"type": "case", "operator": "when", "subject": {"subject": {"entity": "form", "property": "scoring_result"}}, "cases": [{"when": {"operator": "<", "operand": {"const": {"value": 5, "data_type": "number"}}}, "then": {"const": {"value": "Depresión mínima", "data_type": "string"}}}], "default": {"const": {"value": "Puntuación fuera de rango", "data_type": "string"}}, "output_data_type": "string", "args": []}}. Su resultado se guarda en assignment.evaluation_result.';
 
-COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable. Una vez en true, no se deben permitir modificaciones en esta fila ni en sus preguntas asociadas (vía questions_form / questions_section), opciones ni condicionales. La aplicación debe bloquear actualizaciones cuando verified = true.';
+COMMENT ON COLUMN form.condition IS 'Condición de visibilidad del formulario completo, como expresión AST booleana en JSONB (ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo: {"expression":{"type":"comparison","operator":">=","args":[{"subject":{"entity":"person","property":"age"}},{"const":{"value":18,"data_type":"number"}}],"output_data_type":"boolean"}}.';
+
+COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable. Una vez en true, no se deben permitir modificaciones en esta fila ni en sus preguntas asociadas (vía questions_form / questions_section), opciones ni condiciones. La aplicación debe bloquear actualizaciones cuando verified = true.';
 
 -- ===================================================================
 -- TABLA: question
@@ -83,7 +86,8 @@ CREATE TABLE question (
     key VARCHAR(100) NOT NULL,
     text TEXT NOT NULL,
     "type" EQuestionType NOT NULL,
-    config JSONB        -- Configuracion segun el tipo de pregunta (ver catalog/question_types/)
+    config JSONB,       -- Configuracion segun el tipo de pregunta (ver catalog/question_types/)
+    condition JSONB     -- Condicion de visibilidad de la pregunta (AST booleano). Ausente = siempre visible. Ver expressions/conditions.md
 );
 
 COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a formularios mediante questions_form y a secciones mediante questions_section. Permite validar respuestas y definir su comportamiento. El orden NO vive aqui: la pregunta es un atomo reutilizable y su posicion depende del contexto (ver questions_form.order y questions_section.order).';
@@ -93,6 +97,8 @@ COMMENT ON COLUMN question.key IS 'Identificador único de la pregunta (ej. "sat
 COMMENT ON COLUMN question."type" IS 'Tipo de pregunta segun el enum EQuestionType: TEXT, TEXT_LONG, NUMBER, SINGLE_CHOICE, MULTIPLE_CHOICE, DATE, DATE_TIME, TIMER, RANGE.';
 
 COMMENT ON COLUMN question.config IS 'Configuracion en JSONB especifica del tipo de pregunta. Su forma depende de question.type (ver catalog/question_types/). Incluye el flag comun "required" y los limites/parametros propios del tipo. Ejemplos: RANGE {"required": true, "min_value": 0, "max_value": 7, "step": 1, "integer": true}; TIMER {"required": true, "min_value": "PT0M", "max_value": "PT24H", "precision": "minutes"}. La coherencia de la forma se valida en la capa de aplicacion (ej. Pydantic).';
+
+COMMENT ON COLUMN question.condition IS 'Condición de visibilidad de la pregunta, como expresión AST booleana en JSONB (ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo (PHQ-9 Q10): {"expression":{"type":"collection","operator":"any","args":[{"expression":{"type":"comparison","operator":">","args":[{"subject":{"entity":"question","property":"value","selector":{"range":[1,9]}}},{"const":{"value":0,"data_type":"number"}}],"output_data_type":"boolean"}}],"output_data_type":"boolean"}}.';
 
 -- ===================================================================
 -- TABLA: section
@@ -106,12 +112,15 @@ CREATE TABLE section (
     key VARCHAR(100),
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    "order" INTEGER NOT NULL DEFAULT 0
+    "order" INTEGER NOT NULL DEFAULT 0,
+    condition JSONB     -- Condicion de visibilidad de la seccion (AST booleano). Ausente = siempre visible. Ver expressions/conditions.md
 );
 
 COMMENT ON TABLE section IS 'Seccion de un formulario. Agrupa preguntas que se presentan juntas. Un formulario con secciones no debe tener preguntas directas (exclusividad, ver ADR 038).';
 
 COMMENT ON COLUMN section.key IS 'Identificador semantico opcional de la seccion (ej. "datos_personales").';
+
+COMMENT ON COLUMN section.condition IS 'Condición de visibilidad de la sección completa, como expresión AST booleana en JSONB (ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo: {"expression":{"type":"comparison","operator":"==","args":[{"subject":{"entity":"person","property":"sex"}},{"const":{"value":"F","data_type":"string"}}],"output_data_type":"boolean"}}.';
 
 -- ===================================================================
 -- TABLA: questions_form
@@ -183,32 +192,12 @@ CREATE TABLE url (
 
 COMMENT ON TABLE url IS 'URL asociada a una opcion de respuesta. Puede ser un enlace, archivo o imagen.';
 
--- ===================================================================
--- TABLA: conditional_logic
--- Condicion de visibilidad de una pregunta.
--- ===================================================================
-CREATE TABLE conditional_logic (
-    id SERIAL PRIMARY KEY,
-    id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
-    triggered_by_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
-    formula TEXT NOT NULL,
-    description TEXT
-);
-
-COMMENT ON TABLE conditional_logic IS 'Condicion que determina si una pregunta se muestra u oculta en funcion de otra pregunta.';
-
--- ===================================================================
--- TABLA: form_condition
--- Condicion de visibilidad a nivel formulario.
--- ===================================================================
-CREATE TABLE form_condition (
-    id SERIAL PRIMARY KEY,
-    id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
-    expression TEXT NOT NULL,
-    description TEXT
-);
-
-COMMENT ON TABLE form_condition IS 'Condicion que afecta la visibilidad o disponibilidad de todo el formulario.';
+-- NOTA (ADR 039): las tablas conditional_logic (condicion de pregunta) y
+-- form_condition (condicion de formulario) se ELIMINARON. La condicion de
+-- visibilidad ahora es una columna JSONB en el propio elemento:
+--   form.condition, section.condition y question.condition.
+-- Guarda una expresion AST (OperandExpression booleana). Su ausencia = siempre
+-- visible. Ver features/questionnaires/expressions/conditions.md.
 
 -- ===================================================================
 -- TABLA: category
@@ -505,9 +494,6 @@ CREATE INDEX idx_questions_section_section ON questions_section (id_section);
 CREATE INDEX idx_questions_section_question ON questions_section (id_question);
 CREATE INDEX idx_option_question ON option (id_question);
 CREATE INDEX idx_url_option ON url (id_option);
-CREATE INDEX idx_conditional_logic_question ON conditional_logic (id_question);
-CREATE INDEX idx_conditional_logic_triggered ON conditional_logic (triggered_by_question);
-CREATE INDEX idx_form_condition_form ON form_condition (id_form);
 CREATE INDEX idx_form_categories_form ON form_categories (id_form);
 CREATE INDEX idx_form_categories_category ON form_categories (id_category);
 CREATE INDEX idx_estimated_duration_form ON estimated_duration (id_form);

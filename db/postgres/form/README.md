@@ -12,10 +12,10 @@ como respuesta individual).
 
 En definición — diseño en curso.
 El catálogo y la ejecución (V2) ya tienen DDL de referencia en `schema.sql`;
-quedan abiertos el condicional estructurado (A1) y el `config` definitivo de
-varios tipos de pregunta. El **lenguaje de expresiones**
-(`scoring_expression` / `evaluation_expression`) ya está documentado en
-[`features/questionnaires/expressions/`](../features/questionnaires/expressions/).
+queda abierto el `config` definitivo de varios tipos de pregunta. El **lenguaje
+de expresiones** (incluidas las **condiciones de visibilidad**, `condition`)
+está documentado en
+[`features/questionnaires/expressions/`](../../../features/questionnaires/expressions/).
 
 ## Modelado en curso
 

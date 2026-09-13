@@ -1,9 +1,8 @@
 # Casos de uso médicos
 
 Patrones del lenguaje aplicados a instrumentos reales. Algunos son **scoring**
-(`evaluation_expression`); otros son **condiciones de visibilidad**, que en este
-proyecto pertenecen a **A1** (todavía sin modelar con el AST) y se incluyen aquí
-solo como demostración del lenguaje.
+(`evaluation_expression`); otros son **condiciones de visibilidad**
+(`condition`, ver [`../conditions.md`](../conditions.md)).
 
 ## 1. PHQ-9 — puntaje total (scoring)
 
@@ -22,7 +21,7 @@ Ver [`phq9-evaluation.jsonc`](./phq9-evaluation.jsonc) y
 [`../operators/case.md`](../operators/case.md). El `subject` consume
 `form.scoring_result`.
 
-## 3. PHQ-9 — condición de la pregunta 10 (A1, demostración)
+## 3. PHQ-9 — condición de la pregunta 10 (visibilidad)
 
 **Lógica médica:** la pregunta 10 (impacto funcional) se muestra solo si
 **cualquiera** de las preguntas 1–9 tiene síntomas (valor > 0).
@@ -56,10 +55,10 @@ Ver [`phq9-evaluation.jsonc`](./phq9-evaluation.jsonc) y
 }
 ```
 
-> Este patrón es de **condición de visibilidad**, no de scoring. Su lugar en el
-> modelo es el pendiente **A1**; aquí solo ilustra `collection` + `comparison`.
+> Este patrón es de **condición de visibilidad**. Su lugar en el modelo es
+> `question.condition`; ver [`../conditions.md`](../conditions.md).
 
-## 4. CRAFFT — preguntas condicionales (A1, demostración)
+## 4. CRAFFT — preguntas condicionales (visibilidad)
 
 **Lógica médica:** las preguntas 5–9 se muestran solo si **cualquiera** de las
 preguntas 1–3 es "Sí" (valor == 1).

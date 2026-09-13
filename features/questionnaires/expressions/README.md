@@ -61,20 +61,20 @@ propuesto:
 | `form` | `scoring_expression` | Puntaje | ✅ |
 | `form` | `evaluation_expression` | Categoría | ✅ |
 | `question` | `value_expression` | Valor autocalculado de la pregunta | ⏳ pendiente (C7c) |
+| `form` / `section` / `question` | `condition` | Visibilidad (booleano) | ✅ (ver [`conditions.md`](./conditions.md)) |
 
 ## 2. Alcance y frontera
 
 | Tema | Dónde vive |
 |---|---|
 | Expresiones de **scoring** y **evaluación** | **Este documento** y sus subdocumentos (A2) |
-| Condiciones de **visibilidad** (`conditional_logic`, `form_condition`) | Pendiente aparte (**A1**); hoy son `TEXT`/`formula` |
+| Condiciones de **visibilidad** (`condition`) | [`conditions.md`](./conditions.md) (A1/A3) |
 | Tipos de pregunta y su `config` | [`../catalog/question_types/`](../catalog/question_types/) |
 | Forma de `answer.value` | [`../catalog/README.md`](../catalog/README.md) §8 |
 
 La gramática es un **AST** genérico (no exclusiva de scoring): el mismo lenguaje
-expresa cálculos biométricos, promedios temporales o condiciones. Aquí se
-documenta su uso para scoring/evaluación; la unificación con condiciones (A1) se
-decidirá aparte.
+expresa cálculos biométricos, promedios temporales o condiciones. La unificación
+con condiciones ya está hecha: ver [`conditions.md`](./conditions.md).
 
 ## 3. Índice de la gramática
 
@@ -82,6 +82,7 @@ decidirá aparte.
 |---|---|
 | [`operators/`](./operators/) | Las 7 familias de operadores (uno por archivo): `math`, `comparison`, `logic`, `aggregate`, `collection`, `case`, `time`. |
 | [`operands.md`](./operands.md) | Los 4 tipos de operando, entidades/propiedades y selectores. |
+| [`conditions.md`](./conditions.md) | Condiciones de visibilidad (`condition`) en form/section/question. |
 | [`factories.md`](./factories.md) | Factory functions de la referencia (para el motor del backend). |
 | [`examples/`](./examples/) | Ejemplos `.jsonc` y casos médicos. |
 

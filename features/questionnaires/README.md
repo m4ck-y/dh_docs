@@ -31,14 +31,14 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 |---|---|---|
 | Catálogo / Definición | [`catalog/`](./catalog/) | Comparativa de 4 fuentes, matriz de concordancia, ERD y diagrama de clases del instrumento. |
 | Ejecución / Respuestas (V2) | [`responses/`](./responses/) | Modelo V2 (`assignment` como tarea/evento), cardinalidades y diferencias V1 → V2. |
-| Lenguaje de expresiones | [`expressions/`](./expressions/) | AST de `scoring_expression` / `evaluation_expression`, subescalas y ejemplos. Transversal a definición y ejecución. |
+| Lenguaje de expresiones | [`expressions/`](./expressions/) | AST de `scoring_expression` / `evaluation_expression` / `condition`, subescalas y ejemplos. Transversal a definición y ejecución. |
 
 ## Decisiones tomadas en el modelo
 
 | Tema | Decisión | Reflejo en el DDL |
 |---|---|---|
 | Opciones de respuesta | Tabla propia `option` | ✅ `option` (+ `url` asociada) |
-| Condicional | Fórmula libre en tabla propia | ✅ `conditional_logic` |
+| Condicional | AST booleano JSONB en `form.condition` / `section.condition` / `question.condition` (ver ADR 039) | ✅ columnas JSONB |
 | Agrupación | `section` + tablas puente; un form usa preguntas directas **XOR** secciones (ver ADR 038) | ✅ `section`, `questions_form`, `questions_section` |
 | Tipo de pregunta | Enum tipado | ✅ Columna `"type"` de tipo `EQuestionType` |
 | Config por tipo | `config` JSONB en `question`, forma según `type` (ver `catalog/question_types/`) | ✅ `question.config` |
@@ -99,6 +99,7 @@ questionnaires/
 ├── expressions/         # Lenguaje de expresiones (AST)
 │   ├── README.md        # Índice + cadena de evaluación (scoring→result→evaluation→result)
 │   ├── operands.md      # Operandos y selectores
+│   ├── conditions.md    # Condiciones de visibilidad (form/section/question)
 │   ├── factories.md     # Factory functions (referencia)
 │   ├── operators/       # Un doc por operador (math, case, aggregate, ...)
 │   └── examples/        # Ejemplos .jsonc + casos médicos

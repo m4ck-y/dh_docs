@@ -14,7 +14,6 @@ erDiagram
     %% (form ||--o{ section), NUNCA de ambas. Mermaid ERD no expresa XOR;
     %% la exclusividad se valida en la capa de aplicacion (no en la BD).
     form ||--o{ reference : "documented_by"
-    form ||--o{ form_condition : "gated_by"
     form ||--o{ form_categories : "classified_as"
     form_categories }o--|| category : "groups"
     form ||--o{ estimated_duration : "estimated_in"
@@ -27,7 +26,6 @@ erDiagram
     questions_section }o--|| question : "includes"
     question ||--o{ option : "offers"
     option ||--o| url : "links_to"
-    question ||--o{ conditional_logic : "gated_by"
     form ||--o{ target_sex : "restricts_sex"
     form ||--o{ form_population : "applies_to"
     form_population }o--|| population : "targets"
@@ -68,6 +66,8 @@ erDiagram
     %% ============ ENTIDADES ============
     %% form.key: UNIQUE NOT NULL
     %% form.verified: DEFAULT false
+    %% La condicion de visibilidad es JSONB (AST booleano) en form/section/question
+    %% (ver ADR 039 y expressions/conditions.md). Ausente = siempre visible.
     form {
         Integer id PK
         String key
@@ -76,12 +76,15 @@ erDiagram
         Text description
         Jsonb scoring_expression
         Jsonb evaluation_expression
+        %% condicion de visibilidad del formulario (AST booleano)
+        Jsonb condition
         %% verified=true => inmutable (no modificar form ni sus questions)
         Boolean verified
     }
 
     %% question.key: NOT NULL (usado en scoring/evaluacion y respuestas)
     %% question.config: JSONB nullable; forma segun question.type (ver catalog/question_types/)
+    %% question.condition: condicion de visibilidad (AST booleano), ver ADR 039
     %% El ORDEN no vive aqui: pertenece a la relacion (questions_form / questions_section),
     %% porque la pregunta es reutilizable y su posicion depende del contexto.
     question {
@@ -90,6 +93,7 @@ erDiagram
         Enum(EQuestionType) type
         Text text
         Jsonb config
+        Jsonb condition
     }
 
     evaluation_topic {
@@ -111,13 +115,6 @@ erDiagram
         Text notes
         String url_thumbnail
         String type_media
-    }
-
-    form_condition {
-        Integer id PK
-        Integer id_form FK
-        Text expression
-        Text description
     }
 
     form_categories {
@@ -158,6 +155,7 @@ erDiagram
     }
 
     %% section.key: opcional (identificador semantico de la seccion)
+    %% section.condition: condicion de visibilidad (AST booleano), ver ADR 039
     %% Su existencia implica que el form usa secciones (sin preguntas directas).
     section {
         Integer id PK
@@ -167,6 +165,7 @@ erDiagram
         String name
         Text description
         Integer order
+        Jsonb condition
     }
 
     %% questions_form.order: posicion de la pregunta DENTRO de este formulario
@@ -202,15 +201,6 @@ erDiagram
         String url
     }
 
-    conditional_logic {
-        %% Semantica: display_this_field_if {variable_name} > 100
-        Integer id PK
-        Integer id_question FK
-        Integer triggered_by_question FK
-        String formula
-        Text description
-    }
-
     target_sex {
         Integer id PK
         Integer id_form FK
@@ -240,6 +230,10 @@ erDiagram
     }
 
     %% ============ NOTAS DE DISENO ============
+    %% Condicion de visibilidad (ADR 039): es una expresion AST booleana en JSONB,
+    %% embebida en el propio elemento (form.condition / section.condition /
+    %% question.condition). No hay tabla ni entidad compartida. Ausente = siempre
+    %% visible. Ver features/questionnaires/expressions/conditions.md.
     %% Alternativa de optimizacion: embeber options en question como JSONB
     %% (question.options JSONB) en lugar de tabla option. Util cuando las preguntas
     %% siempre se leen junto con sus opciones.

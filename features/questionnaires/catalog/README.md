@@ -75,7 +75,7 @@ contra el contrato `Instrument` del MVP frontend (`types.ts`).
 | `list_evaluation_topics` | ✅ (`{id,name,key_industry}`) | ✅ (`{name,key_industry}`, sin `id`) | MVP simplificado |
 | `estimated_duration` | ✅ | ✅ | Igual |
 | `target_age_group` `{name,min_age,max_age}` | ✅ | ✅ | Igual |
-| `list_questions[]` `{id,type,text,order,list_options,condition}` | ✅ | ✅ | Ver §6 |
+| `list_questions[]` `{id,type,text,order,list_options,condition}` | ✅ | ✅ | Ver §8 |
 | `list_options` `{text,value,id,url}` | ✅ | ✅ (`url` opcional/extra) | Igual |
 | `list_sections` `[]` | ✅ (siempre vacío) | ✅ `Section[]` (espejo del ERD) | Forma propia del proyecto, ver §5 y ADR 038 |
 | `list_references` `[]` | ✅ | ✅ `Reference[]` | Resuelto (era gap) |
@@ -199,16 +199,36 @@ preguntas; un formulario con secciones no tiene preguntas directas.
 - En el payload, `list_sections` es el espejo del ERD; su forma se define en §5.
 - Justificación y consecuencias: [ADR 038](../../decisions/038-formulario-preguntas-vs-secciones.md).
 
-## 8. Preguntas y condiciones
+## 8. Condiciones de visibilidad
 
-El MVP ya implementa visibilidad condicional **más rica** que la referencia:
+La condición decide si un elemento **se muestra u oculta**, y se modela como
+**expresión AST booleana** en una columna **JSONB** del propio elemento
+([ADR 039](../../decisions/039-condicion-visibilidad-ast.md)):
 
-| Aspecto | `app_questionnaire` `conditional` | MVP `conditions.ts` |
+| Nivel | Campo | Significado |
 |---|---|---|
-| Forma del bloque | `{ type: 'all'|'any'|'none', rules[] }` | Acepta `{all}|{any}` **y** `{type,rules}` (legado) |
-| Operadores | `==`,`!=`,`>`,`<`,`>=`,`<=` | Los mismos **+** `includes`,`notIncludes`,`in`,`notIn`,`exists`,`notEmpty` |
-| Anidación | Sí (`rules[]` puede contener `SchemaCondition`) | No (aplanado) |
-| Valores string | Comparación tipada estricta | Coerción numérica suave (`coerce`) |
+| Formulario | `form.condition` | El formulario se habilita si… |
+| Sección | `section.condition` | La sección se muestra si… |
+| Pregunta | `question.condition` | La pregunta se muestra si… |
+
+- Ausente/`null` = **siempre visible**.
+- Las tablas `conditional_logic` y `form_condition` **ya no existen**.
+- Controla **solo visibilidad** (no skip logic ni "requerido condicional").
+- Gramática, ejemplos y traducción desde la referencia:
+  [`../expressions/conditions.md`](../expressions/conditions.md).
+
+### Comparación con la referencia y el MVP
+
+| Aspecto | `app_questionnaire` `conditional` | AST (`condition`) |
+|---|---|---|
+| Forma | `{ type: 'all'|'any'|'none', rules[] }` | `OperandExpression` (`logic`/`comparison`/`collection`) |
+| Anidación | Sí (un nivel por `rules[]`) | Sí, ilimitada |
+| Rango de preguntas | N reglas repetidas | Un selector (`range`) |
+| Almacenamiento | Columna JSONB | Columna JSONB |
+
+> El **motor del frontend** (`conditions.ts`) aún evalúa la forma plana
+> `{all}`/`{any}` + `ConditionRule[]`, no el AST. Migrarlo es parte de **D12**
+> (fase frontend).
 
 ### Objeto `answer` (modelo persistido vs. memoria)
 
@@ -325,6 +345,13 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
    "Promedio en lugar de suma", pero el total clínico (0–27) requiere `sum`. Se
    adopta `sum` como correcto.
 
+9. **Condición de visibilidad**: las tablas `conditional_logic` y `form_condition`
+   (con `formula`/`expression TEXT`) se **eliminaron** en favor de columnas JSONB
+   `form.condition` / `section.condition` / `question.condition`, con el AST
+   booleano. Coincide con `column_or_table.md` de la referencia (que ya recomendaba
+   columna JSON). Ver [ADR 039](../../decisions/039-condicion-visibilidad-ast.md)
+   y [`../expressions/conditions.md`](../expressions/conditions.md).
+
 ## 12. Pendientes de esta capa
 
 - [ ] PHQ-9: fijar redacción del ítem 7.
@@ -332,6 +359,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
       MVP de rangos queda como forma simplificada a migrar (D12).
 - [x] Cubrir gaps de `Instrument`: `list_references` y `list_sections` (ADR 038).
       `target_sex` no era gap: se corrigió la contradicción del ejemplo vs §5.
+- [x] Condición de visibilidad: AST JSONB en form/section/question (ADR 039).
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
 - [ ] Alinear el `AnswerMap` en memoria del frontend con el valor JSON persistido
       (ver §8).

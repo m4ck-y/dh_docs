@@ -35,9 +35,9 @@
 
 | # | Pendiente | Grupo | Estado |
 |---|---|---|---|
-| A1 | Condicional estructurado | Rescate | ⏳ |
+| A1 | Condicional estructurado | Rescate | ✅ |
 | A2 | Lenguaje de expresiones | Rescate | ✅ |
-| A3 | Decisión column-JSON vs tabla | Rescate | ⏳ |
+| A3 | Decisión column-JSON vs tabla | Rescate | ✅ |
 | A4 | Conversión API↔BD de `condition` | Rescate | ⏳ |
 | B | `order` en tablas puente | Modelo | ✅ |
 | C5 | `config` definitivo por tipo | Modelo | ⏳ |
@@ -58,20 +58,18 @@
 
 ## A. Rescate de `app_questionnaire`
 
-### A1 — Condicional estructurado
+### A1 — Condicional estructurado ✅ (resuelto)
 
-- **Qué**: la referencia modela el condicional como
-  `{ type: 'all'|'any'|'none', rules: [{ id_question, operator, value }] }`,
-  con anidación. Hoy el modelo lo reduce a una fórmula de texto.
-- **Estado actual**:
-  - `schema.sql` → `conditional_logic(id_question, triggered_by_question, formula TEXT, description)`.
-  - `schema.sql` → `form_condition(id_form, expression TEXT, description)`.
-  - `catalog/ERD.mmd` → entidades `conditional_logic` / `form_condition`.
-- **Fuente**: `app_questionnaire/backend/docs/my_arquitecture/question/conditional.md`
-  y `.../conditional/index.js`.
-- **A decidir**: ¿se modelan `rules[]` (tabla o JSONB) o se mantiene `formula`?
-- **Archivos a tocar si se cambia**: `schema.sql`, `catalog/ERD.mmd`,
-  `catalog/CLASS.mmd`, `catalog/README.md`, `catalog/example.jsonc`.
+- **Decisión** ([ADR 039](../../decisions/039-condicion-visibilidad-ast.md)): la
+  condición de visibilidad se modela con el **AST de expresiones** (booleano) y se
+  guarda como **columna JSONB** en **tres niveles**: `form.condition`,
+  `section.condition`, `question.condition`. Ausente = siempre visible.
+- **Alcance**: solo **visibilidad** (mostrar/ocultar), no skip logic ni "requerido
+  condicional".
+- **Ubicación**: [`expressions/conditions.md`](../features/questionnaires/expressions/conditions.md).
+- **Traducción**: la forma de la referencia `{type: all|any|none, rules[]}` se
+  traduce al AST (`logic`/`comparison`/`collection`); un rango de preguntas usa el
+  selector `range` en vez de N reglas.
 
 ### A2 — Lenguaje de expresiones ✅ (resuelto)
 
@@ -92,16 +90,15 @@
   §9/§11/§12, `catalog/example.jsonc`, `questionnaires/README.md`,
   `docs/db/postgres/form/README.md`, `docs/diagrams/schemas/cuestionario/README.md`.
 
-### A3 — Decisión column-JSON vs tabla (contradicción)
+### A3 — Decisión column-JSON vs tabla ✅ (resuelto)
 
-- **Qué**: `conditional/column_or_table.md` decidió **columna JSON** para el
-  condicional; el modelo actual usa **tabla** (`conditional_logic`).
-  Hay contradicción sin documentar.
-- **Estado actual**: no hay mención de `column_or_table.md` en `catalog/` ni
-  `responses/`.
-- **Fuente**: `app_questionnaire/backend/docs/my_arquitecture/question/conditional/column_or_table.md`.
-- **A decidir**: adoptar la tabla actual o migrar a columna JSON; registrar la
-  decisión (posible ADR en `docs/decisions/`).
+- **Decisión**: se adopta **columna JSONB** (`condition`) en `form`/`section`/
+  `question`, eliminando las tablas `conditional_logic` y `form_condition`. Es lo
+  que ya recomendaba `column_or_table.md` (condición = propiedad exclusiva del
+  elemento, no compartida, evaluada en memoria).
+- **Reflejo**: `schema.sql` (tablas e índices eliminados; columnas añadidas),
+  `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md`, `catalog/example.jsonc`.
+- **Decisión registrada en**: [ADR 039](../../decisions/039-condicion-visibilidad-ast.md).
 
 ### A4 — Conversión API↔BD de `condition`
 
@@ -233,9 +230,14 @@
 - **Qué**: el motor del frontend implementa solo
   `SINGLE_CHOICE | MULTIPLE_CHOICE | TEXT`. Falta soporte para `RANGE`,
   `TIMER`, `NUMBER`, `DATE`, `DATE_TIME`, `TEXT_LONG`.
+- **Incluye**: migrar el evaluador de condiciones a la **condición AST** (hoy
+  evalúa la forma plana `{all}`/`{any}` + `ConditionRule[]`, sin anidación ni
+  `none`). Con el contrato nuevo, `conditions.ts` trataría el elemento como
+  siempre visible (fallo silencioso). Ver
+  [`expressions/conditions.md`](../features/questionnaires/expressions/conditions.md) §5.
 - **Refs**: `docs/diagrams/schemas/cuestionario/README.md:23`
   (describe el **estado actual implementado**, no el objetivo).
-- **Objetivo**: `catalog/question_types/` (9 tipos).
+- **Objetivo**: `catalog/question_types/` (9 tipos) + condición AST.
 
 ## E. Higiene
 

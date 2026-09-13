@@ -98,5 +98,6 @@ sean un rango contiguo):
 }
 ```
 
-Este caso es una **condición de visibilidad** (A1), no scoring. Se documenta aquí
-porque demuestra el operador; ver [`../examples/medical-cases.md`](../examples/medical-cases.md).
+Este caso es una **condición de visibilidad** (ver [`../conditions.md`](../conditions.md)),
+no scoring. Se documenta aquí porque demuestra el operador; ver
+[`../examples/medical-cases.md`](../examples/medical-cases.md).

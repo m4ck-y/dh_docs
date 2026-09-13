@@ -30,6 +30,19 @@
       "args": []
     }
   },
+  /* Visibilidad del formulario (AST booleano). Ausente = siempre visible.
+     Ver expressions/conditions.md */
+  "condition": {
+    "expression": {
+      "type": "comparison",
+      "operator": ">=",
+      "args": [
+        { "subject": { "entity": "person", "property": "age" } },
+        { "const": { "value": 18, "data_type": "number" } }
+      ],
+      "output_data_type": "boolean"
+    }
+  },
   "id": 0,
   /* EXCLUSIVIDAD (ver ADR 038 y catalog/README.md §7):
      un form usa list_questions (preguntas directas) O list_sections
@@ -41,6 +54,18 @@
       "description": "Sección para recopilar datos personales del encuestado",
       "order": 1,
       "id": 0,
+      /* Visibilidad de la sección (AST booleano). Ausente = siempre visible. */
+      "condition": {
+        "expression": {
+          "type": "comparison",
+          "operator": "==",
+          "args": [
+            { "subject": { "entity": "person", "property": "sex" } },
+            { "const": { "value": "F", "data_type": "string" } }
+          ],
+          "output_data_type": "boolean"
+        }
+      },
       "list_questions": [
         {
           "type": "SINGLE_CHOICE",
@@ -56,10 +81,17 @@
               "url": { "value": "http://wwww.pinterest.com/image.png", "type": "LINK", "id": 0 }
             }
           ],
-          "conditional_logic": {
-            "triggered_by_question": 1,
-            "formula": "A1 || A2",
-            "description": "Habilitar esta pregunta si la respuesta a la Pregunta 1 es 'Excelente' o 'Bueno'"
+          "condition": {
+            /* Visibilidad: AST booleano. Ver expressions/conditions.md */
+            "expression": {
+              "type": "comparison",
+              "operator": ">",
+              "args": [
+                { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
+                { "const": { "value": 0, "data_type": "number" } }
+              ],
+              "output_data_type": "boolean"
+            }
           }
         },
         {

@@ -44,6 +44,7 @@ Cada decision tecnica importante debe documentarse siguiendo el formato de **ADR
 - **[036: Adopción FHIR R5](036-fhir-r5-adoption.md)**
 - **[037: Prototipos UI de Antecedentes Familiares](037-family-conditions-ui-prototype.md)**
 - **[038: Formulario — Preguntas Directas XOR Secciones y Contrato `list_sections`](038-formulario-preguntas-vs-secciones.md)**
+- **[039: Condición de Visibilidad como AST JSONB en `form`, `section` y `question`](039-condicion-visibilidad-ast.md)**
 
 ---
 *Para crear una nueva decision, utiliza la plantilla `_template.md` (proximamente).*
