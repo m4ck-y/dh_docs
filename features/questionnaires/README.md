@@ -44,6 +44,18 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 | Campos de auditoria | Heredados de `BaseModel` en Python | ✅ Documentado en comentarios del DDL (`uuid`, `created_at`, `updated_at`, `deleted_at`, `*_by_id_user`); el ORM los agrega |
 | Diagrama de documentos | `CLASS.mmd` (vista MongoDB) por capa | No aplica (vista no relacional) |
 
+### Convención de `CLASS.mmd` (vista documentos)
+
+`CLASS.mmd` representa el **modelo documental (MongoDB)** de cada capa:
+
+- **Excluye las entidades/clases puente** (`questions_form`, `questions_section`):
+  en un modelo documental la relación se **embebe** dentro del documento padre.
+- Consecuencia: el `order` de la pregunta vive en **`Question`** (subdocumento
+  embebido con `id`), a diferencia del ERD relacional, donde el orden pertenece
+  a la puente.
+- `Question` es un **subdocumento** (embebido en `Form` y `Section`), no una
+  colección compartida.
+
 ## Decisiones abiertas
 
 - Confirmar el nombre del schema PostgreSQL (`form` propuesto) y añadirlo a
@@ -53,7 +65,9 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 
 - **`catalog/`** y **`responses/`**: carpetas de capa (en inglés).
 - **`ERD.mmd`**: diagrama entidad-relación de la capa.
-- **`CLASS.mmd`**: diagrama de clases / vista de documentos de la capa.
+- **`CLASS.mmd`**: diagrama de clases / vista de documentos (MongoDB) de la capa.
+  Excluye clases puente (la relación se embebe); el orden de pregunta vive en
+  `Question`.
 - **`example.jsonc`**: ejemplo de payload de la capa.
   - Extensión `.jsonc` porque incluye comentarios `/* */`.
   - Si un ejemplo no necesita comentarios, puede usarse `.json`.

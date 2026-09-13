@@ -1,4 +1,15 @@
 classDiagram
+    %% ===============================================================
+    %% Vista de documentos (MongoDB) del catalogo.
+    %% Se EXCLUYEN las entidades/clases puente (questions_form,
+    %% questions_section): en un modelo documental la relacion se EMBEBE
+    %% dentro del documento padre.
+    %% Por eso el 'order' de la pregunta vive en Question (aqui), a
+    %% diferencia del ERD relacional, donde el orden pertenece a la puente.
+    %% Question es un subdocumento con 'id' (referencia estable), embebido
+    %% dentro de Form y Section.
+    %% ===============================================================
+
     class Form {
         +string id
         +string key
@@ -7,7 +18,7 @@ classDiagram
         +Jsonb scoring_expression
         +Jsonb evaluation_expression
         +Section[] sections
-        +FormQuestion[] questions
+        +Question[] questions
     }
 
     class Section {
@@ -15,23 +26,14 @@ classDiagram
         +string name
         +string description
         +int order
-        +SectionQuestion[] questions
-    }
-
-    class FormQuestion {
-        +Question question
-        +int order
-    }
-
-    class SectionQuestion {
-        +Question question
-        +int order
+        +Question[] questions
     }
 
     class Question {
         +string id
         +string type
         +string text
+        +int order
         +Jsonb config
         +Option[] options
         +Conditional conditional
@@ -39,8 +41,8 @@ classDiagram
 
     %% Question.config: JSONB nullable, forma segun Question.type
     %% (ver catalog/question_types/). Incluye "required" y parametros del tipo.
-    %% Question NO tiene order: su posicion vive en la relacion
-    %% (FormQuestion.order / SectionQuestion.order), porque es reutilizable.
+    %% Question.order: aqui SI vive el orden (subdocumento embebido);
+    %% en el ERD el orden vive en la puente (ver ERD.mmd).
 
     class Option {
         +string id
@@ -64,10 +66,8 @@ classDiagram
     }
 
     Form "1" *-- "0..*" Section : contiene
-    Form "1" *-- "0..*" FormQuestion : contiene
-    Section "1" *-- "0..*" SectionQuestion : contiene
-    FormQuestion "1" *-- "1" Question : referencia
-    SectionQuestion "1" *-- "1" Question : referencia
+    Form "1" *-- "0..*" Question : contiene
+    Section "1" *-- "0..*" Question : contiene
     Question "1" *-- "0..*" Option : contiene
     Question "1" *-- "0..1" Conditional : puede tener
     Option "1" o-- "0..1" Url : puede tener
