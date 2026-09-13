@@ -24,7 +24,7 @@ Task management uses the standardized templates in `docs/tasks/_TEMPLATE/` (see 
 
 ## Context Awareness
 
-Baseline check of `docs/STATUS.md` is required at the beginning of each session.
+Baseline check of `docs/STATUS.md` is required at the beginning of each session. Additionally, verify the current branch of each active repo with `git branch --show-current` against the Workspace Branch Map in the workspace `AGENTS.md` before any pull/push/merge.
 
 ## Tone
 
