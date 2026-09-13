@@ -13,6 +13,13 @@ están representados en `frontend/ls_frontend_app/src/domain/questionnaire-engin
 > tipado con `satisfies Instrument`. El copy de las preguntas/opciones se
 > mantiene en **español**; los identificadores de código en inglés.
 
+> **Estado y destino.** Este documento describe el **estado actual implementado**
+> del motor (tipos de pregunta soportados y scoring por **rangos**
+> `scoring`/`interpretacion`). El **modelo canónico** definido para el catálogo es
+> el **AST de expresiones** (`scoring_expression` / `evaluation_expression`), en
+> [`features/questionnaires/expressions/`](../../features/questionnaires/expressions/).
+> La migración del motor a esa forma es una fase posterior (D12).
+
 ---
 
 ## 1. Tipos base

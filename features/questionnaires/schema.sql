@@ -49,8 +49,8 @@ CREATE TABLE form (
     key VARCHAR(100) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    scoring_expression JSONB,      -- Fórmula para calcular puntaje (ej. {"op": "sum", "fields": ["q1", "q2"]})
-    evaluation_expression JSONB,   -- Regla para clasificar resultado (ej. {"if": [{"gte": ["score", 70]}, "aprobado", "reprobado"]})
+    scoring_expression JSONB,      -- Expresión de puntaje (AST). Ver expressions/README.md. Ej: {"expression":{"type":"aggregate","operator":"sum","args":[{"subject":{"entity":"question","property":"value","selector":"all"}}],"output_data_type":"number"}}
+    evaluation_expression JSONB,   -- Expresión de clasificación (AST case/when). Ej: {"expression":{"type":"case","operator":"when","subject":<scoring>,"cases":[{"when":{"operator":"<","operand":{"const":{"value":5,"data_type":"number"}}},"then":{"const":{"value":"Leve","data_type":"string"}}}],"default":{"const":{"value":"Fuera de rango","data_type":"string"}},"output_data_type":"string","args":[]}}
     verified BOOLEAN NOT NULL DEFAULT false  -- Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable
 );
 
@@ -62,9 +62,9 @@ COMMENT ON COLUMN form.name IS 'Nombre legible del formulario para usuarios fina
 
 COMMENT ON COLUMN form.description IS 'Descripción explicativa del propósito del formulario.';
 
-COMMENT ON COLUMN form.scoring_expression IS 'Expresión en JSONB que define cómo se calcula el puntaje numérico a partir de las respuestas. Ejemplo: {"operation": "weighted_sum", "weights": {"q1": 0.3, "q2": 0.7}}. Se evalúa al procesar una respuesta.';
+COMMENT ON COLUMN form.scoring_expression IS 'Expresión de puntaje en JSONB, en el lenguaje de expresiones del proyecto (AST). La raíz habitual es un operador aggregate (sum/avg). Gramática completa y ejemplos: features/questionnaires/expressions/README.md. Ejemplo (PHQ-9): {"expression": {"type": "aggregate", "operator": "sum", "args": [{"subject": {"entity": "question", "property": "value", "selector": "all"}}], "output_data_type": "number"}}. Se evalúa al enviar (SUBMITTED) y su resultado se guarda en assignment.scoring_result.';
 
-COMMENT ON COLUMN form.evaluation_expression IS 'Expresión en JSONB que define cómo se interpreta el puntaje para generar una clasificación cualitativa. Ejemplo: {"if": [{"gte": ["score", 80]}, "excelente", {"gte": ["score", 60]}, "suficiente", "insuficiente"]}.';
+COMMENT ON COLUMN form.evaluation_expression IS 'Expresión de clasificación en JSONB, en el lenguaje de expresiones del proyecto (AST). La raíz habitual es un operador case/when cuyo subject es la expresión de scoring. Gramática completa: features/questionnaires/expressions/README.md. Ejemplo (PHQ-9, banda): {"expression": {"type": "case", "operator": "when", "subject": <scoring_expression>, "cases": [{"when": {"operator": "<", "operand": {"const": {"value": 5, "data_type": "number"}}}, "then": {"const": {"value": "Depresión mínima", "data_type": "string"}}}], "default": {"const": {"value": "Puntuación fuera de rango", "data_type": "string"}}, "output_data_type": "string", "args": []}}. Su resultado se guarda en assignment.evaluation_result.';
 
 COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable. Una vez en true, no se deben permitir modificaciones en esta fila ni en sus preguntas asociadas (vía questions_form / questions_section), opciones ni condicionales. La aplicación debe bloquear actualizaciones cuando verified = true.';
 
@@ -406,9 +406,10 @@ CREATE TABLE assignment (
     started_at TIMESTAMP,
     completed_at TIMESTAMP,
     submitted_at TIMESTAMP,
-    -- Resultado definitivo de ESTA assignment (evento)
-    scoring_result JSONB,               -- Puntaje calculado de esta tarea
-    evaluation_result JSONB             -- Clasificación cualitativa de esta tarea
+    -- Resultado definitivo de ESTA assignment (evento).
+    -- Se guardan como {value, data_type} (mismos campos que un const del AST).
+    scoring_result JSONB,               -- Valor calculado por scoring_expression (ej. {"value": 11, "data_type": "number"})
+    evaluation_result JSONB             -- Valor calculado por evaluation_expression (ej. {"value": "Depresión moderada", "data_type": "string"})
     -- Nota V2: n_questions_total / n_questions_answered del modelo V1 NO se persisten;
     -- el progreso se calcula al vuelo desde answer.
 );
@@ -425,9 +426,9 @@ COMMENT ON COLUMN assignment.started_at IS 'Momento en que se inició la sesión
 COMMENT ON COLUMN assignment.completed_at IS 'Momento en que se marcó como completado (progreso completo, sin enviar aún).';
 COMMENT ON COLUMN assignment.submitted_at IS 'Momento en que se envió oficialmente la tarea.';
 
-COMMENT ON COLUMN assignment.scoring_result IS 'Puntaje definitivo de esta tarea/evento, basado en el scoring_expression del form. Se calcula al enviar (SUBMITTED). Ejemplo: {"op": "sum", "fields": ["q1", "q2"]}.';
+COMMENT ON COLUMN assignment.scoring_result IS 'Resultado de evaluar form.scoring_expression para ESTA assignment. Forma {value, data_type} (mismos campos que un const del AST). Ejemplo: {"value": 11, "data_type": "number"}. Con subescalas: {"value": null, "data_type": "number", "subscales": [{"id": "A", "value": 8, "data_type": "number"}]}. No es la receta: es el valor calculado. Ver features/questionnaires/expressions/README.md §8.';
 
-COMMENT ON COLUMN assignment.evaluation_result IS 'Clasificación cualitativa de esta tarea/evento, basada en el evaluation_expression del form. Se calcula al enviar (SUBMITTED). Ejemplo: {"category": "aprobado", "level": "alto", "description": "Excelente desempeño"}.';
+COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado de evaluar form.evaluation_expression para ESTA assignment. Forma {value, data_type} (mismos campos que un const del AST). Ejemplo: {"value": "Depresión moderada", "data_type": "string"}. No es la receta: es el valor calculado. Ver features/questionnaires/expressions/README.md §8.';
 
 -- ===================================================================
 -- TABLA: scheduled

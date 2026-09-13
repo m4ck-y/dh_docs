@@ -1,0 +1,66 @@
+{
+  /* evaluation_expression del PHQ-9: clasificacion en 5 bandas.
+     Raiz: case/when. El subject es el scoring_expression (aggregate sum).
+     Bandas por umbral acumulativo (primera coincidencia gana).
+     Ver ../README.md §5. */
+  "expression": {
+    "type": "case",
+    "operator": "when",
+    "subject": {
+      "expression": {
+        "type": "aggregate",
+        "operator": "sum",
+        "args": [
+          {
+            "subject": {
+              "entity": "question",
+              "property": "value",
+              "selector": "all"
+            }
+          }
+        ],
+        "output_data_type": "number"
+      }
+    },
+    "cases": [
+      {
+        "when": {
+          "operator": "<",
+          "operand": { "const": { "value": 5, "data_type": "number" } }
+        },
+        "then": { "const": { "value": "Depresión mínima", "data_type": "string" } }
+      },
+      {
+        "when": {
+          "operator": "<",
+          "operand": { "const": { "value": 10, "data_type": "number" } }
+        },
+        "then": { "const": { "value": "Depresión leve", "data_type": "string" } }
+      },
+      {
+        "when": {
+          "operator": "<",
+          "operand": { "const": { "value": 15, "data_type": "number" } }
+        },
+        "then": { "const": { "value": "Depresión moderada", "data_type": "string" } }
+      },
+      {
+        "when": {
+          "operator": "<",
+          "operand": { "const": { "value": 20, "data_type": "number" } }
+        },
+        "then": { "const": { "value": "Depresión moderadamente severa", "data_type": "string" } }
+      },
+      {
+        "when": {
+          "operator": "<=",
+          "operand": { "const": { "value": 27, "data_type": "number" } }
+        },
+        "then": { "const": { "value": "Depresión severa", "data_type": "string" } }
+      }
+    ],
+    "default": { "const": { "value": "Puntuación fuera de rango", "data_type": "string" } },
+    "output_data_type": "string",
+    "args": []
+  }
+}

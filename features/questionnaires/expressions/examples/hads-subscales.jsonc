@@ -1,0 +1,92 @@
+{
+  /* Subescalas del HADS (A = Ansiedad, D = Depresión).
+     El AST no tiene dimension de subescala: se declara un arreglo subscales[]
+     con su propio par de expresiones por subescala.
+     Ver ../README.md §6. */
+  "subscales": [
+    {
+      "id": "A",
+      "name": "Ansiedad",
+      "items": [1, 3, 5, 7, 9, 11, 13],
+      "max": 21,
+      "scoring_expression": {
+        "expression": {
+          "type": "aggregate",
+          "operator": "sum",
+          "args": [
+            {
+              "subject": {
+                "entity": "question",
+                "property": "value",
+                "selector": { "group": "A" }
+              }
+            }
+          ],
+          "output_data_type": "number"
+        }
+      },
+      "evaluation_expression": {
+        "expression": {
+          "type": "case",
+          "operator": "when",
+          "subject": { "subject": { "entity": "form", "property": "subscale_score", "group": "A" } },
+          "cases": [
+            {
+              "when": { "operator": "<=", "operand": { "const": { "value": 7, "data_type": "number" } } },
+              "then": { "const": { "value": "Normal", "data_type": "string" } }
+            },
+            {
+              "when": { "operator": "<=", "operand": { "const": { "value": 10, "data_type": "number" } } },
+              "then": { "const": { "value": "Dudoso", "data_type": "string" } }
+            }
+          ],
+          "default": { "const": { "value": "Clínicamente significativo", "data_type": "string" } },
+          "output_data_type": "string",
+          "args": []
+        }
+      }
+    },
+    {
+      "id": "D",
+      "name": "Depresión",
+      "items": [2, 4, 6, 8, 10, 12, 14],
+      "max": 21,
+      "scoring_expression": {
+        "expression": {
+          "type": "aggregate",
+          "operator": "sum",
+          "args": [
+            {
+              "subject": {
+                "entity": "question",
+                "property": "value",
+                "selector": { "group": "D" }
+              }
+            }
+          ],
+          "output_data_type": "number"
+        }
+      },
+      "evaluation_expression": {
+        "expression": {
+          "type": "case",
+          "operator": "when",
+          "subject": { "subject": { "entity": "form", "property": "subscale_score", "group": "D" } },
+          "cases": [
+            {
+              "when": { "operator": "<=", "operand": { "const": { "value": 7, "data_type": "number" } } },
+              "then": { "const": { "value": "Normal", "data_type": "string" } }
+            },
+            {
+              "when": { "operator": "<=", "operand": { "const": { "value": 10, "data_type": "number" } } },
+              "then": { "const": { "value": "Dudoso", "data_type": "string" } }
+            }
+          ],
+          "default": { "const": { "value": "Clínicamente significativo", "data_type": "string" } },
+          "output_data_type": "string",
+          "args": []
+        }
+      }
+    }
+  ]
+}

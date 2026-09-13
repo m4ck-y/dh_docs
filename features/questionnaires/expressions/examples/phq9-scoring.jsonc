@@ -1,0 +1,19 @@
+{
+  /* scoring_expression del PHQ-9: puntaje total (0-27).
+     Raiz: aggregate sum sobre el valor de todas las preguntas.
+     Ver ../README.md §4. */
+  "expression": {
+    "type": "aggregate",
+    "operator": "sum",
+    "args": [
+      {
+        "subject": {
+          "entity": "question",
+          "property": "value",
+          "selector": "all"
+        }
+      }
+    ],
+    "output_data_type": "number"
+  }
+}

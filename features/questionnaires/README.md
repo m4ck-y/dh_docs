@@ -17,6 +17,8 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
     El orden de la pregunta vive en las puentes `questions_form` /
     `questions_section` (ver `catalog/README.md` §7). Un formulario se compone
     de preguntas directas **XOR** de secciones (ver ADR 038).
+    La forma de `scoring_expression` / `evaluation_expression` se define en
+    [`expressions/README.md`](./expressions/README.md).
   - Ejecución: `assignment` (tarea/evento), `scheduled` (0..1 opcional), `answer`.
 - Reglas de formato: `.agents/rules/DOCUMENTATION_ERD.md` y
   `.agents/rules/MERMAID_ENUM_REPRESENTATION.md`.
@@ -29,6 +31,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 |---|---|---|
 | Catálogo / Definición | [`catalog/`](./catalog/) | Comparativa de 4 fuentes, matriz de concordancia, ERD y diagrama de clases del instrumento. |
 | Ejecución / Respuestas (V2) | [`responses/`](./responses/) | Modelo V2 (`assignment` como tarea/evento), cardinalidades y diferencias V1 → V2. |
+| Lenguaje de expresiones | [`expressions/`](./expressions/) | AST de `scoring_expression` / `evaluation_expression`, subescalas y ejemplos. Transversal a definición y ejecución. |
 
 ## Decisiones tomadas en el modelo
 
@@ -39,6 +42,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 | Agrupación | `section` + tablas puente; un form usa preguntas directas **XOR** secciones (ver ADR 038) | ✅ `section`, `questions_form`, `questions_section` |
 | Tipo de pregunta | Enum tipado | ✅ Columna `"type"` de tipo `EQuestionType` |
 | Config por tipo | `config` JSONB en `question`, forma según `type` (ver `catalog/question_types/`) | ✅ `question.config` |
+| Scoring / evaluación | **AST de expresiones** (`scoring_expression` + `evaluation_expression`); resultado en `assignment.*_result` como `{value, data_type}` | ✅ JSONB (ver `expressions/`) |
 | Orden de pregunta | En la relación: `questions_form.order` / `questions_section.order` (la pregunta es reutilizable) | ✅ `order` en los puentes |
 | Metadatos | Tablas normalizadas | ✅ `category`, `cie11_code`, `evaluation_topic`, `reference`, `estimated_duration`, `age_group`, `target_sex`, `population` + puentes |
 | Schema PostgreSQL | `form` | ✅ Documentado en comentarios del DDL (`-- Schema: form`); aún no se ejecuta `CREATE SCHEMA form` |
@@ -76,6 +80,8 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
   - Si un ejemplo no necesita comentarios, puede usarse `.json`.
 - **`question_types/`**: carpeta (en `catalog/`) con un doc por tipo de pregunta;
   documenta la forma de `question.config` según `question.type`.
+- **`expressions/`**: gramática del AST (`scoring_expression` /
+  `evaluation_expression`) + `examples/` con ejemplos `.jsonc` reutilizables.
 - **`schema.sql`**: DDL consolidado del módulo, en la raíz.
 
 ## Archivos
@@ -90,6 +96,9 @@ questionnaires/
 │   ├── CLASS.mmd
 │   ├── example.jsonc
 │   └── question_types/  # Un doc por tipo de pregunta (config por tipo)
+├── expressions/         # Lenguaje de expresiones (AST)
+│   ├── README.md        # Gramática, scoring/evaluación, subescalas
+│   └── examples/        # Ejemplos .jsonc (phq9, hads, imc)
 └── responses/           # Capa ejecución / respuestas (V2)
     ├── README.md
     ├── ERD.mmd

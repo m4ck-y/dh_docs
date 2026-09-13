@@ -3,8 +3,42 @@
   "name": "Encuesta de Satisfacción",
   "description": "Formulario para evaluar el servicio ofrecido",
   "verified": false,
-  "scoring_expression": { "op": "sum", "fields": ["q1", "q2"] },
-  "evaluation_expression": { "category": "satisfaccion" },
+  /* Expresiones en el AST del proyecto (ver ../expressions/README.md). */
+  "scoring_expression": {
+    "expression": {
+      "type": "aggregate",
+      "operator": "sum",
+      "args": [
+        { "subject": { "entity": "question", "property": "value", "selector": "all" } }
+      ],
+      "output_data_type": "number"
+    }
+  },
+  "evaluation_expression": {
+    "expression": {
+      "type": "case",
+      "operator": "when",
+      "subject": {
+        "expression": {
+          "type": "aggregate",
+          "operator": "sum",
+          "args": [
+            { "subject": { "entity": "question", "property": "value", "selector": "all" } }
+          ],
+          "output_data_type": "number"
+        }
+      },
+      "cases": [
+        {
+          "when": { "operator": "<=", "operand": { "const": { "value": 5, "data_type": "number" } } },
+          "then": { "const": { "value": "Satisfacción baja", "data_type": "string" } }
+        }
+      ],
+      "default": { "const": { "value": "Satisfacción alta", "data_type": "string" } },
+      "output_data_type": "string",
+      "args": []
+    }
+  },
   "id": 0,
   /* EXCLUSIVIDAD (ver ADR 038 y catalog/README.md §7):
      un form usa list_questions (preguntas directas) O list_sections

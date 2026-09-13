@@ -1,0 +1,40 @@
+{
+  /* Ejemplo de math anidado: IMC = peso / (altura ^ 2).
+     NO es scoring; demuestra la capacidad de anidacion del AST
+     (OperandExpression dentro de args).
+     Ver ../README.md §3.1. */
+  "expression": {
+    "type": "math",
+    "operator": "/",
+    "args": [
+      {
+        "subject": {
+          "entity": "person",
+          "property": "weight"
+        }
+      },
+      {
+        "expression": {
+          "type": "math",
+          "operator": "^",
+          "args": [
+            {
+              "subject": {
+                "entity": "person",
+                "property": "height"
+              }
+            },
+            {
+              "const": {
+                "value": 2,
+                "data_type": "number"
+              }
+            }
+          ],
+          "output_data_type": "number"
+        }
+      }
+    ],
+    "output_data_type": "number"
+  }
+}

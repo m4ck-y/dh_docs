@@ -229,16 +229,30 @@ memoria del frontend con el valor JSON persistido.
 
 ## 9. Scoring e interpretación
 
-Dos representaciones coexisten y deben unificarse:
+La forma **canónica** es el **AST de expresiones** del proyecto, documentado en
+[`../expressions/README.md`](../expressions/README.md):
 
-| Forma | Fuente | Cómo |
-|---|---|---|
-| Rangos `interpretacion[]` `{desde,hasta,texto}` + `scoring.tipo` | MVP `bank/*.ts` + `scoring.ts` | `suma` / `subescalas` sobre `maximo` |
-| `case/when` (`OperandExpression`) | Referencia `.ts` + `typescript.ts` | Expresiones `aggregate/sum(avg)` + `case/when` con `default` |
+- **`scoring_expression`** (form) → `aggregate` (`sum`/`avg`) que produce el
+  puntaje numérico.
+- **`evaluation_expression`** (form) → `case/when` que clasifica el puntaje en
+  una categoría de texto.
+- **Subescalas**: arreglo `subscales[]`, cada una con su par de expresiones.
+- **Resultados**: `assignment.scoring_result` / `evaluation_result` = `{value,
+  data_type}` (espejan el `const` del AST).
 
-**Ejemplo PHQ-9 (concordancia de bandas):**
+El MVP del frontend usa todavía una **forma simplificada** (rangos), que se
+documenta como origen y a migrar (pendiente D12):
 
-| Escala | MVP `phq9Instrument.ts` | Referencia `PHQ9.ts` |
+| Forma simplificada (MVP) | Forma canónica (AST) |
+|---|---|
+| `scoring.tipo: 'suma'` | `aggregate sum` |
+| `scoring.tipo: 'subescalas'` | `subscales[]` |
+| `interpretacion[] {desde,hasta,texto}` | `case/when` con umbrales acumulativos |
+| `interpretacion[].subescala` | `subscales[]` |
+
+**Ejemplo PHQ-9 (equivalencia de bandas):**
+
+| Escala | MVP `phq9Instrument.ts` (rango) | AST `evaluation_expression` (umbral) |
 |---|---|---|
 | Mínima | 0–4 | `<5` |
 | Leve | 5–9 | `<10` |
@@ -246,11 +260,12 @@ Dos representaciones coexisten y deben unificarse:
 | Moderadamente severa | 15–19 | `<20` |
 | Severa | 20–27 | `<=27` |
 
-Ambas coinciden; solo difieren en la representación (rangos cerrados vs `case/when`).
+Ambas coinciden en el resultado; difieren en la representación (rango inclusivo
+vs umbral). La traducción rango→umbral es trivial para enteros.
 
-**Ejemplo IPAQ (scoring no lineal):** la referencia usa METs
-(`caminar=3.3`, `moderada=4`, `vigorosa=8` × minutos × días). El MVP aún no
-modela scoring por METs; pendiente.
+**Ejemplo IPAQ (scoring no lineal):** usa METs (`caminar=3.3`, `moderada=4`,
+`vigorosa=8` × minutos × días). El AST puede expresarlo, pero **no se modela
+todavía** (pendiente METs IPAQ en `../TODO/cuestionarios.md`).
 
 ## 10. Concordancia por instrumento compartido
 
@@ -290,17 +305,30 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
    como objeto `{type_biological_sex, id}` (espejo del ERD), mientras el README §5
    lo declaraba `null | string` y como gap. Corregido en §5; no era un gap real.
 
-5. **IPAQ scoring por METs** no modelado en el MVP (solo en la referencia).
+5. **IPAQ scoring por METs** no modelado todavía. El AST puede expresarlo, pero
+   se difiere (pendiente METs IPAQ en `../TODO/cuestionarios.md`). El único
+   algoritmo completo está en `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
 
 6. **`type_media` vs `type` en `list_references`**: la referencia usa `type_media`
    (`PHQ9.json`, `IA_DEVELOPMENT.json`); el ERD define `reference.type_media`
    (enum `EUrlType`). Se adopta `type_media` en el contrato; el modelo V1/legacy
    usaba `type`.
 
+7. **Scoring en `schema.sql` corregido**: los ejemplos previos de
+   `scoring_expression` (`{"op":"sum","fields":[...]}`),
+   `evaluation_expression` (`{"if":[{"gte":...}]}`) y `scoring_result` (que
+   repetía la receta) **no existían** en ninguna gramática. Se alinearon al AST
+   (`../expressions/README.md`).
+
+8. **`PHQ9.ts` de la referencia**: declara `operator: "avg"` con comentario
+   "Promedio en lugar de suma", pero el total clínico (0–27) requiere `sum`. Se
+   adopta `sum` como correcto.
+
 ## 12. Pendientes de esta capa
 
 - [ ] PHQ-9: fijar redacción del ítem 7.
-- [ ] Decidir forma única de scoring: rangos `interpretacion[]` vs `case/when`.
+- [x] Forma única de scoring: **AST canónico** (`../expressions/README.md`); el
+      MVP de rangos queda como forma simplificada a migrar (D12).
 - [x] Cubrir gaps de `Instrument`: `list_references` y `list_sections` (ADR 038).
       `target_sex` no era gap: se corrigió la contradicción del ejemplo vs §5.
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
@@ -321,3 +349,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 | `CLASS.mmd` | Diagrama de clases / vista de documentos (MongoDB) del catálogo. |
 | `example.jsonc` | Ejemplo de payload del catálogo (JSON con comentarios). |
 | `question_types/` | Un doc por tipo de pregunta (`question.type`) con su `config` y `answer.value`. |
+
+> El **lenguaje de expresiones** (`scoring_expression` / `evaluation_expression`)
+> vive en [`../expressions/`](../expressions/), a nivel del módulo (no dentro de
+> `catalog/`), porque es transversal a definición y ejecución.

@@ -36,13 +36,14 @@
 | # | Pendiente | Grupo | Estado |
 |---|---|---|---|
 | A1 | Condicional estructurado | Rescate | ⏳ |
-| A2 | Lenguaje de expresiones | Rescate | ⏳ |
+| A2 | Lenguaje de expresiones | Rescate | ✅ |
 | A3 | Decisión column-JSON vs tabla | Rescate | ⏳ |
 | A4 | Conversión API↔BD de `condition` | Rescate | ⏳ |
 | B | `order` en tablas puente | Modelo | ✅ |
 | C5 | `config` definitivo por tipo | Modelo | ⏳ |
 | C6 | PHQ-9 ítem 7 | Contenido | ⏳ |
-| C7 | Scoring unificado + METs | Modelo | ⏳ |
+| C7 | Scoring unificado | Modelo | ✅ |
+| C7b | METs IPAQ (scoring no lineal) | Modelo | ⏳ |
 | C8 | Gaps del contrato `Instrument` | Modelo | ✅ |
 | C9 | `AnswerMap` ↔ `answer.value` | Modelo | ⏳ |
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
@@ -71,16 +72,21 @@
 - **Archivos a tocar si se cambia**: `schema.sql`, `catalog/ERD.mmd`,
   `catalog/CLASS.mmd`, `catalog/README.md`, `catalog/example.jsonc`.
 
-### A2 — Lenguaje de expresiones
+### A2 — Lenguaje de expresiones ✅ (resuelto)
 
-- **Qué**: documentar/formalizar la gramática de `scoring_expression` y
-  `evaluation_expression` (hoy JSONB sin gramática documentada).
-- **Estado actual**: `schema.sql` (`form.scoring_expression`,
-  `form.evaluation_expression`); citado como referencia en `catalog/README.md`
-  §3.1 y §8/§9 (tabla `case/when` / `OperandExpression`).
-- **Fuente**: `app_questionnaire/backend/docs/types/expression.md` (~809 líneas)
-  y `.../types/typescript.ts`.
-- **A decidir**: dónde vive la gramática (¿`catalog/expressions.md`?).
+- **Decisión**: adoptar el **AST** de la referencia (`typescript.ts`) como
+  gramática canónica de `scoring_expression` (raíz `aggregate`) y
+  `evaluation_expression` (raíz `case/when`).
+- **Ubicación**: [`features/questionnaires/expressions/`](../features/questionnaires/expressions/)
+  (`README.md` + `examples/*.jsonc`). Se extrajo a la **raíz del módulo** (no en
+  `catalog/`) por ser transversal a definición y ejecución.
+- **Frontera**: este doc cubre **solo** scoring/evaluación. Las **condiciones
+  de visibilidad** siguen siendo A1 (pendiente aparte).
+- **Correcciones de la referencia**: `PHQ9.ts` usaba `avg` (debía ser `sum`);
+  `expression.md` decía "6 operadores" y documenta 7.
+- **Reflejo**: `schema.sql` (ejemplos inválidos corregidos), `catalog/README.md`
+  §9/§11/§12, `catalog/example.jsonc`, `questionnaires/README.md`,
+  `docs/db/postgres/form/README.md`, `docs/diagrams/schemas/cuestionario/README.md`.
 
 ### A3 — Decisión column-JSON vs tabla (contradicción)
 
@@ -134,14 +140,35 @@
 - **Fuente**: `reference_projects/reference_frontend_app_legacy/...` y
   `app_questionnaire/.../PHQ9.json`.
 
-### C7 — Scoring unificado
+### C7 — Scoring unificado ✅ (resuelto)
 
-- **Qué**: unificar la representación del scoring:
-  - Rangos `interpretacion[]` `{desde, hasta, texto}` + `scoring.tipo`
-    (MVP `bank/*.ts` + `scoring.ts`), vs
-  - `case/when` (`OperandExpression`) (referencia `.ts` + `typescript.ts`).
-- **Además**: IPAQ usa scoring no lineal por **METs** (no modelado en el MVP).
-- **Refs**: `catalog/README.md` §9 (scoring) y §12.
+- **Decisión**: el **AST** ([`expressions/README.md`](../features/questionnaires/expressions/README.md))
+  es la forma **canónica** de scoring:
+  - `scoring_expression` (form) → `aggregate sum/avg` (número).
+  - `evaluation_expression` (form) → `case/when` (categoría).
+  - Subescalas → arreglo `subscales[]`, cada una con su par de expresiones.
+  - Resultados → `assignment.scoring_result` / `evaluation_result` = `{value, data_type}`
+    (espejan el `const` del AST, en inglés).
+- **Forma simplificada del MVP** (rangos `interpretacion[]` + `scoring.tipo`):
+  se documenta como origen y **a migrar** (el motor la migra en D12, fase frontend).
+  Traducción rango→umbral documentada en `expressions/README.md` §7.
+- **IPAQ METs** se separó a **C7b** (pendiente propio).
+- **Reflejo**: `expressions/` (README + ejemplos), `schema.sql` (ejemplos
+  corregidos), `catalog/README.md` §9/§11/§12, `catalog/example.jsonc`,
+  `questionnaires/README.md`.
+
+### C7b — METs IPAQ (scoring no lineal)
+
+- **Qué**: el IPAQ puntúa por **MET-min/semana**:
+  `MET × minutos × días`; coeficientes `caminar=3.3`, `moderada=4.0`,
+  `vigorosa=8.0`; total = suma de dominios.
+- **Estado**: no modelado. `IPAQ.json` no trae scoring; `IPAQ.ts` de la referencia
+  está incompleto (variables no definidas, `else if` sin cuerpo); el único
+  algoritmo completo está en `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
+- **Vía**: el AST puede expresarlo (`math` `*` por coeficientes + `aggregate sum`),
+  pero requiere definir cómo se declaran los dominios (grupos de preguntas).
+- **Refs**: `expressions/README.md` §9, `catalog/README.md` §9/§11,
+  `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
 
 ### C8 — Gaps del contrato `Instrument` ✅ (resuelto)
 
