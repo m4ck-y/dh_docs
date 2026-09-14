@@ -35,8 +35,8 @@ scoring_expression  →  scoring_result  →  evaluation_expression  →  evalua
 |---|---|---|
 | `scoring_expression` | `form` | Fórmula del puntaje (`aggregate`) |
 | `evaluation_expression` | `form` | Fórmula de clasificación (`case/when`); su `subject` es el input |
-| `scoring_result` | `assignment` | Valor calculado, forma `{value, data_type}` |
-| `evaluation_result` | `assignment` | Valor calculado, forma `{value, data_type}` |
+| `scoring_result` | `assignment` | Valor calculado, forma `{value, type}` |
+| `evaluation_result` | `assignment` | Valor calculado, forma `{value, type}` |
 
 ### Convención del `subject`
 
@@ -70,7 +70,7 @@ propuesto:
 | Expresiones de **scoring** y **evaluación** | **Este documento** y sus subdocumentos (A2) |
 | Condiciones de **visibilidad** (`condition`) | [`conditions.md`](./conditions.md) (A1/A3) |
 | Tipos de pregunta y su `config` | [`../catalog/question_types/`](../catalog/question_types/) |
-| Forma de `answer.value` | [`../catalog/README.md`](../catalog/README.md) §8 |
+| Forma de `answer.data` | [`../catalog/README.md`](../catalog/README.md) §8 |
 
 La gramática es un **AST** genérico (no exclusiva de scoring): el mismo lenguaje
 expresa cálculos biométricos, promedios temporales o condiciones. La unificación
@@ -93,7 +93,7 @@ interface BaseOperator {
   type: string;                 // familia
   operator: string;             // operación
   args: CalculationOperand[];   // operandos
-  output_data_type: DataType;   // tipo del resultado
+  output: { type: DataType };   // tipo del resultado
 }
 ```
 
@@ -115,6 +115,13 @@ type DataType =
   | "datetime" | "duration"
   | "array_string" | "array_number" | "array_object";
 ```
+
+> **Nota sobre `type`.** En el AST, `type` aparece con dos sentidos según el
+> nivel: en un **operador** es la **familia** de la operación
+> (`"type": "aggregate"`); en un **valor** (`const`, `scoring_result`,
+> `evaluation_result`, `answer.data`) o en la **salida** (`output: {type}`) es
+> el **tipo de dato** (`"type": "number"`). Están en niveles distintos y no se
+> confunden al parsear, pero conviene tenerlo presente al leer el modelo.
 
 > `datetime` (fecha-hora) y `duration` (duración ISO 8601) se añadieron para
 > cubrir los tipos de pregunta `DATE_TIME` y `TIMER` (ver §6 de resultados y
@@ -180,21 +187,21 @@ El resultado de evaluar cada expresión se guarda en la `assignment` (evento
 
 ```jsonc
 // assignment.scoring_result
-{ "value": 11, "data_type": "number" }
+{ "value": 11, "type": "number" }
 
 // assignment.evaluation_result
-{ "value": "Depresión moderada", "data_type": "string" }
+{ "value": "Depresión moderada", "type": "string" }
 ```
 
 Con subescalas:
 
 ```jsonc
 // assignment.scoring_result
-{ "value": null, "data_type": "number",
-  "subscales": [ { "id": "A", "value": 8, "data_type": "number" } ] }
+{ "value": null, "type": "number",
+  "subscales": [ { "id": "A", "value": 8, "type": "number" } ] }
 ```
 
-- `value` + `data_type` espejan el operando `const` (`{const:{value,data_type}}`).
+- `value` + `type` espejan el operando `const` (`{const:{value,type}}`).
 - No se persiste la **receta** en el resultado: el resultado es el **valor
   calculado**.
 

@@ -12,7 +12,7 @@ Ver [`phq9-scoring.jsonc`](./phq9-scoring.jsonc) y
 ```jsonc
 { "expression": { "type": "aggregate", "operator": "sum",
   "args": [{ "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }],
-  "output_data_type": "number" } }
+  "output": { "type": "number" } } }
 ```
 
 ## 2. PHQ-9 — interpretación (scoring)
@@ -44,13 +44,13 @@ Ver [`phq9-evaluation.jsonc`](./phq9-evaluation.jsonc) y
                 "selector": { "range": [1, 9] }
               }
             },
-            { "const": { "value": 0, "data_type": "number" } }
+            { "const": { "value": 0, "type": "number" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```
@@ -81,13 +81,13 @@ preguntas 1–3 es "Sí" (valor == 1).
                 "selector": { "range": [1, 3] }
               }
             },
-            { "const": { "value": 1, "data_type": "number" } }
+            { "const": { "value": 1, "type": "number" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```
@@ -103,9 +103,9 @@ Mostrar una alerta si el puntaje del PHQ-9 supera 15 (depresión severa).
     "operator": ">",
     "args": [
       { "subject": { "entity": "form", "property": "scoring_result" } },
-      { "const": { "value": 15, "data_type": "number" } }
+      { "const": { "value": 15, "type": "number" } }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```

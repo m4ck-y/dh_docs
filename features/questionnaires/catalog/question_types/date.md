@@ -24,7 +24,7 @@ Fecha (sin hora).
 }
 ```
 
-## Valor de respuesta (`answer.value`)
+## Valor de respuesta (`answer.data`)
 
 `string` en formato `YYYY-MM-DD`.
 

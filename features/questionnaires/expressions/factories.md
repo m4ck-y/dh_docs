@@ -16,7 +16,7 @@ const createComparison = (
     type: "comparison",
     operator,
     args: [left, right],
-    output_data_type: "boolean"
+    output: { type: "boolean" }
   } as ComparisonOperator
 });
 ```
@@ -27,7 +27,7 @@ Uso:
 const isAdult = createComparison(
   { subject: { entity: "person", property: "age" } },
   ">=",
-  { const: { value: 18, data_type: "number" } }
+  { const: { value: 18, type: "number" } }
 );
 ```
 
@@ -42,7 +42,7 @@ const createCollectionOperation = (
     type: "collection",
     operator,
     args,
-    output_data_type: "boolean"
+    output: { type: "boolean" }
   } as CollectionOperator
 });
 ```
@@ -74,7 +74,7 @@ const createCaseOperation = (
     subject,
     cases,
     default: defaultValue,
-    output_data_type: outputType,
+    output: { type: outputType },
     args: []   // requerido por BaseOperator pero no usado en CaseOperator
   } as CaseOperator
 });
@@ -87,15 +87,15 @@ const phq9Interpretation = createCaseOperation(
   { subject: { entity: "form", property: "scoring_result" } },
   [
     {
-      when: { operator: "<", operand: { const: { value: 5, data_type: "number" } } },
-      then: { const: { value: "Depresión mínima", data_type: "string" } }
+      when: { operator: "<", operand: { const: { value: 5, type: "number" } } },
+      then: { const: { value: "Depresión mínima", type: "string" } }
     },
     {
-      when: { operator: "<", operand: { const: { value: 10, data_type: "number" } } },
-      then: { const: { value: "Depresión leve", data_type: "string" } }
+      when: { operator: "<", operand: { const: { value: 10, type: "number" } } },
+      then: { const: { value: "Depresión leve", type: "string" } }
     }
   ],
-  { const: { value: "Puntuación fuera de rango", data_type: "string" } },
+  { const: { value: "Puntuación fuera de rango", type: "string" } },
   "string"
 );
 ```
@@ -120,13 +120,13 @@ const createTernaryOperation = (
       {
         when: {
           operator: "==",
-          operand: { const: { value: true, data_type: "boolean" } }
+          operand: { const: { value: true, type: "boolean" } }
         },
         then: trueResult
       }
     ],
     default: falseResult,
-    output_data_type: outputType,
+    output: { type: outputType },
     args: []
   } as CaseOperator
 });
@@ -139,9 +139,9 @@ const adultClassification = createTernaryOperation(
   createComparison(
     { subject: { entity: "person", property: "age" } },
     ">=",
-    { const: { value: 18, data_type: "number" } }
+    { const: { value: 18, type: "number" } }
   ),
-  { const: { value: "Adulto", data_type: "string" } },
-  { const: { value: "Menor", data_type: "string" } }
+  { const: { value: "Adulto", type: "string" } },
+  { const: { value: "Menor", type: "string" } }
 );
 ```

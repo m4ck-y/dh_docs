@@ -75,22 +75,22 @@ El campo contiene un `OperandExpression` (ver
   "args": [{ "expression": { "type": "comparison", "operator": ">",
     "args": [
       { "subject": { "entity": "question", "property": "value", "selector": { "range": [1, 9] } } },
-      { "const": { "value": 0, "data_type": "number" } }
-    ], "output_data_type": "boolean" } }], "output_data_type": "boolean" } }
+      { "const": { "value": 0, "type": "number" } }
+    ], "output": { "type": "boolean" } } }], "output": { "type": "boolean" } } }
 
 // section.condition — mostrar la sección si la persona es de sexo femenino
 { "expression": { "type": "comparison", "operator": "==",
   "args": [
     { "subject": { "entity": "person", "property": "sex" } },
-    { "const": { "value": "F", "data_type": "string" } }
-  ], "output_data_type": "boolean" } }
+    { "const": { "value": "F", "type": "string" } }
+  ], "output": { "type": "boolean" } } }
 
 // form.condition — habilitar el formulario solo para adultos
 { "expression": { "type": "comparison", "operator": ">=",
   "args": [
     { "subject": { "entity": "person", "property": "age" } },
-    { "const": { "value": 18, "data_type": "number" } }
-  ], "output_data_type": "boolean" } }
+    { "const": { "value": 18, "type": "number" } }
+  ], "output": { "type": "boolean" } } }
 ```
 
 ### Traducción desde la referencia

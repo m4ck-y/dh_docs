@@ -20,19 +20,19 @@ type CalculationOperand =
 interface OperandConst {
   const: {
     value: number | string | boolean | Date | number[] | string[];
-    data_type: DataType;
+    type: DataType;
   };
 }
 ```
 
 ```jsonc
-{ "const": { "value": 5, "data_type": "number" } }
-{ "const": { "value": "Depresión leve", "data_type": "string" } }
-{ "const": { "value": [1,2,3], "data_type": "array_number" } }
+{ "const": { "value": 5, "type": "number" } }
+{ "const": { "value": "Depresión leve", "type": "string" } }
+{ "const": { "value": [1,2,3], "type": "array_number" } }
 ```
 
 > Los resultados persistidos (`scoring_result` / `evaluation_result`) usan la
-> **misma forma** (`{value, data_type}`), de modo que receta y resultado comparten
+> **misma forma** (`{value, type}`), de modo que receta y resultado comparten
 > vocabulario.
 
 ### `OperandSubject` — referencia a datos
@@ -42,7 +42,7 @@ interface SubjectReference {
   entity: string;                         // "question" | "person" | "form"
   property: string;                       // propiedad a leer
   selector?: SubjectSelector;             // filtro de selección (ver abajo)
-  output_data_type?: SelectorOutputType;
+  output?: { type: SelectorOutputType };
 }
 ```
 
@@ -55,7 +55,7 @@ interface SubjectReference {
 
 ```ts
 interface OperandExpression {
-  expression: Operator;   // contiene args y output_data_type internamente
+  expression: Operator;   // contiene args y output internamente
 }
 ```
 
@@ -68,9 +68,9 @@ Es la clave de la potencia del lenguaje: permite anidar indefinidamente (un
     "type": "math", "operator": "^",
     "args": [
       { "subject": { "entity": "person", "property": "height" } },
-      { "const": { "value": 2, "data_type": "number" } }
+      { "const": { "value": 2, "type": "number" } }
     ],
-    "output_data_type": "number"
+    "output": { "type": "number" }
   }
 }
 ```
@@ -116,7 +116,7 @@ interface SubjectReference {
   entity: string;                         // "question" | "person" | "form"
   property: string;                       // propiedad a leer
   selector?: SubjectSelector;             // filtro de selección (autocontenido)
-  output_data_type?: SelectorOutputType;
+  output?: { type: SelectorOutputType };
 }
 ```
 
@@ -151,11 +151,11 @@ Condición personalizada — filtra por una expresión sobre `property`:
           "type": "comparison",
           "operator": "in",
           "args": [
-            { "const": { "value": [1,2,3,4,5,6,7,8,9], "data_type": "array_number" } }
+            { "const": { "value": [1,2,3,4,5,6,7,8,9], "type": "array_number" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         },
-        "output_data_type": "array_number"
+        "output": { "type": "array_number" }
       }
     }
   }

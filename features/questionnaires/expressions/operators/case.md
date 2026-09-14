@@ -18,7 +18,7 @@ interface CaseOperator extends BaseOperator {
     then: CalculationOperand;      // resultado si la condición when es verdadera
   }>;
   default?: CalculationOperand;    // valor por defecto si ningún WHEN se cumple
-  output_data_type: DataType;      // tipo resultante
+  output: { type: DataType };      // tipo resultante
 }
 ```
 
@@ -46,8 +46,8 @@ repite la fórmula:
     "subject": { "entity": "form", "property": "scoring_result" }
   },
   "cases": [ ... ],
-  "default": { "const": { "value": "Fuera de rango", "data_type": "string" } },
-  "output_data_type": "string",
+  "default": { "const": { "value": "Fuera de rango", "type": "string" } },
+  "output": { "type": "string" },
   "args": []
 }
 ```
@@ -76,16 +76,16 @@ scoring_expression  →  scoring_result  →  evaluation_expression  →  evalua
     "subject": { "subject": { "entity": "form", "property": "scoring_result" } },
     "cases": [
       {
-        "when": { "operator": "<", "operand": { "const": { "value": 5, "data_type": "number" } } },
-        "then": { "const": { "value": "Depresión mínima", "data_type": "string" } }
+        "when": { "operator": "<", "operand": { "const": { "value": 5, "type": "number" } } },
+        "then": { "const": { "value": "Depresión mínima", "type": "string" } }
       },
       {
-        "when": { "operator": "<", "operand": { "const": { "value": 10, "data_type": "number" } } },
-        "then": { "const": { "value": "Depresión leve", "data_type": "string" } }
+        "when": { "operator": "<", "operand": { "const": { "value": 10, "type": "number" } } },
+        "then": { "const": { "value": "Depresión leve", "type": "string" } }
       }
     ],
-    "default": { "const": { "value": "Puntuación fuera de rango", "data_type": "string" } },
-    "output_data_type": "string",
+    "default": { "const": { "value": "Puntuación fuera de rango", "type": "string" } },
+    "output": { "type": "string" },
     "args": []
   }
 }

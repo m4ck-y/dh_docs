@@ -25,7 +25,7 @@ Respuesta de texto largo (párrafo, multilínea).
 }
 ```
 
-## Valor de respuesta (`answer.value`)
+## Valor de respuesta (`answer.data`)
 
 `string`
 

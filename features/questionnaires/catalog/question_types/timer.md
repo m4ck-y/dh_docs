@@ -43,7 +43,7 @@ componentes de tiempo (`T...`).
 }
 ```
 
-## Valor de respuesta (`answer.value`)
+## Valor de respuesta (`answer.data`)
 
 `string` en formato ISO 8601 de duración (p. ej. `"PT1H30M"`). En backend puede
 convertirse a `timedelta` para validación.

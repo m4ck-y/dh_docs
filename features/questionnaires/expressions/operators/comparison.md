@@ -9,7 +9,7 @@ interface ComparisonOperator extends BaseOperator {
   type: "comparison";
   operator: "==" | "!=" | ">" | "<" | ">=" | "<=" | "in";  // igual, distinto, mayor, menor, mayor o igual, menor o igual, pertenencia
   args: CalculationOperand[];   // [izquierda, derecha] para izquierda > derecha
-  output_data_type: "boolean";  // siempre produce boolean
+  output: { type: "boolean" };  // siempre produce boolean
 }
 ```
 
@@ -29,9 +29,9 @@ interface ComparisonOperator extends BaseOperator {
     "operator": ">",
     "args": [
       { "subject": { "entity": "question", "property": "value" } },
-      { "const": { "value": 0, "data_type": "number" } }
+      { "const": { "value": 0, "type": "number" } }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```

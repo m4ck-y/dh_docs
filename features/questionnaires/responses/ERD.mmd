@@ -100,8 +100,8 @@ erDiagram
         %% Permite auditar si la contesto el medico, tutor o paciente.
         %% No es un enum: es un FK a la entidad de usuarios.
         Integer answered_by FK
-        %% value: JSONB normalizado {value, data_type} (CHECK en schema.sql).
-        %% Mismos campos que un const del AST; data_type: number|string|boolean|
+        %% data: JSONB normalizado {value, type} (CHECK en schema.sql).
+        %% Mismos campos que un const del AST; type: number|string|boolean|
         %% date|datetime|duration|array_*. Las opciones guardan option.value numerico.
-        Jsonb value
+        Jsonb data
     }

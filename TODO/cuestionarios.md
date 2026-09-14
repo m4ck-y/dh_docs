@@ -46,7 +46,7 @@
 | C7b | METs IPAQ (scoring no lineal) | Modelo | ⏳ |
 | C7c | `value_expression` por pregunta | Modelo | ⏳ |
 | C8 | Gaps del contrato `Instrument` | Modelo | ✅ |
-| C9 | `AnswerMap` ↔ `answer.value` | Modelo | ✅ |
+| C9 | `AnswerMap` ↔ `answer.data` | Modelo | ✅ |
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
 | C11 | Remanentes V1 en `schema.sql` | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
@@ -163,7 +163,7 @@
   - `scoring_expression` (form) → `aggregate sum/avg` (número).
   - `evaluation_expression` (form) → `case/when` (categoría).
   - Subescalas → arreglo `subscales[]`, cada una con su par de expresiones.
-  - Resultados → `assignment.scoring_result` / `evaluation_result` = `{value, data_type}`
+  - Resultados → `assignment.scoring_result` / `evaluation_result` = `{value, type}`
     (espejan el `const` del AST, en inglés).
 - **Forma simplificada del MVP** (rangos `interpretacion[]` + `scoring.tipo`):
   se documenta como origen y **a migrar** (el motor la migra en D12, fase frontend).
@@ -215,15 +215,15 @@
   `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `schema.sql`,
   `questionnaires/README.md`, `question_types/README.md`.
 
-### C9 — `AnswerMap` ↔ `answer.value` ✅ (resuelto)
+### C9 — `AnswerMap` ↔ `answer.data` ✅ (resuelto)
 
-- **Decisión (modelo)**: `answer.value` usa el envelope **`{value, data_type}`**,
+- **Decisión (modelo)**: `answer.data` usa el envelope **`{value, type}`**,
   los mismos campos que un `const` del AST y que `scoring_result`/
   `evaluation_result`. Un solo vocabulario para todo valor del módulo.
 - **`DataType` ampliado** con `datetime` y `duration` (para `DATE_TIME` y `TIMER`).
 - **Respuestas de opción** guardan el `value` **numérico** de la opción
   (`option.value`), no la etiqueta.
-- **Reflejo**: `schema.sql` (CHECK `data_type` + COMMENT), `responses/ERD.mmd`,
+- **Reflejo**: `schema.sql` (CHECK `type` + COMMENT), `responses/ERD.mmd`,
   `responses/CLASS.mmd`, `responses/example.jsonc` (valores + `scoring_result`/
   `evaluation_result` alineados al AST), `catalog/README.md` §8,
   `expressions/README.md` §3.
@@ -257,7 +257,7 @@
   `none`). Con el contrato nuevo, `conditions.ts` trataría el elemento como
   siempre visible (fallo silencioso). Ver
   [`expressions/conditions.md`](../features/questionnaires/expressions/conditions.md) §5.
-- **Incluye**: migrar el `AnswerMap` en memoria al envelope `{value, data_type}`
+- **Incluye**: migrar el `AnswerMap` en memoria al envelope `{value, type}`
   (C9). Hoy es provisional: sin tipo y aplanado. Ver `catalog/README.md` §8.
 - **Refs**: `docs/diagrams/schemas/cuestionario/README.md:23`
   (describe el **estado actual implementado**, no el objetivo).

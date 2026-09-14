@@ -27,14 +27,14 @@
             {
               "const": {
                 "value": 2,
-                "data_type": "number"
+                "type": "number"
               }
             }
           ],
-          "output_data_type": "number"
+          "output": { "type": "number" }
         }
       }
     ],
-    "output_data_type": "number"
+    "output": { "type": "number" }
   }
 }

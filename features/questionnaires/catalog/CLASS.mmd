@@ -59,17 +59,22 @@ classDiagram
     %% (AST). Form la usa para scoring/evaluation/condition; Section/Question solo
     %% para condition. Ver ADR 039 y expressions/README.md.
 
-    %% Expression: nodo del AST (operador). type/operator/args/output_data_type son
+    %% Expression: nodo del AST (operador). type/operator/args/output son
     %% comunes a todos; subject/cases/default son propios de case/when
     %% (ver expressions/operators/case.md).
     class Expression {
         +string type
         +string operator
         +Operand[] args
-        +string output_data_type
+        +Output output
         +Operand subject
         +CaseBranch[] cases
         +Operand default
+    }
+
+    %% Output: tipo del valor que produce la expresion.
+    class Output {
+        +string type
     }
 
     %% CaseBranch: una banda de case/when (when -> then).
@@ -112,6 +117,7 @@ classDiagram
     Section "1" *-- "0..1" Expression : condition
     Question "1" *-- "0..1" Expression : condition
     Expression "1" *-- "0..*" Operand : args
+    Expression "1" *-- "0..1" Output : output
     Expression "1" *-- "0..1" Operand : subject
     Expression "1" *-- "0..1" Operand : default
     Expression "1" *-- "0..*" CaseBranch : cases

@@ -36,7 +36,7 @@ Regla: `min <= respuesta <= max`.
 }
 ```
 
-## Valor de respuesta (`answer.value`)
+## Valor de respuesta (`answer.data`)
 
 `number` — entero dentro del rango.
 

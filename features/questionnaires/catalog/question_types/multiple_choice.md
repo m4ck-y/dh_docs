@@ -33,7 +33,7 @@ estructural), no en `config`.
 }
 ```
 
-## Valor de respuesta (`answer.value`)
+## Valor de respuesta (`answer.data`)
 
 `number[]` — arreglo con los `value` de las opciones elegidas.
 

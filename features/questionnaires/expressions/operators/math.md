@@ -9,7 +9,7 @@ interface MathOperator extends BaseOperator {
   type: "math";
   operator: "+" | "-" | "*" | "/" | "%" | "^";  // suma, resta, multiplicación, división, módulo, potencia
   args: CalculationOperand[];   // operandos de la operación (ej. [a, b] para a + b)
-  output_data_type: "number";   // siempre produce number
+  output: { type: "number" };   // siempre produce number
 }
 ```
 
@@ -34,13 +34,13 @@ interface MathOperator extends BaseOperator {
           "operator": "^",
           "args": [
             { "subject": { "entity": "person", "property": "height" } },
-            { "const": { "value": 2, "data_type": "number" } }
+            { "const": { "value": 2, "type": "number" } }
           ],
-          "output_data_type": "number"
+          "output": { "type": "number" }
         }
       }
     ],
-    "output_data_type": "number"
+    "output": { "type": "number" }
   }
 }
 ```

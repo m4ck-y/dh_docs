@@ -26,7 +26,7 @@ Valor numérico (entero o decimal).
 }
 ```
 
-## Valor de respuesta (`answer.value`)
+## Valor de respuesta (`answer.data`)
 
 `number`
 

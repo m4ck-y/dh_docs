@@ -9,7 +9,7 @@ interface LogicOperator extends BaseOperator {
   type: "logic";
   operator: "and" | "or" | "not";  // conjunción, disyunción, negación
   args: CalculationOperand[];      // expresiones booleanas a combinar
-  output_data_type: "boolean";     // siempre produce boolean
+  output: { type: "boolean" };     // siempre produce boolean
 }
 ```
 
@@ -33,9 +33,9 @@ interface LogicOperator extends BaseOperator {
           "operator": ">",
           "args": [
             { "subject": { "entity": "person", "property": "age" } },
-            { "const": { "value": 65, "data_type": "number" } }
+            { "const": { "value": 65, "type": "number" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       },
       {
@@ -44,13 +44,13 @@ interface LogicOperator extends BaseOperator {
           "operator": "==",
           "args": [
             { "subject": { "entity": "person", "property": "has_diabetes" } },
-            { "const": { "value": true, "data_type": "boolean" } }
+            { "const": { "value": true, "type": "boolean" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```

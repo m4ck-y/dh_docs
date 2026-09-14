@@ -23,8 +23,8 @@ de estas columnas (ADR 039).
 
 ## 2. Forma de la expresión
 
-La raíz de una condición debe producir un **booleano** (`output_data_type:
-"boolean"`). Los operadores típicos son:
+La raíz de una condición debe producir un **booleano** (`output: { "type":
+"boolean" }`). Los operadores típicos son:
 
 | Operador | Uso en una condición |
 |---|---|
@@ -67,13 +67,13 @@ Mostrar la pregunta 10 solo si **alguna** de las preguntas 1–9 tiene síntoma
                 "selector": { "range": [1, 9] }
               }
             },
-            { "const": { "value": 0, "data_type": "number" } }
+            { "const": { "value": 0, "type": "number" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```
@@ -90,9 +90,9 @@ Mostrar la sección solo si la persona es de sexo femenino:
     "operator": "==",
     "args": [
       { "subject": { "entity": "person", "property": "sex" } },
-      { "const": { "value": "F", "data_type": "string" } }
+      { "const": { "value": "F", "type": "string" } }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```
@@ -109,9 +109,9 @@ Habilitar el formulario solo si la persona tiene 18 años o más:
     "operator": ">=",
     "args": [
       { "subject": { "entity": "person", "property": "age" } },
-      { "const": { "value": 18, "data_type": "number" } }
+      { "const": { "value": 18, "type": "number" } }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```
@@ -133,9 +133,9 @@ Mostrar la sección solo si (edad ≥ 18 **Y** sexo = F):
           "operator": ">=",
           "args": [
             { "subject": { "entity": "person", "property": "age" } },
-            { "const": { "value": 18, "data_type": "number" } }
+            { "const": { "value": 18, "type": "number" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       },
       {
@@ -144,13 +144,13 @@ Mostrar la sección solo si (edad ≥ 18 **Y** sexo = F):
           "operator": "==",
           "args": [
             { "subject": { "entity": "person", "property": "sex" } },
-            { "const": { "value": "F", "data_type": "string" } }
+            { "const": { "value": "F", "type": "string" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```
@@ -187,7 +187,7 @@ al AST:
 ] }
 
 // AST (una comparación sobre un rango)
-{ "expression": { "type": "collection", "operator": "any", "args": [ ... ], "output_data_type": "boolean" } }
+{ "expression": { "type": "collection", "operator": "any", "args": [ ... ], "output": { "type": "boolean" } } }
 ```
 
 Ventaja del AST: el rango se expresa con **un selector** (`range`/`all`/`id`) en

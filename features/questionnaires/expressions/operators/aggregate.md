@@ -9,7 +9,7 @@ interface AggregateOperator extends BaseOperator {
   type: "aggregate";
   operator: "sum" | "avg" | "min" | "max" | "count";  // suma, promedio, mínimo, máximo, conteo
   args: CalculationOperand[];   // colección de valores a agregar
-  output_data_type: "number";   // siempre produce number
+  output: { type: "number" };   // siempre produce number
 }
 ```
 
@@ -29,7 +29,7 @@ interface AggregateOperator extends BaseOperator {
     "args": [
       { "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }
     ],
-    "output_data_type": "number"
+    "output": { "type": "number" }
   }
 }
 ```

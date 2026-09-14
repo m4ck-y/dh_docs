@@ -19,11 +19,11 @@ aplicación (Pydantic); el motor del frontend la interpreta para renderizar.
   `question` (ver `catalog/README.md` §7). Un formulario usa preguntas directas
   **o** secciones, nunca ambos (ver `catalog/README.md` §7 y ADR 038).
 - Identificadores en inglés; el copy de la pregunta/opciones en español.
-- El valor de respuesta (`answer.value`) también depende del tipo.
+- El valor de respuesta (`answer.data`) también depende del tipo.
 
 ## Tipos
 
-| Tipo | `config` (campos propios) | `default` | `answer.value` | Doc |
+| Tipo | `config` (campos propios) | `default` | `answer.data` | Doc |
 |---|---|---|---|---|
 | `TEXT` | `required`, `min_length`, `max_length` | `string` | `string` | [text.md](./text.md) |
 | `TEXT_LONG` | `required`, `min_length`, `max_length`, `multiline` | `string` | `string` | [text_long.md](./text_long.md) |

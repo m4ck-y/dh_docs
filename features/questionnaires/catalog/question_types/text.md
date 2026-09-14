@@ -24,7 +24,7 @@ Respuesta de texto corto (una línea).
 }
 ```
 
-## Valor de respuesta (`answer.value`)
+## Valor de respuesta (`answer.data`)
 
 `string`
 

@@ -13,7 +13,7 @@ interface BaseOperator {
   type: string;                 // familia del operador
   operator: string;             // operación concreta
   args: CalculationOperand[];   // operandos (ver ../operands.md)
-  output_data_type: DataType;   // tipo del resultado
+  output: { type: DataType };   // tipo del resultado
 }
 ```
 

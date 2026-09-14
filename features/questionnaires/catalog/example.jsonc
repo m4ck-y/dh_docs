@@ -11,7 +11,7 @@
       "args": [
         { "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }
       ],
-      "output_data_type": "number"
+      "output": { "type": "number" }
     }
   },
   "evaluation_expression": {
@@ -21,12 +21,12 @@
       "subject": { "subject": { "entity": "form", "property": "scoring_result" } },
       "cases": [
         {
-          "when": { "operator": "<=", "operand": { "const": { "value": 5, "data_type": "number" } } },
-          "then": { "const": { "value": "Satisfacción baja", "data_type": "string" } }
+          "when": { "operator": "<=", "operand": { "const": { "value": 5, "type": "number" } } },
+          "then": { "const": { "value": "Satisfacción baja", "type": "string" } }
         }
       ],
-      "default": { "const": { "value": "Satisfacción alta", "data_type": "string" } },
-      "output_data_type": "string",
+      "default": { "const": { "value": "Satisfacción alta", "type": "string" } },
+      "output": { "type": "string" },
       "args": []
     }
   },
@@ -38,9 +38,9 @@
       "operator": ">=",
       "args": [
         { "subject": { "entity": "person", "property": "age" } },
-        { "const": { "value": 18, "data_type": "number" } }
+        { "const": { "value": 18, "type": "number" } }
       ],
-      "output_data_type": "boolean"
+      "output": { "type": "boolean" }
     }
   },
   "id": 0,
@@ -61,9 +61,9 @@
           "operator": "==",
           "args": [
             { "subject": { "entity": "person", "property": "sex" } },
-            { "const": { "value": "F", "data_type": "string" } }
+            { "const": { "value": "F", "type": "string" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       },
       "list_questions": [
@@ -88,9 +88,9 @@
               "operator": ">",
               "args": [
                 { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
-                { "const": { "value": 0, "data_type": "number" } }
+                { "const": { "value": 0, "type": "number" } }
               ],
-              "output_data_type": "boolean"
+              "output": { "type": "boolean" }
             }
           }
         },

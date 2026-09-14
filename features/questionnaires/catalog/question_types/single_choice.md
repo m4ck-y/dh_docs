@@ -34,7 +34,7 @@ el orden canónico/base.
 }
 ```
 
-## Valor de respuesta (`answer.value`)
+## Valor de respuesta (`answer.data`)
 
 `number` — el `value` de la opción elegida.
 

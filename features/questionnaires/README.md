@@ -42,7 +42,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 | Agrupación | `section` + tablas puente; un form usa preguntas directas **XOR** secciones (ver ADR 038) | ✅ `section`, `questions_form`, `questions_section` |
 | Tipo de pregunta | Enum tipado | ✅ Columna `"type"` de tipo `EQuestionType` |
 | Config por tipo | `config` JSONB en `question`, forma según `type` (ver `catalog/question_types/`) | ✅ `question.config` |
-| Scoring / evaluación | **AST de expresiones** (`scoring_expression` + `evaluation_expression`); resultado en `assignment.*_result` como `{value, data_type}` | ✅ JSONB (ver `expressions/`) |
+| Scoring / evaluación | **AST de expresiones** (`scoring_expression` + `evaluation_expression`); resultado en `assignment.*_result` como `{value, type}` | ✅ JSONB (ver `expressions/`) |
 | Orden de pregunta | En la relación: `questions_form.order` / `questions_section.order` (la pregunta es reutilizable) | ✅ `order` en los puentes |
 | Metadatos | Tablas normalizadas | ✅ `category`, `cie11_code`, `evaluation_topic`, `reference`, `estimated_duration`, `age_group`, `target_sex`, `population` + puentes |
 | Schema PostgreSQL | `form` | ✅ Documentado en comentarios del DDL (`-- Schema: form`); aún no se ejecuta `CREATE SCHEMA form` |

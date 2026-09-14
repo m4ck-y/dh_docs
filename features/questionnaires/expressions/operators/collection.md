@@ -9,7 +9,7 @@ interface CollectionOperator extends BaseOperator {
   type: "collection";
   operator: "all" | "any" | "none";  // todos cumplen, alguno cumple, ninguno cumple
   args: CalculationOperand[];        // condiciones a evaluar sobre la colección
-  output_data_type: "boolean";       // siempre produce boolean
+  output: { type: "boolean" };       // siempre produce boolean
 }
 ```
 
@@ -42,13 +42,13 @@ Con el selector `range` (ver [`../operands.md`](../operands.md)):
                 "selector": { "range": [1, 9] }
               }
             },
-            { "const": { "value": 0, "data_type": "number" } }
+            { "const": { "value": 0, "type": "number" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```
@@ -78,22 +78,22 @@ sean un rango contiguo):
                       "type": "comparison",
                       "operator": "in",
                       "args": [
-                        { "const": { "value": [1,2,3,4,5,6,7,8,9], "data_type": "array_number" } }
+                        { "const": { "value": [1,2,3,4,5,6,7,8,9], "type": "array_number" } }
                       ],
-                      "output_data_type": "boolean"
+                      "output": { "type": "boolean" }
                     },
-                    "output_data_type": "array_number"
+                    "output": { "type": "array_number" }
                   }
                 }
               }
             },
-            { "const": { "value": 0, "data_type": "number" } }
+            { "const": { "value": 0, "type": "number" } }
           ],
-          "output_data_type": "boolean"
+          "output": { "type": "boolean" }
         }
       }
     ],
-    "output_data_type": "boolean"
+    "output": { "type": "boolean" }
   }
 }
 ```

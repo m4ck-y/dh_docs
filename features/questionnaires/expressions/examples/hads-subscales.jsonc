@@ -22,7 +22,7 @@
               }
             }
           ],
-          "output_data_type": "number"
+          "output": { "type": "number" }
         }
       },
       "evaluation_expression": {
@@ -32,16 +32,16 @@
           "subject": { "subject": { "entity": "form", "property": "scoring_result", "selector": { "group": "A" } } },
           "cases": [
             {
-              "when": { "operator": "<=", "operand": { "const": { "value": 7, "data_type": "number" } } },
-              "then": { "const": { "value": "Normal", "data_type": "string" } }
+              "when": { "operator": "<=", "operand": { "const": { "value": 7, "type": "number" } } },
+              "then": { "const": { "value": "Normal", "type": "string" } }
             },
             {
-              "when": { "operator": "<=", "operand": { "const": { "value": 10, "data_type": "number" } } },
-              "then": { "const": { "value": "Dudoso", "data_type": "string" } }
+              "when": { "operator": "<=", "operand": { "const": { "value": 10, "type": "number" } } },
+              "then": { "const": { "value": "Dudoso", "type": "string" } }
             }
           ],
-          "default": { "const": { "value": "Clínicamente significativo", "data_type": "string" } },
-          "output_data_type": "string",
+          "default": { "const": { "value": "Clínicamente significativo", "type": "string" } },
+          "output": { "type": "string" },
           "args": []
         }
       }
@@ -64,7 +64,7 @@
               }
             }
           ],
-          "output_data_type": "number"
+          "output": { "type": "number" }
         }
       },
       "evaluation_expression": {
@@ -74,16 +74,16 @@
           "subject": { "subject": { "entity": "form", "property": "scoring_result", "selector": { "group": "D" } } },
           "cases": [
             {
-              "when": { "operator": "<=", "operand": { "const": { "value": 7, "data_type": "number" } } },
-              "then": { "const": { "value": "Normal", "data_type": "string" } }
+              "when": { "operator": "<=", "operand": { "const": { "value": 7, "type": "number" } } },
+              "then": { "const": { "value": "Normal", "type": "string" } }
             },
             {
-              "when": { "operator": "<=", "operand": { "const": { "value": 10, "data_type": "number" } } },
-              "then": { "const": { "value": "Dudoso", "data_type": "string" } }
+              "when": { "operator": "<=", "operand": { "const": { "value": 10, "type": "number" } } },
+              "then": { "const": { "value": "Dudoso", "type": "string" } }
             }
           ],
-          "default": { "const": { "value": "Clínicamente significativo", "data_type": "string" } },
-          "output_data_type": "string",
+          "default": { "const": { "value": "Clínicamente significativo", "type": "string" } },
+          "output": { "type": "string" },
           "args": []
         }
       }

@@ -9,7 +9,7 @@ interface TimeOperator extends BaseOperator {
   type: "time";
   operator: "range" | "movingavg" | "delta";  // rango temporal, promedio móvil, diferencia
   args: CalculationOperand[];                  // datos temporales y parámetros de tiempo
-  output_data_type: "number" | "array_number"; // según la operación
+  output: { type: "number" | "array_number" }; // según la operación
 }
 ```
 
@@ -48,11 +48,11 @@ type RelativeOrAbsoluteDate =
               }
             }
           ],
-          "output_data_type": "array_number"
+          "output": { "type": "array_number" }
         }
       }
     ],
-    "output_data_type": "number"
+    "output": { "type": "number" }
   }
 }
 ```

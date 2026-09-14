@@ -25,7 +25,7 @@ Fecha con hora.
 }
 ```
 
-## Valor de respuesta (`answer.value`)
+## Valor de respuesta (`answer.data`)
 
 `string` en formato ISO 8601 (p. ej. `2026-09-13T14:30:00Z`).
 

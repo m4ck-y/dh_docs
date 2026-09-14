@@ -148,7 +148,7 @@ Cada `question` tiene un `type` (`EQuestionType`) y una configuración `config`
 (JSONB) cuya **forma depende del tipo**. El detalle por tipo vive en
 [`question_types/`](./question_types/):
 
-| Tipo | `config` (campos propios) | `default` | `answer.value` |
+| Tipo | `config` (campos propios) | `default` | `answer.data` |
 |---|---|---|---|
 | `TEXT` | required, min_length, max_length | `string` | `string` |
 | `TEXT_LONG` | required, min_length, max_length, multiline | `string` | `string` |
@@ -167,7 +167,7 @@ Cada `question` tiene un `type` (`EQuestionType`) y una configuración `config`
 - `RANGE` y `TIMER` fueron **rescatados** de `app_questionnaire`
   (`my_arquitecture/question/types/`); evidencia de uso en `cuestionarios/IPAQ.json`.
 - La coherencia de `config` con `type` se valida en la capa de aplicación
-  (Pydantic), igual que `answer.value`.
+  (Pydantic), igual que `answer.data`.
 
 ## 7. Regla de orden (dónde vive `order`)
 
@@ -236,21 +236,21 @@ La condición decide si un elemento **se muestra u oculta**, y se modela como
 ### Objeto `answer` (modelo persistido vs. memoria)
 
 El modelo persistido está definido en [`../responses/ERD.mmd`](../responses/ERD.mmd):
-`answer { id_assignment, id_question, answered_by, value }`.
+`answer { id_assignment, id_question, answered_by, data }`.
 
-**Forma canónica de `value`:** el envelope `{value, data_type}`, los mismos campos
+**Forma canónica de `data`:** el envelope `{value, type}`, los mismos campos
 que un `const` del AST y que `scoring_result`/`evaluation_result` (ver
 `schema.sql` y [`../expressions/README.md`](../expressions/README.md) §8). Así
 todo valor del módulo usa un solo vocabulario.
 
 ```jsonc
-// answer.value
-{ "value": 9.5,  "data_type": "number" }
-{ "value": [1, 3], "data_type": "array_number" }
-{ "value": "2026-08-26T14:30:00Z", "data_type": "datetime" }
+// answer.data
+{ "value": 9.5,  "type": "number" }
+{ "value": [1, 3], "type": "array_number" }
+{ "value": "2026-08-26T14:30:00Z", "type": "datetime" }
 ```
 
-`data_type` ∈ `number | string | boolean | date | datetime | duration |
+`type` ∈ `number | string | boolean | date | datetime | duration |
 array_string | array_number | array_object`. Las respuestas de opción guardan el
 `value` **numérico** de la opción (`option.value`), no la etiqueta.
 
@@ -262,7 +262,7 @@ type AnswerMap = Record<string, AnswerValue>; // { id_question: value }
 
 El `AnswerMap` es una **representación en memoria provisional**: no incluye el
 tipo y se aplana respecto al envelope. Su migración al formato `{value,
-data_type}` es parte de la fase frontend (ver **D12** en
+type}` es parte de la fase frontend (ver **D12** en
 `../TODO/cuestionarios.md`).
 
 ## 9. Scoring e interpretación
@@ -277,7 +277,7 @@ La forma **canónica** es el **AST de expresiones** del proyecto, documentado en
   repite la fórmula del scoring).
 - **Subescalas**: arreglo `subscales[]`, cada una con su par de expresiones.
 - **Resultados**: `assignment.scoring_result` / `evaluation_result` = `{value,
-  data_type}` (espejan el `const` del AST).
+  type}` (espejan el `const` del AST).
 
 El MVP del frontend usa todavía una **forma simplificada** (rangos), que se
 documenta como origen y a migrar (pendiente D12):
@@ -378,7 +378,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 - [x] Cubrir gaps de `Instrument`: `list_references` y `list_sections` (ADR 038).
       `target_sex` no era gap: se corrigió la contradicción del ejemplo vs §5.
 - [x] Condición de visibilidad: AST JSONB en form/section/question (ADR 039).
-- [x] `answer.value` canónico = envelope `{value, data_type}` (ver §8).
+- [x] `answer.data` canónico = envelope `{value, type}` (ver §8).
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
 - [ ] Migrar el `AnswerMap` en memoria del frontend al envelope (fase frontend, D12).
 
@@ -395,7 +395,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 | `ERD.mmd` | ERD relacional de la definición (`form`, `question`, metadata, puentes). |
 | `CLASS.mmd` | Diagrama de clases / vista de documentos (MongoDB) del catálogo. |
 | `example.jsonc` | Ejemplo de payload del catálogo (JSON con comentarios). |
-| `question_types/` | Un doc por tipo de pregunta (`question.type`) con su `config` y `answer.value`. |
+| `question_types/` | Un doc por tipo de pregunta (`question.type`) con su `config` y `answer.data`. |
 
 > El **lenguaje de expresiones** (`scoring_expression` / `evaluation_expression`)
 > vive en [`../expressions/`](../expressions/), a nivel del módulo (no dentro de
