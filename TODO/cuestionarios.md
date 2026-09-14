@@ -41,7 +41,7 @@
 | A4 | Conversión API↔BD de `condition` | Rescate | ⏳ |
 | B | `order` en tablas puente | Modelo | ✅ |
 | C5 | `config` definitivo por tipo | Modelo | ✅ |
-| C6 | PHQ-9 ítem 7 | Contenido | ⏳ |
+| C6 | PHQ-9 ítem 7 | Contenido | ✅ |
 | C7 | Scoring unificado | Modelo | ✅ |
 | C7b | METs IPAQ (scoring no lineal) | Modelo | ⏳ |
 | C7c | `value_expression` por pregunta | Modelo | ⏳ |
@@ -147,14 +147,21 @@
 - **Reflejo**: 9 docs en `catalog/question_types/`, `question_types/README.md`,
   `catalog/README.md` §6, `catalog/example.jsonc`, `schema.sql`.
 
-### C6 — PHQ-9 ítem 7 (redacción)
+### C6 — PHQ-9 ítem 7 (redacción) ✅ (resuelto)
 
-- **Qué**: divergencia de copy.
-  - MVP `phq9Instrument.ts` + legacy: "leer el **cuerpo del texto**".
-  - Drawio MVP + referencia `.json`: "leer el **periódico**".
+- **Qué era**: se planteó como "divergencia de copy", pero **no era una
+  divergencia entre fuentes válidas, sino un error propagado**: el
+  "cuerpo del texto" nació en el **código legacy**
+  (`reference_frontend_app_legacy/.../cuestionarios/phq9.js`) y lo **heredó** el
+  banco del MVP al portarlo.
+- **Decisión**: la redacción canónica es **"periódico"**, usada por las **cuatro**
+  referencias reales: drawio fuente de verdad
+  (`docs/diagrams/1_CUESTIONARIO_MENTAL/…drawio`), drawio legacy
+  (`index.DEMO_quewstionnaire.drawio`), `PHQ9.json`/`PHQ9.md` y `phq.mmd`.
+- **Aplicado**: `phq9Instrument.ts` ítem 7 → `"…leer el periódico o ver la
+  televisión"` (antes `"…cuerpo del texto o ver la television"`).
+- **Nota**: el `.mmd`/`.md` de `docs/diagrams/` ya eran correctos (no se tocaron).
 - **Refs**: `catalog/README.md` §11 (discrepancias) y §12 (pendientes).
-- **Fuente**: `reference_projects/reference_frontend_app_legacy/...` y
-  `app_questionnaire/.../PHQ9.json`.
 
 ### C7 — Scoring unificado ✅ (resuelto)
 

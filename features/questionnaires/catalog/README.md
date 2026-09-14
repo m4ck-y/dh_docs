@@ -329,10 +329,14 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 1. ~~GDS — banco del MVP con 14 ítems.~~ Resuelto: drawio, Mermaid y
    `gdsInstrument.ts` ya alineados a GDS-15 (15 ítems, bandas 0-4/5-9/10-15).
 
-2. **PHQ-9 ítem 7 — redacción divergente.**
-   - MVP `phq9Instrument.ts` + legacy: "leer el **cuerpo del texto**".
-   - Drawio MVP + referencia `.json`: "leer el **periódico**".
-   - Por definir cuál es la fuente de verdad del copy.
+2. ~~**PHQ-9 ítem 7 — redacción divergente.**~~ Resuelto: **no era una divergencia
+   entre fuentes, sino un error propagado**. El "cuerpo del texto" nació en el
+   **código legacy** (`reference_frontend_app_legacy/.../cuestionarios/phq9.js`) y
+   lo **heredó** el banco del MVP al portarlo. La redacción canónica es
+   **"periódico"**, que es la que usan las **cuatro** referencias reales: drawio
+   fuente de verdad (`docs/diagrams/1_CUESTIONARIO_MENTAL/…drawio`), drawio legacy
+   (`…/index.DEMO_quewstionnaire.drawio`), `PHQ9.json`/`PHQ9.md` y `phq.mmd`.
+   Corregido en `phq9Instrument.ts` ("cuerpo del texto" → "periódico").
 
 3. **Gaps del contrato `Instrument`**: `list_references` y `list_sections`.
    Resuelto: se incorporan al contrato (§4/§5). `list_sections` es el espejo del
@@ -371,7 +375,8 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 
 ## 12. Pendientes de esta capa
 
-- [ ] PHQ-9: fijar redacción del ítem 7.
+- [x] PHQ-9: redacción del ítem 7 fijada = **"periódico"** (drawio = fuente de
+      verdad); corregido el banco del MVP (ver §11).
 - [x] Forma única de scoring: **AST canónico** (`../expressions/README.md`); el
       MVP de rangos queda como forma simplificada a migrar (D12).
 - [x] Cubrir gaps de `Instrument`: `list_references` y `list_sections` (ADR 038).
