@@ -3,7 +3,7 @@
 Una **condición de visibilidad** decide si un elemento del cuestionario **se
 muestra u oculta**. Se escribe con el **mismo AST** que el resto del módulo
 ([`README.md`](./README.md)) y se guarda como **columna JSONB** en el propio
-elemento (ver [ADR 039](../../decisions/039-condicion-visibilidad-ast.md)).
+elemento (ver [ADR 039](../../../decisions/039-condicion-visibilidad-ast.md)).
 
 ## 1. Dónde vive
 
@@ -210,7 +210,7 @@ parte de la **fase frontend** (pendiente D12 en
 Viven en contextos distintos, pero conviene no confundirlos al leer el modelo.
 
 ## Referencias
-- Decisión: [ADR 039](../../decisions/039-condicion-visibilidad-ast.md)
+- Decisión: [ADR 039](../../../decisions/039-condicion-visibilidad-ast.md)
 - Gramática: [`README.md`](./README.md), [`operands.md`](./operands.md)
 - Operadores: [`operators/collection.md`](./operators/collection.md), `comparison`, `logic`
 - Casos médicos: [`examples/medical-cases.md`](./examples/medical-cases.md)

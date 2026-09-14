@@ -45,6 +45,7 @@ Cada decision tecnica importante debe documentarse siguiendo el formato de **ADR
 - **[037: Prototipos UI de Antecedentes Familiares](037-family-conditions-ui-prototype.md)**
 - **[038: Formulario — Preguntas Directas XOR Secciones y Contrato `list_sections`](038-formulario-preguntas-vs-secciones.md)**
 - **[039: Condición de Visibilidad como AST JSONB en `form`, `section` y `question`](039-condicion-visibilidad-ast.md)**
+- **[040: Propiedades Derivadas en el AST (`question.value`, `form.result.*`)](040-ast-propiedades-derivadas.md)**
 
 ---
 *Para crear una nueva decision, utiliza la plantilla `_template.md` (proximamente).*

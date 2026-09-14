@@ -43,7 +43,7 @@ interface OperandConst {
 interface SubjectReference {
   entity: string;                         // "question" | "person" | "form"
   property: string;                       // propiedad a leer
-  selector?: SubjectSelector;             // filtro de selección (ver abajo)
+  selector?: SubjectSelector;             // filtro (solo para `question`; ver abajo)
   output?: { type: SelectorOutputType };
 }
 ```
@@ -112,19 +112,45 @@ interface OperandRef {
 
 ## Entidades y propiedades
 
-| Entidad | Propiedades comunes | Uso |
-|---|---|---|
-| `question` | `value` (valor de respuesta), `id` | Scoring de preguntas |
-| `form` | `result.scoring` (resultado del scoring) | Input de `evaluation` |
-| `person` | `age`, `weight`, `height` | Cálculos clínicos |
+| Entidad | Propiedad | Significado | Almacenamiento físico | Selector |
+|---|---|---|---|---|
+| `question` | `value` | Valor de la respuesta | `answer.data.value` | ✅ (id/range/group/all/condition) |
+| `question` | `id` | Identidad de la pregunta | `question.id` | ✅ |
+| `form` | `result.scoring` | Resultado del puntaje | `assignment.result.scoring` | ❌ (singular) |
+| `form` | `result.evaluation` | Resultado de la clasificación | `assignment.result.evaluation` | ❌ (singular) |
+| `person` | `age`, `weight`, `height` | Datos de la persona | — | ❌ (singular) |
 
-`form.result.scoring` es una propiedad **derivada**: existe solo si el `form`
-define `expression.scoring`. Ver [`operators/case.md`](./operators/case.md).
+- `question.value` y `form.result.*` son **propiedades derivadas** (no columnas).
+- `form.result.scoring` existe solo si el `form` define `expression.scoring`. Ver
+  [`operators/case.md`](./operators/case.md).
+- `selector` **solo aplica a `question`** (la única entidad con múltiples
+  instancias); `person` y `form` se referencian en singular.
+
+### Propiedades derivadas (y por qué no entidades físicas)
+
+El AST es una **capa lógica** por encima del almacenamiento. No usa las tablas
+físicas (`answer`/`assignment`) como entidades, sino **propiedades derivadas**:
+
+| Referencia del AST | Físicamente |
+|---|---|
+| `{ "entity":"question", "property":"value", … }` | `answer.data.value` (con `answer.id_question`) |
+| `{ "entity":"form", "property":"result.scoring" … }` | `assignment.result.scoring` |
+
+**Por qué no entidades físicas** (ver [ADR 040](../../../decisions/040-ast-propiedades-derivadas.md)):
+- Usar `entity:"answer"` obligaría a un selector anidado
+  (`selector: { "question": { … } }`), pero `answer` **no tiene** una propiedad
+  `question` (tiene `id_question`) → sería una **navegación inventada**.
+- La variante física literal (`property:"data.value"`, `selector:{ "id_question": … }`)
+  **expone el storage** (path + FK) y complica los selectores.
+- Mantener `question.value` conserva selectores de **un solo nivel** y el AST
+  agnóstico al motor de base de datos.
 
 ## Selectores
 
-El `selector` dice **qué** entidades del `entity` se toman. Es un **objeto cuya
-clave es el tipo de selección** (sin campo discriminante aparte):
+El `selector` dice **qué** entidades del `entity` se toman. Hoy aplica **solo a
+`question`** (la única entidad con múltiples instancias; `person` y `form` son
+singulares). Es un **objeto cuya clave es el tipo de selección** (sin campo
+discriminante aparte):
 
 ```ts
 type SubjectSelector =
@@ -137,7 +163,7 @@ type SubjectSelector =
 interface SubjectReference {
   entity: string;                         // "question" | "person" | "form"
   property: string;                       // propiedad a leer
-  selector?: SubjectSelector;             // filtro de selección (autocontenido)
+  selector?: SubjectSelector;             // filtro (solo para `question`)
   output?: { type: SelectorOutputType };
 }
 ```

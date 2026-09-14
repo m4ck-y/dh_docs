@@ -63,7 +63,7 @@
 
 ### A1 — Condicional estructurado ✅ (resuelto)
 
-- **Decisión** ([ADR 039](../../decisions/039-condicion-visibilidad-ast.md)): la
+- **Decisión** ([ADR 039](../decisions/039-condicion-visibilidad-ast.md)): la
   condición de visibilidad se modela con el **AST de expresiones** (booleano) y se
   guarda como **columna JSONB** en **tres niveles**: `form.condition`,
   `section.condition`, `question.condition`. Ausente = siempre visible.
@@ -101,7 +101,7 @@
   elemento, no compartida, evaluada en memoria).
 - **Reflejo**: `schema.sql` (tablas e índices eliminados; columnas añadidas),
   `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md`, `catalog/example.jsonc`.
-- **Decisión registrada en**: [ADR 039](../../decisions/039-condicion-visibilidad-ast.md).
+- **Decisión registrada en**: [ADR 039](../decisions/039-condicion-visibilidad-ast.md).
 
 ### A4 — Conversión API↔BD de `condition`
 
@@ -220,7 +220,7 @@
 
 - **Qué era**: campos presentes en la referencia y ausentes en el MVP:
   `target_sex`, `list_references`, `list_sections`.
-- **Decisión** ([ADR 038](../../decisions/038-formulario-preguntas-vs-secciones.md)):
+- **Decisión** ([ADR 038](../decisions/038-formulario-preguntas-vs-secciones.md)):
   - `list_references` → `{id?, url_reference?, name?, notes?, url_thumbnail?,
     type_media?}[]` (forma real de `PHQ9.json`/`IA_DEVELOPMENT.json`).
   - `list_sections` → `Section[]` (espejo del ERD; **no** era un gap inmodelable).

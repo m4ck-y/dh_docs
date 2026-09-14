@@ -140,7 +140,7 @@ interface Section {
 
 > **`list_sections` no es un gap**: su forma sale del ERD del proyecto (tabla
 > `section` + puente `questions_section`), no del `[]` vacío de la referencia.
-> Ver [ADR 038](../../decisions/038-formulario-preguntas-vs-secciones.md).
+> Ver [ADR 038](../../../decisions/038-formulario-preguntas-vs-secciones.md).
 
 ## 6. Tipos de pregunta y `config`
 
@@ -200,13 +200,13 @@ preguntas; un formulario con secciones no tiene preguntas directas.
 - Es una **regla de aplicación** (Pydantic + `COMMENT` en el DDL), no un
   constraint de BD: PostgreSQL no permite un `CHECK` XOR entre tablas.
 - En el payload, `list_sections` es el espejo del ERD; su forma se define en §5.
-- Justificación y consecuencias: [ADR 038](../../decisions/038-formulario-preguntas-vs-secciones.md).
+- Justificación y consecuencias: [ADR 038](../../../decisions/038-formulario-preguntas-vs-secciones.md).
 
 ## 8. Condiciones de visibilidad
 
 La condición decide si un elemento **se muestra u oculta**, y se modela como
 **expresión AST booleana** en una columna **JSONB** del propio elemento
-([ADR 039](../../decisions/039-condicion-visibilidad-ast.md)):
+([ADR 039](../../../decisions/039-condicion-visibilidad-ast.md)):
 
 | Nivel | Campo | Significado |
 |---|---|---|
@@ -345,7 +345,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
    Resuelto: se incorporan al contrato (§4/§5). `list_sections` es el espejo del
    ERD (no un gap real); `list_references` adopta la forma real de la referencia
    (`id`, `notes`, `url_thumbnail`, `type_media`), corrigiendo el README §5 previo.
-   Ver [ADR 038](../../decisions/038-formulario-preguntas-vs-secciones.md).
+   Ver [ADR 038](../../../decisions/038-formulario-preguntas-vs-secciones.md).
 
 4. ~~**`target_sex` inconsistente.**~~ Resuelto: el `example.jsonc` ya lo modelaba
    como objeto `{type_biological_sex, id}` (espejo del ERD), mientras el README §5
@@ -373,7 +373,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
    (con `formula`/`expression TEXT`) se **eliminaron** en favor de columnas JSONB
    `form.condition` / `section.condition` / `question.condition`, con el AST
    booleano. Coincide con `column_or_table.md` de la referencia (que ya recomendaba
-   columna JSON). Ver [ADR 039](../../decisions/039-condicion-visibilidad-ast.md)
+   columna JSON). Ver [ADR 039](../../../decisions/039-condicion-visibilidad-ast.md)
    y [`../expressions/conditions.md`](../expressions/conditions.md).
 
 ## 12. Pendientes de esta capa
