@@ -193,11 +193,11 @@ Condición personalizada — filtra por una expresión sobre `property`:
 - En un `aggregate` (scoring), el selector **nunca se omite**: se usa `{ "all": true }`
   o `{ "range": [...] }`.
 
-> Los selectores `id` y `range` se rescatan de
-> `app_questionnaire/.../types/chatgpt_.ts` (allí eran `selector: "id"` + `id`, y
-> `selector: "range"` + `id_range`). Aquí se unifican con el resto en un objeto
-> por clave. `group` absorbe el campo `group` que en `typescript.ts` iba suelto
-> en `SubjectReference`.
+> Los selectores `id` y `range` se rescataron de un **intento previo ya
+> eliminado** (`chatgpt_.ts`, un borrador de IA en `app_questionnaire`), donde
+> eran `selector: "id"` + `id`, y `selector: "range"` + `id_range`. Aquí se
+> unifican con el resto en un objeto por clave. `group` absorbe el campo `group`
+> que en `typescript.ts` iba suelto en `SubjectReference`.
 
 ## Nota sobre aridad de `in`
 

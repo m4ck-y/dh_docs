@@ -50,7 +50,7 @@
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
 | C11 | Remanentes V1 en `schema.sql` | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
-| E13 | Ruido `TMP_SQL.*` | Higiene | ⏳ |
+| E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
 | F15 | Backend fase 2 (SQLAlchemy/repos) | Backend | ⏳ |
 
@@ -205,8 +205,8 @@
 ### C7c — `value_expression` por pregunta (valor autocalculado)
 
 - **Qué**: permitir que una **pregunta** tenga un valor **autocalculado** por una
-  expresión (idea de `app_questionnaire/.../types/chatgpt_.ts`,
-  `Question.calculation`), expresada con el **mismo AST** que el scoring.
+  expresión (idea original de un borrador de IA ya eliminado, `Question.calculation`),
+  expresada con el **mismo AST** que el scoring.
 - **Forma propuesta**: `Question.value_expression` (operador AST, raíz sin
   wrapper), simétrico a `form.expression.scoring`.
 - **Duda abierta**: si una pregunta tiene `value_expression`, ¿su valor es
@@ -284,13 +284,16 @@
 
 ## E. Higiene
 
-### E13 — Ruido en `app_questionnaire`
+### E13 — Ruido en `app_questionnaire` ✅ (resuelto)
 
-- **Qué**: archivos vacíos o scratch por decidir su eliminación.
-- **Ubicación**: `other_projects/app_questionnaire/backend/docs/cuestionarios/`
-  - `TMP_SQL.JS` (0 bytes)
-  - `TMP_SQL2.ts` (0 bytes)
-  - `chatgpt_.ts` (scratch de IA, posible duplicado)
+- **Acción**: se **eliminaron** (repo `app_questionnaire`, rama `dev`, commit
+  `086f3b1`):
+  - `backend/docs/cuestionarios/TMP_SQL.JS` (0 bytes)
+  - `backend/docs/cuestionarios/TMP_SQL2.ts` (0 bytes)
+  - `backend/docs/types/chatgpt_.ts` (borrador de IA; su idea útil —selectores
+    `id`/`range`— ya estaba rescatada; lo demás cubierto por A1/A2/C7c).
+- **Reflejo**: nota de `expressions/operands.md` reescrita (ya no apunta a la
+  ruta eliminada).
 
 ### E14 — `docs/db/postgres/README.md` V1 ✅ (resuelto)
 
