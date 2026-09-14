@@ -95,7 +95,7 @@ Detalle en [`operators/case.md`](./operators/case.md).
 | `form` | `expression.scoring` | Puntaje | ✅ |
 | `form` | `expression.evaluation` | Categoría | ✅ |
 | `form` | `expression.subscales[]` | Puntaje + categoría por escala | ✅ |
-| `question` | `value_expression` | Valor autocalculado | ⏳ pendiente (C7c) |
+| `question` | `expression` | Valor autocalculado (solo lectura) | ⏳ pendiente (C7c) |
 | `form` / `section` / `question` | `condition` | Visibilidad (booleano) | ✅ (ver [`conditions.md`](./conditions.md)) |
 
 ## 2. Alcance y frontera

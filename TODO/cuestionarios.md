@@ -47,7 +47,7 @@
 | C6 | PHQ-9 ítem 7 | Contenido | ✅ |
 | C7 | Scoring unificado | Modelo | ✅ |
 | C7b | METs IPAQ (scoring no lineal) | Modelo | ✅ |
-| C7c | `value_expression` por pregunta | Modelo | ⏳ |
+| C7c | `question.expression` por pregunta | Modelo | ⏳ |
 | C8 | Gaps del contrato `Instrument` | Modelo | ✅ |
 | C9 | `AnswerMap` ↔ `answer.data` | Modelo | ✅ |
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
@@ -205,16 +205,29 @@
   (COMMENTs), `catalog/README.md` §9/§11, `catalog/CLASS.mmd`.
 - **Refs**: `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint` (algoritmo).
 
-### C7c — `value_expression` por pregunta (valor autocalculado)
+### C7c — `question.expression` por pregunta (valor autocalculado)
 
 - **Qué**: permitir que una **pregunta** tenga un valor **autocalculado** por una
   expresión (idea original de un borrador de IA ya eliminado, `Question.calculation`),
   expresada con el **mismo AST** que el scoring.
-- **Forma propuesta**: `Question.value_expression` (operador AST, raíz sin
-  wrapper), simétrico a `form.expression.scoring`.
-- **Duda abierta**: si una pregunta tiene `value_expression`, ¿su valor es
-  **solo lectura** (calculado) o editable por el usuario? Definir la semántica.
-- **Refs**: `expressions/README.md` §1 (puntos de aplicación del AST).
+- **Decidido**:
+  - **Campo**: `question.expression` (JSONB, **una** expresión, raíz sin wrapper)
+    en la **entidad** `question` (como `question.condition`). Es la **receta**;
+    análogo a `form.expression` (pero `form.expression` es un *envelope* y
+    `question.expression` es *una* expresión).
+  - **Semántica**: **solo lectura (calculada)**; el usuario no la responde.
+  - **Referencias permitidas**: preguntas del mismo form (incl. **otras
+    calculadas**, con **validación de ciclos**), `person`, `const`, `{ref}` a
+    `definitions` del form, operadores anidados.
+  - **Prohibido**: `form.result.*` (circular).
+  - **Ejemplos**: "Total" (suma de preguntas) **e** IMC (`person`).
+- **Duda abierta (única)**: **persistencia** del valor calculado.
+  - **A. No persistir** (decisión previa): se computa al vuelo y se inyecta en el
+    contexto de evaluación.
+  - **B. Persistir** en `answer.data = {value, type}` (fila sintética,
+    `answered_by` null/sistema): uniforme y auditable, pero redundante.
+- **Refs**: `expressions/README.md` §1, `expressions/operands.md` (propiedades
+  derivadas), [ADR 040](../../decisions/040-ast-propiedades-derivadas.md).
 
 ### C8 — Gaps del contrato `Instrument` ✅ (resuelto)
 
