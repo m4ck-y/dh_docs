@@ -23,34 +23,32 @@ interface LogicOperator extends BaseOperator {
 
 ```jsonc
 {
-  "expression": {
-    "type": "logic",
-    "operator": "and",
-    "args": [
-      {
-        "expression": {
-          "type": "comparison",
-          "operator": ">",
-          "args": [
-            { "subject": { "entity": "person", "property": "age" } },
-            { "const": { "value": 65, "type": "number" } }
-          ],
-          "output": { "type": "boolean" }
-        }
-      },
-      {
-        "expression": {
-          "type": "comparison",
-          "operator": "==",
-          "args": [
-            { "subject": { "entity": "person", "property": "has_diabetes" } },
-            { "const": { "value": true, "type": "boolean" } }
-          ],
-          "output": { "type": "boolean" }
-        }
+  "type": "logic",
+  "operator": "and",
+  "args": [
+    {
+      "expression": {
+        "type": "comparison",
+        "operator": ">",
+        "args": [
+          { "subject": { "entity": "person", "property": "age" } },
+          { "const": { "value": 65, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
       }
-    ],
-    "output": { "type": "boolean" }
-  }
+    },
+    {
+      "expression": {
+        "type": "comparison",
+        "operator": "==",
+        "args": [
+          { "subject": { "entity": "person", "property": "has_diabetes" } },
+          { "const": { "value": true, "type": "boolean" } }
+        ],
+        "output": { "type": "boolean" }
+      }
+    }
+  ],
+  "output": { "type": "boolean" }
 }
 ```

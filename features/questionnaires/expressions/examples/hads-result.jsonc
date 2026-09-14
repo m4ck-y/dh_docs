@@ -1,0 +1,17 @@
+{
+  /* assignment.result del HADS: mismo envelope que form.expression, pero con
+     valores calculados. Cada subescala produce su par scoring/evaluation.
+     Cada valor usa el envelope {value, type}. Ver ../README.md §6. */
+  "subscales": [
+    {
+      "id": "A",
+      "scoring":    { "value": 8, "type": "number" },
+      "evaluation": { "value": "Probable ansiedad", "type": "string" }
+    },
+    {
+      "id": "D",
+      "scoring":    { "value": 5, "type": "number" },
+      "evaluation": { "value": "Normalidad", "type": "string" }
+    }
+  ]
+}

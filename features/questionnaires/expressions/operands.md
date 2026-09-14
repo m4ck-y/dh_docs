@@ -31,7 +31,7 @@ interface OperandConst {
 { "const": { "value": [1,2,3], "type": "array_number" } }
 ```
 
-> Los resultados persistidos (`scoring_result` / `evaluation_result`) usan la
+> Los resultados persistidos (`assignment.result.*`) usan la
 > **misma forma** (`{value, type}`), de modo que receta y resultado comparten
 > vocabulario.
 
@@ -48,7 +48,7 @@ interface SubjectReference {
 
 ```jsonc
 { "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }
-{ "subject": { "entity": "form", "property": "scoring_result" } }
+{ "subject": { "entity": "form", "property": "result.scoring" } }
 ```
 
 ### `OperandExpression` — anidación
@@ -93,11 +93,11 @@ Ver [`operators/time.md`](./operators/time.md).
 | Entidad | Propiedades comunes | Uso |
 |---|---|---|
 | `question` | `value` (valor de respuesta), `id` | Scoring de preguntas |
-| `form` | `scoring_result` (resultado del scoring) | Input de `evaluation_expression` |
+| `form` | `result.scoring` (resultado del scoring) | Input de `evaluation` |
 | `person` | `age`, `weight`, `height` | Cálculos clínicos |
 
-`form.scoring_result` es una propiedad **derivada**: existe solo si el `form`
-define `scoring_expression`. Ver [`operators/case.md`](./operators/case.md).
+`form.result.scoring` es una propiedad **derivada**: existe solo si el `form`
+define `expression.scoring`. Ver [`operators/case.md`](./operators/case.md).
 
 ## Selectores
 

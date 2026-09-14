@@ -24,8 +24,7 @@ classDiagram
         +string key
         +string name
         +string description
-        +Expression scoring_expression
-        +Expression evaluation_expression
+        +ExpressionSet expression
         +Expression condition
         %% XOR: o 'sections' o 'questions', nunca ambos (ver ADR 038)
         +Section[] sections
@@ -55,9 +54,29 @@ classDiagram
     %% (ver catalog/question_types/). Incluye "required" y parametros del tipo.
     %% Question.order: aqui SI vive el orden (subdocumento embebido);
     %% en el ERD el orden vive en la puente (ver ERD.mmd).
-    %% Expression (Form/Section/Question): la expresion se EMBEBE como subdocumento
-    %% (AST). Form la usa para scoring/evaluation/condition; Section/Question solo
-    %% para condition. Ver ADR 039 y expressions/README.md.
+    %% ExpressionSet (Form.expression): envelope de recetas.
+    %% scoring/evaluation son operadores (raiz SIN wrapper); subscales es un
+    %% arreglo de ambitos, cada uno con su scoring/evaluation (scoping por contexto).
+    class ExpressionSet {
+        +Expression scoring
+        +Expression evaluation
+        +Subscale[] subscales
+    }
+
+    %% Subscale: ambito de scoring/evaluation. 'items' es la fuente de pertenencia.
+    class Subscale {
+        +string id
+        +string name
+        +int[] items
+        +int max
+        +Expression scoring
+        +Expression evaluation
+    }
+
+    %% Expression (condition): operador AST raiz SIN wrapper.
+    %% Expression (Form/Section/Question): la expresion se EMBEBE como subdocumento.
+    %% Form usa ExpressionSet (scoring/evaluation/subscales) + condition; Section/Question solo condition.
+    %% Ver ADR 039 y expressions/README.md.
 
     %% Expression: nodo del AST (operador). type/operator/args/output son
     %% comunes a todos; subject/cases/default son propios de case/when
@@ -111,11 +130,15 @@ classDiagram
     Section "1" *-- "0..*" Question : contiene
     Question "1" *-- "0..*" Option : contiene
     Option "1" o-- "0..1" Url : puede tener
-    Form "1" *-- "0..1" Expression : scoring
-    Form "1" *-- "0..1" Expression : evaluation
+    Form "1" *-- "0..1" ExpressionSet : expression
     Form "1" *-- "0..1" Expression : condition
     Section "1" *-- "0..1" Expression : condition
     Question "1" *-- "0..1" Expression : condition
+    ExpressionSet "1" *-- "0..1" Expression : scoring
+    ExpressionSet "1" *-- "0..1" Expression : evaluation
+    ExpressionSet "1" *-- "0..*" Subscale : subscales
+    Subscale "1" *-- "0..1" Expression : scoring
+    Subscale "1" *-- "0..1" Expression : evaluation
     Expression "1" *-- "0..*" Operand : args
     Expression "1" *-- "0..1" Output : output
     Expression "1" *-- "0..1" Operand : subject

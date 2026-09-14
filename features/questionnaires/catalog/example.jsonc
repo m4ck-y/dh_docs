@@ -3,22 +3,21 @@
   "name": "Encuesta de Satisfacción",
   "description": "Formulario para evaluar el servicio ofrecido",
   "verified": false,
-  /* Expresiones en el AST del proyecto (ver ../expressions/README.md). */
-  "scoring_expression": {
-    "expression": {
+  /* Envelope de recetas AST del formulario (raíz sin wrapper).
+     Ver ../expressions/README.md. */
+  "expression": {
+    "scoring": {
       "type": "aggregate",
       "operator": "sum",
       "args": [
         { "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }
       ],
       "output": { "type": "number" }
-    }
-  },
-  "evaluation_expression": {
-    "expression": {
+    },
+    "evaluation": {
       "type": "case",
       "operator": "when",
-      "subject": { "subject": { "entity": "form", "property": "scoring_result" } },
+      "subject": { "subject": { "entity": "form", "property": "result.scoring" } },
       "cases": [
         {
           "when": { "operator": "<=", "operand": { "const": { "value": 5, "type": "number" } } },
@@ -30,18 +29,16 @@
       "args": []
     }
   },
-  /* Visibilidad del formulario (AST booleano). Ausente = siempre visible.
+  /* Visibilidad del formulario (AST booleano, raíz sin wrapper). Ausente = siempre visible.
      Ver expressions/conditions.md */
   "condition": {
-    "expression": {
-      "type": "comparison",
-      "operator": ">=",
-      "args": [
-        { "subject": { "entity": "person", "property": "age" } },
-        { "const": { "value": 18, "type": "number" } }
-      ],
-      "output": { "type": "boolean" }
-    }
+    "type": "comparison",
+    "operator": ">=",
+    "args": [
+      { "subject": { "entity": "person", "property": "age" } },
+      { "const": { "value": 18, "type": "number" } }
+    ],
+    "output": { "type": "boolean" }
   },
   "id": 0,
   /* EXCLUSIVIDAD (ver ADR 038 y catalog/README.md §7):
@@ -54,17 +51,15 @@
       "description": "Sección para recopilar datos personales del encuestado",
       "order": 1,
       "id": 0,
-      /* Visibilidad de la sección (AST booleano). Ausente = siempre visible. */
+      /* Visibilidad de la sección (AST booleano, raíz sin wrapper). Ausente = siempre visible. */
       "condition": {
-        "expression": {
-          "type": "comparison",
-          "operator": "==",
-          "args": [
-            { "subject": { "entity": "person", "property": "sex" } },
-            { "const": { "value": "F", "type": "string" } }
-          ],
-          "output": { "type": "boolean" }
-        }
+        "type": "comparison",
+        "operator": "==",
+        "args": [
+          { "subject": { "entity": "person", "property": "sex" } },
+          { "const": { "value": "F", "type": "string" } }
+        ],
+        "output": { "type": "boolean" }
       },
       "list_questions": [
         {
@@ -82,16 +77,14 @@
             }
           ],
           "condition": {
-            /* Visibilidad: AST booleano. Ver expressions/conditions.md */
-            "expression": {
-              "type": "comparison",
-              "operator": ">",
-              "args": [
-                { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
-                { "const": { "value": 0, "type": "number" } }
-              ],
-              "output": { "type": "boolean" }
-            }
+            /* Visibilidad: AST booleano, raíz sin wrapper. Ver expressions/conditions.md */
+            "type": "comparison",
+            "operator": ">",
+            "args": [
+              { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
+              { "const": { "value": 0, "type": "number" } }
+            ],
+            "output": { "type": "boolean" }
           }
         },
         {

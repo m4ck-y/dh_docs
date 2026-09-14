@@ -23,25 +23,23 @@ interface MathOperator extends BaseOperator {
 
 ```jsonc
 {
-  "expression": {
-    "type": "math",
-    "operator": "/",
-    "args": [
-      { "subject": { "entity": "person", "property": "weight" } },
-      {
-        "expression": {
-          "type": "math",
-          "operator": "^",
-          "args": [
-            { "subject": { "entity": "person", "property": "height" } },
-            { "const": { "value": 2, "type": "number" } }
-          ],
-          "output": { "type": "number" }
-        }
+  "type": "math",
+  "operator": "/",
+  "args": [
+    { "subject": { "entity": "person", "property": "weight" } },
+    {
+      "expression": {
+        "type": "math",
+        "operator": "^",
+        "args": [
+          { "subject": { "entity": "person", "property": "height" } },
+          { "const": { "value": 2, "type": "number" } }
+        ],
+        "output": { "type": "number" }
       }
-    ],
-    "output": { "type": "number" }
-  }
+    }
+  ],
+  "output": { "type": "number" }
 }
 ```
 

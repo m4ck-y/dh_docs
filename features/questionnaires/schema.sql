@@ -49,9 +49,8 @@ CREATE TABLE form (
     key VARCHAR(100) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    scoring_expression JSONB,      -- Expresión de puntaje (AST). Ver expressions/README.md. Ej: {"expression":{"type":"aggregate","operator":"sum","args":[{"subject":{"entity":"question","property":"value","selector":{"all":true}}}],"output": { "type": "number" }}}
-    evaluation_expression JSONB,   -- Expresión de clasificación (AST case/when). Su subject consume form.scoring_result. Ej: {"expression":{"type":"case","operator":"when","subject":{"subject":{"entity":"form","property":"scoring_result"}},"cases":[{"when":{"operator":"<","operand":{"const":{"value":5,"type":"number"}}},"then":{"const":{"value":"Leve","type":"string"}}}],"default":{"const":{"value":"Fuera de rango","type":"string"}},"output": { "type": "string" },"args":[]}}
-    condition JSONB,               -- Condición de visibilidad del formulario (AST booleano). Ausente = siempre visible. Ver expressions/conditions.md (ADR 039)
+    expression JSONB,              -- Envelope de recetas AST: {scoring?, evaluation?, subscales?}. Ver expressions/README.md
+    condition JSONB,               -- Condición de visibilidad del formulario (AST booleano, raíz sin wrapper). Ausente = siempre visible. Ver expressions/conditions.md (ADR 039)
     verified BOOLEAN NOT NULL DEFAULT false  -- Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable
 );
 
@@ -63,11 +62,9 @@ COMMENT ON COLUMN form.name IS 'Nombre legible del formulario para usuarios fina
 
 COMMENT ON COLUMN form.description IS 'Descripción explicativa del propósito del formulario.';
 
-COMMENT ON COLUMN form.scoring_expression IS 'Expresión de puntaje en JSONB, en el lenguaje de expresiones del proyecto (AST). La raíz habitual es un operador aggregate (sum/avg). Gramática completa y ejemplos: features/questionnaires/expressions/README.md. Ejemplo (PHQ-9): {"expression": {"type": "aggregate", "operator": "sum", "args": [{"subject": {"entity": "question", "property": "value", "selector": {"all": true}}}], "output": { "type": "number" }}}. Se evalúa al enviar (SUBMITTED) y su resultado se guarda en assignment.scoring_result.';
+COMMENT ON COLUMN form.expression IS 'Envelope de recetas de expresión (AST) del formulario. Claves opcionales: scoring (operador aggregate, raíz SIN wrapper), evaluation (operador case/when cuyo subject consume form.result.scoring) y subscales (arreglo de ámbitos, cada uno con scoring/evaluation propios). Los operandos anidados SÍ llevan wrapper {expression:...} (discriminante de la unión). Gramática: features/questionnaires/expressions/README.md. Ejemplo (PHQ-9): {"scoring": {"type": "aggregate", "operator": "sum", "args": [{"subject": {"entity": "question", "property": "value", "selector": {"all": true}}}], "output": {"type": "number"}}, "evaluation": {"type": "case", "operator": "when", "subject": {"subject": {"entity": "form", "property": "result.scoring"}}, "cases": [{"when": {"operator": "<", "operand": {"const": {"value": 5, "type": "number"}}}, "then": {"const": {"value": "Depresión mínima", "type": "string"}}}], "default": {"const": {"value": "Puntuación fuera de rango", "type": "string"}}, "output": {"type": "string"}, "args": []}}. Se evalúa al enviar (SUBMITTED) y su resultado se guarda en assignment.result.';
 
-COMMENT ON COLUMN form.evaluation_expression IS 'Expresión de clasificación en JSONB, en el lenguaje de expresiones del proyecto (AST). La raíz habitual es un operador case/when cuyo subject consume form.scoring_result (no repite la fórmula del scoring). Gramática completa: features/questionnaires/expressions/README.md. Ejemplo (PHQ-9, banda): {"expression": {"type": "case", "operator": "when", "subject": {"subject": {"entity": "form", "property": "scoring_result"}}, "cases": [{"when": {"operator": "<", "operand": {"const": {"value": 5, "type": "number"}}}, "then": {"const": {"value": "Depresión mínima", "type": "string"}}}], "default": {"const": {"value": "Puntuación fuera de rango", "type": "string"}}, "output": { "type": "string" }, "args": []}}. Su resultado se guarda en assignment.evaluation_result.';
-
-COMMENT ON COLUMN form.condition IS 'Condición de visibilidad del formulario completo, como expresión AST booleana en JSONB (ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo: {"expression":{"type":"comparison","operator":">=","args":[{"subject":{"entity":"person","property":"age"}},{"const":{"value":18,"type":"number"}}],"output": { "type": "boolean" }}}.';
+COMMENT ON COLUMN form.condition IS 'Condición de visibilidad del formulario completo, como expresión AST booleana en JSONB (raíz SIN wrapper; ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo: {"type":"comparison","operator":">=","args":[{"subject":{"entity":"person","property":"age"}},{"const":{"value":18,"type":"number"}}],"output":{"type":"boolean"}}.';
 
 COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable. Una vez en true, no se deben permitir modificaciones en esta fila ni en sus preguntas asociadas (vía questions_form / questions_section), opciones ni condiciones. La aplicación debe bloquear actualizaciones cuando verified = true.';
 
@@ -98,7 +95,7 @@ COMMENT ON COLUMN question."type" IS 'Tipo de pregunta segun el enum EQuestionTy
 
 COMMENT ON COLUMN question.config IS 'Configuracion en JSONB especifica del tipo de pregunta. Su forma depende de question.type (ver catalog/question_types/). Incluye el flag comun "required" y los parametros propios del tipo. Los limites se nombran min/max en todos los tipos; "default" es opcional y excluyente con "required". Ejemplos: RANGE {"required": true, "min": 0, "max": 7, "step": 1, "integer": true}; TIMER {"required": true, "min": "PT0M", "max": "PT24H", "precision": "minutes"}; NUMBER {"required": true, "min": 1, "max": 500, "decimals": 1}. La coherencia de la forma se valida en la capa de aplicacion (ej. Pydantic).';
 
-COMMENT ON COLUMN question.condition IS 'Condición de visibilidad de la pregunta, como expresión AST booleana en JSONB (ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo (PHQ-9 Q10): {"expression":{"type":"collection","operator":"any","args":[{"expression":{"type":"comparison","operator":">","args":[{"subject":{"entity":"question","property":"value","selector":{"range":[1,9]}}},{"const":{"value":0,"type":"number"}}],"output": { "type": "boolean" }}}],"output": { "type": "boolean" }}}.';
+COMMENT ON COLUMN question.condition IS 'Condición de visibilidad de la pregunta, como expresión AST booleana en JSONB (raíz SIN wrapper; ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo (PHQ-9 Q10): {"type":"collection","operator":"any","args":[{"expression":{"type":"comparison","operator":">","args":[{"subject":{"entity":"question","property":"value","selector":{"range":[1,9]}}},{"const":{"value":0,"type":"number"}}],"output":{"type":"boolean"}}}],"output":{"type":"boolean"}}.';
 
 -- ===================================================================
 -- TABLA: section
@@ -120,7 +117,7 @@ COMMENT ON TABLE section IS 'Seccion de un formulario. Agrupa preguntas que se p
 
 COMMENT ON COLUMN section.key IS 'Identificador semantico opcional de la seccion (ej. "datos_personales").';
 
-COMMENT ON COLUMN section.condition IS 'Condición de visibilidad de la sección completa, como expresión AST booleana en JSONB (ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo: {"expression":{"type":"comparison","operator":"==","args":[{"subject":{"entity":"person","property":"sex"}},{"const":{"value":"F","type":"string"}}],"output": { "type": "boolean" }}}.';
+COMMENT ON COLUMN section.condition IS 'Condición de visibilidad de la sección completa, como expresión AST booleana en JSONB (raíz SIN wrapper; ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo: {"type":"comparison","operator":"==","args":[{"subject":{"entity":"person","property":"sex"}},{"const":{"value":"F","type":"string"}}],"output":{"type":"boolean"}}.';
 
 -- ===================================================================
 -- TABLA: questions_form
@@ -377,9 +374,9 @@ COMMENT ON TABLE reference IS 'Referencia externa del formulario (articulo, guia
 --   • Un gerente asigna una autoevaluación a su equipo (pero cada uno responde por sí mismo).
 --   • Un sistema asigna a un grupo, y luego un representante responde.
 --
--- RESULTADO: scoring_result y evaluation_result pertenecen a ESTA assignment
--- (evento). No son cache: como cada assignment es un evento único, su resultado
--- le pertenece y no se "recalcula sobre el último intento".
+-- RESULTADO: result pertenece a ESTA assignment (evento). No es cache: como cada
+-- assignment es un evento único, su resultado le pertenece y no se "recalcula
+-- sobre el último intento". Espeja la forma de form.expression.
 -- ===================================================================
 CREATE TABLE assignment (
     id SERIAL PRIMARY KEY,
@@ -395,15 +392,14 @@ CREATE TABLE assignment (
     started_at TIMESTAMP,
     completed_at TIMESTAMP,
     submitted_at TIMESTAMP,
-    -- Resultado definitivo de ESTA assignment (evento).
-    -- Se guardan como {value, type} (mismos campos que un const del AST).
-    scoring_result JSONB,               -- Valor calculado por scoring_expression (ej. {"value": 11, "type": "number"})
-    evaluation_result JSONB             -- Valor calculado por evaluation_expression (ej. {"value": "Depresión moderada", "type": "string"})
+    -- Resultado definitivo de ESTA assignment (evento): {scoring?, evaluation?, subscales?}.
+    -- Cada valor se guarda como {value, type} (mismos campos que un const del AST).
+    result JSONB                        -- Ej. {"scoring": {"value": 11, "type": "number"}, "evaluation": {"value": "Depresión moderada", "type": "string"}}
     -- Nota V2: n_questions_total / n_questions_answered del modelo V1 NO se persisten;
     -- el progreso se calcula al vuelo desde answer.
 );
 
-COMMENT ON TABLE assignment IS 'Tarea/evento único de contestar un formulario por una persona o entidad (id_person). Cada reevaluación o renovación crea una nueva fila. No es una tabla maestra fija; el resultado (scoring_result/evaluation_result) pertenece a este evento y no es un cache de "último intento".';
+COMMENT ON TABLE assignment IS 'Tarea/evento único de contestar un formulario por una persona o entidad (id_person). Cada reevaluación o renovación crea una nueva fila. No es una tabla maestra fija; el resultado (result) pertenece a este evento y no es un cache de "último intento".';
 
 COMMENT ON COLUMN assignment.id_person IS 'ID de la persona, estudiante, empleado o entidad a quien se le "asigna" el formulario. Puede ser distinto del usuario que responde (ver answer.answered_by). Ej: un alumno (id_person=123) recibe una evaluación, pero su tutor la completa.';
 
@@ -415,9 +411,7 @@ COMMENT ON COLUMN assignment.started_at IS 'Momento en que se inició la sesión
 COMMENT ON COLUMN assignment.completed_at IS 'Momento en que se marcó como completado (progreso completo, sin enviar aún).';
 COMMENT ON COLUMN assignment.submitted_at IS 'Momento en que se envió oficialmente la tarea.';
 
-COMMENT ON COLUMN assignment.scoring_result IS 'Resultado de evaluar form.scoring_expression para ESTA assignment. Forma {value, type} (mismos campos que un const del AST). Ejemplo: {"value": 11, "type": "number"}. Con subescalas: {"value": null, "type": "number", "subscales": [{"id": "A", "value": 8, "type": "number"}]}. No es la receta: es el valor calculado. Ver features/questionnaires/expressions/README.md §8.';
-
-COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado de evaluar form.evaluation_expression para ESTA assignment. Forma {value, type} (mismos campos que un const del AST). Ejemplo: {"value": "Depresión moderada", "type": "string"}. No es la receta: es el valor calculado. Ver features/questionnaires/expressions/README.md §8.';
+COMMENT ON COLUMN assignment.result IS 'Resultado de evaluar form.expression para ESTA assignment. Espeja la forma del envelope: {scoring?, evaluation?, subscales?}. Cada valor es {value, type} (mismos campos que un const del AST). Ejemplos: simple {"scoring": {"value": 11, "type": "number"}, "evaluation": {"value": "Depresión moderada", "type": "string"}}; con subescalas {"subscales": [{"id": "A", "scoring": {"value": 8, "type": "number"}, "evaluation": {"value": "Probable ansiedad", "type": "string"}}]}. No es la receta: es el valor calculado. Ver features/questionnaires/expressions/README.md §6.';
 
 -- ===================================================================
 -- TABLA: scheduled
@@ -473,7 +467,7 @@ COMMENT ON COLUMN answer.id_assignment IS 'Assignment (tarea/evento) a la que pe
 
 COMMENT ON COLUMN answer.answered_by IS 'Referencia al usuario que ingresó esta respuesta puntual (médico, tutor o paciente). Permite auditoría por pregunta. No es un enum: es un FK a la entidad de usuarios.';
 
-COMMENT ON COLUMN answer.data IS 'Estructura normalizada {value, type}: mismos campos que un const del AST y que assignment.scoring_result/evaluation_result, de modo que todo valor del modulo comparte vocabulario. Ejemplos:
+COMMENT ON COLUMN answer.data IS 'Estructura normalizada {value, type}: mismos campos que un const del AST y que assignment.result, de modo que todo valor del modulo comparte vocabulario. Ejemplos:
   - Texto: {"value": "Muy satisfecho", "type": "string"}
   - Numero: {"value": 9.5, "type": "number"}
   - Opcion multiple: {"value": [1, 3], "type": "array_number"}
@@ -530,8 +524,7 @@ CREATE TABLE form_version (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    scoring_expression JSONB,
-    evaluation_expression JSONB,
+    expression JSONB,
     UNIQUE (id_form, version_number)
 );
 

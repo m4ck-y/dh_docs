@@ -1,66 +1,74 @@
 # Lenguaje de expresiones
 
 Gramática del **lenguaje de expresiones** del módulo de cuestionarios. Define
-cómo se escriben las dos expresiones que una `form` declara:
+las dos clases de expresión que un `form` declara:
 
-- **`scoring_expression`** — calcula el **puntaje numérico** de una asignación.
-- **`evaluation_expression`** — clasifica ese puntaje en una **categoría (texto)**.
+- **`scoring`** — calcula el **puntaje numérico** de una asignación.
+- **`evaluation`** — clasifica ese puntaje en una **categoría (texto)**.
 
-Ambas se guardan como **JSONB** en `form` (ver `../schema.sql`) y su **resultado**
-se persiste en la `assignment` correspondiente. El motor del backend evalúa la
-expresión al enviar el formulario (`SUBMITTED`); el frontend la interpreta para
-renderizar/scoring en cliente.
+Ambas viven en el envelope **`form.expression`** (JSONB; ver `../schema.sql`) y su
+**resultado** se persiste en **`assignment.result`**. El motor del backend evalúa
+las expresiones al enviar el formulario (`SUBMITTED`); el frontend las interpreta
+para renderizar/scoring en cliente.
 
 > **Fase actual: definición.** Este documento fija el **contrato**. El motor del
 > frontend todavía usa la forma simplificada de rangos (§5) y migrará a esta
 > gramática en una fase posterior (ver D12 en `../TODO/cuestionarios.md`).
 
-## 1. Las 4 piezas (cadena de evaluación)
+## 1. Envelope `expression` / `result`
+
+`form.expression` agrupa las recetas; `assignment.result` agrupa los resultados,
+**con la misma forma**:
+
+```ts
+expression = { scoring?, evaluation?, subscales? }
+result     = { scoring?, evaluation?, subscales? }   // mismos valores calculados
+```
+
+| Caso | `expression` / `result` |
+|---|---|
+| 1 escala (PHQ-9) | `{ scoring, evaluation }` |
+| N escalas (HADS) | `{ subscales: [ {id, name, items, max, scoring, evaluation}, … ] }` |
+| Mixto | `{ scoring, evaluation, subscales }` |
+
+Al enviar un formulario (caso simple):
 
 ```
-form.scoring_expression      →  LA RECETA del número
-form.evaluation_expression   →  LA RECETA de la categoría
-assignment.scoring_result    →  EL NÚMERO calculado
-assignment.evaluation_result →  LA CATEGORÍA calculada
-```
-
-Al enviar un formulario:
-
-```
-scoring_expression  →  scoring_result  →  evaluation_expression  →  evaluation_result
+expression.scoring  →  result.scoring  →  expression.evaluation  →  result.evaluation
    (aggregate sum)        (11)              (case sobre 11)          ("moderada")
 ```
 
-| Pieza | Dónde vive | Contenido |
+### Regla del wrapper (raíz vs operando)
+
+| Contexto | Wrapper `{expression: ...}` | Por qué |
 |---|---|---|
-| `scoring_expression` | `form` | Fórmula del puntaje (`aggregate`) |
-| `evaluation_expression` | `form` | Fórmula de clasificación (`case/when`); su `subject` es el input |
-| `scoring_result` | `assignment` | Valor calculado, forma `{value, type}` |
-| `evaluation_result` | `assignment` | Valor calculado, forma `{value, type}` |
+| **Raíz** de un campo (`expression.scoring`, `expression.evaluation`, `condition`) | ❌ **sin** wrapper | El tipo ya se conoce: es una expresión |
+| **Operando** (`args`, `subject`, `cases[].operand`, `then`, `default`) | ✅ **con** wrapper | `args` es una unión de 4 variantes; la clave es el discriminante |
+
+Las 4 variantes de operando ([`operands.md`](./operands.md)):
+`{ "subject": … }`, `{ "const": … }`, `{ "expression": … }`, `{ "time_range": … }`.
 
 ### Convención del `subject`
 
-El `subject` del `evaluation_expression` **consume el `scoring_result`**, no
-repite la fórmula del scoring:
+El `subject` del `evaluation` **consume el `result.scoring`**, no repite la
+fórmula del scoring:
 
 ```jsonc
-"subject": { "subject": { "entity": "form", "property": "scoring_result" } }
+"subject": { "subject": { "entity": "form", "property": "result.scoring" } }
 ```
 
-Así la fórmula del puntaje vive **una sola vez** (`scoring_expression`) y la
-evaluación la reutiliza. Con subescalas, el subject identifica el resultado por
-grupo (ver §4). Detalle en [`operators/case.md`](./operators/case.md).
+Así la fórmula del puntaje vive **una sola vez** (`expression.scoring`) y la
+evaluación la reutiliza. Con subescalas, el scoping es **por contexto** (ver §4).
+Detalle en [`operators/case.md`](./operators/case.md).
 
 ### Puntos de aplicación del AST
 
-El mismo lenguaje se aplica en varios lugares; hoy en dos, con un tercero
-propuesto:
-
 | Nivel | Campo | Qué produce | Estado |
 |---|---|---|---|
-| `form` | `scoring_expression` | Puntaje | ✅ |
-| `form` | `evaluation_expression` | Categoría | ✅ |
-| `question` | `value_expression` | Valor autocalculado de la pregunta | ⏳ pendiente (C7c) |
+| `form` | `expression.scoring` | Puntaje | ✅ |
+| `form` | `expression.evaluation` | Categoría | ✅ |
+| `form` | `expression.subscales[]` | Puntaje + categoría por escala | ✅ |
+| `question` | `value_expression` | Valor autocalculado | ⏳ pendiente (C7c) |
 | `form` / `section` / `question` | `condition` | Visibilidad (booleano) | ✅ (ver [`conditions.md`](./conditions.md)) |
 
 ## 2. Alcance y frontera
@@ -118,43 +126,53 @@ type DataType =
 
 > **Nota sobre `type`.** En el AST, `type` aparece con dos sentidos según el
 > nivel: en un **operador** es la **familia** de la operación
-> (`"type": "aggregate"`); en un **valor** (`const`, `scoring_result`,
-> `evaluation_result`, `answer.data`) o en la **salida** (`output: {type}`) es
+> (`"type": "aggregate"`); en un **valor** (`const`, `result.*`, `answer.data`)
+> o en la **salida** (`output: {type}`) es
 > el **tipo de dato** (`"type": "number"`). Están en niveles distintos y no se
 > confunden al parsear, pero conviene tenerlo presente al leer el modelo.
 
 > `datetime` (fecha-hora) y `duration` (duración ISO 8601) se añadieron para
-> cubrir los tipos de pregunta `DATE_TIME` y `TIMER` (ver §6 de resultados y
-> `conditions.md`).
+> cubrir los tipos de pregunta `DATE_TIME` y `TIMER` (ver §6 y `conditions.md`).
 
 ## 4. Subescalas
 
-El AST **no tiene** una dimensión de subescala. Para instrumentos con varias
-escalas (HADS, DTS, ASRS, EDAH), el `form` declara un arreglo `subscales[]`, cada
-una con su propio par de expresiones:
+El AST no tiene una dimensión de subescala, así que el envelope declara un
+arreglo **`subscales`**, donde cada subescala es una unidad autocontenida:
 
 ```jsonc
-{
+"expression": {
   "subscales": [
     {
       "id": "A",
       "name": "Ansiedad",
-      "items": [1, 3, 5, 7, 9, 11, 13],
+      "items": [1, 3, 5, 7, 9, 11, 13],   // ← única fuente de pertenencia
       "max": 21,
-      "scoring_expression": { /* aggregate sum sobre esos items */ },
-      "evaluation_expression": { /* case/when propio de la subescala */ }
+      "scoring":    { /* aggregate sum, scopeado a esta subescala */ },
+      "evaluation": { /* case/when propio de la subescala */ }
     }
   ]
 }
 ```
 
-- Un instrumento **sin** subescalas declara las expresiones a nivel del `form`.
-- Con subescalas, cada una lleva sus expresiones; el `evaluation_expression`
-  consume el `scoring_result` de su subescala
-  (`{"entity": "form", "property": "scoring_result", "selector": {"group": "A"}}`).
-- El puntaje global, si aplica, es otra expresión a nivel del `form`.
+### Scoping por contexto
 
-Ejemplo: [`examples/hads-subscales.jsonc`](./examples/hads-subscales.jsonc).
+- **`items`** es la **única** fuente de pertenencia (lista de ids de pregunta). No
+  se usa `question.group` ni un selector `{group}`.
+- El **`scoring`** de una subescala suma **sus** `items` (no repite la lista): el
+  evaluador usa el `items` de la subescala que lo contiene.
+- El **`evaluation`** de la subescala consume **su** `result.scoring` (mismo
+  scoping por contexto).
+
+Es exactamente el modelo del motor MVP: `sumItems(subscale.items, answers)` +
+bandas filtradas por subescala.
+
+- Un instrumento **sin** subescalas declara `expression.scoring` +
+  `expression.evaluation` a nivel `form`.
+- El puntaje global (si aplica, además de subescalas) es un `expression.scoring`
+  /`evaluation` de nivel `form`.
+
+Ejemplos: [`examples/hads-expression.jsonc`](./examples/hads-expression.jsonc) y
+[`examples/hads-result.jsonc`](./examples/hads-result.jsonc).
 
 ## 5. Relación con la forma simplificada del MVP
 
@@ -167,10 +185,10 @@ interface InterpretationRange { desde: number; hasta: number; texto: string; sub
 
 | MVP | AST |
 |---|---|
-| `scoring.tipo: 'suma'` | `aggregate sum` |
-| `scoring.tipo: 'subescalas'` | `subscales[]` con `aggregate sum` por subescala |
+| `scoring.tipo: 'suma'` | `expression.scoring` (`aggregate sum`) |
+| `scoring.tipo: 'subescalas'` | `expression.subscales[]` con `scoring` por subescala |
 | `interpretacion[] {desde, hasta, texto}` | `case/when` con umbrales acumulativos |
-| `interpretacion[].subescala` | `subscales[]` (cada subescala con su `evaluation_expression`) |
+| `interpretacion[].subescala` | `expression.subscales[]` (cada una con su `evaluation`) |
 
 **Diferencia de límites:** los rangos del MVP son **inclusivos**
 (`score >= desde && score <= hasta`); el `case/when` usa umbrales (`<`/`<=`).
@@ -182,23 +200,26 @@ borde al migrar.
 
 ## 6. Resultados persistidos
 
-El resultado de evaluar cada expresión se guarda en la `assignment` (evento
-único), con la **misma forma que un `const`** del AST:
+El resultado de evaluar las expresiones se guarda en **`assignment.result`**
+(evento único), con la **misma forma** que `form.expression` y cada valor como un
+`const` del AST (`{value, type}`):
 
 ```jsonc
-// assignment.scoring_result
-{ "value": 11, "type": "number" }
+// Caso simple (PHQ-9)
+"result": {
+  "scoring":    { "value": 11, "type": "number" },
+  "evaluation": { "value": "Depresión moderada", "type": "string" }
+}
 
-// assignment.evaluation_result
-{ "value": "Depresión moderada", "type": "string" }
-```
-
-Con subescalas:
-
-```jsonc
-// assignment.scoring_result
-{ "value": null, "type": "number",
-  "subscales": [ { "id": "A", "value": 8, "type": "number" } ] }
+// Caso con subescalas (HADS)
+"result": {
+  "subscales": [
+    { "id": "A", "scoring": { "value": 8, "type": "number" },
+                  "evaluation": { "value": "Probable ansiedad", "type": "string" } },
+    { "id": "D", "scoring": { "value": 5, "type": "number" },
+                  "evaluation": { "value": "Normalidad", "type": "string" } }
+  ]
+}
 ```
 
 - `value` + `type` espejan el operando `const` (`{const:{value,type}}`).
@@ -216,9 +237,9 @@ El IPAQ usa scoring **no lineal** por METs (`MET × minutos × días`, coeficien
 
 | Archivo | Qué demuestra |
 |---|---|
-| [`examples/phq9-scoring.jsonc`](./examples/phq9-scoring.jsonc) | `aggregate sum` (puntaje total) |
-| [`examples/phq9-evaluation.jsonc`](./examples/phq9-evaluation.jsonc) | `case/when` con 5 bandas + `default` |
-| [`examples/hads-subscales.jsonc`](./examples/hads-subscales.jsonc) | `subscales[]` con expresión por subescala |
+| [`examples/phq9-expression.jsonc`](./examples/phq9-expression.jsonc) | `form.expression` de 1 escala: `{ scoring, evaluation }` |
+| [`examples/hads-expression.jsonc`](./examples/hads-expression.jsonc) | `form.expression` con `subscales[]` |
+| [`examples/hads-result.jsonc`](./examples/hads-result.jsonc) | `assignment.result` con `subscales[]` (receta vs resultado) |
 | [`examples/imc-math.jsonc`](./examples/imc-math.jsonc) | `math` anidado (demuestra el AST) |
 | [`examples/medical-cases.md`](./examples/medical-cases.md) | PHQ-9, CRAFFT, riesgo alto, METs |
 

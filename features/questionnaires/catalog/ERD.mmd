@@ -74,9 +74,9 @@ erDiagram
         %% name == filename ej: test.frm
         String name
         Text description
-        Jsonb scoring_expression
-        Jsonb evaluation_expression
-        %% condicion de visibilidad del formulario (AST booleano)
+        %% envelope de recetas AST: {scoring?, evaluation?, subscales?}
+        Jsonb expression
+        %% condicion de visibilidad del formulario (AST booleano, raiz SIN wrapper)
         Jsonb condition
         %% verified=true => inmutable (no modificar form ni sus questions)
         Boolean verified

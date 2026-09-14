@@ -74,16 +74,16 @@
 ### A2 — Lenguaje de expresiones ✅ (resuelto)
 
 - **Decisión**: adoptar el **AST** de la referencia (`typescript.ts`) como
-  gramática canónica de `scoring_expression` (raíz `aggregate`) y
-  `evaluation_expression` (raíz `case/when`).
+  gramática canónica de `form.expression.scoring` (raíz `aggregate`) y
+  `form.expression.evaluation` (raíz `case/when`).
 - **Ubicación**: [`features/questionnaires/expressions/`](../features/questionnaires/expressions/)
   (`README.md` + `operators/*.md` + `operands.md` + `factories.md` +
   `examples/*.jsonc`). Se extrajo a la **raíz del módulo** (no en `catalog/`) por
   ser transversal a definición y ejecución.
 - **Frontera**: este doc cubre **solo** scoring/evaluación. Las **condiciones
   de visibilidad** siguen siendo A1 (pendiente aparte).
-- **Convención del `subject`**: el `evaluation_expression` **consume
-  `form.scoring_result`** (no repite la fórmula del scoring).
+- **Convención del `subject`**: la `evaluation` **consume
+  `form.result.scoring`** (no repite la fórmula del scoring).
 - **Correcciones de la referencia**: `PHQ9.ts` usaba `avg` (debía ser `sum`);
   `expression.md` decía "6 operadores" y documenta 7.
 - **Reflejo**: `schema.sql` (ejemplos inválidos corregidos), `catalog/README.md`
@@ -159,19 +159,19 @@
 ### C7 — Scoring unificado ✅ (resuelto)
 
 - **Decisión**: el **AST** ([`expressions/README.md`](../features/questionnaires/expressions/README.md))
-  es la forma **canónica** de scoring:
-  - `scoring_expression` (form) → `aggregate sum/avg` (número).
-  - `evaluation_expression` (form) → `case/when` (categoría).
-  - Subescalas → arreglo `subscales[]`, cada una con su par de expresiones.
-  - Resultados → `assignment.scoring_result` / `evaluation_result` = `{value, type}`
-    (espejan el `const` del AST, en inglés).
+  es la forma **canónica** de scoring, agrupada en el envelope **`form.expression`**:
+  - `expression.scoring` → `aggregate sum/avg` (número).
+  - `expression.evaluation` → `case/when` (categoría).
+  - Subescalas → `expression.subscales[]`, cada una `{id, name, items, max, scoring, evaluation}`;
+    `items` es la fuente de pertenencia y el scoping es **por contexto** (HADS).
+  - Resultados → `assignment.result` (espeja el envelope) = `{value, type}` por valor.
 - **Forma simplificada del MVP** (rangos `interpretacion[]` + `scoring.tipo`):
   se documenta como origen y **a migrar** (el motor la migra en D12, fase frontend).
-  Traducción rango→umbral documentada en `expressions/README.md` §7.
+  Traducción rango→umbral documentada en `expressions/README.md` §5.
 - **IPAQ METs** se separó a **C7b** (pendiente propio).
-- **Reflejo**: `expressions/` (README + ejemplos), `schema.sql` (ejemplos
-  corregidos), `catalog/README.md` §9/§11/§12, `catalog/example.jsonc`,
-  `questionnaires/README.md`.
+- **Regla de wrapper** (§1): raíz de campo sin wrapper; operandos con wrapper.
+- **Reflejo**: `expressions/` (README + ejemplos), `schema.sql`, `catalog/README.md`
+  §9/§11/§12, `catalog/example.jsonc`, `questionnaires/README.md`.
 
 ### C7b — METs IPAQ (scoring no lineal)
 
@@ -191,8 +191,8 @@
 - **Qué**: permitir que una **pregunta** tenga un valor **autocalculado** por una
   expresión (idea de `app_questionnaire/.../types/chatgpt_.ts`,
   `Question.calculation`), expresada con el **mismo AST** que el scoring.
-- **Forma propuesta**: `Question.value_expression` (un `OperandExpression`),
-  simétrico a `form.scoring_expression`.
+- **Forma propuesta**: `Question.value_expression` (operador AST, raíz sin
+  wrapper), simétrico a `form.expression.scoring`.
 - **Duda abierta**: si una pregunta tiene `value_expression`, ¿su valor es
   **solo lectura** (calculado) o editable por el usuario? Definir la semántica.
 - **Refs**: `expressions/README.md` §1 (puntos de aplicación del AST).
@@ -218,14 +218,13 @@
 ### C9 — `AnswerMap` ↔ `answer.data` ✅ (resuelto)
 
 - **Decisión (modelo)**: `answer.data` usa el envelope **`{value, type}`**,
-  los mismos campos que un `const` del AST y que `scoring_result`/
-  `evaluation_result`. Un solo vocabulario para todo valor del módulo.
+  los mismos campos que un `const` del AST y que `assignment.result`. Un solo
+  vocabulario para todo valor del módulo.
 - **`DataType` ampliado** con `datetime` y `duration` (para `DATE_TIME` y `TIMER`).
 - **Respuestas de opción** guardan el `value` **numérico** de la opción
   (`option.value`), no la etiqueta.
 - **Reflejo**: `schema.sql` (CHECK `type` + COMMENT), `responses/ERD.mmd`,
-  `responses/CLASS.mmd`, `responses/example.jsonc` (valores + `scoring_result`/
-  `evaluation_result` alineados al AST), `catalog/README.md` §8,
+  `responses/CLASS.mmd`, `responses/example.jsonc`, `catalog/README.md` §8,
   `expressions/README.md` §3.
 - **Frontend**: el `AnswerMap` en memoria es una representación **provisional**
   (sin tipo, aplanada); su migración al envelope es **fase frontend (D12)**.

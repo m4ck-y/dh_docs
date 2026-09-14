@@ -1,25 +1,25 @@
 # Casos de uso médicos
 
 Patrones del lenguaje aplicados a instrumentos reales. Algunos son **scoring**
-(`evaluation_expression`); otros son **condiciones de visibilidad**
-(`condition`, ver [`../conditions.md`](../conditions.md)).
+(`expression.scoring`/`expression.evaluation`); otros son **condiciones de
+visibilidad** (`condition`, ver [`../conditions.md`](../conditions.md)).
 
 ## 1. PHQ-9 — puntaje total (scoring)
 
-Ver [`phq9-scoring.jsonc`](./phq9-scoring.jsonc) y
+Ver [`phq9-expression.jsonc`](./phq9-expression.jsonc) y
 [`../operators/aggregate.md`](../operators/aggregate.md).
 
 ```jsonc
-{ "expression": { "type": "aggregate", "operator": "sum",
+{ "type": "aggregate", "operator": "sum",
   "args": [{ "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }],
-  "output": { "type": "number" } } }
+  "output": { "type": "number" } }
 ```
 
 ## 2. PHQ-9 — interpretación (scoring)
 
-Ver [`phq9-evaluation.jsonc`](./phq9-evaluation.jsonc) y
+Ver [`phq9-expression.jsonc`](./phq9-expression.jsonc) y
 [`../operators/case.md`](../operators/case.md). El `subject` consume
-`form.scoring_result`.
+`form.result.scoring`.
 
 ## 3. PHQ-9 — condición de la pregunta 10 (visibilidad)
 
@@ -28,30 +28,28 @@ Ver [`phq9-evaluation.jsonc`](./phq9-evaluation.jsonc) y
 
 ```jsonc
 {
-  "expression": {
-    "type": "collection",
-    "operator": "any",
-    "args": [
-      {
-        "expression": {
-          "type": "comparison",
-          "operator": ">",
-          "args": [
-            {
-              "subject": {
-                "entity": "question",
-                "property": "value",
-                "selector": { "range": [1, 9] }
-              }
-            },
-            { "const": { "value": 0, "type": "number" } }
-          ],
-          "output": { "type": "boolean" }
-        }
+  "type": "collection",
+  "operator": "any",
+  "args": [
+    {
+      "expression": {
+        "type": "comparison",
+        "operator": ">",
+        "args": [
+          {
+            "subject": {
+              "entity": "question",
+              "property": "value",
+              "selector": { "range": [1, 9] }
+            }
+          },
+          { "const": { "value": 0, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
       }
-    ],
-    "output": { "type": "boolean" }
-  }
+    }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 
@@ -65,30 +63,28 @@ preguntas 1–3 es "Sí" (valor == 1).
 
 ```jsonc
 {
-  "expression": {
-    "type": "collection",
-    "operator": "any",
-    "args": [
-      {
-        "expression": {
-          "type": "comparison",
-          "operator": "==",
-          "args": [
-            {
-              "subject": {
-                "entity": "question",
-                "property": "value",
-                "selector": { "range": [1, 3] }
-              }
-            },
-            { "const": { "value": 1, "type": "number" } }
-          ],
-          "output": { "type": "boolean" }
-        }
+  "type": "collection",
+  "operator": "any",
+  "args": [
+    {
+      "expression": {
+        "type": "comparison",
+        "operator": "==",
+        "args": [
+          {
+            "subject": {
+              "entity": "question",
+              "property": "value",
+              "selector": { "range": [1, 3] }
+            }
+          },
+          { "const": { "value": 1, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
       }
-    ],
-    "output": { "type": "boolean" }
-  }
+    }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 
@@ -98,15 +94,13 @@ Mostrar una alerta si el puntaje del PHQ-9 supera 15 (depresión severa).
 
 ```jsonc
 {
-  "expression": {
-    "type": "comparison",
-    "operator": ">",
-    "args": [
-      { "subject": { "entity": "form", "property": "scoring_result" } },
-      { "const": { "value": 15, "type": "number" } }
-    ],
-    "output": { "type": "boolean" }
-  }
+  "type": "comparison",
+  "operator": ">",
+  "args": [
+    { "subject": { "entity": "form", "property": "result.scoring" } },
+    { "const": { "value": 15, "type": "number" } }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 

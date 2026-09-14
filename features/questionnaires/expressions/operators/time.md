@@ -31,29 +31,27 @@ type RelativeOrAbsoluteDate =
 
 ```jsonc
 {
-  "expression": {
-    "type": "aggregate",
-    "operator": "avg",
-    "args": [
-      {
-        "expression": {
-          "type": "time",
-          "operator": "range",
-          "args": [
-            { "subject": { "entity": "person", "property": "weight" } },
-            {
-              "time_range": {
-                "start": { "relative": "-10Y" },
-                "end": { "relative": "NOW" }
-              }
+  "type": "aggregate",
+  "operator": "avg",
+  "args": [
+    {
+      "expression": {
+        "type": "time",
+        "operator": "range",
+        "args": [
+          { "subject": { "entity": "person", "property": "weight" } },
+          {
+            "time_range": {
+              "start": { "relative": "-10Y" },
+              "end": { "relative": "NOW" }
             }
-          ],
-          "output": { "type": "array_number" }
-        }
+          }
+        ],
+        "output": { "type": "array_number" }
       }
-    ],
-    "output": { "type": "number" }
-  }
+    }
+  ],
+  "output": { "type": "number" }
 }
 ```
 

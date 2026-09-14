@@ -39,7 +39,7 @@ El **sujeto** se lee del contexto de respuesta con `entity`/`property`/`selector
 |---|---|---|
 | `question` | `value` | La respuesta a una pregunta |
 | `person` | `age`, `sex`, … | Datos de la persona |
-| `form` | `scoring_result`, … | Resultado ya calculado |
+| `form` | `result.scoring`, … | Resultado ya calculado |
 
 ## 3. Ejemplos por nivel
 
@@ -49,32 +49,30 @@ Mostrar la pregunta 10 solo si **alguna** de las preguntas 1–9 tiene síntoma
 (`value > 0`). El conjunto se expresa con el selector `range`:
 
 ```jsonc
-// question.condition
+// question.condition (raíz sin wrapper)
 {
-  "expression": {
-    "type": "collection",
-    "operator": "any",
-    "args": [
-      {
-        "expression": {
-          "type": "comparison",
-          "operator": ">",
-          "args": [
-            {
-              "subject": {
-                "entity": "question",
-                "property": "value",
-                "selector": { "range": [1, 9] }
-              }
-            },
-            { "const": { "value": 0, "type": "number" } }
-          ],
-          "output": { "type": "boolean" }
-        }
+  "type": "collection",
+  "operator": "any",
+  "args": [
+    {
+      "expression": {
+        "type": "comparison",
+        "operator": ">",
+        "args": [
+          {
+            "subject": {
+              "entity": "question",
+              "property": "value",
+              "selector": { "range": [1, 9] }
+            }
+          },
+          { "const": { "value": 0, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
       }
-    ],
-    "output": { "type": "boolean" }
-  }
+    }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 
@@ -83,17 +81,15 @@ Mostrar la pregunta 10 solo si **alguna** de las preguntas 1–9 tiene síntoma
 Mostrar la sección solo si la persona es de sexo femenino:
 
 ```jsonc
-// section.condition
+// section.condition (raíz sin wrapper)
 {
-  "expression": {
-    "type": "comparison",
-    "operator": "==",
-    "args": [
-      { "subject": { "entity": "person", "property": "sex" } },
-      { "const": { "value": "F", "type": "string" } }
-    ],
-    "output": { "type": "boolean" }
-  }
+  "type": "comparison",
+  "operator": "==",
+  "args": [
+    { "subject": { "entity": "person", "property": "sex" } },
+    { "const": { "value": "F", "type": "string" } }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 
@@ -102,17 +98,15 @@ Mostrar la sección solo si la persona es de sexo femenino:
 Habilitar el formulario solo si la persona tiene 18 años o más:
 
 ```jsonc
-// form.condition
+// form.condition (raíz sin wrapper)
 {
-  "expression": {
-    "type": "comparison",
-    "operator": ">=",
-    "args": [
-      { "subject": { "entity": "person", "property": "age" } },
-      { "const": { "value": 18, "type": "number" } }
-    ],
-    "output": { "type": "boolean" }
-  }
+  "type": "comparison",
+  "operator": ">=",
+  "args": [
+    { "subject": { "entity": "person", "property": "age" } },
+    { "const": { "value": 18, "type": "number" } }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 
@@ -121,37 +115,35 @@ Habilitar el formulario solo si la persona tiene 18 años o más:
 Mostrar la sección solo si (edad ≥ 18 **Y** sexo = F):
 
 ```jsonc
-// section.condition
+// section.condition (raíz sin wrapper; los operandos sí llevan wrapper)
 {
-  "expression": {
-    "type": "logic",
-    "operator": "and",
-    "args": [
-      {
-        "expression": {
-          "type": "comparison",
-          "operator": ">=",
-          "args": [
-            { "subject": { "entity": "person", "property": "age" } },
-            { "const": { "value": 18, "type": "number" } }
-          ],
-          "output": { "type": "boolean" }
-        }
-      },
-      {
-        "expression": {
-          "type": "comparison",
-          "operator": "==",
-          "args": [
-            { "subject": { "entity": "person", "property": "sex" } },
-            { "const": { "value": "F", "type": "string" } }
-          ],
-          "output": { "type": "boolean" }
-        }
+  "type": "logic",
+  "operator": "and",
+  "args": [
+    {
+      "expression": {
+        "type": "comparison",
+        "operator": ">=",
+        "args": [
+          { "subject": { "entity": "person", "property": "age" } },
+          { "const": { "value": 18, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
       }
-    ],
-    "output": { "type": "boolean" }
-  }
+    },
+    {
+      "expression": {
+        "type": "comparison",
+        "operator": "==",
+        "args": [
+          { "subject": { "entity": "person", "property": "sex" } },
+          { "const": { "value": "F", "type": "string" } }
+        ],
+        "output": { "type": "boolean" }
+      }
+    }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 
@@ -186,8 +178,8 @@ al AST:
   { "id_question": 9, "operator": ">", "value": 0 }
 ] }
 
-// AST (una comparación sobre un rango)
-{ "expression": { "type": "collection", "operator": "any", "args": [ ... ], "output": { "type": "boolean" } } }
+// AST (una comparación sobre un rango; raíz sin wrapper)
+{ "type": "collection", "operator": "any", "args": [ ... ], "output": { "type": "boolean" } }
 ```
 
 Ventaja del AST: el rango se expresa con **un selector** (`range`/`all`/`id`) en

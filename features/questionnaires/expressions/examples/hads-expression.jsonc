@@ -1,0 +1,64 @@
+{
+  /* form.expression del HADS (2 escalas): envelope { subscales }.
+     Cada subescala es una unidad autocontenida: items (pertenencia) + scoring
+     + evaluation. El scoring/evaluation se scopean POR CONTEXTO a los items de
+     su subescala (no repiten la lista). Ver ../README.md §4. */
+  "subscales": [
+    {
+      "id": "A",
+      "name": "Ansiedad",
+      "items": [1, 3, 5, 7, 9, 11, 13],
+      "max": 21,
+      "scoring": {
+        "type": "aggregate",
+        "operator": "sum",
+        "args": [
+          { "subject": { "entity": "question", "property": "value" } }
+        ],
+        "output": { "type": "number" }
+      },
+      "evaluation": {
+        "type": "case",
+        "operator": "when",
+        "subject": { "subject": { "entity": "form", "property": "result.scoring" } },
+        "cases": [
+          { "when": { "operator": "<=", "operand": { "const": { "value": 7, "type": "number" } } },
+            "then": { "const": { "value": "Normalidad", "type": "string" } } },
+          { "when": { "operator": "<=", "operand": { "const": { "value": 10, "type": "number" } } },
+            "then": { "const": { "value": "Probable ansiedad", "type": "string" } } }
+        ],
+        "default": { "const": { "value": "Caso de ansiedad", "type": "string" } },
+        "output": { "type": "string" },
+        "args": []
+      }
+    },
+    {
+      "id": "D",
+      "name": "Depresión",
+      "items": [2, 4, 6, 8, 10, 12, 14],
+      "max": 21,
+      "scoring": {
+        "type": "aggregate",
+        "operator": "sum",
+        "args": [
+          { "subject": { "entity": "question", "property": "value" } }
+        ],
+        "output": { "type": "number" }
+      },
+      "evaluation": {
+        "type": "case",
+        "operator": "when",
+        "subject": { "subject": { "entity": "form", "property": "result.scoring" } },
+        "cases": [
+          { "when": { "operator": "<=", "operand": { "const": { "value": 7, "type": "number" } } },
+            "then": { "const": { "value": "Normalidad", "type": "string" } } },
+          { "when": { "operator": "<=", "operand": { "const": { "value": 10, "type": "number" } } },
+            "then": { "const": { "value": "Probable depresión", "type": "string" } } }
+        ],
+        "default": { "const": { "value": "Caso de depresión", "type": "string" } },
+        "output": { "type": "string" },
+        "args": []
+      }
+    }
+  ]
+}

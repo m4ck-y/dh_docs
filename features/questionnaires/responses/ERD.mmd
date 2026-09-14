@@ -67,8 +67,8 @@ erDiagram
         DateTime submitted_at
         %% Resultado definitivo de ESTA assignment. No es cache: como cada
         %% assignment es un evento unico, el resultado le pertenece.
-        Jsonb scoring_result
-        Jsonb evaluation_result
+        %% Envelope {scoring?, evaluation?, subscales?}; cada valor {value, type}.
+        Jsonb result
         %% Nota V2: n_questions_total / n_questions_answered del modelo V1 NO se
         %% persisten; el progreso se calcula al vuelo desde answer.
     }

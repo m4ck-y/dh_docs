@@ -5,7 +5,7 @@
     En este escenario un medico programa el cuestionario al paciente.
 
     Formato de valores: todo valor usa el envelope {value, type}, igual que
-    un const del AST y que scoring_result/evaluation_result (ver schema.sql).
+    un const del AST y que assignment.result (ver schema.sql).
     Las respuestas de opcion guardan el value numerico de la opcion (option.value),
     no la etiqueta.
   */
@@ -20,13 +20,9 @@
     "started_at": "2026-09-02T10:00:00Z",
     "completed_at": "2026-09-02T10:15:00Z",
     "submitted_at": "2026-09-02T10:15:00Z",
-    "scoring_result": {
-      "value": 8,
-      "type": "number"
-    },
-    "evaluation_result": {
-      "value": "depresion_leve",
-      "type": "string"
+    "result": {
+      "scoring":    { "value": 8, "type": "number" },
+      "evaluation": { "value": "depresion_leve", "type": "string" }
     },
     "form": {
       "id": "UUID-FORM-GDS15",

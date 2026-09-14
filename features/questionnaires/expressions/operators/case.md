@@ -1,7 +1,7 @@
 # `case` — CASE WHEN
 
 Lógica condicional que evalúa un `subject` una sola vez y lo clasifica en la
-primera banda que coincida. Es la base de la **`evaluation_expression`**.
+primera banda que coincida. Es la base de la **`expression.evaluation`**.
 
 ## Interface
 
@@ -34,16 +34,16 @@ interface CaseOperator extends BaseOperator {
 > **Excepción conocida:** `CaseOperator` no usa `args` (requerido por
 > `BaseOperator`), por lo que se declara `"args": []`.
 
-## El `subject` del `evaluation_expression` (convención del proyecto)
+## El `subject` del `expression.evaluation` (convención del proyecto)
 
-El `case` de un `evaluation_expression` **consume el resultado del scoring**, no
+El `case` de un `expression.evaluation` **consume el resultado del scoring**, no
 repite la fórmula:
 
 ```jsonc
 {
   "type": "case", "operator": "when",
   "subject": {
-    "subject": { "entity": "form", "property": "scoring_result" }
+    "subject": { "entity": "form", "property": "result.scoring" }
   },
   "cases": [ ... ],
   "default": { "const": { "value": "Fuera de rango", "type": "string" } },
@@ -55,41 +55,40 @@ repite la fórmula:
 Cadena completa:
 
 ```
-scoring_expression  →  scoring_result  →  evaluation_expression  →  evaluation_result
+expression.scoring  →  result.scoring  →  expression.evaluation  →  result.evaluation
    (receta suma)         (número: 11)      (case sobre ese número)     (categoría)
 ```
 
 - El `subject` es un operando `OperandSubject` (`{"subject": {...}}`), de ahí el
   doble `subject` anidado en el JSON.
-- Con subescalas, el subject identifica el resultado por grupo:
-  `{"subject": {"entity": "form", "property": "scoring_result", "selector": {"group": "A"}}}`.
-- Si el `form` no define `scoring_expression`, no hay `scoring_result` que
-  consumir: un `evaluation_expression` que lo referencie requiere scoring.
+- Con subescalas, el scoping es **por contexto**: una `evaluation` anidada en la
+  subescala `A` consume el `result.scoring` de **esa** subescala (no se repite el
+  `group`).
+- Si el `form` no define `expression.scoring`, no hay `result.scoring` que
+  consumir: una `expression.evaluation` que lo referencie requiere scoring.
 
 ## Ejemplo — interpretación PHQ-9
 
 ```jsonc
 {
-  "expression": {
-    "type": "case",
-    "operator": "when",
-    "subject": { "subject": { "entity": "form", "property": "scoring_result" } },
-    "cases": [
-      {
-        "when": { "operator": "<", "operand": { "const": { "value": 5, "type": "number" } } },
-        "then": { "const": { "value": "Depresión mínima", "type": "string" } }
-      },
-      {
-        "when": { "operator": "<", "operand": { "const": { "value": 10, "type": "number" } } },
-        "then": { "const": { "value": "Depresión leve", "type": "string" } }
-      }
-    ],
-    "default": { "const": { "value": "Puntuación fuera de rango", "type": "string" } },
-    "output": { "type": "string" },
-    "args": []
-  }
+  "type": "case",
+  "operator": "when",
+  "subject": { "subject": { "entity": "form", "property": "result.scoring" } },
+  "cases": [
+    {
+      "when": { "operator": "<", "operand": { "const": { "value": 5, "type": "number" } } },
+      "then": { "const": { "value": "Depresión mínima", "type": "string" } }
+    },
+    {
+      "when": { "operator": "<", "operand": { "const": { "value": 10, "type": "number" } } },
+      "then": { "const": { "value": "Depresión leve", "type": "string" } }
+    }
+  ],
+  "default": { "const": { "value": "Puntuación fuera de rango", "type": "string" } },
+  "output": { "type": "string" },
+  "args": []
 }
 ```
 
 Ejemplo completo (5 bandas) en
-[`../examples/phq9-evaluation.jsonc`](../examples/phq9-evaluation.jsonc).
+[`../examples/phq9-expression.jsonc`](../examples/phq9-expression.jsonc).

@@ -24,15 +24,13 @@ interface ComparisonOperator extends BaseOperator {
 
 ```jsonc
 {
-  "expression": {
-    "type": "comparison",
-    "operator": ">",
-    "args": [
-      { "subject": { "entity": "question", "property": "value" } },
-      { "const": { "value": 0, "type": "number" } }
-    ],
-    "output": { "type": "boolean" }
-  }
+  "type": "comparison",
+  "operator": ">",
+  "args": [
+    { "subject": { "entity": "question", "property": "value" } },
+    { "const": { "value": 0, "type": "number" } }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 

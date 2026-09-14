@@ -84,7 +84,7 @@ Uso (interpretación PHQ-9, con el subject convenido del proyecto):
 
 ```ts
 const phq9Interpretation = createCaseOperation(
-  { subject: { entity: "form", property: "scoring_result" } },
+  { subject: { entity: "form", property: "result.scoring" } },
   [
     {
       when: { operator: "<", operand: { const: { value: 5, type: "number" } } },

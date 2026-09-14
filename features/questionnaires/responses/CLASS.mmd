@@ -16,8 +16,8 @@ classDiagram
         +string started_at
         +string completed_at
         +string submitted_at
-        +Jsonb scoring_result
-        +Jsonb evaluation_result
+        %% {scoring?, evaluation?, subscales?}; cada valor {value, type}
+        +Jsonb result
         +Scheduled scheduled
         +Answer[] answers
     }
@@ -45,8 +45,8 @@ classDiagram
         +string key
         +string name
         +string description
-        +Jsonb scoring_expression
-        +Jsonb evaluation_expression
+        %% {scoring?, evaluation?, subscales?}
+        +Jsonb expression
     }
 
     %% Assignment embebe sus answers (composición)

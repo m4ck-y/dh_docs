@@ -43,7 +43,7 @@ se documenta aparte en [`../catalog/`](../catalog/).
 | `assignment` como evento | No es registro maestro; cada contestación es un evento nuevo | Evita la ambigüedad entre "reintentos" y "actualizaciones de info". |
 | `assigned_by` solo en `scheduled` | El asignador se guarda en `scheduled`, no en `assignment` | En flujo directo no hay asignador (el paciente contesta por su cuenta). |
 | `answered_by` en `answer` | Auditoría por pregunta: quién ingresó cada respuesta | En salud, a veces el médico o tutor contesta por el paciente. |
-| `scoring_result` en `assignment` | No es cache, es el resultado del evento | `assignment` es la unidad que produce el resultado. |
+| `result` en `assignment` | No es cache, es el resultado del evento | `assignment` es la unidad que produce el resultado. |
 | `status` enum | `ENABLED`, `IN_PROGRESS`, `COMPLETED`, `SUBMITTED`, `EXPIRED` | Ciclo de vida de una tarea; ver comentarios del ERD. |
 
 ## Diferencias V1 → V2

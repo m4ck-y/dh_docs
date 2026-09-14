@@ -1,0 +1,49 @@
+{
+  /* form.expression del PHQ-9 (1 escala): envelope { scoring, evaluation }.
+     Las claves scoring/evaluation son operadores directos (raiz SIN wrapper).
+     Ver ../README.md §1 y §6. */
+  "scoring": {
+    "type": "aggregate",
+    "operator": "sum",
+    "args": [
+      {
+        "subject": {
+          "entity": "question",
+          "property": "value",
+          "selector": { "all": true }
+        }
+      }
+    ],
+    "output": { "type": "number" }
+  },
+  "evaluation": {
+    "type": "case",
+    "operator": "when",
+    "subject": { "subject": { "entity": "form", "property": "result.scoring" } },
+    "cases": [
+      {
+        "when": { "operator": "<", "operand": { "const": { "value": 5, "type": "number" } } },
+        "then": { "const": { "value": "Depresión mínima", "type": "string" } }
+      },
+      {
+        "when": { "operator": "<", "operand": { "const": { "value": 10, "type": "number" } } },
+        "then": { "const": { "value": "Depresión leve", "type": "string" } }
+      },
+      {
+        "when": { "operator": "<", "operand": { "const": { "value": 15, "type": "number" } } },
+        "then": { "const": { "value": "Depresión moderada", "type": "string" } }
+      },
+      {
+        "when": { "operator": "<", "operand": { "const": { "value": 20, "type": "number" } } },
+        "then": { "const": { "value": "Depresión moderadamente severa", "type": "string" } }
+      },
+      {
+        "when": { "operator": "<=", "operand": { "const": { "value": 27, "type": "number" } } },
+        "then": { "const": { "value": "Depresión severa", "type": "string" } }
+      }
+    ],
+    "default": { "const": { "value": "Puntuación fuera de rango", "type": "string" } },
+    "output": { "type": "string" },
+    "args": []
+  }
+}

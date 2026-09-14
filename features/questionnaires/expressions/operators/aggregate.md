@@ -23,18 +23,16 @@ interface AggregateOperator extends BaseOperator {
 
 ```jsonc
 {
-  "expression": {
-    "type": "aggregate",
-    "operator": "sum",
-    "args": [
-      { "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }
-    ],
-    "output": { "type": "number" }
-  }
+  "type": "aggregate",
+  "operator": "sum",
+  "args": [
+    { "subject": { "entity": "question", "property": "value", "selector": { "all": true } } }
+  ],
+  "output": { "type": "number" }
 }
 ```
 
-Ejemplo completo en [`../examples/phq9-scoring.jsonc`](../examples/phq9-scoring.jsonc).
+Ejemplo completo en [`../examples/phq9-expression.jsonc`](../examples/phq9-expression.jsonc).
 
 ## Nota de la fuente
 

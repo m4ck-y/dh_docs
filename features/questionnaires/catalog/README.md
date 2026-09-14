@@ -239,8 +239,8 @@ El modelo persistido está definido en [`../responses/ERD.mmd`](../responses/ERD
 `answer { id_assignment, id_question, answered_by, data }`.
 
 **Forma canónica de `data`:** el envelope `{value, type}`, los mismos campos
-que un `const` del AST y que `scoring_result`/`evaluation_result` (ver
-`schema.sql` y [`../expressions/README.md`](../expressions/README.md) §8). Así
+que un `const` del AST y que `assignment.result` (ver
+`schema.sql` y [`../expressions/README.md`](../expressions/README.md) §6). Así
 todo valor del módulo usa un solo vocabulario.
 
 ```jsonc
@@ -268,16 +268,16 @@ type}` es parte de la fase frontend (ver **D12** en
 ## 9. Scoring e interpretación
 
 La forma **canónica** es el **AST de expresiones** del proyecto, documentado en
-[`../expressions/README.md`](../expressions/README.md):
+[`../expressions/README.md`](../expressions/README.md), agrupado en el envelope
+`form.expression`:
 
-- **`scoring_expression`** (form) → `aggregate` (`sum`/`avg`) que produce el
-  puntaje numérico.
-- **`evaluation_expression`** (form) → `case/when` que clasifica el puntaje en
-  una categoría de texto. Su `subject` **consume** `form.scoring_result` (no
-  repite la fórmula del scoring).
-- **Subescalas**: arreglo `subscales[]`, cada una con su par de expresiones.
-- **Resultados**: `assignment.scoring_result` / `evaluation_result` = `{value,
-  type}` (espejan el `const` del AST).
+- **`expression.scoring`** → `aggregate` (`sum`/`avg`) que produce el puntaje.
+- **`expression.evaluation`** → `case/when` que clasifica el puntaje. Su
+  `subject` **consume** `form.result.scoring` (no repite la fórmula).
+- **Subescalas**: `expression.subscales[]`, cada una con `id`, `name`, `items`,
+  `max` y su par `scoring`/`evaluation` (scoping por contexto).
+- **Resultados**: `assignment.result` espeja el envelope (`{scoring?,
+  evaluation?, subscales?}`), con cada valor como `{value, type}`.
 
 El MVP del frontend usa todavía una **forma simplificada** (rangos), que se
 documenta como origen y a migrar (pendiente D12):
@@ -291,7 +291,7 @@ documenta como origen y a migrar (pendiente D12):
 
 **Ejemplo PHQ-9 (equivalencia de bandas):**
 
-| Escala | MVP `phq9Instrument.ts` (rango) | AST `evaluation_expression` (umbral) |
+| Escala | MVP `phq9Instrument.ts` (rango) | AST `expression.evaluation` (umbral) |
 |---|---|---|
 | Mínima | 0–4 | `<5` |
 | Leve | 5–9 | `<10` |
@@ -353,10 +353,9 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
    (enum `EUrlType`). Se adopta `type_media` en el contrato; el modelo V1/legacy
    usaba `type`.
 
-7. **Scoring en `schema.sql` corregido**: los ejemplos previos de
-   `scoring_expression` (`{"op":"sum","fields":[...]}`),
-   `evaluation_expression` (`{"if":[{"gte":...}]}`) y `scoring_result` (que
-   repetía la receta) **no existían** en ninguna gramática. Se alinearon al AST
+7. **Scoring en `schema.sql` corregido**: los ejemplos previos
+   (`{"op":"sum","fields":[...]}`, `{"if":[{"gte":...}]}`) y el `result` que
+   repetía la receta **no existían** en ninguna gramática. Se alinearon al AST
    (`../expressions/README.md`).
 
 8. **`PHQ9.ts` de la referencia**: declara `operator: "avg"` con comentario
@@ -397,6 +396,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 | `example.jsonc` | Ejemplo de payload del catálogo (JSON con comentarios). |
 | `question_types/` | Un doc por tipo de pregunta (`question.type`) con su `config` y `answer.data`. |
 
-> El **lenguaje de expresiones** (`scoring_expression` / `evaluation_expression`)
-> vive en [`../expressions/`](../expressions/), a nivel del módulo (no dentro de
+> El **lenguaje de expresiones** (el envelope `form.expression` con
+> `scoring`/`evaluation`/`subscales`) vive en
+> [`../expressions/`](../expressions/), a nivel del módulo (no dentro de
 > `catalog/`), porque es transversal a definición y ejecución.

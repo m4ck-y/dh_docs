@@ -26,30 +26,28 @@ Con el selector `range` (ver [`../operands.md`](../operands.md)):
 
 ```jsonc
 {
-  "expression": {
-    "type": "collection",
-    "operator": "any",
-    "args": [
-      {
-        "expression": {
-          "type": "comparison",
-          "operator": ">",
-          "args": [
-            {
-              "subject": {
-                "entity": "question",
-                "property": "value",
-                "selector": { "range": [1, 9] }
-              }
-            },
-            { "const": { "value": 0, "type": "number" } }
-          ],
-          "output": { "type": "boolean" }
-        }
+  "type": "collection",
+  "operator": "any",
+  "args": [
+    {
+      "expression": {
+        "type": "comparison",
+        "operator": ">",
+        "args": [
+          {
+            "subject": {
+              "entity": "question",
+              "property": "value",
+              "selector": { "range": [1, 9] }
+            }
+          },
+          { "const": { "value": 0, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
       }
-    ],
-    "output": { "type": "boolean" }
-  }
+    }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 
@@ -58,43 +56,41 @@ sean un rango contiguo):
 
 ```jsonc
 {
-  "expression": {
-    "type": "collection",
-    "operator": "any",
-    "args": [
-      {
-        "expression": {
-          "type": "comparison",
-          "operator": ">",
-          "args": [
-            {
-              "subject": {
-                "entity": "question",
-                "property": "value",
-                "selector": {
-                  "condition": {
-                    "property": "id",
-                    "expression": {
-                      "type": "comparison",
-                      "operator": "in",
-                      "args": [
-                        { "const": { "value": [1,2,3,4,5,6,7,8,9], "type": "array_number" } }
-                      ],
-                      "output": { "type": "boolean" }
-                    },
-                    "output": { "type": "array_number" }
-                  }
+  "type": "collection",
+  "operator": "any",
+  "args": [
+    {
+      "expression": {
+        "type": "comparison",
+        "operator": ">",
+        "args": [
+          {
+            "subject": {
+              "entity": "question",
+              "property": "value",
+              "selector": {
+                "condition": {
+                  "property": "id",
+                  "expression": {
+                    "type": "comparison",
+                    "operator": "in",
+                    "args": [
+                      { "const": { "value": [1,2,3,4,5,6,7,8,9], "type": "array_number" } }
+                    ],
+                    "output": { "type": "boolean" }
+                  },
+                  "output": { "type": "array_number" }
                 }
               }
-            },
-            { "const": { "value": 0, "type": "number" } }
-          ],
-          "output": { "type": "boolean" }
-        }
+            }
+          },
+          { "const": { "value": 0, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
       }
-    ],
-    "output": { "type": "boolean" }
-  }
+    }
+  ],
+  "output": { "type": "boolean" }
 }
 ```
 

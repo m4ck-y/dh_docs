@@ -28,8 +28,8 @@ Esto presentaba tres problemas:
    la opción rechazada.
 
 Por otro lado, el proyecto ya adoptó un **lenguaje de expresiones** (AST,
-`expressions/`) para `scoring_expression` y `evaluation_expression` (ADR previo
-del pase A2/C7). Ese lenguaje ya sabe expresar condiciones booleanas mediante los
+`expressions/`) para `form.expression.scoring` y `form.expression.evaluation`
+(pase A2/C7). Ese lenguaje ya sabe expresar condiciones booleanas mediante los
 operadores `comparison`, `logic` y `collection`, y su capacidad de anidación
 supera a la forma `{type: all|any|none, rules[]}` de la referencia.
 

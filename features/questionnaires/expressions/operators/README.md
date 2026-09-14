@@ -31,8 +31,8 @@ interface BaseOperator {
 
 ## Uso en el módulo de cuestionarios
 
-- **`scoring_expression`** usa típicamente `aggregate` (`sum`/`avg`).
-- **`evaluation_expression`** usa `case` (con `comparison` en sus `when` y,
+- **`expression.scoring`** usa típicamente `aggregate` (`sum`/`avg`).
+- **`expression.evaluation`** usa `case` (con `comparison` en sus `when` y,
   opcionalmente, `logic` para combinar).
 - `math`, `collection` y `time` están disponibles pero **no se usan todavía** en
   scoring; `math` es la vía para el scoring por METs de IPAQ
