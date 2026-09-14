@@ -15,10 +15,10 @@
 
 | ADR | Relevancia para TASK-015 |
 |---|---|
-| [003 — Polyglot Persistence](../../decisions/003-estrategia-multi-base-de-datos.md) | Autoriza MongoDB como motor documental. PostgreSQL para transaccional, MongoDB para flexible/documental. |
-| [005 — MongoDB Driver + Lifespan](../../decisions/005-mongodb-driver-and-fastapi-lifespan.md) | Define `pymongo.AsyncMongoClient` via Beanie. Inicializacion en FastAPI `lifespan`. |
-| [010 — Database ID Strategy](../../decisions/010-database-id-strategy.md) | UUID dual (integer PK interno + UUID expuesto). El UUID es el link natural PG ↔ MongoDB. |
-| [036 — FHIR R5 Adoption](../../decisions/036-fhir-r5-adoption.md) | Schemas Pydantic en `dh_shared`. **Deja sin decidir la persistencia fisica — TASK-015 cierra esa brecha.** |
+| [003 — Polyglot Persistence](../../../decisions/003-estrategia-multi-base-de-datos.md) | Autoriza MongoDB como motor documental. PostgreSQL para transaccional, MongoDB para flexible/documental. |
+| [005 — MongoDB Driver + Lifespan](../../../decisions/005-mongodb-driver-and-fastapi-lifespan.md) | Define `pymongo.AsyncMongoClient` via Beanie. Inicializacion en FastAPI `lifespan`. |
+| [010 — Database ID Strategy](../../../decisions/010-database-id-strategy.md) | UUID dual (integer PK interno + UUID expuesto). El UUID es el link natural PG ↔ MongoDB. |
+| [036 — FHIR R5 Adoption](../../../decisions/036-fhir-r5-adoption.md) | Schemas Pydantic en `dh_shared`. **Deja sin decidir la persistencia fisica — TASK-015 cierra esa brecha.** |
 
 ### Orden de fases: RBAC first
 
@@ -151,7 +151,7 @@ Cada fase se considera completada cuando:
 
 - [Preguntas de diseno pendientes](OPEN-QUESTIONS.md)
 - [TASK-015 README](../README.md)
-- [ADR 003: Polyglot Persistence](../../decisions/003-estrategia-multi-base-de-datos.md)
-- [ADR 005: MongoDB Driver](../../decisions/005-mongodb-driver-and-fastapi-lifespan.md)
-- [ADR 010: ID Strategy](../../decisions/010-database-id-strategy.md)
-- [ADR 036: FHIR R5 Adoption](../../decisions/036-fhir-r5-adoption.md)
+- [ADR 003: Polyglot Persistence](../../../decisions/003-estrategia-multi-base-de-datos.md)
+- [ADR 005: MongoDB Driver](../../../decisions/005-mongodb-driver-and-fastapi-lifespan.md)
+- [ADR 010: ID Strategy](../../../decisions/010-database-id-strategy.md)
+- [ADR 036: FHIR R5 Adoption](../../../decisions/036-fhir-r5-adoption.md)
