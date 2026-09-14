@@ -46,7 +46,7 @@
 | C7b | METs IPAQ (scoring no lineal) | Modelo | ⏳ |
 | C7c | `value_expression` por pregunta | Modelo | ⏳ |
 | C8 | Gaps del contrato `Instrument` | Modelo | ✅ |
-| C9 | `AnswerMap` ↔ `answer.value` | Modelo | ⏳ |
+| C9 | `AnswerMap` ↔ `answer.value` | Modelo | ✅ |
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
 | C11 | Remanentes V1 en `schema.sql` | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
@@ -215,13 +215,20 @@
   `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `schema.sql`,
   `questionnaires/README.md`, `question_types/README.md`.
 
-### C9 — `AnswerMap` ↔ `answer.value`
+### C9 — `AnswerMap` ↔ `answer.value` ✅ (resuelto)
 
-- **Qué**: alinear la forma en memoria del frontend
-  (`AnswerMap = Record<string, number|number[]|string>`) con el valor JSON
-  persistido (`answer.value` = `{type, value}`).
-- **Refs**: `catalog/README.md` §7 (`answer`), `responses/ERD.mmd`,
-  `responses/example.jsonc`.
+- **Decisión (modelo)**: `answer.value` usa el envelope **`{value, data_type}`**,
+  los mismos campos que un `const` del AST y que `scoring_result`/
+  `evaluation_result`. Un solo vocabulario para todo valor del módulo.
+- **`DataType` ampliado** con `datetime` y `duration` (para `DATE_TIME` y `TIMER`).
+- **Respuestas de opción** guardan el `value` **numérico** de la opción
+  (`option.value`), no la etiqueta.
+- **Reflejo**: `schema.sql` (CHECK `data_type` + COMMENT), `responses/ERD.mmd`,
+  `responses/CLASS.mmd`, `responses/example.jsonc` (valores + `scoring_result`/
+  `evaluation_result` alineados al AST), `catalog/README.md` §8,
+  `expressions/README.md` §3.
+- **Frontend**: el `AnswerMap` en memoria es una representación **provisional**
+  (sin tipo, aplanada); su migración al envelope es **fase frontend (D12)**.
 
 ### C10 — Schema `form` en `ALL_SCHEMAS`
 
@@ -250,6 +257,8 @@
   `none`). Con el contrato nuevo, `conditions.ts` trataría el elemento como
   siempre visible (fallo silencioso). Ver
   [`expressions/conditions.md`](../features/questionnaires/expressions/conditions.md) §5.
+- **Incluye**: migrar el `AnswerMap` en memoria al envelope `{value, data_type}`
+  (C9). Hoy es provisional: sin tipo y aplanado. Ver `catalog/README.md` §8.
 - **Refs**: `docs/diagrams/schemas/cuestionario/README.md:23`
   (describe el **estado actual implementado**, no el objetivo).
 - **Objetivo**: `catalog/question_types/` (9 tipos) + condición AST.

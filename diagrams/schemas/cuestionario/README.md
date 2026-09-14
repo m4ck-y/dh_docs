@@ -260,6 +260,11 @@ export type AnswerValue = number | number[] | string;
 export type AnswerMap = Record<string, AnswerValue>;
 ```
 
+> **Destino.** `AnswerMap` es la forma **en memoria actual** (provisional: sin
+> tipo, aplanada). El modelo canónico persistido es el envelope
+> `{value, data_type}` (ver `schema.sql` y `catalog/README.md` §8); migrar el
+> motor a esa forma es parte de **D12**.
+
 - Persistencia en AppDB (claves `questionnaire_answers:{key}` y
   `questionnaire_dates:{key}`).
 - `QuestionnaireDates` = `{ inicio?, fecha?, saved? }`; `saved` refleja la

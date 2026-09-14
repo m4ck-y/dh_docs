@@ -235,20 +235,35 @@ La condición decide si un elemento **se muestra u oculta**, y se modela como
 
 ### Objeto `answer` (modelo persistido vs. memoria)
 
-El modelo persistido de respuestas ya está definido en
-[`../responses/ERD.mmd`](../responses/ERD.mmd): `answer { id_assignment,
-id_question, answered_by, value (JSON) }`.
+El modelo persistido está definido en [`../responses/ERD.mmd`](../responses/ERD.mmd):
+`answer { id_assignment, id_question, answered_by, value }`.
+
+**Forma canónica de `value`:** el envelope `{value, data_type}`, los mismos campos
+que un `const` del AST y que `scoring_result`/`evaluation_result` (ver
+`schema.sql` y [`../expressions/README.md`](../expressions/README.md) §8). Así
+todo valor del módulo usa un solo vocabulario.
+
+```jsonc
+// answer.value
+{ "value": 9.5,  "data_type": "number" }
+{ "value": [1, 3], "data_type": "array_number" }
+{ "value": "2026-08-26T14:30:00Z", "data_type": "datetime" }
+```
+
+`data_type` ∈ `number | string | boolean | date | datetime | duration |
+array_string | array_number | array_object`. Las respuestas de opción guardan el
+`value` **numérico** de la opción (`option.value`), no la etiqueta.
 
 ```ts
-// Forma en memoria que usa el motor del frontend (independiente del ERD).
+// Representación en memoria del motor del frontend (provisional).
 type AnswerValue = number | number[] | string;
 type AnswerMap = Record<string, AnswerValue>; // { id_question: value }
 ```
 
-La referencia modela la respuesta persistida como `answer { id_assignment,
-id_question, answer(JSON tipo+valor) }`. El ERD (`answer` con `answered_by` +
-`value JSON`) ya recoge esa forma; queda pendiente alinear el `AnswerMap` en
-memoria del frontend con el valor JSON persistido.
+El `AnswerMap` es una **representación en memoria provisional**: no incluye el
+tipo y se aplana respecto al envelope. Su migración al formato `{value,
+data_type}` es parte de la fase frontend (ver **D12** en
+`../TODO/cuestionarios.md`).
 
 ## 9. Scoring e interpretación
 
@@ -363,9 +378,9 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 - [x] Cubrir gaps de `Instrument`: `list_references` y `list_sections` (ADR 038).
       `target_sex` no era gap: se corrigió la contradicción del ejemplo vs §5.
 - [x] Condición de visibilidad: AST JSONB en form/section/question (ADR 039).
+- [x] `answer.value` canónico = envelope `{value, data_type}` (ver §8).
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
-- [ ] Alinear el `AnswerMap` en memoria del frontend con el valor JSON persistido
-      (ver §8).
+- [ ] Migrar el `AnswerMap` en memoria del frontend al envelope (fase frontend, D12).
 
 ## 13. Fuera de alcance (por ahora)
 

@@ -3,6 +3,11 @@
     Ejemplo de ejecucion bajo el modelo V2 (Evento / Tarea atomica).
     Cada reevaluacion o renovacion genera un documento independiente en la coleccion de asignaciones.
     En este escenario un medico programa el cuestionario al paciente.
+
+    Formato de valores: todo valor usa el envelope {value, data_type}, igual que
+    un const del AST y que scoring_result/evaluation_result (ver schema.sql).
+    Las respuestas de opcion guardan el value numerico de la opcion (option.value),
+    no la etiqueta.
   */
   "assignment": {
     "id": "UUID-ASSIGNMENT-V2",
@@ -16,13 +21,12 @@
     "completed_at": "2026-09-02T10:15:00Z",
     "submitted_at": "2026-09-02T10:15:00Z",
     "scoring_result": {
-      "score": 8,
-      "max_score": 15,
-      "calculation_method": "direct_sum"
+      "value": 8,
+      "data_type": "number"
     },
     "evaluation_result": {
-      "category": "depresion_leve",
-      "description": "Puntuacion sugestiva de depresion leve"
+      "value": "depresion_leve",
+      "data_type": "string"
     },
     "form": {
       "id": "UUID-FORM-GDS15",
@@ -44,49 +48,49 @@
         "id_assignment": "UUID-ASSIGNMENT-V2",
         "id_question": "gds-01",
         "answered_by": "UUID-PACIENTE-JUAN",
-        "value": ["No"] // Respuesta de tipo SINGLE_CHOICE
+        "value": { "value": 2, "data_type": "number" } // SINGLE_CHOICE (value de la opcion)
       },
       {
         "id": "UUID-ANSWER-02",
         "id_assignment": "UUID-ASSIGNMENT-V2",
         "id_question": "gds-peso",
         "answered_by": "UUID-MEDICO-PEREZ", // Capturado por el medico durante la consulta
-        "value": 72 // Respuesta de tipo NUMBER
+        "value": { "value": 72, "data_type": "number" } // NUMBER
       },
       {
         "id": "UUID-ANSWER-03",
         "id_assignment": "UUID-ASSIGNMENT-V2",
         "id_question": "gds-sintomas",
         "answered_by": "UUID-TUTOR-MARIA", // Apoyado por el tutor en casa
-        "value": ["Insomnio", "Fatiga", "Perdida de apetito"] // MULTIPLE_CHOICE
+        "value": { "value": [1, 2, 3], "data_type": "array_number" } // MULTIPLE_CHOICE
       },
       {
         "id": "UUID-ANSWER-04",
         "id_assignment": "UUID-ASSIGNMENT-V2",
         "id_question": "gds-observaciones",
         "answered_by": "UUID-MEDICO-PEREZ",
-        "value": "Paciente refiere dificultad para conciliar el sueno" // TEXT / TEXT_LONG
+        "value": { "value": "Paciente refiere dificultad para conciliar el sueno", "data_type": "string" } // TEXT / TEXT_LONG
       },
       {
         "id": "UUID-ANSWER-05",
         "id_assignment": "UUID-ASSIGNMENT-V2",
         "id_question": "gds-fecha-inicio",
         "answered_by": "UUID-PACIENTE-JUAN",
-        "value": "2026-08-26" // DATE
+        "value": { "value": "2026-08-26", "data_type": "date" } // DATE
       },
       {
         "id": "UUID-ANSWER-06",
         "id_assignment": "UUID-ASSIGNMENT-V2",
         "id_question": "gds-fecha-hora-consulta",
         "answered_by": "UUID-MEDICO-PEREZ",
-        "value": "2026-08-26T14:30:00Z" // DATE_TIME
+        "value": { "value": "2026-08-26T14:30:00Z", "data_type": "datetime" } // DATE_TIME
       },
       {
         "id": "UUID-ANSWER-07",
         "id_assignment": "UUID-ASSIGNMENT-V2",
         "id_question": "gds-timer",
         "answered_by": "UUID-PACIENTE-JUAN",
-        "value": "PT1H30M" // Duracion ISO 8601 (TIMER)
+        "value": { "value": "PT1H30M", "data_type": "duration" } // TIMER
       }
     ]
   }

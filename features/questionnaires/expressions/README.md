@@ -112,8 +112,13 @@ Tipo de dato:
 ```ts
 type DataType =
   | "number" | "string" | "boolean" | "date"
+  | "datetime" | "duration"
   | "array_string" | "array_number" | "array_object";
 ```
+
+> `datetime` (fecha-hora) y `duration` (duración ISO 8601) se añadieron para
+> cubrir los tipos de pregunta `DATE_TIME` y `TIMER` (ver §6 de resultados y
+> `conditions.md`).
 
 ## 4. Subescalas
 

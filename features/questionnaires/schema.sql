@@ -464,7 +464,7 @@ CREATE TABLE answer (
     id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
     answered_by INTEGER,
     value JSONB NOT NULL,
-    CHECK (value ? 'type' AND value ? 'value')
+    CHECK (value ? 'value' AND value ? 'data_type')
 );
 
 COMMENT ON TABLE answer IS 'Respuesta individual a una pregunta en una assignment específica. Cada answer pertenece a una única assignment; el valor se normaliza en JSONB para flexibilidad.';
@@ -473,12 +473,15 @@ COMMENT ON COLUMN answer.id_assignment IS 'Assignment (tarea/evento) a la que pe
 
 COMMENT ON COLUMN answer.answered_by IS 'Referencia al usuario que ingresó esta respuesta puntual (médico, tutor o paciente). Permite auditoría por pregunta. No es un enum: es un FK a la entidad de usuarios.';
 
-COMMENT ON COLUMN answer.value IS 'Estructura normalizada: {"type": "string|number|boolean|array", "value": ...}. Ejemplos:
-  - Texto: {"type": "text", "value": "Muy satisfecho"}
-  - Número: {"type": "number", "value": 9.5}
-  - Opción múltiple: {"type": "array", "value": ["opc1", "opc3"]}
-  Esta estructura permite procesar respuestas de forma genérica y segura.
-  ⚠️ La coherencia entre el tipo de respuesta y el question_type debe validarse en la capa de aplicación (ej. con Pydantic).';
+COMMENT ON COLUMN answer.value IS 'Estructura normalizada {value, data_type}: mismos campos que un const del AST y que assignment.scoring_result/evaluation_result, de modo que todo valor del modulo comparte vocabulario. Ejemplos:
+  - Texto: {"value": "Muy satisfecho", "data_type": "string"}
+  - Numero: {"value": 9.5, "data_type": "number"}
+  - Opcion multiple: {"value": [1, 3], "data_type": "array_number"}
+  - Fecha: {"value": "2026-08-26", "data_type": "date"}
+  - Fecha-hora: {"value": "2026-08-26T14:30:00Z", "data_type": "datetime"}
+  - Duracion: {"value": "PT1H30M", "data_type": "duration"}
+  Las respuestas de opcion guardan el value numerico de la opcion (option.value), no la etiqueta.
+  ⚠️ La coherencia entre data_type y question_type debe validarse en la capa de aplicacion (ej. con Pydantic).';
 
 -- ===================================================================
 -- ÍNDICES PARA RENDIMIENTO
