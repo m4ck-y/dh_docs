@@ -1,0 +1,22 @@
+{
+  /* assignment.result del IPAQ: mismo envelope que form.expression, con valores
+     calculados. `definitions` persiste los intermedios; scoring/evaluation son
+     los resultados finales. Cada valor usa el envelope {value, type}.
+     Ver ../README.md §6/§7. */
+  "definitions": {
+    "min_vig":      { "value": 30,   "type": "number" },
+    "min_mod":      { "value": 20,   "type": "number" },
+    "min_cam":      { "value": 30,   "type": "number" },
+    "total_vig":    { "value": 720,  "type": "number" },
+    "total_mod":    { "value": 160,  "type": "number" },
+    "total_cam":    { "value": 99,   "type": "number" },
+    "total_mets":   { "value": 979,  "type": "number" },
+    "days_total":   { "value": 6,    "type": "number" },
+    "days_mod_cam": { "value": 3,    "type": "number" },
+    "min_mod_cam":  { "value": 50,   "type": "number" },
+    "es_alto":      { "value": false, "type": "boolean" },
+    "es_moderado":  { "value": true,  "type": "boolean" }
+  },
+  "scoring":    { "value": 979,        "type": "number" },
+  "evaluation": { "value": "Moderado", "type": "string" }
+}

@@ -17,7 +17,7 @@ están representados en `frontend/ls_frontend_app/src/domain/questionnaire-engin
 > del motor (tipos de pregunta soportados y scoring por **rangos**
 > `scoring`/`interpretacion`). El **modelo canónico** definido para el catálogo es
 > el **AST de expresiones** (envelope `form.expression` con
-> `scoring`/`evaluation`/`subscales`), en
+> `definitions`/`scoring`/`evaluation`/`subscales`; `case` condition-based), en
 > [`features/questionnaires/expressions/`](../../features/questionnaires/expressions/).
 > La migración del motor a esa forma es una fase posterior (D12).
 

@@ -49,7 +49,7 @@ CREATE TABLE form (
     key VARCHAR(100) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    expression JSONB,              -- Envelope de recetas AST: {scoring?, evaluation?, subscales?}. Ver expressions/README.md
+    expression JSONB,              -- Envelope de recetas AST: {definitions?, scoring?, evaluation?, subscales?}. Ver expressions/README.md
     condition JSONB,               -- Condición de visibilidad del formulario (AST booleano, raíz sin wrapper). Ausente = siempre visible. Ver expressions/conditions.md (ADR 039)
     verified BOOLEAN NOT NULL DEFAULT false  -- Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable
 );
@@ -62,7 +62,7 @@ COMMENT ON COLUMN form.name IS 'Nombre legible del formulario para usuarios fina
 
 COMMENT ON COLUMN form.description IS 'Descripción explicativa del propósito del formulario.';
 
-COMMENT ON COLUMN form.expression IS 'Envelope de recetas de expresión (AST) del formulario. Claves opcionales: scoring (operador aggregate, raíz SIN wrapper), evaluation (operador case/when cuyo subject consume form.result.scoring) y subscales (arreglo de ámbitos, cada uno con scoring/evaluation propios). Los operandos anidados SÍ llevan wrapper {expression:...} (discriminante de la unión). Gramática: features/questionnaires/expressions/README.md. Ejemplo (PHQ-9): {"scoring": {"type": "aggregate", "operator": "sum", "args": [{"subject": {"entity": "question", "property": "value", "selector": {"all": true}}}], "output": {"type": "number"}}, "evaluation": {"type": "case", "operator": "when", "subject": {"subject": {"entity": "form", "property": "result.scoring"}}, "cases": [{"when": {"operator": "<", "operand": {"const": {"value": 5, "type": "number"}}}, "then": {"const": {"value": "Depresión mínima", "type": "string"}}}], "default": {"const": {"value": "Puntuación fuera de rango", "type": "string"}}, "output": {"type": "string"}, "args": []}}. Se evalúa al enviar (SUBMITTED) y su resultado se guarda en assignment.result.';
+COMMENT ON COLUMN form.expression IS 'Envelope de recetas de expresión (AST) del formulario. Claves opcionales: definitions (mapa de fórmulas con nombre, leídas con {ref}), scoring (operador aggregate, raíz SIN wrapper), evaluation (operador case/when condition-based: cada when es una condición booleana) y subscales (arreglo de ámbitos, cada uno con scoring/evaluation propios). Los operandos anidados SÍ llevan wrapper {expression:...} (discriminante de la unión). Gramática: features/questionnaires/expressions/README.md. Ejemplo (PHQ-9): {"scoring": {"type": "aggregate", "operator": "sum", "args": [{"subject": {"entity": "question", "property": "value", "selector": {"all": true}}}], "output": {"type": "number"}}, "evaluation": {"type": "case", "operator": "when", "cases": [{"when": {"expression": {"type": "comparison", "operator": "<", "args": [{"subject": {"entity": "form", "property": "result.scoring"}}, {"const": {"value": 5, "type": "number"}}], "output": {"type": "boolean"}}}, "then": {"const": {"value": "Depresión mínima", "type": "string"}}}], "default": {"const": {"value": "Puntuación fuera de rango", "type": "string"}}, "output": {"type": "string"}, "args": []}}. Se evalúa al enviar (SUBMITTED) y su resultado se guarda en assignment.result.';
 
 COMMENT ON COLUMN form.condition IS 'Condición de visibilidad del formulario completo, como expresión AST booleana en JSONB (raíz SIN wrapper; ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo: {"type":"comparison","operator":">=","args":[{"subject":{"entity":"person","property":"age"}},{"const":{"value":18,"type":"number"}}],"output":{"type":"boolean"}}.';
 
@@ -392,7 +392,7 @@ CREATE TABLE assignment (
     started_at TIMESTAMP,
     completed_at TIMESTAMP,
     submitted_at TIMESTAMP,
-    -- Resultado definitivo de ESTA assignment (evento): {scoring?, evaluation?, subscales?}.
+    -- Resultado definitivo de ESTA assignment (evento): {definitions?, scoring?, evaluation?, subscales?}.
     -- Cada valor se guarda como {value, type} (mismos campos que un const del AST).
     result JSONB                        -- Ej. {"scoring": {"value": 11, "type": "number"}, "evaluation": {"value": "Depresión moderada", "type": "string"}}
     -- Nota V2: n_questions_total / n_questions_answered del modelo V1 NO se persisten;
@@ -411,7 +411,7 @@ COMMENT ON COLUMN assignment.started_at IS 'Momento en que se inició la sesión
 COMMENT ON COLUMN assignment.completed_at IS 'Momento en que se marcó como completado (progreso completo, sin enviar aún).';
 COMMENT ON COLUMN assignment.submitted_at IS 'Momento en que se envió oficialmente la tarea.';
 
-COMMENT ON COLUMN assignment.result IS 'Resultado de evaluar form.expression para ESTA assignment. Espeja la forma del envelope: {scoring?, evaluation?, subscales?}. Cada valor es {value, type} (mismos campos que un const del AST). Ejemplos: simple {"scoring": {"value": 11, "type": "number"}, "evaluation": {"value": "Depresión moderada", "type": "string"}}; con subescalas {"subscales": [{"id": "A", "scoring": {"value": 8, "type": "number"}, "evaluation": {"value": "Probable ansiedad", "type": "string"}}]}. No es la receta: es el valor calculado. Ver features/questionnaires/expressions/README.md §6.';
+COMMENT ON COLUMN assignment.result IS 'Resultado de evaluar form.expression para ESTA assignment. Espeja la forma del envelope: {definitions?, scoring?, evaluation?, subscales?}. Cada valor es {value, type} (mismos campos que un const del AST). Ejemplos: simple {"scoring": {"value": 11, "type": "number"}, "evaluation": {"value": "Depresión moderada", "type": "string"}}; con subescalas {"subscales": [{"id": "A", "scoring": {"value": 8, "type": "number"}, "evaluation": {"value": "Probable ansiedad", "type": "string"}}]}; con intermedios (IPAQ) {"definitions": {"total_mets": {"value": 979, "type": "number"}}, "scoring": {"value": 979, "type": "number"}, "evaluation": {"value": "Moderado", "type": "string"}}. No es la receta: es el valor calculado. Ver features/questionnaires/expressions/README.md §6.';
 
 -- ===================================================================
 -- TABLA: scheduled

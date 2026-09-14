@@ -55,12 +55,20 @@ classDiagram
     %% Question.order: aqui SI vive el orden (subdocumento embebido);
     %% en el ERD el orden vive en la puente (ver ERD.mmd).
     %% ExpressionSet (Form.expression): envelope de recetas.
+    %% definitions: mapa de formulas con nombre (reutilizables via {ref}).
     %% scoring/evaluation son operadores (raiz SIN wrapper); subscales es un
     %% arreglo de ambitos, cada uno con su scoring/evaluation (scoping por contexto).
     class ExpressionSet {
+        +Definition[] definitions
         +Expression scoring
         +Expression evaluation
         +Subscale[] subscales
+    }
+
+    %% Definition: formula con nombre (como un let). Se lee con OperandRef.
+    class Definition {
+        +string name
+        +Expression expression
     }
 
     %% Subscale: ambito de scoring/evaluation. 'items' es la fuente de pertenencia.
@@ -79,14 +87,13 @@ classDiagram
     %% Ver ADR 039 y expressions/README.md.
 
     %% Expression: nodo del AST (operador). type/operator/args/output son
-    %% comunes a todos; subject/cases/default son propios de case/when
+    %% comunes a todos; cases/default son propios de case/when (condition-based).
     %% (ver expressions/operators/case.md).
     class Expression {
         +string type
         +string operator
         +Operand[] args
         +Output output
-        +Operand subject
         +CaseBranch[] cases
         +Operand default
     }
@@ -96,19 +103,26 @@ classDiagram
         +string type
     }
 
-    %% CaseBranch: una banda de case/when (when -> then).
+    %% CaseBranch: una rama de case/when (when -> then). `when` es una
+    %% condicion booleana (operando: expression | ref | const).
     class CaseBranch {
-        +Condition when
+        +Operand when
         +Operand then
     }
 
-    %% Operand: union de los 4 tipos de operando (ver expressions/operands.md).
+    %% Operand: union de los 5 tipos de operando (ver expressions/operands.md).
     %% 'expression' permite la recursion: un operando puede contener otra Expression.
     class Operand {
         +Subject subject
         +Const const
         +Expression expression
         +TimeRange time_range
+        +Ref ref
+    }
+
+    %% Ref: referencia a una Definition por nombre ({ "ref": "..." }).
+    class Ref {
+        +string name
     }
 
     class Option {
@@ -134,6 +148,8 @@ classDiagram
     Form "1" *-- "0..1" Expression : condition
     Section "1" *-- "0..1" Expression : condition
     Question "1" *-- "0..1" Expression : condition
+    ExpressionSet "1" *-- "0..*" Definition : definitions
+    Definition "1" *-- "0..1" Expression : expression
     ExpressionSet "1" *-- "0..1" Expression : scoring
     ExpressionSet "1" *-- "0..1" Expression : evaluation
     ExpressionSet "1" *-- "0..*" Subscale : subscales
@@ -141,7 +157,9 @@ classDiagram
     Subscale "1" *-- "0..1" Expression : evaluation
     Expression "1" *-- "0..*" Operand : args
     Expression "1" *-- "0..1" Output : output
-    Expression "1" *-- "0..1" Operand : subject
     Expression "1" *-- "0..1" Operand : default
     Expression "1" *-- "0..*" CaseBranch : cases
+    CaseBranch "1" *-- "0..1" Operand : when
+    CaseBranch "1" *-- "0..1" Operand : then
     Operand "1" *-- "0..1" Expression : expression
+    Operand "1" *-- "0..1" Ref : ref

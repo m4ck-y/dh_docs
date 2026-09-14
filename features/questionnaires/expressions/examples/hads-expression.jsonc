@@ -2,7 +2,8 @@
   /* form.expression del HADS (2 escalas): envelope { subscales }.
      Cada subescala es una unidad autocontenida: items (pertenencia) + scoring
      + evaluation. El scoring/evaluation se scopean POR CONTEXTO a los items de
-     su subescala (no repiten la lista). Ver ../README.md §4. */
+     su subescala (no repiten la lista). Las evaluation usan `case`
+     condition-based. Ver ../README.md §1/§4/§6. */
   "subscales": [
     {
       "id": "A",
@@ -20,11 +21,16 @@
       "evaluation": {
         "type": "case",
         "operator": "when",
-        "subject": { "subject": { "entity": "form", "property": "result.scoring" } },
         "cases": [
-          { "when": { "operator": "<=", "operand": { "const": { "value": 7, "type": "number" } } },
+          { "when": { "expression": { "type": "comparison", "operator": "<=",
+                      "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                                { "const": { "value": 7, "type": "number" } } ],
+                      "output": { "type": "boolean" } } },
             "then": { "const": { "value": "Normalidad", "type": "string" } } },
-          { "when": { "operator": "<=", "operand": { "const": { "value": 10, "type": "number" } } },
+          { "when": { "expression": { "type": "comparison", "operator": "<=",
+                      "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                                { "const": { "value": 10, "type": "number" } } ],
+                      "output": { "type": "boolean" } } },
             "then": { "const": { "value": "Probable ansiedad", "type": "string" } } }
         ],
         "default": { "const": { "value": "Caso de ansiedad", "type": "string" } },
@@ -48,11 +54,16 @@
       "evaluation": {
         "type": "case",
         "operator": "when",
-        "subject": { "subject": { "entity": "form", "property": "result.scoring" } },
         "cases": [
-          { "when": { "operator": "<=", "operand": { "const": { "value": 7, "type": "number" } } },
+          { "when": { "expression": { "type": "comparison", "operator": "<=",
+                      "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                                { "const": { "value": 7, "type": "number" } } ],
+                      "output": { "type": "boolean" } } },
             "then": { "const": { "value": "Normalidad", "type": "string" } } },
-          { "when": { "operator": "<=", "operand": { "const": { "value": 10, "type": "number" } } },
+          { "when": { "expression": { "type": "comparison", "operator": "<=",
+                      "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                                { "const": { "value": 10, "type": "number" } } ],
+                      "output": { "type": "boolean" } } },
             "then": { "const": { "value": "Probable depresión", "type": "string" } } }
         ],
         "default": { "const": { "value": "Caso de depresión", "type": "string" } },

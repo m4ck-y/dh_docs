@@ -1,7 +1,8 @@
 {
   /* form.expression del PHQ-9 (1 escala): envelope { scoring, evaluation }.
      Las claves scoring/evaluation son operadores directos (raiz SIN wrapper).
-     Ver ../README.md §1 y §6. */
+     La evaluation usa `case` condition-based: cada `when` es una condicion
+     booleana (operando). Ver ../README.md §1/§6 y ../operators/case.md. */
   "scoring": {
     "type": "aggregate",
     "operator": "sum",
@@ -19,26 +20,40 @@
   "evaluation": {
     "type": "case",
     "operator": "when",
-    "subject": { "subject": { "entity": "form", "property": "result.scoring" } },
     "cases": [
       {
-        "when": { "operator": "<", "operand": { "const": { "value": 5, "type": "number" } } },
+        "when": { "expression": { "type": "comparison", "operator": "<",
+                  "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                            { "const": { "value": 5, "type": "number" } } ],
+                  "output": { "type": "boolean" } } },
         "then": { "const": { "value": "Depresión mínima", "type": "string" } }
       },
       {
-        "when": { "operator": "<", "operand": { "const": { "value": 10, "type": "number" } } },
+        "when": { "expression": { "type": "comparison", "operator": "<",
+                  "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                            { "const": { "value": 10, "type": "number" } } ],
+                  "output": { "type": "boolean" } } },
         "then": { "const": { "value": "Depresión leve", "type": "string" } }
       },
       {
-        "when": { "operator": "<", "operand": { "const": { "value": 15, "type": "number" } } },
+        "when": { "expression": { "type": "comparison", "operator": "<",
+                  "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                            { "const": { "value": 15, "type": "number" } } ],
+                  "output": { "type": "boolean" } } },
         "then": { "const": { "value": "Depresión moderada", "type": "string" } }
       },
       {
-        "when": { "operator": "<", "operand": { "const": { "value": 20, "type": "number" } } },
+        "when": { "expression": { "type": "comparison", "operator": "<",
+                  "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                            { "const": { "value": 20, "type": "number" } } ],
+                  "output": { "type": "boolean" } } },
         "then": { "const": { "value": "Depresión moderadamente severa", "type": "string" } }
       },
       {
-        "when": { "operator": "<=", "operand": { "const": { "value": 27, "type": "number" } } },
+        "when": { "expression": { "type": "comparison", "operator": "<=",
+                  "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                            { "const": { "value": 27, "type": "number" } } ],
+                  "output": { "type": "boolean" } } },
         "then": { "const": { "value": "Depresión severa", "type": "string" } }
       }
     ],

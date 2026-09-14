@@ -18,7 +18,7 @@ Ver [`phq9-expression.jsonc`](./phq9-expression.jsonc) y
 ## 2. PHQ-9 — interpretación (scoring)
 
 Ver [`phq9-expression.jsonc`](./phq9-expression.jsonc) y
-[`../operators/case.md`](../operators/case.md). El `subject` consume
+[`../operators/case.md`](../operators/case.md). Cada `when` compara contra
 `form.result.scoring`.
 
 ## 3. PHQ-9 — condición de la pregunta 10 (visibilidad)
@@ -104,7 +104,7 @@ Mostrar una alerta si el puntaje del PHQ-9 supera 15 (depresión severa).
 }
 ```
 
-## 6. IPAQ — scoring por METs (pendiente C7b)
+## 6. IPAQ — scoring por METs
 
 El IPAQ puntúa por **MET-min/semana**:
 
@@ -114,6 +114,13 @@ total = caminar + moderada + vigorosa
 coeficientes: caminar = 3.3, moderada = 4.0, vigorosa = 8.0
 ```
 
-El AST puede expresarlo con `math` (`*`) + `aggregate sum` sobre los dominios,
-pero **no se modela todavía** (pendiente C7b). El único algoritmo completo está
-en `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
+Se modela con el AST (ver [`../README.md`](../README.md) §7):
+
+- **`definitions`**: intermedios (`min_vig`, `total_vig`, `total_mets`, `es_alto`…).
+- **`time: minutes`**: convierte las respuestas `TIMER` (ISO 8601) a minutos.
+- **`ref`**: reutiliza intermedios y condiciones nombradas.
+- **`case` condition-based**: clasifica en Alto / Moderado / Bajo.
+
+Ejemplo completo: [`ipaq-expression.jsonc`](./ipaq-expression.jsonc) y
+[`ipaq-result.jsonc`](./ipaq-result.jsonc). Algoritmo de referencia:
+`docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.

@@ -27,14 +27,15 @@ interface BaseOperator {
 | `aggregate` | `sum` `avg` `min` `max` `count` | `number` | [aggregate.md](./aggregate.md) |
 | `collection` | `all` `any` `none` | `boolean` | [collection.md](./collection.md) |
 | `case` | `when` (fijo) | cualquier `DataType` | [case.md](./case.md) |
-| `time` | `range` `movingavg` `delta` | `number` \| `array_number` | [time.md](./time.md) |
+| `time` | `range` `movingavg` `delta` `minutes` | `number` \| `array_number` | [time.md](./time.md) |
 
 ## Uso en el módulo de cuestionarios
 
 - **`expression.scoring`** usa típicamente `aggregate` (`sum`/`avg`).
 - **`expression.evaluation`** usa `case` (con `comparison` en sus `when` y,
   opcionalmente, `logic` para combinar).
-- `math`, `collection` y `time` están disponibles pero **no se usan todavía** en
-  scoring; `math` es la vía para el scoring por METs de IPAQ
-  (ver [`../examples/medical-cases.md`](../examples/medical-cases.md) y el
-  pendiente C7b).
+- El **IPAQ** usa `math` + `time:minutes` dentro de `definitions`
+  (ver [`../README.md`](../README.md) §7).
+- `collection` está disponible pero **no se usa todavía** en scoring;
+  `collection` es la base de las condiciones de visibilidad
+  ([`../conditions.md`](../conditions.md)).

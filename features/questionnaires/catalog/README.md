@@ -303,8 +303,11 @@ Ambas coinciden en el resultado; difieren en la representación (rango inclusivo
 vs umbral). La traducción rango→umbral es trivial para enteros.
 
 **Ejemplo IPAQ (scoring no lineal):** usa METs (`caminar=3.3`, `moderada=4`,
-`vigorosa=8` × minutos × días). El AST puede expresarlo, pero **no se modela
-todavía** (pendiente METs IPAQ en `../TODO/cuestionarios.md`).
+`vigorosa=8` × minutos × días). Se modela con **`definitions`** (intermedios),
+**`time: minutes`** (convierte la respuesta `TIMER` ISO 8601 a minutos),
+**`{ref}`** y un **`case` condition-based** (Alto/Moderado/Bajo). Ver
+[`../expressions/README.md`](../expressions/README.md) §7 y
+[`../expressions/examples/ipaq-expression.jsonc`](../expressions/examples/ipaq-expression.jsonc).
 
 ## 10. Concordancia por instrumento compartido
 
@@ -348,9 +351,9 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
    como objeto `{type_biological_sex, id}` (espejo del ERD), mientras el README §5
    lo declaraba `null | string` y como gap. Corregido en §5; no era un gap real.
 
-5. **IPAQ scoring por METs** no modelado todavía. El AST puede expresarlo, pero
-   se difiere (pendiente METs IPAQ en `../TODO/cuestionarios.md`). El único
-   algoritmo completo está en `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
+5. ~~**IPAQ scoring por METs.**~~ Resuelto: modelado con `definitions`
+   (`time: minutes` + `{ref}`) y `case` condition-based. El único algoritmo
+   completo de referencia está en `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
 
 6. **`type_media` vs `type` en `list_references`**: la referencia usa `type_media`
    (`PHQ9.json`, `IA_DEVELOPMENT.json`); el ERD define `reference.type_media`

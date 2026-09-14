@@ -21,15 +21,16 @@ para renderizar/scoring en cliente.
 **con la misma forma**:
 
 ```ts
-expression = { scoring?, evaluation?, subscales? }
-result     = { scoring?, evaluation?, subscales? }   // mismos valores calculados
+expression = { definitions?, scoring?, evaluation?, subscales? }
+result     = { definitions?, scoring?, evaluation?, subscales? }   // mismos valores calculados
 ```
 
 | Caso | `expression` / `result` |
 |---|---|
 | 1 escala (PHQ-9) | `{ scoring, evaluation }` |
 | N escalas (HADS) | `{ subscales: [ {id, name, items, max, scoring, evaluation}, … ] }` |
-| Mixto | `{ scoring, evaluation, subscales }` |
+| Con intermedios (IPAQ) | `{ definitions, scoring, evaluation }` |
+| Mixto | `{ definitions, scoring, evaluation, subscales }` |
 
 Al enviar un formulario (caso simple):
 
@@ -38,15 +39,40 @@ expression.scoring  →  result.scoring  →  expression.evaluation  →  result
    (aggregate sum)        (11)              (case sobre 11)          ("moderada")
 ```
 
+### Definiciones (`definitions`) y `ref`
+
+Para instrumentos con **valores intermedios reutilizados** (p. ej. los METs del
+IPAQ), el envelope declara un mapa **`definitions`**: cada entrada es una
+**fórmula con nombre** (como un `let`/`const` o un `WITH` de SQL). Otras
+expresiones leen su valor con el operando **`{ "ref": "nombre" }`**:
+
+```jsonc
+"definitions": {
+  "min_vig":    { /* fórmula que produce un número */ },
+  "total_mets": { "type":"math", "operator":"+", "args":[ { "ref":"total_vig" }, … ], "output":{ "type":"number" } }
+},
+"scoring":    { "ref": "total_mets" },
+"evaluation": { /* case/when que usa { "ref":"total_mets" } */ }
+```
+
+- Cada definition es una **fórmula** (un operador) con un **nombre**.
+- Se evalúan **una sola vez** (ordenadas por dependencias) y son **inmutables**.
+- Un `{ ref }` es un **operando** (5.ª variante, ver [`operands.md`](./operands.md)).
+- Los valores intermedios se **persisten** en `result.definitions` (§6).
+
+> **Extensión del proyecto.** Ni `definitions`/`ref` ni el operador `minutes`
+> (§7) existen en la gramática de referencia (`typescript.ts`); se añaden aquí.
+
 ### Regla del wrapper (raíz vs operando)
 
 | Contexto | Wrapper `{expression: ...}` | Por qué |
 |---|---|---|
-| **Raíz** de un campo (`expression.scoring`, `expression.evaluation`, `condition`) | ❌ **sin** wrapper | El tipo ya se conoce: es una expresión |
-| **Operando** (`args`, `subject`, `cases[].operand`, `then`, `default`) | ✅ **con** wrapper | `args` es una unión de 4 variantes; la clave es el discriminante |
+| **Raíz** de un campo (`expression.scoring`, `expression.evaluation`, `condition`, cada definition) | ❌ **sin** wrapper | El tipo ya se conoce: es una expresión |
+| **Operando** (`args`, `subject`, `cases[].operand`, `then`, `default`) | ✅ **con** wrapper | `args` es una unión de variantes; la clave es el discriminante |
 
-Las 4 variantes de operando ([`operands.md`](./operands.md)):
-`{ "subject": … }`, `{ "const": … }`, `{ "expression": … }`, `{ "time_range": … }`.
+Las 5 variantes de operando ([`operands.md`](./operands.md)):
+`{ "subject": … }`, `{ "const": … }`, `{ "expression": … }`, `{ "time_range": … }`,
+`{ "ref": "nombre" }`.
 
 ### Convención del `subject`
 
@@ -65,6 +91,7 @@ Detalle en [`operators/case.md`](./operators/case.md).
 
 | Nivel | Campo | Qué produce | Estado |
 |---|---|---|---|
+| `form` | `expression.definitions` | Valores intermedios con nombre | ✅ |
 | `form` | `expression.scoring` | Puntaje | ✅ |
 | `form` | `expression.evaluation` | Categoría | ✅ |
 | `form` | `expression.subscales[]` | Puntaje + categoría por escala | ✅ |
@@ -113,7 +140,7 @@ interface BaseOperator {
 | `aggregate` | `sum` `avg` `min` `max` `count` | `number` | **Puntaje** |
 | `collection` | `all` `any` `none` | `boolean` | Colecciones |
 | `case` | `when` (fijo) | cualquier `DataType` | **Clasificación** |
-| `time` | `range` `movingavg` `delta` | `number` \| `array_number` | Series temporales |
+| `time` | `range` `movingavg` `delta` `minutes` | `number` \| `array_number` | Series temporales; `minutes` convierte una duración a minutos |
 
 Tipo de dato:
 
@@ -220,18 +247,55 @@ El resultado de evaluar las expresiones se guarda en **`assignment.result`**
                   "evaluation": { "value": "Normalidad", "type": "string" } }
   ]
 }
+
+// Caso con definitions (IPAQ): se persisten los intermedios
+"result": {
+  "definitions": {
+    "min_vig":    { "value": 30,   "type": "number" },
+    "total_vig":  { "value": 1680, "type": "number" },
+    "total_mets": { "value": 2100, "type": "number" }
+  },
+  "scoring":    { "value": 2100,       "type": "number" },
+  "evaluation": { "value": "Moderado", "type": "string" }
+}
 ```
 
 - `value` + `type` espejan el operando `const` (`{const:{value,type}}`).
 - No se persiste la **receta** en el resultado: el resultado es el **valor
   calculado**.
+- `definitions` en el resultado es un mapa `nombre → {value, type}` con los
+  valores intermedios (útil para auditar/exportar, como la salida del `.pseint`).
 
-## 7. Limitación conocida: scoring por METs (IPAQ)
+## 7. Scoring no lineal: METs (IPAQ)
 
-El IPAQ usa scoring **no lineal** por METs (`MET × minutos × días`, coeficientes
-`caminar=3.3`, `moderada=4.0`, `vigorosa=8.0`). El AST puede expresarlo con
-`math` + `aggregate`, pero **no se modela todavía** (pendiente **C7b**). Ver
-[`examples/medical-cases.md`](./examples/medical-cases.md) §6.
+El IPAQ puntúa por **MET-min/semana**, no por suma simple:
+
+```
+min_vig = minutos(Q2);  min_mod = minutos(Q4);  min_cam = minutos(Q6)
+total_vig = 8.0 * min_vig * Q1;  total_mod = 4.0 * min_mod * Q3;  total_cam = 3.3 * min_cam * Q5
+total_mets = total_vig + total_mod + total_cam
+```
+
+Se modela con el AST así:
+
+- **`definitions`** guardan los intermedios (`min_vig`, `total_vig`, `total_mets`…),
+  reutilizables sin repetir fórmulas.
+- **`time: minutes`** convierte la respuesta `TIMER` (duración ISO 8601, p. ej.
+  `"PT30M"`) a **minutos** (número).
+- **`scoring`** es `{ "ref": "total_mets" }`.
+- **`evaluation`** es un **`case` condition-based** (Alto / Moderado / Bajo) que
+  usa `{ref}` sobre condiciones nombradas (`es_alto` / `es_moderado`) definidas
+  con `logic`/`comparison`.
+
+Ejemplo completo: [`examples/ipaq-expression.jsonc`](./examples/ipaq-expression.jsonc)
+y [`examples/ipaq-result.jsonc`](./examples/ipaq-result.jsonc).
+
+> **Alternativa futura (no adoptada):** una **familia genérica `convert`** con
+> campo `to` (`{ "type":"convert", "operator":"duration", "to":"minutes", ... }`)
+> serviría para otras unidades (segundos, horas, kg↔lb…). Se descarta por ahora
+> (YAGNI): `time: minutes` cubre la única conversión necesaria y usa el shape base
+> sin excepciones. Si aparece un **segundo** tipo de conversión, se promueve a
+> `convert`.
 
 ## 8. Ejemplos
 
@@ -240,6 +304,8 @@ El IPAQ usa scoring **no lineal** por METs (`MET × minutos × días`, coeficien
 | [`examples/phq9-expression.jsonc`](./examples/phq9-expression.jsonc) | `form.expression` de 1 escala: `{ scoring, evaluation }` |
 | [`examples/hads-expression.jsonc`](./examples/hads-expression.jsonc) | `form.expression` con `subscales[]` |
 | [`examples/hads-result.jsonc`](./examples/hads-result.jsonc) | `assignment.result` con `subscales[]` (receta vs resultado) |
+| [`examples/ipaq-expression.jsonc`](./examples/ipaq-expression.jsonc) | `definitions` + `{ref}` + `time: minutes` (METs) |
+| [`examples/ipaq-result.jsonc`](./examples/ipaq-result.jsonc) | `assignment.result` con `definitions` |
 | [`examples/imc-math.jsonc`](./examples/imc-math.jsonc) | `math` anidado (demuestra el AST) |
 | [`examples/medical-cases.md`](./examples/medical-cases.md) | PHQ-9, CRAFFT, riesgo alto, METs |
 

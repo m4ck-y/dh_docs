@@ -17,10 +17,12 @@
     "evaluation": {
       "type": "case",
       "operator": "when",
-      "subject": { "subject": { "entity": "form", "property": "result.scoring" } },
       "cases": [
         {
-          "when": { "operator": "<=", "operand": { "const": { "value": 5, "type": "number" } } },
+          "when": { "expression": { "type": "comparison", "operator": "<=",
+                    "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                              { "const": { "value": 5, "type": "number" } } ],
+                    "output": { "type": "boolean" } } },
           "then": { "const": { "value": "Satisfacción baja", "type": "string" } }
         }
       ],

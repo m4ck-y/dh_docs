@@ -1,0 +1,112 @@
+{
+  /* form.expression del IPAQ: scoring no lineal por METs.
+     - definitions: valores intermedios con nombre (reutilizables via {ref}).
+     - time:minutes convierte las respuestas TIMER (ISO 8601) a minutos.
+     - scoring = {ref: total_mets}.
+     - evaluation = case condition-based que usa condiciones nombradas
+       (es_alto / es_moderado).
+     Ver ../README.md §1/§7 y ../operators/time.md, ../operators/case.md. */
+  "definitions": {
+    "min_vig": { "type": "time", "operator": "minutes",
+      "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 2 } } } ],
+      "output": { "type": "number" } },
+    "min_mod": { "type": "time", "operator": "minutes",
+      "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 4 } } } ],
+      "output": { "type": "number" } },
+    "min_cam": { "type": "time", "operator": "minutes",
+      "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 6 } } } ],
+      "output": { "type": "number" } },
+
+    "total_vig": { "type": "math", "operator": "*",
+      "args": [ { "const": { "value": 8, "type": "number" } }, { "ref": "min_vig" },
+                { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } } ],
+      "output": { "type": "number" } },
+    "total_mod": { "type": "math", "operator": "*",
+      "args": [ { "const": { "value": 4, "type": "number" } }, { "ref": "min_mod" },
+                { "subject": { "entity": "question", "property": "value", "selector": { "id": 3 } } } ],
+      "output": { "type": "number" } },
+    "total_cam": { "type": "math", "operator": "*",
+      "args": [ { "const": { "value": 3.3, "type": "number" } }, { "ref": "min_cam" },
+                { "subject": { "entity": "question", "property": "value", "selector": { "id": 5 } } } ],
+      "output": { "type": "number" } },
+
+    "total_mets": { "type": "math", "operator": "+",
+      "args": [ { "ref": "total_vig" }, { "ref": "total_mod" }, { "ref": "total_cam" } ],
+      "output": { "type": "number" } },
+
+    "days_total": { "type": "math", "operator": "+",
+      "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
+                { "subject": { "entity": "question", "property": "value", "selector": { "id": 3 } } },
+                { "subject": { "entity": "question", "property": "value", "selector": { "id": 5 } } } ],
+      "output": { "type": "number" } },
+    "days_mod_cam": { "type": "math", "operator": "+",
+      "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 3 } } },
+                { "subject": { "entity": "question", "property": "value", "selector": { "id": 5 } } } ],
+      "output": { "type": "number" } },
+    "min_mod_cam": { "type": "math", "operator": "+",
+      "args": [ { "ref": "min_mod" }, { "ref": "min_cam" } ],
+      "output": { "type": "number" } },
+
+    "es_alto": { "type": "logic", "operator": "or", "args": [
+      { "expression": { "type": "logic", "operator": "and", "args": [
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "ref": "days_total" }, { "const": { "value": 7, "type": "number" } } ],
+          "output": { "type": "boolean" } } },
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "ref": "total_mets" }, { "const": { "value": 3000, "type": "number" } } ],
+          "output": { "type": "boolean" } } }
+      ], "output": { "type": "boolean" } } },
+      { "expression": { "type": "logic", "operator": "and", "args": [
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
+                    { "const": { "value": 3, "type": "number" } } ],
+          "output": { "type": "boolean" } } },
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "ref": "total_vig" }, { "const": { "value": 1500, "type": "number" } } ],
+          "output": { "type": "boolean" } } }
+      ], "output": { "type": "boolean" } } }
+    ], "output": { "type": "boolean" } },
+
+    "es_moderado": { "type": "logic", "operator": "or", "args": [
+      { "expression": { "type": "logic", "operator": "and", "args": [
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
+                    { "const": { "value": 3, "type": "number" } } ],
+          "output": { "type": "boolean" } } },
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "ref": "min_vig" }, { "const": { "value": 20, "type": "number" } } ],
+          "output": { "type": "boolean" } } }
+      ], "output": { "type": "boolean" } } },
+      { "expression": { "type": "logic", "operator": "and", "args": [
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "ref": "days_mod_cam" }, { "const": { "value": 5, "type": "number" } } ],
+          "output": { "type": "boolean" } } },
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "ref": "min_mod_cam" }, { "const": { "value": 30, "type": "number" } } ],
+          "output": { "type": "boolean" } } }
+      ], "output": { "type": "boolean" } } },
+      { "expression": { "type": "logic", "operator": "and", "args": [
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "ref": "days_total" }, { "const": { "value": 5, "type": "number" } } ],
+          "output": { "type": "boolean" } } },
+        { "expression": { "type": "comparison", "operator": ">=",
+          "args": [ { "ref": "total_mets" }, { "const": { "value": 600, "type": "number" } } ],
+          "output": { "type": "boolean" } } }
+      ], "output": { "type": "boolean" } } }
+    ], "output": { "type": "boolean" } }
+  },
+
+  "scoring": { "ref": "total_mets" },
+
+  "evaluation": {
+    "type": "case",
+    "operator": "when",
+    "cases": [
+      { "when": { "ref": "es_alto" },     "then": { "const": { "value": "Alto",     "type": "string" } } },
+      { "when": { "ref": "es_moderado" }, "then": { "const": { "value": "Moderado", "type": "string" } } }
+    ],
+    "default": { "const": { "value": "Bajo", "type": "string" } },
+    "output": { "type": "string" },
+    "args": []
+  }
+}

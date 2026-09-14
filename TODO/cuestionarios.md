@@ -43,7 +43,7 @@
 | C5 | `config` definitivo por tipo | Modelo | ✅ |
 | C6 | PHQ-9 ítem 7 | Contenido | ✅ |
 | C7 | Scoring unificado | Modelo | ✅ |
-| C7b | METs IPAQ (scoring no lineal) | Modelo | ⏳ |
+| C7b | METs IPAQ (scoring no lineal) | Modelo | ✅ |
 | C7c | `value_expression` por pregunta | Modelo | ⏳ |
 | C8 | Gaps del contrato `Instrument` | Modelo | ✅ |
 | C9 | `AnswerMap` ↔ `answer.data` | Modelo | ✅ |
@@ -180,18 +180,27 @@
 - **Reflejo**: `expressions/` (README + ejemplos), `schema.sql`, `catalog/README.md`
   §9/§11/§12, `catalog/example.jsonc`, `questionnaires/README.md`.
 
-### C7b — METs IPAQ (scoring no lineal)
+### C7b — METs IPAQ (scoring no lineal) ✅ (resuelto)
 
 - **Qué**: el IPAQ puntúa por **MET-min/semana**:
   `MET × minutos × días`; coeficientes `caminar=3.3`, `moderada=4.0`,
   `vigorosa=8.0`; total = suma de dominios.
-- **Estado**: no modelado. `IPAQ.json` no trae scoring; `IPAQ.ts` de la referencia
-  está incompleto (variables no definidas, `else if` sin cuerpo); el único
-  algoritmo completo está en `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
-- **Vía**: el AST puede expresarlo (`math` `*` por coeficientes + `aggregate sum`),
-  pero requiere definir cómo se declaran los dominios (grupos de preguntas).
-- **Refs**: `expressions/README.md` §9, `catalog/README.md` §9/§11,
-  `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
+- **Decisión**: modelado con el AST mediante **extensiones del proyecto**:
+  - **`definitions`** (mapa de fórmulas con nombre) + operando **`{ref}`** para
+    reutilizar intermedios (`min_vig`, `total_vig`, `total_mets`…).
+  - **`time: minutes`** (nuevo operador de la familia `time`) que convierte la
+    respuesta `TIMER` (ISO 8601) a minutos.
+  - **`case` condition-based**: cada `when` es una condición booleana (se elimina
+    el `subject` único); las condiciones del IPAQ se nombran como definitions
+    (`es_alto` / `es_moderado`).
+  - Los intermedios se **persisten** en `result.definitions`.
+- **Alternativa descartada (documentada)**: familia genérica `convert` con campo
+  `to` (más invasiva; se promovería si aparece un 2.º tipo de conversión).
+- **Reflejo**: `expressions/README.md` §1/§6/§7, `operands.md` (`OperandRef`),
+  `operators/time.md` (`minutes`), `operators/case.md` (condition-based),
+  `examples/ipaq-expression.jsonc` + `ipaq-result.jsonc`, `schema.sql`
+  (COMMENTs), `catalog/README.md` §9/§11, `catalog/CLASS.mmd`.
+- **Refs**: `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint` (algoritmo).
 
 ### C7c — `value_expression` por pregunta (valor autocalculado)
 
@@ -265,9 +274,13 @@
   [`expressions/conditions.md`](../features/questionnaires/expressions/conditions.md) §5.
 - **Incluye**: migrar el `AnswerMap` en memoria al envelope `{value, type}`
   (C9). Hoy es provisional: sin tipo y aplanado. Ver `catalog/README.md` §8.
+- **Incluye**: soportar el motor de expresiones ampliado — **`definitions` +
+  `{ref}`**, **`time: minutes`** y **`case` condition-based** (C7b), además de
+  la condición AST.
 - **Refs**: `docs/diagrams/schemas/cuestionario/README.md:23`
   (describe el **estado actual implementado**, no el objetivo).
-- **Objetivo**: `catalog/question_types/` (9 tipos) + condición AST.
+- **Objetivo**: `catalog/question_types/` (9 tipos) + AST completo
+  (condición, definitions/ref, time:minutes, case condition-based).
 
 ## E. Higiene
 

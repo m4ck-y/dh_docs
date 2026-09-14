@@ -2,7 +2,8 @@
 
 Los `args` de un [operador](./operators/README.md) son listas de **operandos**.
 Un operando es la unidad de menor nivel de una expresión: un valor literal, una
-referencia a datos, **otra expresión anidada** o un rango de tiempo.
+referencia a datos, **otra expresión anidada**, un rango de tiempo o una
+referencia a una [definition](./README.md#definiciones-definitions-y-ref).
 
 ## Tipos
 
@@ -11,7 +12,8 @@ type CalculationOperand =
   | OperandSubject      // referencia a un sujeto (question, person, form)
   | OperandConst        // valor constante literal
   | OperandExpression   // expresión anidada
-  | OperandTimeRange;   // rango de tiempo
+  | OperandTimeRange    // rango de tiempo
+  | OperandRef;         // referencia a una definition ({ "ref": "nombre" })
 ```
 
 ### `OperandConst` — valor literal
@@ -60,7 +62,7 @@ interface OperandExpression {
 ```
 
 Es la clave de la potencia del lenguaje: permite anidar indefinidamente (un
-`case` cuyo `subject` es un `aggregate`, que a su vez suma `math`, etc.).
+`case` cuya condición (`when`) es un `logic` que combina `comparison`, etc.).
 
 ```jsonc
 {
@@ -87,6 +89,26 @@ interface OperandTimeRange {
 ```
 
 Ver [`operators/time.md`](./operators/time.md).
+
+### `OperandRef` — referencia a una definition
+
+Lee el valor de una **definition** del envelope
+([`definitions`](./README.md#definiciones-definitions-y-ref)) por su nombre:
+
+```ts
+interface OperandRef {
+  ref: string;   // nombre de la definition
+}
+```
+
+```jsonc
+{ "ref": "total_mets" }
+// uso:  "scoring": { "ref": "total_mets" }
+```
+
+> **Extensión del proyecto.** No existe en la gramática de referencia
+> (`typescript.ts`); se añade para reutilizar valores intermedios sin repetir
+> fórmulas (p. ej. los METs del IPAQ).
 
 ## Entidades y propiedades
 
