@@ -1,6 +1,6 @@
 # Pendientes — Cuestionarios
 
-> Estado a la fecha: **2026-09-13**. Cada pendiente incluye dónde vive, con qué
+> Estado a la fecha: **2026-09-14**. Cada pendiente incluye dónde vive, con qué
 > archivos se retoma y de dónde sale el requisito, para poder reanudarlo aun si
 > se pierde el contexto de la conversación.
 
@@ -30,6 +30,9 @@
   describen el **destino** del modelo ya definido, no trabajo de esta fase.
 - Al cerrar la definición, cada pendiente se habilitará con su alcance real
   (frontend y/o backend) y su propio ciclo de commit.
+- **Excepción aplicada**: **C6** (redacción del PHQ-9 ítem 7) sí tocó el banco
+  `frontend/.../banks/phq9Instrument.ts` (era un copy incorrecto, no un cambio
+  de modelo). Commit `69d325e` en `ls_frontend_app`.
 
 ## Índice
 
