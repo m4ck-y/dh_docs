@@ -6,10 +6,11 @@ Selección de **varias** opciones. Las opciones viven en la tabla `option`.
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `required` | `boolean` | Si la pregunta es obligatoria. |
+| `required` | `boolean` | Si la pregunta es obligatoria. Excluyente con `default`. |
 | `shuffle` | `boolean` | **Opcional / aditivo.** Muestra las opciones en orden aleatorio. Por defecto `false`. |
-| `min_selected` | `number` | Mínimo de opciones a seleccionar (opcional). |
-| `max_selected` | `number` | Máximo de opciones a seleccionar (opcional). |
+| `min` | `number` | Mínimo de opciones a seleccionar (opcional). |
+| `max` | `number` | Máximo de opciones a seleccionar (opcional). |
+| `default` | `number[]` | Valores por defecto (opcional). Excluyente con `required`. |
 
 El orden **determinista** de las opciones se define en `option.order` (dato
 estructural), no en `config`.
@@ -23,7 +24,7 @@ estructural), no en `config`.
   "type": "MULTIPLE_CHOICE",
   "text": "¿Cuáles de los siguientes síntomas ha presentado?",
   "order": 5,
-  "config": { "required": true, "shuffle": false, "min_selected": 1, "max_selected": 3 },
+  "config": { "required": true, "shuffle": false, "min": 1, "max": 3 },
   "list_options": [
     { "text": "Dolor de cabeza", "value": 1, "order": 1, "id": 0, "url": null },
     { "text": "Fatiga", "value": 2, "order": 2, "id": 0, "url": null },
@@ -38,5 +39,5 @@ estructural), no en `config`.
 
 ## Fuente
 
-Contrato del motor frontend (`docs/diagrams/schemas/cuestionario/README.md`).
-`config` es propuesta inicial.
+`config` definitivo (ver `README.md`). Contrato del motor frontend
+(`docs/diagrams/schemas/cuestionario/README.md`) como referencia inicial.

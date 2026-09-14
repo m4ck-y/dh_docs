@@ -6,9 +6,10 @@ Fecha (sin hora).
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `required` | `boolean` | Si la pregunta es obligatoria. |
-| `min_date` | `string` (`YYYY-MM-DD`) | Fecha mínima permitida (opcional). |
-| `max_date` | `string` (`YYYY-MM-DD`) | Fecha máxima permitida (opcional). |
+| `required` | `boolean` | Si la pregunta es obligatoria. Excluyente con `default`. |
+| `min` | `string` (`YYYY-MM-DD`) | Fecha mínima permitida (opcional). |
+| `max` | `string` (`YYYY-MM-DD`) | Fecha máxima permitida (opcional). |
+| `default` | `string` (`YYYY-MM-DD`) | Fecha por defecto (opcional). Excluyente con `required`. |
 
 ## Ejemplo (item de pregunta)
 
@@ -19,7 +20,7 @@ Fecha (sin hora).
   "type": "DATE",
   "text": "Fecha de nacimiento",
   "order": 6,
-  "config": { "required": true, "min_date": "1900-01-01", "max_date": "2026-12-31" }
+  "config": { "required": true, "min": "1900-01-01", "max": "2026-12-31" }
 }
 ```
 
@@ -29,5 +30,5 @@ Fecha (sin hora).
 
 ## Fuente
 
-Contrato del motor frontend (`docs/diagrams/schemas/cuestionario/README.md`).
-`config` es propuesta inicial.
+`config` definitivo (ver `README.md`). Contrato del motor frontend
+(`docs/diagrams/schemas/cuestionario/README.md`) como referencia inicial.

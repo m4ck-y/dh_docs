@@ -7,8 +7,9 @@ Selección de **una** opción entre varias. Las opciones viven en la tabla
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `required` | `boolean` | Si la pregunta es obligatoria. |
+| `required` | `boolean` | Si la pregunta es obligatoria. Excluyente con `default`. |
 | `shuffle` | `boolean` | **Opcional / aditivo.** Muestra las opciones en orden aleatorio. Por defecto `false`. |
+| `default` | `number` | `value` de la opción por defecto (opcional). Excluyente con `required`. |
 
 El orden **determinista** de las opciones se define en `option.order` (dato
 estructural), no en `config`. Si `shuffle = true`, `option.order` sigue siendo
@@ -39,5 +40,5 @@ el orden canónico/base.
 
 ## Fuente
 
-Contrato del motor frontend (`docs/diagrams/schemas/cuestionario/README.md`).
-`config` es propuesta inicial.
+`config` definitivo (ver `README.md`). Contrato del motor frontend
+(`docs/diagrams/schemas/cuestionario/README.md`) como referencia inicial.

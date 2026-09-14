@@ -10,13 +10,18 @@ de 0 a 7). Ideal para frecuencias o conteos acotados.
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `required` | `boolean` | Si la pregunta es obligatoria. |
-| `min_value` | `number` | Límite inferior (inclusive). |
-| `max_value` | `number` | Límite superior (inclusive). |
+| `required` | `boolean` | Si la pregunta es obligatoria. Excluyente con `default`. |
+| `min` | `number` | Límite inferior (inclusive). |
+| `max` | `number` | Límite superior (inclusive). |
 | `step` | `number` | Incremento permitido. Por defecto `1`. |
 | `integer` | `boolean` | Solo números enteros. Por defecto `true`. |
+| `default` | `number` | Valor por defecto (opcional). Excluyente con `required`. |
 
-Regla: `min_value <= respuesta <= max_value`.
+Regla: `min <= respuesta <= max`.
+
+> **Desviación de la fuente:** `range.md` de la referencia usa
+> `min_value`/`max_value`. Aquí se adopta `min`/`max` por **consistencia** con el
+> resto de tipos (ver `README.md`).
 
 ## Ejemplo (item de pregunta)
 
@@ -27,7 +32,7 @@ Regla: `min_value <= respuesta <= max_value`.
   "type": "RANGE",
   "text": "Durante los últimos 7 días, ¿cuántos días realizó actividades físicas vigorosas?",
   "order": 1,
-  "config": { "required": true, "min_value": 0, "max_value": 7, "step": 1, "integer": true }
+  "config": { "required": true, "min": 0, "max": 7, "step": 1, "integer": true }
 }
 ```
 

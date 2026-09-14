@@ -6,8 +6,10 @@ Respuesta de texto corto (una línea).
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `required` | `boolean` | Si la pregunta es obligatoria. |
+| `required` | `boolean` | Si la pregunta es obligatoria. Excluyente con `default`. |
+| `min_length` | `number` | Longitud mínima de caracteres (opcional). |
 | `max_length` | `number` | Longitud máxima de caracteres (opcional). |
+| `default` | `string` | Valor por defecto (opcional). Excluyente con `required`. |
 
 ## Ejemplo (item de pregunta)
 
@@ -18,7 +20,7 @@ Respuesta de texto corto (una línea).
   "type": "TEXT",
   "text": "Nombre completo",
   "order": 1,
-  "config": { "required": true, "max_length": 120 }
+  "config": { "required": true, "min_length": 2, "max_length": 120 }
 }
 ```
 
@@ -28,5 +30,5 @@ Respuesta de texto corto (una línea).
 
 ## Fuente
 
-Contrato del motor frontend (`docs/diagrams/schemas/cuestionario/README.md`).
-`config` es propuesta inicial.
+`config` definitivo (ver `README.md`). Contrato del motor frontend
+(`docs/diagrams/schemas/cuestionario/README.md`) como referencia inicial.

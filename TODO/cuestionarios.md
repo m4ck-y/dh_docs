@@ -40,7 +40,7 @@
 | A3 | Decisión column-JSON vs tabla | Rescate | ✅ |
 | A4 | Conversión API↔BD de `condition` | Rescate | ⏳ |
 | B | `order` en tablas puente | Modelo | ✅ |
-| C5 | `config` definitivo por tipo | Modelo | ⏳ |
+| C5 | `config` definitivo por tipo | Modelo | ✅ |
 | C6 | PHQ-9 ítem 7 | Contenido | ⏳ |
 | C7 | Scoring unificado | Modelo | ✅ |
 | C7b | METs IPAQ (scoring no lineal) | Modelo | ⏳ |
@@ -122,15 +122,30 @@
 
 ## C. Modelo / gaps
 
-### C5 — `config` definitivo por tipo
+### C5 — `config` definitivo por tipo ✅ (resuelto)
 
-- **Qué**: definir el `config` final de los tipos que hoy son **propuesta
-  inicial**: `TEXT`, `TEXT_LONG`, `NUMBER`, `SINGLE_CHOICE`,
-  `MULTIPLE_CHOICE`, `DATE`, `DATE_TIME`.
-- **Estado actual**: `catalog/question_types/*.md` (8 archivos marcados
-  "propuesta inicial"). `RANGE` y `TIMER` ya son definitivos (rescatados).
-- **Refs**: `catalog/question_types/README.md`, `catalog/README.md` §6,
-  `schema.sql` (`question.config`).
+- **Decisión**: los 9 tipos tienen `config` definitivo:
+  - `required` común; `default` (opcional) **excluyente** con `required`.
+  - Límites unificados a **`min`/`max`** en todos los tipos (incluidos
+    `RANGE`/`TIMER`, con **desviación intencional** de `range.md`/`timer.md`).
+  - `MULTIPLE_CHOICE`: `min`/`max` son cantidad de selecciones; `default` es
+    `number[]`.
+  - Nuevos campos: `min_length` (texto), `step` (NUMBER/DATE_TIME),
+    `default`/`default_values`→`default` (todos).
+- **Forma final**:
+  | Tipo | `config` |
+  |---|---|
+  | `TEXT` | required, min_length, max_length, default |
+  | `TEXT_LONG` | required, min_length, max_length, multiline, default |
+  | `NUMBER` | required, min, max, decimals, step, default |
+  | `SINGLE_CHOICE` | required, shuffle, default |
+  | `MULTIPLE_CHOICE` | required, shuffle, min, max, default (number[]) |
+  | `DATE` | required, min, max, default |
+  | `DATE_TIME` | required, min, max, step, default |
+  | `TIMER` | required, min, max, precision, default |
+  | `RANGE` | required, min, max, step, integer, default |
+- **Reflejo**: 9 docs en `catalog/question_types/`, `question_types/README.md`,
+  `catalog/README.md` §6, `catalog/example.jsonc`, `schema.sql`.
 
 ### C6 — PHQ-9 ítem 7 (redacción)
 

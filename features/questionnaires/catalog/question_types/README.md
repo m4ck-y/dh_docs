@@ -8,6 +8,10 @@ aplicación (Pydantic); el motor del frontend la interpreta para renderizar.
 
 - `config` es un JSONB **nullable** en `question`.
 - `required` es común a **todos** los tipos.
+- `required` y `default` son **mutuamente excluyentes**: una pregunta
+  obligatoria no puede traer valor por defecto (lo pasaría siempre).
+- Los límites se nombran **`min`/`max`** en **todos** los tipos (numéricos,
+  fechas, rango, timer, selección múltiple). Ver nota de desviación abajo.
 - `shuffle` (en tipos choice) es **opcional/aditivo**: el orden canónico de las
   opciones vive en `option.order`, no en `config`.
 - En los ejemplos, el campo `"order"` de la **pregunta** representa su posición
@@ -19,17 +23,20 @@ aplicación (Pydantic); el motor del frontend la interpreta para renderizar.
 
 ## Tipos
 
-| Tipo | `config` (campos propios) | `answer.value` | Doc |
-|---|---|---|---|
-| `TEXT` | `required`, `max_length` | `string` | [text.md](./text.md) |
-| `TEXT_LONG` | `required`, `max_length`, `multiline` | `string` | [text_long.md](./text_long.md) |
-| `NUMBER` | `required`, `min_value`, `max_value`, `decimals` | `number` | [number.md](./number.md) |
-| `SINGLE_CHOICE` | `required`, `shuffle`* | `number` | [single_choice.md](./single_choice.md) |
-| `MULTIPLE_CHOICE` | `required`, `shuffle`*, `min_selected`, `max_selected` | `number[]` | [multiple_choice.md](./multiple_choice.md) |
-| `DATE` | `required`, `min_date`, `max_date` | `string` (`YYYY-MM-DD`) | [date.md](./date.md) |
-| `DATE_TIME` | `required`, `min_date`, `max_date` | `string` (ISO 8601) | [date_time.md](./date_time.md) |
-| `TIMER` | `required`, `min_value`, `max_value`, `precision` | `string` (ISO 8601 duration) | [timer.md](./timer.md) |
-| `RANGE` | `required`, `min_value`, `max_value`, `step`, `integer` | `number` | [range.md](./range.md) |
+| Tipo | `config` (campos propios) | `default` | `answer.value` | Doc |
+|---|---|---|---|---|
+| `TEXT` | `required`, `min_length`, `max_length` | `string` | `string` | [text.md](./text.md) |
+| `TEXT_LONG` | `required`, `min_length`, `max_length`, `multiline` | `string` | `string` | [text_long.md](./text_long.md) |
+| `NUMBER` | `required`, `min`, `max`, `decimals`, `step` | `number` | `number` | [number.md](./number.md) |
+| `SINGLE_CHOICE` | `required`, `shuffle`* | `number` | `number` | [single_choice.md](./single_choice.md) |
+| `MULTIPLE_CHOICE` | `required`, `shuffle`*, `min`, `max` | `number[]` | `number[]` | [multiple_choice.md](./multiple_choice.md) |
+| `DATE` | `required`, `min`, `max` | `string` (`YYYY-MM-DD`) | `string` (`YYYY-MM-DD`) | [date.md](./date.md) |
+| `DATE_TIME` | `required`, `min`, `max`, `step` | `string` (ISO 8601) | `string` (ISO 8601) | [date_time.md](./date_time.md) |
+| `TIMER` | `required`, `min`, `max`, `precision` | `string` (ISO 8601 duration) | `string` (ISO 8601 duration) | [timer.md](./timer.md) |
+| `RANGE` | `required`, `min`, `max`, `step`, `integer` | `number` | `number` | [range.md](./range.md) |
+
+`default` es opcional y **excluyente con `required`**. En `MULTIPLE_CHOICE` es un
+array (`number[]`).
 
 \* `shuffle` es opcional/aditivo. El orden determinista de las opciones es
 `option.order`.
@@ -42,9 +49,13 @@ aplicación (Pydantic); el motor del frontend la interpreta para renderizar.
 - El resto de tipos proviene del contrato del motor frontend
   (`docs/diagrams/schemas/cuestionario/README.md`) y del DDL de referencia.
 
+## Desviación respecto a la fuente
+
+`range.md` y `timer.md` de la referencia usan `min_value`/`max_value`. El modelo
+adopta **`min`/`max`** en todos los tipos por **consistencia** de naming. Es una
+desviación intencional de la fuente (paridad rota a propósito).
+
 ## Pendientes
 
-- Definir `config` definitivo para los tipos que hoy son propuesta inicial
-  (TEXT, TEXT_LONG, NUMBER, SINGLE_CHOICE, MULTIPLE_CHOICE, DATE, DATE_TIME).
 - El motor frontend solo soporta `TEXT`, `SINGLE_CHOICE` y `MULTIPLE_CHOICE`
-  (`types.ts:1`); falta soporte para el resto.
+  (`types.ts:1`); falta soporte para el resto (ver D12).

@@ -100,14 +100,14 @@
           "text": "Durante los últimos 7 días, ¿cuántos días realizó actividades físicas vigorosas?",
           "order": 2,
           "id": 0,
-          "config": { "required": true, "min_value": 0, "max_value": 7, "step": 1, "integer": true }
+          "config": { "required": true, "min": 0, "max": 7, "step": 1, "integer": true }
         },
         {
           "type": "TIMER",
           "text": "¿Cuánto tiempo en total dedicó a caminar en uno de esos días?",
           "order": 3,
           "id": 0,
-          "config": { "required": true, "min_value": "PT0M", "max_value": "PT24H", "precision": "minutes" }
+          "config": { "required": true, "min": "PT0M", "max": "PT24H", "precision": "minutes" }
         }
       ]
     }

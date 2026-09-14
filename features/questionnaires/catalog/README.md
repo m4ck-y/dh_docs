@@ -148,19 +148,22 @@ Cada `question` tiene un `type` (`EQuestionType`) y una configuración `config`
 (JSONB) cuya **forma depende del tipo**. El detalle por tipo vive en
 [`question_types/`](./question_types/):
 
-| Tipo | `config` (campos propios) | `answer.value` |
-|---|---|---|
-| `TEXT` | required, max_length | `string` |
-| `TEXT_LONG` | required, max_length, multiline | `string` |
-| `NUMBER` | required, min_value, max_value, decimals | `number` |
-| `SINGLE_CHOICE` | required, shuffle | `number` |
-| `MULTIPLE_CHOICE` | required, shuffle, min_selected, max_selected | `number[]` |
-| `DATE` | required, min_date, max_date | `string` (`YYYY-MM-DD`) |
-| `DATE_TIME` | required, min_date, max_date | `string` (ISO 8601) |
-| `TIMER` | required, min_value, max_value, precision | `string` (ISO 8601 duration) |
-| `RANGE` | required, min_value, max_value, step, integer | `number` |
+| Tipo | `config` (campos propios) | `default` | `answer.value` |
+|---|---|---|---|
+| `TEXT` | required, min_length, max_length | `string` | `string` |
+| `TEXT_LONG` | required, min_length, max_length, multiline | `string` | `string` |
+| `NUMBER` | required, min, max, decimals, step | `number` | `number` |
+| `SINGLE_CHOICE` | required, shuffle | `number` | `number` |
+| `MULTIPLE_CHOICE` | required, shuffle, min, max | `number[]` | `number[]` |
+| `DATE` | required, min, max | `string` (`YYYY-MM-DD`) | `string` (`YYYY-MM-DD`) |
+| `DATE_TIME` | required, min, max, step | `string` (ISO 8601) | `string` (ISO 8601) |
+| `TIMER` | required, min, max, precision | `string` (ISO 8601 duration) | `string` (ISO 8601 duration) |
+| `RANGE` | required, min, max, step, integer | `number` | `number` |
 
-- `required` es común a **todos** los tipos.
+- `required` es común a **todos** los tipos; `default` (opcional) es
+  **excluyente** con `required`.
+- Los límites se nombran **`min`/`max`** en todos los tipos (desviación
+  intencional de `range.md`/`timer.md`, que usan `min_value`/`max_value`).
 - `RANGE` y `TIMER` fueron **rescatados** de `app_questionnaire`
   (`my_arquitecture/question/types/`); evidencia de uso en `cuestionarios/IPAQ.json`.
 - La coherencia de `config` con `type` se valida en la capa de aplicación

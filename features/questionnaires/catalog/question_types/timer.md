@@ -10,10 +10,11 @@
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `required` | `boolean` | Si la pregunta es obligatoria. |
-| `min_value` | `string` (ISO 8601 duration) | Duración mínima aceptada. |
-| `max_value` | `string` (ISO 8601 duration) | Duración máxima aceptada. |
+| `required` | `boolean` | Si la pregunta es obligatoria. Excluyente con `default`. |
+| `min` | `string` (ISO 8601 duration) | Duración mínima aceptada. |
+| `max` | `string` (ISO 8601 duration) | Duración máxima aceptada. |
 | `precision` | `string` | Unidad de captura: `seconds`, `minutes`, `hours`. |
+| `default` | `string` (ISO 8601 duration) | Duración por defecto (opcional). Excluyente con `required`. |
 
 Sintaxis ISO 8601 de duración: `PnYnMnDTnHnMnS` — en este tipo solo se usan los
 componentes de tiempo (`T...`).
@@ -25,6 +26,10 @@ componentes de tiempo (`T...`).
 | `"PT1H30M"` | 1 hora y 30 minutos |
 | `"PT45M"` | 45 minutos |
 
+> **Desviación de la fuente:** `timer.md` de la referencia usa
+> `min_value`/`max_value`. Aquí se adopta `min`/`max` por **consistencia** con el
+> resto de tipos (ver `README.md`).
+
 ## Ejemplo (item de pregunta)
 
 ```json
@@ -34,7 +39,7 @@ componentes de tiempo (`T...`).
   "type": "TIMER",
   "text": "¿Cuánto tiempo en total dedicó a caminar en uno de esos días?",
   "order": 2,
-  "config": { "required": true, "min_value": "PT0M", "max_value": "PT24H", "precision": "minutes" }
+  "config": { "required": true, "min": "PT0M", "max": "PT24H", "precision": "minutes" }
 }
 ```
 

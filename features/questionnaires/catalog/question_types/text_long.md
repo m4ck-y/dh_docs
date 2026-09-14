@@ -6,9 +6,11 @@ Respuesta de texto largo (párrafo, multilínea).
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `required` | `boolean` | Si la pregunta es obligatoria. |
+| `required` | `boolean` | Si la pregunta es obligatoria. Excluyente con `default`. |
+| `min_length` | `number` | Longitud mínima de caracteres (opcional). |
 | `max_length` | `number` | Longitud máxima de caracteres (opcional). |
 | `multiline` | `boolean` | Renderiza un área de texto. Por defecto `true`. |
+| `default` | `string` | Valor por defecto (opcional). Excluyente con `required`. |
 
 ## Ejemplo (item de pregunta)
 
@@ -29,5 +31,5 @@ Respuesta de texto largo (párrafo, multilínea).
 
 ## Fuente
 
-Contrato del motor frontend (`docs/diagrams/schemas/cuestionario/README.md`).
-`config` es propuesta inicial.
+`config` definitivo (ver `README.md`). Contrato del motor frontend
+(`docs/diagrams/schemas/cuestionario/README.md`) como referencia inicial.
