@@ -15,8 +15,11 @@ tags: ["clinical_history", "historia_clinica", "secciones", "ahf", "mappers"]
 ## Descripción
 
 Modelar la historia clínica como formularios estructurales (secciones A-E,
-`kind: CLINICAL_HISTORY`) sobre el motor de formularios, generar sus fichas de
-estructura y sus vínculos a dominio (feature `mapper`).
+`kind: CLINICAL_HISTORY`) **reutilizando el contrato `form` definido en
+[TASK-016](../TASK-016-catalogo-cuestionarios/README.md)** (mismo shape).
+Fuente: `docs/diagrams/0_HISTORIA_CLINICA` (el form `0`; va **después** de los
+cuestionarios `1,2,3`). Genera sus fichas de estructura y sus vínculos a dominio
+(feature `mapper`).
 
 ## Objetivos
 
