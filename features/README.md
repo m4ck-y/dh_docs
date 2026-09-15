@@ -15,6 +15,11 @@ su modelo de datos (ERDs, diagramas de clases, DDL) y sus decisiones.
 
 ## Módulos
 
-| Módulo | Descripción | Estado |
-|---|---|---|
-| [`questionnaires/`](./questionnaires/) | Catálogo de cuestionarios: definición del instrumento y ejecución de respuestas | En definición |
+| Nº | Módulo | Descripción | Depende de | Estado |
+|---|---|---|---|---|
+| 1 | [`questionnaires/`](./questionnaires/) | Motor + catálogo de formularios: definición del instrumento, ejecución de respuestas y banco (instrumentos e historia clínica vía `kind`). | — | En definición |
+| 2 | [`clinical_history/`](./clinical_history/) | Dominio de la historia clínica: secciones A-E, mappers a DB y propuestas UI. | `questionnaires` | Propuesta |
+
+> La numeración marca el orden base → consumidor (`clinical_history` se almacena
+> con el modelo de `questionnaires`). Las carpetas **no** llevan prefijo; la
+> dependencia se declara aquí.

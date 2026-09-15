@@ -5,7 +5,7 @@ Aceptado (prototipo de propuesta de UI — no es el diseño final)
 
 ## Contexto
 
-El diagrama de flujo `Diagram_family-condition-matrix.drawio` define la lógica del módulo de **Antecedentes Heredofamiliares (AHF)**. Para validar el flujo y permitir su interpretación visual, se construyeron **tres vistas HTML autónomas** (sin backend) en `docs/historial_clinico/diagram_family_condition/`:
+El diagrama de flujo del tab **B - Antecedentes Heredofamiliares** (en `docs/diagrams/0_HISTORIA_CLINICA/source/0_DEMO_HISTORIA_CLINICA.drawio`) define la lógica del módulo de **Antecedentes Heredofamiliares (AHF)**. Para validar el flujo y permitir su interpretación visual, se construyeron **tres vistas HTML autónomas** (sin backend) en `docs/features/clinical_history/proposals/family_condition/`:
 
 - `condition_first.html` — se navega por padecimientos y se marcan los familiares que lo han padecido.
 - `family_first.html` — se navega por familiar (tabs) y se marcan sus padecimientos.
@@ -78,6 +78,6 @@ Diabetes     |   X   |       |       X        | ...
 Posteriormente se añadió un **árbol genealógico interactivo** — `family_tree.html` (Light Glassmorphism) — en el mismo directorio, como cuarta representación de exploración del flujo. Mantiene las reglas de este ADR (claves compuestas para el "Otro", "¿Vive?" elevado al ámbito del familiar, capitalización del texto libre en JS y export CSV transpuesto uniforme) y añade un panel lateral de captura por familiar, insignias de categoría con tooltip y líneas SVG conectoras. La granularidad del texto "Otro" es **por miembro** (`catId||disease||fi`), igual que en `family_first.html`. Ver [reporte 2026-07-31](../reports/2026-07-31_FEATURE_prototipo-arbol-genealogico-antecedentes-familiares.md).
 
 ## Referencias
-- Diagrama fuente: `docs/historial_clinico/diagram_family_condition/Diagram_family-condition-matrix.drawio`
-- Documentación de la propuesta: `docs/historial_clinico/diagram_family_condition/README.md`
+- Diagrama fuente: `docs/diagrams/0_HISTORIA_CLINICA/source/0_DEMO_HISTORIA_CLINICA.drawio` (tab "B - ANTECEDENTES HEREDOFAMILIARES")
+- Documentación de la propuesta: `docs/features/clinical_history/proposals/family_condition/README.md`
 - Cuestionarios de referencia: `family_first_matrix.md`, `condition_first_matrix.md`

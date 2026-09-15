@@ -3,7 +3,7 @@
 **Título de la actividad o tarea:** Análisis del flujo de padecimientos heredofamiliares y prototipo de UI multi-vista
 
 **Descripción de la actividad o tarea:**
-Se interpretó el diagrama de flujo `Diagram_family-condition-matrix.drawio` que define la lógica del módulo de **Antecedentes Heredo-Familiares (AHF)** y, ante la complejidad de representar el flujo completo dentro de un único diagrama, se construyeron **tres prototipos de interfaz de usuario** autónomos en HTML para explorar distintos caminos de captura y evaluar el más viable antes de comprometer un diseño final.
+Se interpretó el diagrama de flujo del tab **"B - Antecedentes Heredofamiliares"** (`0_DEMO_HISTORIA_CLINICA.drawio`) que define la lógica del módulo de **Antecedentes Heredo-Familiares (AHF)** y, ante la complejidad de representar el flujo completo dentro de un único diagrama, se construyeron **tres prototipos de interfaz de usuario** autónomos en HTML para explorar distintos caminos de captura y evaluar el más viable antes de comprometer un diseño final.
 
 ### Contexto
 
@@ -17,7 +17,7 @@ En lugar de un único diagrama, se construyeron tres vistas HTML autónomas (sin
 
 ```mermaid
 flowchart LR
-    DRAWIO[Diagram_family-condition-matrix.drawio<br/>Lógica completa del wizard]
+    DRAWIO[0_DEMO_HISTORIA_CLINICA.drawio<br/>tab "B - Antecedentes Heredofamiliares"]
 
     DRAWIO --> INTERP[Interpretación del flujo]
 
@@ -34,7 +34,7 @@ flowchart LR
     V3A --> EXPORT
 ```
 
-Cada vista reside en `docs/historial_clinico/diagram_family_condition/` y es completamente autónoma (HTML + CSS + JS embebidos, sin dependencias salvo Material Symbols Rounded).
+Cada vista reside en `docs/features/clinical_history/proposals/family_condition/` y es completamente autónoma (HTML + CSS + JS embebidos, sin dependencias salvo Material Symbols Rounded).
 
 ### Problemas resueltos durante el prototipado
 
@@ -76,15 +76,15 @@ Diabetes         |   X   |       |       X        | ...
 
 ### Referencias
 
-- Diagrama fuente: `docs/historial_clinico/diagram_family_condition/Diagram_family-condition-matrix.drawio`
-- Documentación de la propuesta: `docs/historial_clinico/diagram_family_condition/README.md`
+- Diagrama fuente: `docs/diagrams/0_HISTORIA_CLINICA/source/0_DEMO_HISTORIA_CLINICA.drawio` (tab "B - ANTECEDENTES HEREDOFAMILIARES")
+- Documentación de la propuesta: `docs/features/clinical_history/proposals/family_condition/README.md`
 - Cuestionarios de referencia: `family_first_matrix.md`, `condition_first_matrix.md`
 - [ADR 037 — Prototipos UI de Antecedentes Familiares](../decisions/037-family-conditions-ui-prototype.md)
 
 **Estado de la actividad o tarea:** Concluido (fase de exploración / prototipo)
 
 **Avances de la actividad (si lo requiere):**
-- Interpretado el diagrama `Diagram_family-condition-matrix.drawio` y construidas tres vistas HTML autónomas (`condition_first.html`, `family_first.html`, `matrix.html`) que recorren el flujo de captura desde tres direcciones distintas.
+- Interpretado el diagrama del tab "B - Antecedentes Heredofamiliares" (`0_DEMO_HISTORIA_CLINICA.drawio`) y construidas tres vistas HTML autónomas (`condition_first.html`, `family_first.html`, `matrix.html`) que recorren el flujo de captura desde tres direcciones distintas.
 - Resueltos tres problemas del catálogo: colisión del "Otro" (claves compuestas), texto "Otro" por granularidad (difiere por vista) y duplicidad de "¿Vive?" (elevada al ámbito del familiar).
 - Eliminados los loops de confirmación del diagrama ("¿Otro familiar?" / "¿Otro padecimiento?") reemplazándolos por selección múltiple y botón "Agregar familiar".
 - Implementada capitalización del texto libre en JavaScript y un formato de exportación CSV transpuesto uniforme en las tres vistas.

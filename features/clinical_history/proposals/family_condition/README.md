@@ -1,11 +1,13 @@
-# Diagrama Family Condition Matrix
+# AHF — Propuestas UI (Antecedentes Heredofamiliares)
+
+> **Fuente del flujo:** `docs/diagrams/0_HISTORIA_CLINICA/` — drawio
+> `source/0_DEMO_HISTORIA_CLINICA.drawio` (tab "B - ANTECEDENTES
+> HEREDOFAMILIARES") y conversión `flows/antecedentes_heredofamiliares.mmd`.
 
 ## Archivos en este directorio
 
 | Archivo | Tipo | Descripción |
 |---|---|---|
-| `Diagram_family-condition-matrix.drawio` | Diagrama Draw.io | Diagrama original con la lógica completa del wizard |
-| `FAMILY_CONDITION_MATRIX.mmd` | Diagrama Mermaid | Flujo de decisión: familiar → categoría → enfermedad |
 | `family_first_matrix.md` | Cuestionario markdown | Vista: familiar primero, luego enfermedades |
 | `condition_first_matrix.md` | Cuestionario markdown | Vista: enfermedad primero, luego familiares |
 | `condition_first.html` | Vista interactiva (autónoma) | Condición primero: se navega por padecimientos y se marcan los familiares |

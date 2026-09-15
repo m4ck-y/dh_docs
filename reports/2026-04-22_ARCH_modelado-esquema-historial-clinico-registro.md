@@ -37,7 +37,7 @@ Se crearon y modificaron entidades en cuatro schemas de PostgreSQL:
 - `person_responsible`: Se agregó `economic_dependence Enum(EEconomicDependence)` (`YES`, `PARTIALLY`, `NO`) para registrar si el usuario depende económicamente del tutor. Se renombró `other_relationship` a `relationship_other` para consistencia con la convención `{campo}_other`.
 
 **Documentación generada:**
-Se estableció la convención de que cada sección del historial clínico produce dos archivos: `<SECCIÓN>.md` (estructura del formulario) y `<SECCIÓN>.MAPPER.md` (mapeo a la DB). Los archivos `historial_clinico/A.REGISTRO.md` y `historial_clinico/A.REGISTRO.MAPPER.md` quedan como referencia base para las secciones posteriores.
+Se estableció la convención de que cada sección del historial clínico produce dos archivos: `<SECCIÓN>.md` (estructura del formulario) y `<SECCIÓN>.MAPPER.md` (mapeo a la DB). Los archivos `features/clinical_history/sections/A_registro.md` y `features/clinical_history/mappers/A_registro.mapper.md` quedan como referencia base para las secciones posteriores.
 
 **Estado de la actividad o tarea:** En desarrollo
 
@@ -45,7 +45,7 @@ Se estableció la convención de que cada sección del historial clínico produc
 - Modelado de datos y diseño de schema completado: todos los campos de la sección "A. Registro" cuentan con entidad, columna y valor mapeados.
 - Mapeo completo de los 40+ campos — sin campos  sin modelar al cierre de esta fase.
 - Gap único pendiente: catálogo `catalog.religion` sin poblar — los campos `key_religion` de `sociocultural_identity` permanecen en  hasta que dicho catálogo sea definido.
-- Convenciones establecidas y documentadas en `historial_clinico/README.md` para uso en secciones futuras del historial clínico.
+- Convenciones establecidas y documentadas en `features/clinical_history/README.md` para uso en secciones futuras del historial clínico.
 
 **Siguientes pasos:**
 - Implementación de endpoints REST para la captura y persistencia de los datos de la sección "A. Registro".

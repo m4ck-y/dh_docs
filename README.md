@@ -14,7 +14,7 @@ Bienvenido al centro de documentación del proyecto. Este directorio sigue el es
 - **[Módulos (features/)](features/)**: Especificaciones de producto por módulo: modelo de dominio, persistencia (ERDs, DDL) y ejemplos.
 - **[Pendientes (TODO/)](TODO/)**: Trabajo diferido por módulo, en formato reanudable con referencias a archivos.
 - **[Gestión (management/)](management/)**: Backlog del proyecto y pautas de comunicación interna. Incluye el flujo de **Onboarding Legacy**.
-- **[Historial Clínico (historial_clinico/)](historial_clinico/)**: Estructura de formularios clínicos, mapeo de base de datos y diagramas de flujo Mermaid.
+- **[Historial Clínico (clinical_history/)](features/clinical_history/)**: Estructura de formularios clínicos, mapeo de base de datos y propuestas de UI.
 - **[Base de Datos (db/)](db/)**: Diccionario de datos, ERDs y definiciones de esquemas para PostgreSQL y MongoDB.
 - **[Normativa (nom024/)](nom024/)**: Documentación relacionada con la norma NOM-024-SSA3-2012.
 

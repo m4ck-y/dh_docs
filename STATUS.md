@@ -345,7 +345,7 @@
 | Issue | Ubicacion | Regla no aplicada |
 | :--- | :--- | :--- |
 | Archivos `.md` en espanol fuera de `docs/` | 87 archivos: `other_projects/app_questionnaire/`, `other_projects/app_health_monitoring/`, `backend/template_backend_python/`, `dh_logger/`, `dh_onboarding/`, `dh_notify/`, `LLM_STUDIO.md` | `AGENTS.md` y `.agents/rules/WRITING.md`: todo fuera de `docs/` debe estar en ingles. |
-| Archivos `.md` en ingles dentro de `docs/` | 14 archivos: `docs/decisions/019-*.md`, `020-*.md`, `022-*.md`, `023-*.md`, `docs/historial_clinico/*.md`, `docs/management/1_onboarding_legacy/README.md`, `docs/ideas/measurements.md`, `docs/db/postgres/organizations/data_dictionary/*.md`, `docs/tasks/TASK-007-dh-storage/planning/*.md` | `.agents/rules/WRITING.md` y `.agents/rules/DOCS_PROJECT_STRUCTURE.md`: todo dentro de `docs/` debe estar en espanol. |
+| Archivos `.md` en ingles dentro de `docs/` | 13 archivos: `docs/decisions/019-*.md`, `020-*.md`, `022-*.md`, `023-*.md`, `docs/management/1_onboarding_legacy/README.md`, `docs/ideas/measurements.md`, `docs/db/postgres/organizations/data_dictionary/*.md`, `docs/tasks/TASK-007-dh-storage/planning/*.md` | `.agents/rules/WRITING.md` y `.agents/rules/DOCS_PROJECT_STRUCTURE.md`: todo dentro de `docs/` debe estar en espanol. |
 | Emojis decorativos en `.md` | 77 archivos (5 dentro de `docs/`, 72 fuera de `docs/`) | `AGENTS.md` y ADR 032: emojis decorativos prohibidos; solo permitidos `🟢`, `🟡`, `🔴` como indicadores de estado. |
 
 **Nota**: Estos archivos son legacy. No impactan funcionalidad. Se corregiran solo cuando se refactoricen o se active el contexto de esos modulos. No se creara task adicional.

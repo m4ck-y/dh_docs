@@ -3,7 +3,7 @@
 **Título de la actividad o tarea:** Prototipo de árbol genealógico (genograma interactivo) para antecedentes heredofamiliares — Light Glassmorphism
 
 **Descripción de la actividad o tarea:**
-Partiendo del mismo diagrama fuente `Diagram_family-condition-matrix.drawio` que define la lógica del módulo de **Antecedentes Heredo-Familiares (AHF)**, y continuando con la exploración de UI iniciada en el reporte del 2026-07-29 (vistas `condition_first`, `family_first` y `matrix`), se decidió construir una **cuarta representación del flujo y del llenado de datos**, más interactiva que las anteriores: un **árbol genealógico interactivo** (genograma) que representa visualmente a los 6 familiares en tres niveles jerárquicos —abuelos, padres y paciente— en lugar de recorrer el catálogo en listas o matrices.
+Partiendo del mismo diagrama fuente del tab **"B - Antecedentes Heredofamiliares"** (`0_DEMO_HISTORIA_CLINICA.drawio`) que define la lógica del módulo de **Antecedentes Heredo-Familiares (AHF)**, y continuando con la exploración de UI iniciada en el reporte del 2026-07-29 (vistas `condition_first`, `family_first` y `matrix`), se decidió construir una **cuarta representación del flujo y del llenado de datos**, más interactiva que las anteriores: un **árbol genealógico interactivo** (genograma) que representa visualmente a los 6 familiares en tres niveles jerárquicos —abuelos, padres y paciente— en lugar de recorrer el catálogo en listas o matrices.
 
 Al igual que las tres vistas previas, esta representación es una **propuesta de UI** (sin backend, estado en memoria), no el diseño final: su objetivo es evaluar si la navegación por familiar mediante un genograma reduce la fricción de captura frente a los flujos listados, antes de comprometer la ruta definitiva.
 
@@ -41,9 +41,9 @@ Conserva la **barra de acciones superior** (Exportar CSV / Limpiar todo con conf
 
 ### Referencias
 
-- Diagrama fuente: `docs/historial_clinico/diagram_family_condition/Diagram_family-condition-matrix.drawio`
-- Prototipo: `docs/historial_clinico/diagram_family_condition/family_tree.html`
-- Documentación de la propuesta: `docs/historial_clinico/diagram_family_condition/README.md`
+- Diagrama fuente: `docs/diagrams/0_HISTORIA_CLINICA/source/0_DEMO_HISTORIA_CLINICA.drawio` (tab "B - ANTECEDENTES HEREDOFAMILIARES")
+- Prototipo: `docs/features/clinical_history/proposals/family_condition/family_tree.html`
+- Documentación de la propuesta: `docs/features/clinical_history/proposals/family_condition/README.md`
 - Vistas previas: `condition_first.html`, `family_first.html`, `matrix.html`
 - [ADR 037 — Prototipos UI de Antecedentes Familiares](../decisions/037-family-conditions-ui-prototype.md)
 - Reporte previo: [2026-07-29 — Prototipo de UI multi-vista](2026-07-29_ARCH_prototipo-ui-antecedentes-familiares.md)
