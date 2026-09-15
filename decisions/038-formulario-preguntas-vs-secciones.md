@@ -113,7 +113,7 @@ el ejemplo y el ERD; no se introdujo estructura nueva.
 - Contradice la referencia `app_questionnaire`, que no es excluyente; cualquier
   importación futura desde esa referencia debe normalizarse a este contrato.
 - El motor del frontend aún no ramifica entre `list_questions` y `list_sections`
-  (pendiente D12 en `TODO/cuestionarios.md`); el contrato se define antes que la
+  (pendiente D12 en `docs/tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md`); el contrato se define antes que la
   implementación, según la fase actual de definición de schemas.
 
 ## Referencias
@@ -122,4 +122,4 @@ el ejemplo y el ERD; no se introdujo estructura nueva.
 - Vista documental: `docs/features/questionnaires/catalog/CLASS.mmd`
 - Contrato de ejemplo: `docs/features/questionnaires/catalog/example.jsonc`
 - Referencia de modelado: `other_projects/app_questionnaire/backend/docs/cuestionarios/`
-- Pendientes relacionados: `docs/TODO/cuestionarios.md` (C8, D12)
+- Pendientes relacionados: `docs/tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md` (C8, D12)

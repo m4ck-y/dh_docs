@@ -131,7 +131,7 @@ questionnaires/
 
 ## Pendientes
 
-Lista viva y detallada: [`../../TODO/cuestionarios.md`](../../TODO/cuestionarios.md).
+Lista viva y detallada: [`TASK-016`](../../tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md).
 
 - Confirmar el nombre del schema PostgreSQL (`form`) y añadirlo a `ALL_SCHEMAS`
   (`dh_shared/base.py`) — C10 (backend).

@@ -13,7 +13,7 @@ para renderizar/scoring en cliente.
 
 > **Fase actual: definición.** Este documento fija el **contrato**. El motor del
 > frontend todavía usa la forma simplificada de rangos (§5) y migrará a esta
-> gramática en una fase posterior (ver D12 en `../TODO/cuestionarios.md`).
+> gramática en una fase posterior (ver D12 en `../../../tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md`).
 
 ## 1. Envelope `expression` / `result`
 

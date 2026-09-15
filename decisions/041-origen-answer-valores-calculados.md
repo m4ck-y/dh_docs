@@ -74,4 +74,4 @@ Argumentos que pesaron:
   `answer.source`)
 - Decisiones relacionadas: [ADR 039](039-condicion-visibilidad-ast.md),
   [ADR 040](040-ast-propiedades-derivadas.md)
-- Pendiente: `docs/TODO/cuestionarios.md` (C7c)
+- Pendiente: `docs/tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md` (C7c)

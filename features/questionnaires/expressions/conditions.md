@@ -196,7 +196,7 @@ con operadores `==`,`!=`,`>`,`>=`,`<`,`<=`,`includes`,`notIncludes`,`in`,`notIn`
 Con una condición AST, ese motor devolvería `null` y trataría el elemento como
 **siempre visible** (fallo silencioso). La migración del motor a este contrato es
 parte de la **fase frontend** (pendiente D12 en
-[`../TODO/cuestionarios.md`](../TODO/cuestionarios.md)).
+[`TASK-016`](../../../tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md)).
 
 ## 6. Naming
 

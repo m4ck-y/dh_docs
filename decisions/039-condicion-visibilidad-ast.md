@@ -139,4 +139,4 @@ expresa con un **selector** (`range`/`all`/`id`) y **una** comparación.
 - Análisis de la referencia: `other_projects/app_questionnaire/backend/docs/my_arquitecture/question/conditional/column_or_table.md`
 - Objeto `conditional` de la referencia: `.../question/conditional.md`
 - Lenguaje de expresiones: `docs/features/questionnaires/expressions/`
-- Pendientes: `docs/TODO/cuestionarios.md` (A1, A3 resueltos; D12 para el motor)
+- Pendientes: `docs/tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md` (A1, A3 resueltos; D12 para el motor)

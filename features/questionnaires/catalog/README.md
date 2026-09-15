@@ -279,7 +279,7 @@ type AnswerMap = Record<string, AnswerValue>; // { id_question: value }
 El `AnswerMap` es una **representación en memoria provisional**: no incluye el
 tipo y se aplana respecto al envelope. Su migración al formato `{value,
 type}` es parte de la fase frontend (ver **D12** en
-`../TODO/cuestionarios.md`).
+`../../../tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md`).
 
 ## 9. Scoring e interpretación
 
