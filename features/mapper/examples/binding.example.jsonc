@@ -1,0 +1,17 @@
+{
+  // Ejemplo de binding (BORRADOR, por definir/pulir).
+  // Vincula una pregunta de un formulario con una propiedad del dominio.
+  "source": {
+    "form_key": "clinical_history",
+    "question_key": "A.1.2.3"          // fecha de nacimiento del usuario
+  },
+  "target": {
+    "engine": "postgres",
+    "field": "people.birth.birth_date" // schema.entidad.columna
+  },
+  "read": true,                         // prefill: si ya existe en BD, autocompleta
+  "write": true,                        // write-through: al enviar, upsert en la entidad
+  "transform": null,                    // opcional (p. ej. full_name -> first/last)
+  "conflict": "keep_existing",          // keep_existing | overwrite | flag
+  "enabled": true                       // conectar/desconectar desde UI admin
+}

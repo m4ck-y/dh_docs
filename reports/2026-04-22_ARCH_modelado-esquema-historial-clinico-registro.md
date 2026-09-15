@@ -37,7 +37,7 @@ Se crearon y modificaron entidades en cuatro schemas de PostgreSQL:
 - `person_responsible`: Se agregó `economic_dependence Enum(EEconomicDependence)` (`YES`, `PARTIALLY`, `NO`) para registrar si el usuario depende económicamente del tutor. Se renombró `other_relationship` a `relationship_other` para consistencia con la convención `{campo}_other`.
 
 **Documentación generada:**
-Se estableció la convención de que cada sección del historial clínico produce dos archivos: `<SECCIÓN>.md` (estructura del formulario) y `<SECCIÓN>.MAPPER.md` (mapeo a la DB). Los archivos `features/clinical_history/sections/A_registro.md` y `features/clinical_history/mappers/A_registro.mapper.md` quedan como referencia base para las secciones posteriores.
+Se estableció la convención de que cada sección del historial clínico produce un archivo de estructura (`<SECCIÓN>.md`) y su mapeo a la DB. Los archivos `features/clinical_history/sections/A_registro.md` y (hoy centralizado en el feature mapper) `features/mapper/views/clinical_history/A_registro.md` quedan como referencia base para las secciones posteriores.
 
 **Estado de la actividad o tarea:** En desarrollo
 

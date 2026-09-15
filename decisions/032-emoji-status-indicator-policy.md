@@ -5,7 +5,7 @@ Aceptado
 
 ## Contexto
 
-AGENTS.md y las reglas de escritura en `.agents/rules/WRITING.md` prohiben el uso de emojis en todos los archivos del proyecto. Sin embargo, en documentacion de referencia como los mappers de base de datos (`docs/features/clinical_history/mappers/A_registro.mapper.md`), los emojis **representan datos semanticos** — no son decorativos, son la informacion misma.
+AGENTS.md y las reglas de escritura en `.agents/rules/WRITING.md` prohiben el uso de emojis en todos los archivos del proyecto. Sin embargo, en documentacion de referencia como los mappers de base de datos (`docs/features/mapper/views/clinical_history/A_registro.md`), los emojis **representan datos semanticos** — no son decorativos, son la informacion misma.
 
 La eliminacion indiscriminada de emojis destruye informacion en archivos donde el emoji es el dato (ej. una tabla de cobertura de mapeo DB con indicadores de estado).
 
@@ -60,5 +60,5 @@ Se permite un cuarto color (🔵 azul) si se requieren mas estados diferenciados
 
 - [WRITING.md](../.agents/rules/WRITING.md) — regla original que prohibe emojis.
 - [AGENTS_GENERAL.md](../AGENTS_GENERAL.md) — politica actualizada con esta excepcion.
-- `docs/features/clinical_history/mappers/A_registro.mapper.md` — ejemplo canonico de uso valido.
+- `docs/features/mapper/views/clinical_history/A_registro.md` — ejemplo canonico de uso valido.
 - `docs/architecture/deployment-port-mapping.md` — ejemplo de tabla de estado de despliegue.

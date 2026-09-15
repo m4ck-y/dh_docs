@@ -16,17 +16,20 @@ mismo motor/catálogo de formularios del módulo
 | Carpeta | Contenido |
 |---|---|
 | [`sections/`](./sections/) | Una ficha por sección del expediente (estructura del formulario: preguntas, opciones, subrutas). |
-| [`mappers/`](./mappers/) | Mapeo de cada sección a la base de datos (PostgreSQL). |
 | [`proposals/`](./proposals/) | Prototipos de UI (propuestas, no diseño final). |
+
+**Mapeo a dominio:** los vínculos pregunta → propiedad de dominio viven en el
+feature [`../mapper/`](../mapper/) (vista en
+[`../mapper/views/clinical_history/`](../mapper/views/clinical_history/)).
 
 **Fuente de los flujos:** `docs/diagrams/0_HISTORIA_CLINICA/` (drawio + `flows/`
 `.mmd` + `activation/` con los anexos).
 
 ## Secciones
 
-| # | Sección | Ficha | Mapper |
+| # | Sección | Ficha | Vínculos (mapper) |
 |---|---|---|---|
-| A | Registro | [`sections/A_registro.md`](./sections/A_registro.md) | [`mappers/A_registro.mapper.md`](./mappers/A_registro.mapper.md) |
+| A | Registro | [`sections/A_registro.md`](./sections/A_registro.md) | [`views/clinical_history/A_registro.md`](../mapper/views/clinical_history/A_registro.md) |
 | B | Antecedentes heredofamiliares | ⏳ | ⏳ |
 | C | APNP | ⏳ | ⏳ |
 | D | Antecedentes personales patológicos | ⏳ | ⏳ |
@@ -40,6 +43,8 @@ mismo motor/catálogo de formularios del módulo
 
 ## Convención
 
-- Cada sección produce dos archivos: `<seccion>.md` (estructura del formulario)
-  y `<seccion>.mapper.md` (mapeo a DB).
+- Cada sección produce una ficha `<seccion>.md` en `sections/`.
+- El mapeo a dominio (pregunta → entidad/columna) vive en el feature
+  [`../mapper/`](../mapper/): contrato en `mapper/README.md` y vista legible en
+  `mapper/views/<dominio>/`.
 - Contenido en español; carpetas y nombres de archivo en inglés `snake_case`.
