@@ -274,6 +274,9 @@ COMMENT ON TABLE target_age_groups IS 'Vincula formularios con grupos etarios ob
 -- ===================================================================
 -- TABLA: target_sex
 -- Sexo biologico objetivo de un formulario.
+-- NOTA (abierta, TASK-016 C15): evaluar si los "target" (target_sex, age_group,
+-- population) deberian modelarse como parte de `condition` (AST de visibilidad)
+-- en lugar de tablas propias. Ver tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md
 -- ===================================================================
 CREATE TABLE target_sex (
     id SERIAL PRIMARY KEY,
