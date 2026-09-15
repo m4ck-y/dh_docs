@@ -1,7 +1,7 @@
 {
   "id": "form-ipaq",
   "key": "ipaq",
-  "kind": "INSTRUMENT",
+  "type": "INSTRUMENT",
   "name": "Cuestionario Internacional de Actividad Física",
   "description": "El Cuestionario Internacional de Actividad Física (IPAQ), en su versión corta, provee un instrumento común para obtener datos internacionalmente comparables relacionados con actividad física relacionada con salud. Puede aplicarse por teléfono o de forma autoadministrada.",
   "instructions": "Definiciones: actividad moderada = incremento moderado en respiración, frecuencia cardíaca y sudoración ≥10 min; actividad vigorosa = incremento mayor, ≥10 min.",

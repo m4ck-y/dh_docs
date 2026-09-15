@@ -17,7 +17,7 @@ su modelo de datos (ERDs, diagramas de clases, DDL) y sus decisiones.
 
 | Nº | Módulo | Descripción | Depende de | Estado |
 |---|---|---|---|---|
-| 1 | [`questionnaires/`](./questionnaires/) | Motor + catálogo de formularios: definición del instrumento, ejecución de respuestas y banco (instrumentos e historia clínica vía `kind`). | — | En definición |
+| 1 | [`questionnaires/`](./questionnaires/) | Motor + catálogo de formularios: definición del instrumento, ejecución de respuestas y banco (instrumentos e historia clínica vía `type`). | — | En definición |
 | 2 | [`clinical_history/`](./clinical_history/) | Dominio de la historia clínica: estructura de secciones A-E y propuestas UI. | `questionnaires` | Propuesta |
 | 3 | [`mapper/`](./mapper/) | Vincula preguntas (cuestionarios/HC) con propiedades del dominio físico; prefill (read) + write-through (write). | `questionnaires`, `clinical_history` | Propuesta |
 

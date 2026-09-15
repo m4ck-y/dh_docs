@@ -1,7 +1,7 @@
 {
   "id": "form-gad-7",
   "key": "gad-7",
-  "kind": "INSTRUMENT",
+  "type": "INSTRUMENT",
   "name": "Escala para el trastorno de ansiedad generalizada",
   "description": "Instrumento creado para ser utilizado como tamizaje en el trastorno de ansiedad generalizada.",
   "instructions": "En las últimas dos semanas usted sintió...",

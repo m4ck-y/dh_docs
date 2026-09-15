@@ -3,7 +3,7 @@
 Especificaciones de la **historia clínica** del Hospital Digital. Se compone de
 formularios estructurales (secciones A-E) que se modelan y almacenan con el
 mismo motor/catálogo de formularios del módulo
-[`../questionnaires/`](../questionnaires/) (`form.kind = CLINICAL_HISTORY`).
+[`../questionnaires/`](../questionnaires/) (`form.type = CLINICAL_HISTORY`).
 
 **Estado:** En definición (sección A modelada; AHF con propuesta de UI).
 

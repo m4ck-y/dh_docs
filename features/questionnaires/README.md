@@ -88,7 +88,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 - **`question_types/`**: carpeta (en `catalog/`) con un doc por tipo de pregunta;
   documenta la forma de `question.config` según `question.type`.
 - **`bank/`**: carpeta (en `catalog/`) con las instancias JSON del catálogo.
-  Planas por `kind` (`instruments/`, `clinical_history/`); la categoría es
+  Planas por `type` (`instruments/`, `clinical_history/`); la categoría es
   metadata (`list_categories[]`), no carpeta. Ver `catalog/bank/README.md`.
 - **`reference/`**: documentación de referencia (no fuente de verdad), como el
   contrato del motor frontend.
@@ -112,8 +112,8 @@ questionnaires/
 │   └── bank/            # Instancias JSON del catálogo
 │       ├── README.md
 │       ├── categories.json
-│       ├── instruments/       # kind: INSTRUMENT (*.json)
-│       └── clinical_history/  # kind: CLINICAL_HISTORY (*.json)
+│       ├── instruments/       # type: INSTRUMENT (*.json)
+│       └── clinical_history/  # type: CLINICAL_HISTORY (*.json)
 ├── expressions/         # Lenguaje de expresiones (AST)
 │   ├── README.md        # Índice + envelope expression/result
 │   ├── operands.md      # Operandos y selectores

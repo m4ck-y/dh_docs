@@ -1,7 +1,7 @@
 {
   "id": "form-cdi",
   "key": "cdi",
-  "kind": "INSTRUMENT",
+  "type": "INSTRUMENT",
   "name": "Inventario de Depresión Infantil",
   "description": "Escala utilizada para evaluar sintomatología depresiva en población infantil y adolescente.",
   "instructions": "En las últimas dos semanas",

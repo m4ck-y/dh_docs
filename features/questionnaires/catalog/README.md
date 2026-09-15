@@ -99,6 +99,7 @@ Modelo canónico objetivo (unión de las tres fuentes), **sin JSON finales aún*
 interface Instrument {
   id: string;
   key: string;
+  type: EFormType;               // INSTRUMENT | CLINICAL_HISTORY | SURVEY | FORM (rol del form)
   name: string;
   description: string;           // técnica (qué es / qué evalúa)
   instructions?: string;         // llenado (cómo responder); nullable

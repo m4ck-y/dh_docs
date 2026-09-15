@@ -26,6 +26,9 @@ CREATE TYPE EUrlType AS ENUM ('LINK', 'FILE', 'IMAGE');
 -- Unidad de un rango numerico (age_group, estimated_duration). Vocabulario controlado.
 CREATE TYPE EUnit AS ENUM ('SECOND', 'MINUTE', 'HOUR', 'DAY', 'WEEK', 'MONTH', 'YEAR');
 
+-- Tipo/rol del formulario: instrumento evaluable, historia clinica, encuesta o formulario generico.
+CREATE TYPE EFormType AS ENUM ('INSTRUMENT', 'CLINICAL_HISTORY', 'SURVEY', 'FORM');
+
 -- Origen de una respuesta (answer.source): ingresada por un usuario o
 -- autocalculada por una expresion (question.expression). Ver features/questionnaires/expressions/README.md (C7c).
 CREATE TYPE EAnswerSource AS ENUM ('USER', 'CALCULATED');
@@ -54,6 +57,7 @@ CREATE TYPE EAnswerSource AS ENUM ('USER', 'CALCULATED');
 CREATE TABLE form (
     id SERIAL PRIMARY KEY,
     key VARCHAR(100) NOT NULL UNIQUE,
+    type EFormType NOT NULL DEFAULT 'INSTRUMENT',  -- Rol del formulario (ver EFormType). Distinto de question."type" (tipo de respuesta)
     name VARCHAR(255) NOT NULL,
     description TEXT,              -- Descripción TÉCNICA del instrumento (qué es / qué evalúa). Ver catalog/bank/README.md
     instructions TEXT,             -- Texto de LLENADO para el paciente (cómo responder); nullable. Ver catalog/bank/README.md
@@ -65,6 +69,8 @@ CREATE TABLE form (
 COMMENT ON TABLE form IS 'Plantilla inmutable de un formulario. Se compone de preguntas directas (via questions_form) O de secciones (via section/questions_section), nunca de ambas (ver ADR 038). La exclusividad la valida la capa de aplicacion, no la BD. Define ademas la logica de calculo mediante expresiones en JSONB.';
 
 COMMENT ON COLUMN form.key IS 'Identificador semántico y estable (ej. "onboarding_survey_v3"). Útil para referencias en código o integraciones. No cambia aunque se modifique el nombre.';
+
+COMMENT ON COLUMN form.type IS 'Rol/naturaleza del formulario segun EFormType: INSTRUMENT (instrumento evaluable), CLINICAL_HISTORY (historia clinica), SURVEY (encuesta), FORM (formulario generico). Distinto de question."type" (EQuestionType = tipo de respuesta).';
 
 COMMENT ON COLUMN form.name IS 'Nombre legible del formulario para usuarios finales (ej. "Encuesta de Bienvenida").';
 

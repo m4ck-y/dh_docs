@@ -13,8 +13,8 @@ nivel arriba; este directorio solo contiene **datos**.
 |---|---|
 | `categories.json` | Vocabulario controlado de categorías de bienestar (`key` + `name`). |
 | `population.json` | Vocabulario controlado de poblaciones objetivo (`name`). |
-| `instruments/` | Un `.json` + un `.md` por instrumento psicométrico (`kind: INSTRUMENT`). |
-| `clinical_history/` | Un `.json` + un `.md` por formulario clínico (`kind: CLINICAL_HISTORY`). |
+| `instruments/` | Un `.json` + un `.md` por instrumento psicométrico (`type: INSTRUMENT`). |
+| `clinical_history/` | Un `.json` + un `.md` por formulario clínico (`type: CLINICAL_HISTORY`). |
 
 - **Plano**: la categoría (mental/físico/social) **no** es carpeta; vive en
   `list_categories[]`. Un instrumento puede pertenecer a varias (p. ej. CRAFFT:
@@ -40,7 +40,7 @@ nivel arriba; este directorio solo contiene **datos**.
 
 ## Inventario
 
-| key | `kind` | ítems | categoría(s) | expresión |
+| key | `type` | ítems | categoría(s) | expresión |
 |---|---|---|---|---|
 | `phq-9` | INSTRUMENT | 9 | bienestar mental | scoring + evaluation |
 | `hads` | INSTRUMENT | 14 | bienestar mental | subscales (A/D) |
@@ -61,7 +61,7 @@ nivel arriba; este directorio solo contiene **datos**.
   - `instructions` = **llenado** (cómo responder). Para el paciente. Nullable.
   - **amigable** (presentación) = solo en el `<key>.md`; **no** se modela.
 - Carpetas y `key`/slugs en inglés; `name`/`text`/`description` en español.
-- `kind`: `INSTRUMENT` | `CLINICAL_HISTORY`.
+- `type`: `INSTRUMENT` | `CLINICAL_HISTORY`.
 - `id` (uuid/string) estable, para que `expression`/`condition` puedan referenciar.
 - Un form usa `list_questions` **XOR** `list_sections` (ver ADR 038).
 - `expression` (envelope AST) y `condition` (AST) según `../../expressions/`.
@@ -72,7 +72,7 @@ nivel arriba; este directorio solo contiene **datos**.
 {
   "id": "uuid-form-<key>",
   "key": "<key>",
-  "kind": "INSTRUMENT",
+  "type": "INSTRUMENT",
   "name": "...",
   "description": "...",
   "instructions": null,

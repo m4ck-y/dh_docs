@@ -58,6 +58,7 @@
 | C15 | ¿`target_*` (sex/age/population) dentro de `condition`? | Modelo | ⏳ |
 | C16 | Rangos: `min`/`max`/`unit` + `name` legible (Diseño C) | Modelo | ✅ |
 | C17 | `question.text` nullable (ítems sin enunciado, ej. CDI) | Modelo | ✅ |
+| C18 | `form.type` (`EFormType`) formalizado | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -381,6 +382,21 @@
   `catalog/bank/README.md` (convención), `features/questionnaires/README.md`
   (tabla de decisiones).
 - **Ejemplo**: `cdi` (los 27 ítems con `text: null`, `instructions: "En las últimas dos semanas"`).
+
+### C18 — `form.type` (`EFormType`) ✅ (resuelto)
+
+- **Qué era**: el banco usaba `kind` (`INSTRUMENT`/`CLINICAL_HISTORY`) **sin
+  definición en el modelo** (ni `schema.sql`/ERD/CLASS/contrato).
+- **Decisión**: formalizar como **`form.type`** (enum **`EFormType`**) =
+  `INSTRUMENT | CLINICAL_HISTORY | SURVEY | FORM`. Se usa `type` (no `kind`) por
+  consistencia con los enums del repo (`E*Type`) y porque `form.type` y
+  `question.type` (`EQuestionType`) son ejes distintos en entidades distintas.
+  - "Evaluación académica" = `INSTRUMENT` + `industry: education` (no un `type` propio).
+- **Reflejo**: `schema.sql` (+`EFormType` +`form.type` +`COMMENT`),
+  `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md` §5,
+  `catalog/example.jsonc`, `catalog/bank/README.md` y los 8
+  `bank/instruments/*.json` (`kind`→`type`), `features/README.md`,
+  `features/questionnaires/README.md`, `features/clinical_history/README.md`.
 
 ## D. Motor frontend
 

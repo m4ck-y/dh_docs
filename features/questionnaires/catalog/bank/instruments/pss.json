@@ -1,7 +1,7 @@
 {
   "id": "form-pss",
   "key": "pss",
-  "kind": "INSTRUMENT",
+  "type": "INSTRUMENT",
   "name": "Perceived Stress Scale",
   "description": "Escala de estrés percibido (14 ítems, 0-4): mide el grado en que las situaciones de la vida se valoran como estresantes.",
   "instructions": "En el último mes",

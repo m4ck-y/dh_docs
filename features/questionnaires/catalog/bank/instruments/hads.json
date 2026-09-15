@@ -1,7 +1,7 @@
 {
   "id": "form-hads",
   "key": "hads",
-  "kind": "INSTRUMENT",
+  "type": "INSTRUMENT",
   "name": "Escala de Ansiedad y Depresión Hospitalaria",
   "description": "Instrumento diseñado para detectar trastornos de ansiedad y depresión en servicios hospitalarios no psiquiátricos en pacientes que no estuvieran contaminados por la sintomatología de una enfermedad física.",
   "instructions": "Lea cada pregunta y seleccione la respuesta que usted considere que coincide con su propio estado emocional en la última semana. No es necesario que piense mucho tiempo cada respuesta; en este cuestionario las respuestas espontáneas tienen más valor que las que se piensan mucho.",

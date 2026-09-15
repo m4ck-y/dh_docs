@@ -74,6 +74,14 @@ erDiagram
         String YEAR "YEAR"
     }
 
+    %% EFormType: rol del formulario (distinto de EQuestionType = tipo de respuesta)
+    EFormType {
+        String INSTRUMENT "INSTRUMENT"
+        String CLINICAL_HISTORY "CLINICAL_HISTORY"
+        String SURVEY "SURVEY"
+        String FORM "FORM"
+    }
+
     %% ============ ENTIDADES ============
     %% form.key: UNIQUE NOT NULL
     %% form.verified: DEFAULT false
@@ -82,6 +90,8 @@ erDiagram
     form {
         Integer id PK
         String key
+        %% type: rol del formulario (EFormType). Distinto de question."type" (tipo de respuesta).
+        Enum(EFormType) type
         %% name == filename ej: test.frm
         String name
         Text description

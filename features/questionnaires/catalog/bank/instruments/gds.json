@@ -1,7 +1,7 @@
 {
   "id": "form-gds",
   "key": "gds",
-  "kind": "INSTRUMENT",
+  "type": "INSTRUMENT",
   "name": "Escala de Depresión Geriátrica de Yesavage",
   "description": "Instrumento diseñado para ser empleado en población anciana para detectar la posible presencia de depresión.",
   "instructions": "En la última semana",

@@ -2,7 +2,7 @@
 
 Una ficha por sección del expediente. Cada ficha documenta la estructura del
 formulario (preguntas, opciones y subrutas) tal como debe modelarse como `form`
-(`kind: CLINICAL_HISTORY`).
+(`type: CLINICAL_HISTORY`).
 
 | Sección | Ficha | Estado |
 |---|---|---|

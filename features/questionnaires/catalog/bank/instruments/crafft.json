@@ -1,7 +1,7 @@
 {
   "id": "form-crafft",
   "key": "crafft",
-  "kind": "INSTRUMENT",
+  "type": "INSTRUMENT",
   "name": "CARLOS (CRAFFT)",
   "description": "Instrumento de tamizaje de consumo de alcohol y otras drogas en adolescentes y jóvenes: 3 preguntas de consumo (parte A) y 6 ítems C-R-A-F-F-T (parte B).",
   "instructions": "En los últimos seis meses",

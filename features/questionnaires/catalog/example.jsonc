@@ -1,5 +1,6 @@
 {
   "key": "ENCUESTA123",
+  "type": "SURVEY",
   "name": "Encuesta de Satisfacción",
   "description": "Formulario para evaluar el servicio ofrecido",
   /* Texto de LLENADO para el paciente (cómo responder). Nullable.

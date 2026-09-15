@@ -1,7 +1,7 @@
 {
   "id": "form-phq-9",
   "key": "phq-9",
-  "kind": "INSTRUMENT",
+  "type": "INSTRUMENT",
   "name": "PHQ-9",
   "description": "Instrumento diseñado para dar apoyo al diagnóstico de la depresión y determinar su nivel de gravedad. También puede utilizarse para observar los cambios experimentados por el paciente a lo largo del tiempo.",
   "instructions": "En las últimas dos semanas usted sintió...",
