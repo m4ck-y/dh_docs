@@ -103,6 +103,23 @@
           "order": 3,
           "id": 0,
           "config": { "required": true, "min": "PT0M", "max": "PT24H", "precision": "minutes" }
+        },
+        {
+          /* Pregunta AUTOCALCULADA (solo lectura): su valor sale de "expression",
+             no la responde el usuario. Se persiste como answer con source=CALCULATED
+             al enviar (snapshot). Ver ../expressions/README.md (C7c). */
+          "type": "NUMBER",
+          "text": "Puntaje total (calculado)",
+          "order": 4,
+          "id": 0,
+          "expression": {
+            "type": "aggregate",
+            "operator": "sum",
+            "args": [
+              { "subject": { "entity": "question", "property": "value", "selector": { "range": [1, 3] } } }
+            ],
+            "output": { "type": "number" }
+          }
         }
       ]
     }

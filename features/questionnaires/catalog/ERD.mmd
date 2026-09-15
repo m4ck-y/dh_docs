@@ -85,6 +85,8 @@ erDiagram
     %% question.key: NOT NULL (usado en scoring/evaluacion y respuestas)
     %% question.config: JSONB nullable; forma segun question.type (ver catalog/question_types/)
     %% question.condition: condicion de visibilidad (AST booleano), ver ADR 039
+    %% question.expression: receta del valor autocalculado (AST, una expresion, raiz
+    %%   SIN wrapper); pregunta solo lectura. Ausente = la responde el usuario (C7c).
     %% El ORDEN no vive aqui: pertenece a la relacion (questions_form / questions_section),
     %% porque la pregunta es reutilizable y su posicion depende del contexto.
     question {
@@ -94,6 +96,7 @@ erDiagram
         Text text
         Jsonb config
         Jsonb condition
+        Jsonb expression
     }
 
     evaluation_topic {

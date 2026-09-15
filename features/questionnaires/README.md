@@ -13,13 +13,16 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
   `other_projects/app_questionnaire/backend/docs/db_ddl.sql`. Es la **única
   fuente de verdad/legacy** del modelo:
   - Definición: `form` (con `expression` y `condition`, `verified`) y `question`
-    (con `key`, `type`/`EQuestionType`, `config`, `condition`).
+    (con `key`, `type`/`EQuestionType`, `config`, `condition`, `expression`).
     El orden de la pregunta vive en las puentes `questions_form` /
     `questions_section` (ver `catalog/README.md` §7). Un formulario se compone
     de preguntas directas **XOR** de secciones (ver ADR 038).
     La forma del envelope `form.expression` (`scoring`/`evaluation`/`subscales`)
     se define en [`expressions/README.md`](./expressions/README.md).
-  - Ejecución: `assignment` (tarea/evento), `scheduled` (0..1 opcional), `answer`.
+    `question.expression` define un valor **autocalculado** (solo lectura); su
+    resultado se persiste como `answer` con `source = CALCULATED` (ver ADR 041).
+  - Ejecución: `assignment` (tarea/evento), `scheduled` (0..1 opcional), `answer`
+    (con `source`: `USER` | `CALCULATED`).
 - Reglas de formato: `.agents/rules/DOCUMENTATION_ERD.md` y
   `.agents/rules/MERMAID_ENUM_REPRESENTATION.md`.
 - Referencia (no fuente de verdad): contrato del motor frontend en
@@ -43,6 +46,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 | Tipo de pregunta | Enum tipado | ✅ Columna `"type"` de tipo `EQuestionType` |
 | Config por tipo | `config` JSONB en `question`, forma según `type` (ver `catalog/question_types/`) | ✅ `question.config` |
 | Scoring / evaluación | **AST** en `form.expression` (`scoring`/`evaluation`/`subscales`); resultado en `assignment.result` como `{value, type}` | ✅ JSONB (ver `expressions/`) |
+| Valor por pregunta | `question.expression` (AST, una expresión) = valor autocalculado solo lectura; se persiste como `answer` (`source = CALCULATED`, snapshot) | ✅ `question.expression`, `answer.source` (ver ADR 041) |
 | Orden de pregunta | En la relación: `questions_form.order` / `questions_section.order` (la pregunta es reutilizable) | ✅ `order` en los puentes |
 | Metadatos | Tablas normalizadas | ✅ `category`, `cie11_code`, `evaluation_topic`, `reference`, `estimated_duration`, `age_group`, `target_sex`, `population` + puentes |
 | Schema PostgreSQL | `form` | ✅ Documentado en comentarios del DDL (`-- Schema: form`); aún no se ejecuta `CREATE SCHEMA form` |
@@ -113,10 +117,11 @@ questionnaires/
 
 ## Pendientes
 
-- Resolver PHQ-9 ítem 7 (contenido, no schema) — ver [`catalog/README.md`](./catalog/README.md).
-- Confirmar el nombre del schema PostgreSQL y añadirlo a `ALL_SCHEMAS`
-  (`dh_shared/base.py`).
-- Verificar que `schema.sql` no conserve remanentes del modelo V1
-  (`form_direct_responses` / `scheduled_responses`).
-- Motor frontend: solo soporta `TEXT`, `SINGLE_CHOICE` y `MULTIPLE_CHOICE`
-  (`types.ts:1`); falta soporte para el resto de tipos (incluidos `RANGE` y `TIMER`).
+Lista viva y detallada: [`../../TODO/cuestionarios.md`](../../TODO/cuestionarios.md).
+
+- Confirmar el nombre del schema PostgreSQL (`form`) y añadirlo a `ALL_SCHEMAS`
+  (`dh_shared/base.py`) — C10 (backend).
+- Motor frontend: faltan tipos y migración al AST completo (condición AST,
+  `definitions`/`ref`, `time: minutes`, `case` condition-based) y al envelope
+  `{value, type}` — D12 (frontend).
+- Backend fase 2 (SQLAlchemy/repositorios) — F15.

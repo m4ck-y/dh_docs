@@ -1,0 +1,50 @@
+{
+  /* Ejemplos de question.expression: la receta de un valor AUTOCALCULADO.
+     Es UNA expresion (raiz SIN wrapper), como condition. La pregunta es de solo
+     lectura (el usuario no la responde); su valor se recalcula en vivo y se
+     persiste como answer con source=CALCULATED al enviar (snapshot).
+     Ver ../README.md (Preguntas autocalculadas y persistencia). */
+
+  /* Ej 1: pregunta "Total" = suma de las respuestas de las preguntas 1..9.
+     Puede leer otras preguntas del mismo form (aqui, por rango de ids). */
+  "total": {
+    "type": "aggregate",
+    "operator": "sum",
+    "args": [
+      {
+        "subject": {
+          "entity": "question",
+          "property": "value",
+          "selector": { "range": [1, 9] }
+        }
+      }
+    ],
+    "output": { "type": "number" }
+  },
+
+  /* Ej 2: pregunta "IMC" = person.weight / person.height^2.
+     Aqui no depende de otras preguntas, sino de datos de la persona. */
+  "imc": {
+    "type": "math",
+    "operator": "/",
+    "args": [
+      { "subject": { "entity": "person", "property": "weight" } },
+      {
+        "expression": {
+          "type": "math",
+          "operator": "^",
+          "args": [
+            { "subject": { "entity": "person", "property": "height" } },
+            { "const": { "value": 2, "type": "number" } }
+          ],
+          "output": { "type": "number" }
+        }
+      }
+    ],
+    "output": { "type": "number" }
+  }
+
+  /* Valor persistido al enviar (fila de answer resultante del IMC):
+     { "id_question": "imc", "source": "CALCULATED", "answered_by": null,
+       "data": { "value": 24.5, "type": "number" } } */
+}

@@ -95,8 +95,34 @@ Detalle en [`operators/case.md`](./operators/case.md).
 | `form` | `expression.scoring` | Puntaje | ✅ |
 | `form` | `expression.evaluation` | Categoría | ✅ |
 | `form` | `expression.subscales[]` | Puntaje + categoría por escala | ✅ |
-| `question` | `expression` | Valor autocalculado (solo lectura) | ⏳ pendiente (C7c) |
+| `question` | `expression` | Valor autocalculado (solo lectura) | ✅ (ver §1, persistencia) |
 | `form` / `section` / `question` | `condition` | Visibilidad (booleano) | ✅ (ver [`conditions.md`](./conditions.md)) |
+
+### Preguntas autocalculadas y persistencia
+
+Cuando una `question` declara **`expression`** (una expresión, raíz sin wrapper),
+su valor es de **solo lectura**: el motor lo calcula y el usuario no la responde.
+
+- **Qué puede leer**: preguntas del mismo form (incluidas **otras calculadas**,
+  resueltas en orden de dependencias y con **validación de ciclos**), `person`,
+  `const` y `{ref}` a `definitions` del form. **Prohibido** `form.result.*`
+  (sería circular).
+- **Cuándo se persiste**: se recalcula **en vivo** durante el llenado y se
+  guarda **al enviar** (`SUBMITTED`), junto con `assignment.result`.
+- **Cómo se persiste**: como una fila de `answer` con
+  **`source = CALCULATED`** y `answered_by = NULL`, con `data = {value, type}`.
+  Así `question.value` (ver [`operands.md`](./operands.md)) respalda **también**
+  las calculadas, sin casos especiales en el scoring (selectores `range`/`all`).
+- **Por qué es snapshot**: es el registro histórico de "cómo se llegó a la
+  evaluación". Si el valor depende de `person` (edad, IMC), cambiar después a la
+  persona **no** reescribe lo ya enviado.
+- **Receta**: no se persiste (el resultado es el valor); la receta vive en
+  `question.expression`. La tabla `answer` y el origen `EAnswerSource` se
+  documentan en [`../schema.sql`](../schema.sql) y
+  [ADR 041](../../../decisions/041-origen-answer-valores-calculados.md).
+
+Ejemplo: [`examples/question-expression.jsonc`](./examples/question-expression.jsonc)
+(Total + IMC).
 
 ## 2. Alcance y frontera
 
@@ -307,6 +333,7 @@ y [`examples/ipaq-result.jsonc`](./examples/ipaq-result.jsonc).
 | [`examples/ipaq-expression.jsonc`](./examples/ipaq-expression.jsonc) | `definitions` + `{ref}` + `time: minutes` (METs) |
 | [`examples/ipaq-result.jsonc`](./examples/ipaq-result.jsonc) | `assignment.result` con `definitions` |
 | [`examples/imc-math.jsonc`](./examples/imc-math.jsonc) | `math` anidado (demuestra el AST) |
+| [`examples/question-expression.jsonc`](./examples/question-expression.jsonc) | `question.expression`: valor autocalculado ("Total" + IMC) |
 | [`examples/medical-cases.md`](./examples/medical-cases.md) | PHQ-9, CRAFFT, riesgo alto, METs |
 
 ## Fuente

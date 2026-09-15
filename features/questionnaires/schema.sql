@@ -23,6 +23,10 @@ CREATE TYPE EBiologicalSex AS ENUM ('HOMBRE', 'MUJER', 'INTERSEXUAL');  -- PENDI
 -- Tipo de recurso enlazado (alineado con EUrlType del ERD)
 CREATE TYPE EUrlType AS ENUM ('LINK', 'FILE', 'IMAGE');
 
+-- Origen de una respuesta (answer.source): ingresada por un usuario o
+-- autocalculada por una expresion (question.expression). Ver features/questionnaires/expressions/README.md (C7c).
+CREATE TYPE EAnswerSource AS ENUM ('USER', 'CALCULATED');
+
 -- ===================================================================
 -- CONVENCIONES DE SCHEMA Y MODELO BASE
 -- ===================================================================
@@ -84,7 +88,8 @@ CREATE TABLE question (
     text TEXT NOT NULL,
     "type" EQuestionType NOT NULL,
     config JSONB,       -- Configuracion segun el tipo de pregunta (ver catalog/question_types/)
-    condition JSONB     -- Condicion de visibilidad de la pregunta (AST booleano). Ausente = siempre visible. Ver expressions/conditions.md
+    condition JSONB,    -- Condicion de visibilidad de la pregunta (AST booleano). Ausente = siempre visible. Ver expressions/conditions.md
+    expression JSONB    -- Receta del valor autocalculado (AST, UNA expresion, raiz SIN wrapper). Ausente = la responde el usuario. Ver expressions/README.md (C7c)
 );
 
 COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a formularios mediante questions_form y a secciones mediante questions_section. Permite validar respuestas y definir su comportamiento. El orden NO vive aqui: la pregunta es un atomo reutilizable y su posicion depende del contexto (ver questions_form.order y questions_section.order).';
@@ -96,6 +101,8 @@ COMMENT ON COLUMN question."type" IS 'Tipo de pregunta segun el enum EQuestionTy
 COMMENT ON COLUMN question.config IS 'Configuracion en JSONB especifica del tipo de pregunta. Su forma depende de question.type (ver catalog/question_types/). Incluye el flag comun "required" y los parametros propios del tipo. Los limites se nombran min/max en todos los tipos; "default" es opcional y excluyente con "required". Ejemplos: RANGE {"required": true, "min": 0, "max": 7, "step": 1, "integer": true}; TIMER {"required": true, "min": "PT0M", "max": "PT24H", "precision": "minutes"}; NUMBER {"required": true, "min": 1, "max": 500, "decimals": 1}. La coherencia de la forma se valida en la capa de aplicacion (ej. Pydantic).';
 
 COMMENT ON COLUMN question.condition IS 'Condición de visibilidad de la pregunta, como expresión AST booleana en JSONB (raíz SIN wrapper; ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo (PHQ-9 Q10): {"type":"collection","operator":"any","args":[{"expression":{"type":"comparison","operator":">","args":[{"subject":{"entity":"question","property":"value","selector":{"range":[1,9]}}},{"const":{"value":0,"type":"number"}}],"output":{"type":"boolean"}}}],"output":{"type":"boolean"}}.';
+
+COMMENT ON COLUMN question.expression IS 'Receta de un valor AUTOCALCULADO de la pregunta: un operador AST (raíz SIN wrapper, ver features/questionnaires/expressions/README.md). La pregunta es de SOLO LECTURA (el usuario no la responde); su valor se computa con la expresión y se persiste como una fila de answer con source=CALCULATED. Ausente = la pregunta la responde el usuario. Referencias permitidas: preguntas del mismo form (incl. otras calculadas, con validación de ciclos), person, const y {ref} a definitions del form; form.result.* está PROHIBIDO (sería circular). Ejemplos: Total (aggregate sum sobre las respuestas) e IMC (math sobre person.weight/person.height).';
 
 -- ===================================================================
 -- TABLA: section
@@ -446,8 +453,15 @@ COMMENT ON COLUMN scheduled.time_limit_minutes IS 'Tiempo máximo permitido desd
 --
 -- DECISIÓN DE ARQUITECTURA: TRAZABILIDAD POR PREGUNTA
 -- 'answered_by' vive en cada answer individual para auditar si una pregunta
--- específica la respondió el médico, tutor o paciente. No es un enum: es un
+-- específica la respondió el médico, tutor o paciente. No es un enum: es una
 -- FK a la entidad de usuarios.
+--
+-- ORIGEN (source): una answer puede ser ingresada por un usuario (USER) o
+-- AUTOCALCULADA por una expresión (CALCULATED, ver question.expression).
+-- Las calculadas se persisten como SNAPSHOT al enviar la assignment: congelan
+-- el valor tal como se computó en ese momento (p. ej. edad o IMC), de modo que
+-- el histórico no cambia aunque cambien luego person o la definición del form.
+-- Una fila calculada no tiene usuario: source=CALCULATED <=> answered_by IS NULL.
 --
 -- NOTA: La validación del tipo de dato en "data" (ej. que coincida con question_type)
 -- debe realizarse a nivel de API (por ejemplo, con Pydantic en Python) antes de insertar.
@@ -456,16 +470,21 @@ CREATE TABLE answer (
     id SERIAL PRIMARY KEY,
     id_assignment INTEGER NOT NULL REFERENCES assignment(id) ON DELETE CASCADE,
     id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
+    source EAnswerSource NOT NULL DEFAULT 'USER',
     answered_by INTEGER,
     data JSONB NOT NULL,
-    CHECK (data ? 'value' AND data ? 'type')
+    CHECK (data ? 'value' AND data ? 'type'),
+    -- Coherencia origen/usuario: USER exige usuario; CALCULATED exige NULL.
+    CHECK ((source = 'USER') = (answered_by IS NOT NULL))
 );
 
-COMMENT ON TABLE answer IS 'Respuesta individual a una pregunta en una assignment específica. Cada answer pertenece a una única assignment; el valor se normaliza en JSONB para flexibilidad.';
+COMMENT ON TABLE answer IS 'Respuesta individual a una pregunta en una assignment específica. Cada answer pertenece a una única assignment; el valor se normaliza en JSONB para flexibilidad. Su origen (source) distingue las respuestas del usuario (USER) de los valores autocalculados (CALCULATED, ver question.expression), que se persisten como snapshot al enviar.';
 
 COMMENT ON COLUMN answer.id_assignment IS 'Assignment (tarea/evento) a la que pertenece esta respuesta.';
 
-COMMENT ON COLUMN answer.answered_by IS 'Referencia al usuario que ingresó esta respuesta puntual (médico, tutor o paciente). Permite auditoría por pregunta. No es un enum: es un FK a la entidad de usuarios.';
+COMMENT ON COLUMN answer.source IS 'Origen de la respuesta segun EAnswerSource: USER (ingresada por una persona) o CALCULATED (valor autocalculado desde question.expression). Las calculadas se computan al vuelo durante el llenado y se persisten como snapshot al enviar (SUBMITTED). Ver features/questionnaires/expressions/README.md.';
+
+COMMENT ON COLUMN answer.answered_by IS 'Referencia al usuario que ingresó esta respuesta puntual (médico, tutor o paciente). Permite auditoría por pregunta. No es un enum: es un FK a la entidad de usuarios. Es NULL únicamente cuando source = CALCULATED (el CHECK garantiza la coherencia con source).';
 
 COMMENT ON COLUMN answer.data IS 'Estructura normalizada {value, type}: mismos campos que un const del AST y que assignment.result, de modo que todo valor del modulo comparte vocabulario. Ejemplos:
   - Texto: {"value": "Muy satisfecho", "type": "string"}
@@ -475,6 +494,7 @@ COMMENT ON COLUMN answer.data IS 'Estructura normalizada {value, type}: mismos c
   - Fecha-hora: {"value": "2026-08-26T14:30:00Z", "type": "datetime"}
   - Duracion: {"value": "PT1H30M", "type": "duration"}
   Las respuestas de opcion guardan el value numerico de la opcion (option.value), no la etiqueta.
+  En filas con source=CALCULATED, data guarda el valor computado por question.expression (p. ej. IMC: {"value": 24.5, "type": "number"}).
   ⚠️ La coherencia entre type y question_type debe validarse en la capa de aplicacion (ej. con Pydantic).';
 
 -- ===================================================================

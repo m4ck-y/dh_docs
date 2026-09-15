@@ -1,6 +1,6 @@
 # Pendientes — Cuestionarios
 
-> Estado a la fecha: **2026-09-14**. Cada pendiente incluye dónde vive, con qué
+> Estado a la fecha: **2026-09-15**. Cada pendiente incluye dónde vive, con qué
 > archivos se retoma y de dónde sale el requisito, para poder reanudarlo aun si
 > se pierde el contexto de la conversación.
 
@@ -47,7 +47,7 @@
 | C6 | PHQ-9 ítem 7 | Contenido | ✅ |
 | C7 | Scoring unificado | Modelo | ✅ |
 | C7b | METs IPAQ (scoring no lineal) | Modelo | ✅ |
-| C7c | `question.expression` por pregunta | Modelo | ⏳ |
+| C7c | `question.expression` por pregunta | Modelo | ✅ |
 | C8 | Gaps del contrato `Instrument` | Modelo | ✅ |
 | C9 | `AnswerMap` ↔ `answer.data` | Modelo | ✅ |
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
@@ -205,29 +205,40 @@
   (COMMENTs), `catalog/README.md` §9/§11, `catalog/CLASS.mmd`.
 - **Refs**: `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint` (algoritmo).
 
-### C7c — `question.expression` por pregunta (valor autocalculado)
+### C7c — `question.expression` por pregunta (valor autocalculado) ✅ (resuelto)
 
-- **Qué**: permitir que una **pregunta** tenga un valor **autocalculado** por una
-  expresión (idea original de un borrador de IA ya eliminado, `Question.calculation`),
+- **Qué era**: permitir que una **pregunta** tenga un valor **autocalculado** por
+  una expresión (idea de un borrador de IA ya eliminado, `Question.calculation`),
   expresada con el **mismo AST** que el scoring.
-- **Decidido**:
-  - **Campo**: `question.expression` (JSONB, **una** expresión, raíz sin wrapper)
-    en la **entidad** `question` (como `question.condition`). Es la **receta**;
-    análogo a `form.expression` (pero `form.expression` es un *envelope* y
-    `question.expression` es *una* expresión).
-  - **Semántica**: **solo lectura (calculada)**; el usuario no la responde.
+- **Decisión — campo y semántica**:
+  - `question.expression` (JSONB, **una** expresión, raíz sin wrapper) en la
+    **entidad** `question`. Es la **receta**; análogo a `form.expression` (pero
+    `form.expression` es un *envelope* y `question.expression` es *una* expresión).
+  - **Solo lectura (calculada)**: el usuario no la responde.
   - **Referencias permitidas**: preguntas del mismo form (incl. **otras
     calculadas**, con **validación de ciclos**), `person`, `const`, `{ref}` a
     `definitions` del form, operadores anidados.
   - **Prohibido**: `form.result.*` (circular).
-  - **Ejemplos**: "Total" (suma de preguntas) **e** IMC (`person`).
-- **Duda abierta (única)**: **persistencia** del valor calculado.
-  - **A. No persistir** (decisión previa): se computa al vuelo y se inyecta en el
-    contexto de evaluación.
-  - **B. Persistir** en `answer.data = {value, type}` (fila sintética,
-    `answered_by` null/sistema): uniforme y auditable, pero redundante.
+  - **Ejemplos**: "Total" (suma de preguntas) e IMC (`person`).
+- **Decisión — persistencia**: el valor calculado **se persiste** como fila de
+  `answer` con `data = {value, type}` (`source = CALCULATED`, `answered_by = NULL`).
+  Se recalcula en vivo y se guarda al enviar (`SUBMITTED`), junto con
+  `assignment.result`; es un **snapshot** auditable (congela edad/IMC del momento).
+  Justificación (uniformidad `question.value → answer.data.value`, histórico,
+  precedente `result.definitions`): [ADR 041](../../decisions/041-origen-answer-valores-calculados.md).
+- **Origen de la `answer`**: enum `EAnswerSource { USER, CALCULATED }` en
+  `answer.source` (default `USER`) con
+  `CHECK ((source = 'USER') = (answered_by IS NOT NULL))`. Se descartó el
+  `answered_by` JSONB (perdería el FK y la convención de los `*_by`).
+- **Reflejo**: `schema.sql` (`question.expression`, `answer.source` + enum + CHECK),
+  `expressions/README.md` (§1 + "Preguntas autocalculadas y persistencia"),
+  `expressions/operands.md`, `expressions/examples/question-expression.jsonc`,
+  `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md` §6/§8,
+  `catalog/example.jsonc`, `responses/ERD.mmd`, `responses/CLASS.mmd`,
+  `responses/README.md`, `responses/example.jsonc`.
 - **Refs**: `expressions/README.md` §1, `expressions/operands.md` (propiedades
-  derivadas), [ADR 040](../../decisions/040-ast-propiedades-derivadas.md).
+  derivadas), [ADR 040](../../decisions/040-ast-propiedades-derivadas.md),
+  [ADR 041](../../decisions/041-origen-answer-valores-calculados.md).
 
 ### C8 — Gaps del contrato `Instrument` ✅ (resuelto)
 

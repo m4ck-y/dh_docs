@@ -169,6 +169,15 @@ Cada `question` tiene un `type` (`EQuestionType`) y una configuración `config`
 - La coherencia de `config` con `type` se valida en la capa de aplicación
   (Pydantic), igual que `answer.data`.
 
+### Preguntas autocalculadas (`question.expression`)
+
+Una pregunta puede declarar `expression` (AST, **una** expresión, raíz sin
+wrapper). En ese caso es de **solo lectura**: su valor lo computa el motor y el
+usuario no la responde. Aplica a cualquier `type` (p. ej. un `NUMBER` con el IMC
+o un total). El valor se persiste como `answer` con `source = CALCULATED` (ver
+§8). Gramática y semántica en
+[`../expressions/README.md`](../expressions/README.md) §1.
+
 ## 7. Regla de orden (dónde vive `order`)
 
 **El orden pertenece a la relación, no a la entidad**, porque un mismo elemento
@@ -236,7 +245,13 @@ La condición decide si un elemento **se muestra u oculta**, y se modela como
 ### Objeto `answer` (modelo persistido vs. memoria)
 
 El modelo persistido está definido en [`../responses/ERD.mmd`](../responses/ERD.mmd):
-`answer { id_assignment, id_question, answered_by, data }`.
+`answer { id_assignment, id_question, source, answered_by, data }`.
+
+**Origen (`source`):** `EAnswerSource` distingue las respuestas del usuario
+(`USER`) de los **valores autocalculados** (`CALCULATED`) de una pregunta con
+`expression` (ver §6). Las calculadas se persisten como **snapshot** al enviar
+(histórico auditable) y no tienen usuario (`answered_by = NULL`). Ver
+[ADR 041](../../../decisions/041-origen-answer-valores-calculados.md).
 
 **Forma canónica de `data`:** el envelope `{value, type}`, los mismos campos
 que un `const` del AST y que `assignment.result` (ver
@@ -386,6 +401,8 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
       `target_sex` no era gap: se corrigió la contradicción del ejemplo vs §5.
 - [x] Condición de visibilidad: AST JSONB en form/section/question (ADR 039).
 - [x] `answer.data` canónico = envelope `{value, type}` (ver §8).
+- [x] `question.expression` (valor autocalculado, solo lectura) y origen de la
+      `answer` (`source`, ADR 041). Ver §6/§8.
 - [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
 - [ ] Migrar el `AnswerMap` en memoria del frontend al envelope (fase frontend, D12).
 

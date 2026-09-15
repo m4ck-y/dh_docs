@@ -121,6 +121,11 @@ interface OperandRef {
 | `person` | `age`, `weight`, `height` | Datos de la persona | — | ❌ (singular) |
 
 - `question.value` y `form.result.*` son **propiedades derivadas** (no columnas).
+- `question.value` respalda **también** las preguntas autocalculadas
+  (`question.expression`): su valor se persiste como una fila de `answer` con
+  `source = CALCULATED`, de modo que un selector `all`/`range` las incluye sin
+  casos especiales. Ver [`README.md`](./README.md) (persistencia) y
+  [ADR 041](../../../decisions/041-origen-answer-valores-calculados.md).
 - `form.result.scoring` existe solo si el `form` define `expression.scoring`. Ver
   [`operators/case.md`](./operators/case.md).
 - `selector` **solo aplica a `question`** (la única entidad con múltiples

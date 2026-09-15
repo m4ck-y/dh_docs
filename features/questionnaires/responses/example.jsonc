@@ -8,6 +8,10 @@
     un const del AST y que assignment.result (ver schema.sql).
     Las respuestas de opcion guardan el value numerico de la opcion (option.value),
     no la etiqueta.
+
+    Origen (source): en las filas de usuario se omite (default 'USER'); una
+    respuesta CALCULATED (pregunta con question.expression, ver ADR 041) lleva
+    source="CALCULATED" y answered_by=null.
   */
   "assignment": {
     "id": "UUID-ASSIGNMENT-V2",
@@ -87,6 +91,14 @@
         "id_question": "gds-timer",
         "answered_by": "UUID-PACIENTE-JUAN",
         "data": { "value": "PT1H30M", "type": "duration" } // TIMER
+      },
+      {
+        "id": "UUID-ANSWER-08",
+        "id_assignment": "UUID-ASSIGNMENT-V2",
+        "id_question": "gds-imc", // pregunta con question.expression (solo lectura)
+        "source": "CALCULATED",   // valor autocalculado, no lo responde el usuario
+        "answered_by": null,      // una fila calculada no tiene usuario
+        "data": { "value": 24.5, "type": "number" } // snapshot del IMC al enviar
       }
     ]
   }

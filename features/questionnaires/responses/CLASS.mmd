@@ -35,6 +35,9 @@ classDiagram
         +string id
         +string id_assignment
         +string id_question
+        %% Origen: USER | CALCULATED (EAnswerSource). CALCULATED => answered_by null
+        %% y el valor es un snapshot de question.expression al enviar (ver ADR 041).
+        +string source
         +string answered_by
         %% {value, type}, mismos campos que un const del AST
         +JSON data

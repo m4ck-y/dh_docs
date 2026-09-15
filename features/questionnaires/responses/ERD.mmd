@@ -50,6 +50,15 @@ erDiagram
         String EXPIRED "EXPIRED"
     }
 
+    %% EAnswerSource: origen de una respuesta (CREATE TYPE en schema.sql).
+    %% USER       -> ingresada por una persona (answered_by NOT NULL)
+    %% CALCULATED -> valor autocalculado por question.expression (answered_by NULL),
+    %%               persistido como snapshot al enviar (SUBMITTED). Ver ADR 041.
+    EAnswerSource {
+        String USER "USER"
+        String CALCULATED "CALCULATED"
+    }
+
     %% ============ ENTIDADES ============
     assignment {
         %% id_person: persona/entidad a quien se asigna el form
@@ -96,9 +105,12 @@ erDiagram
         Integer id PK
         Integer id_assignment FK
         Integer id_question FK
+        %% Origen de la respuesta (EAnswerSource). Default USER.
+        Enum(EAnswerSource) source
         %% Referencia al usuario que ingreso esta respuesta puntual.
         %% Permite auditar si la contesto el medico, tutor o paciente.
         %% No es un enum: es un FK a la entidad de usuarios.
+        %% NULL solo cuando source = CALCULATED (CHECK en schema.sql).
         Integer answered_by FK
         %% data: JSONB normalizado {value, type} (CHECK en schema.sql).
         %% Mismos campos que un const del AST; type: number|string|boolean|

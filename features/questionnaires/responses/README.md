@@ -26,7 +26,7 @@ se documenta aparte en [`../catalog/`](../catalog/).
 | `form` | Plantilla inmutable del cuestionario (compartida con el catálogo). |
 | `assignment` | Tarea/evento único. Cada re-contestación o renovación crea una nueva `assignment`. |
 | `scheduled` | Ventana de disponibilidad **opcional** (solo si un profesional lo programó). |
-| `answer` | Respuesta a una pregunta individual, con `answered_by`. |
+| `answer` | Respuesta a una pregunta individual, con `source` (origen) y `answered_by`. |
 
 ### Cardinalidades
 
@@ -43,8 +43,27 @@ se documenta aparte en [`../catalog/`](../catalog/).
 | `assignment` como evento | No es registro maestro; cada contestación es un evento nuevo | Evita la ambigüedad entre "reintentos" y "actualizaciones de info". |
 | `assigned_by` solo en `scheduled` | El asignador se guarda en `scheduled`, no en `assignment` | En flujo directo no hay asignador (el paciente contesta por su cuenta). |
 | `answered_by` en `answer` | Auditoría por pregunta: quién ingresó cada respuesta | En salud, a veces el médico o tutor contesta por el paciente. |
+| `source` en `answer` | `EAnswerSource` (`USER` \| `CALCULATED`): origen de la respuesta | Una pregunta con `question.expression` es de solo lectura; su valor autocalculado se persiste como snapshot. `answered_by` no puede ser `NOT NULL` porque una fila calculada no tiene usuario (ver [ADR 041](../../../decisions/041-origen-answer-valores-calculados.md)). |
 | `result` en `assignment` | No es cache, es el resultado del evento | `assignment` es la unidad que produce el resultado. |
 | `status` enum | `ENABLED`, `IN_PROGRESS`, `COMPLETED`, `SUBMITTED`, `EXPIRED` | Ciclo de vida de una tarea; ver comentarios del ERD. |
+
+### Respuestas autocalculadas (`source = CALCULATED`)
+
+Una pregunta con `question.expression` es de **solo lectura**: el usuario no la
+responde. Su valor se persiste como una fila de `answer` con
+`source = CALCULATED` y `answered_by = NULL`, en el mismo envelope
+`data = {value, type}` que el resto.
+
+- Se recalcula **en vivo** durante el llenado y se guarda **al enviar**
+  (`SUBMITTED`), junto con `assignment.result`.
+- Es un **snapshot histórico**: congela el valor tal como se computó (p. ej. edad
+  o IMC), de modo que cambios posteriores en `person` o en la definición del
+  form **no** reescriben lo ya enviado.
+- El `CHECK ((source = 'USER') = (answered_by IS NOT NULL))` garantiza la
+  coherencia: `USER` exige usuario, `CALCULATED` exige `NULL`.
+- La receta **no** se persiste; vive en `question.expression` (ver
+  [`../expressions/README.md`](../expressions/README.md) y
+  [ADR 041](../../../decisions/041-origen-answer-valores-calculados.md)).
 
 ## Diferencias V1 → V2
 

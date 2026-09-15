@@ -15,7 +15,7 @@ columnas físicas**:
 - `{ "entity": "form", "property": "result.scoring" }` → el resultado del
   formulario. Físicamente vive en `assignment.result.*`.
 
-Al modelar la expresión por pregunta (`question.expression`, pendiente C7c) se
+Al modelar la expresión por pregunta (`question.expression`, C7c) se
 reabrió la pregunta de si el AST debería usar las **entidades físicas** en su
 lugar:
 
@@ -78,4 +78,5 @@ El AST usa **propiedades derivadas lógicas**, no entidades físicas:
 - Entidades y selectores: `features/questionnaires/expressions/operands.md`
 - Modelo físico: `features/questionnaires/schema.sql` (`answer`, `assignment`)
 - Decisión relacionada: [ADR 039](039-condicion-visibilidad-ast.md)
-- Pendiente: `docs/TODO/cuestionarios.md` (C7c, `question.expression`)
+- Resuelto en [ADR 041](041-origen-answer-valores-calculados.md): `question.expression`
+  y la persistencia de valores calculados.
