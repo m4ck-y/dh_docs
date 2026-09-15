@@ -86,6 +86,11 @@ export interface Instrument {
 }
 ```
 
+> **Destino.** El modelo canónico renombra `instrucciones` → **`instructions`**
+> (inglés) y lo agrega como columna `form.instructions` (texto de llenado). El
+> renombre en el motor es parte de D12. `description` se mantiene **técnica**; el
+> texto de presentación amigable vive solo en el `.md` del banco.
+
 **Campos `dh_forms` conservados verbatim** (vía index signature, no
 re-declarados en el tipo): `area_desc`, `list_categories`, `list_cie11_codes`,
 `list_evaluation_topics`, `list_references`, `target_sex`.

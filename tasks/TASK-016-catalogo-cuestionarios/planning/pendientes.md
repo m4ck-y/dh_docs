@@ -52,6 +52,7 @@
 | C9 | `AnswerMap` ↔ `answer.data` | Modelo | ✅ |
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
 | C11 | Remanentes V1 en `schema.sql` | Modelo | ✅ |
+| C12 | `instructions` (técnica vs llenado) | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -286,6 +287,21 @@
 - **Verificado**: no existen `form_direct_responses`, `scheduled_responses`
   ni `attempt_number` en `schema.sql`.
 - **Commit**: `5fcb48e`.
+
+### C12 — `form.instructions` (técnica vs llenado) ✅ (resuelto)
+
+- **Qué era**: tres textos posibles del instrumento: `description` (técnica),
+  texto de **llenado** y "descripción amigable". El frontend ya usaba
+  `instrucciones`; `schema.sql` no tenía el campo.
+- **Decisión**:
+  - `form.description` = **técnica** (qué es / qué evalúa).
+  - **`form.instructions`** (inglés, `TEXT`, nullable) = **llenado** para el
+    paciente. Se renombra `instrucciones` → `instructions` (frontend en D12).
+  - **Amigable** = solo en el `<key>.md` del banco; **no** se modela.
+- **Reflejo**: `schema.sql` (+ columna y `COMMENT`), `catalog/ERD.mmd`,
+  `catalog/CLASS.mmd`, `catalog/README.md` (§5 + extensiones), `catalog/example.jsonc`,
+  `catalog/bank/README.md` (convención y plantilla), `reference/questionnaire-engine.md`
+  (nota de destino).
 
 ## D. Motor frontend
 

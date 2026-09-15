@@ -2,6 +2,9 @@
   "key": "ENCUESTA123",
   "name": "Encuesta de Satisfacción",
   "description": "Formulario para evaluar el servicio ofrecido",
+  /* Texto de LLENADO para el paciente (cómo responder). Nullable.
+     Distinto de description (técnica). El texto amigable vive en el .md del banco. */
+  "instructions": "Conteste cada pregunta pensando en los últimos 7 días.",
   "verified": false,
   /* Envelope de recetas AST del formulario (raíz sin wrapper).
      Ver ../expressions/README.md. */

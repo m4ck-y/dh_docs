@@ -12,8 +12,8 @@ nivel arriba; este directorio solo contiene **datos**.
 | Ruta | Contenido |
 |---|---|
 | `categories.json` | Vocabulario controlado de categorías de bienestar (`key` + `name`). |
-| `instruments/` | Un `.json` por instrumento psicométrico (`kind: INSTRUMENT`). |
-| `clinical_history/` | Un `.json` por formulario clínico (`kind: CLINICAL_HISTORY`). |
+| `instruments/` | Un `.json` + un `.md` por instrumento psicométrico (`kind: INSTRUMENT`). |
+| `clinical_history/` | Un `.json` + un `.md` por formulario clínico (`kind: CLINICAL_HISTORY`). |
 
 - **Plano**: la categoría (mental/físico/social) **no** es carpeta; vive en
   `list_categories[]`. Un instrumento puede pertenecer a varias (p. ej. CRAFFT:
@@ -24,6 +24,12 @@ nivel arriba; este directorio solo contiene **datos**.
 ## Convención de un instrumento
 
 - `key` del instrumento = nombre del archivo (`phq-9.json`, `crafft.json`).
+- Cada instrumento tiene **dos archivos**: `<key>.json` (definición canónica) y
+  `<key>.md` (lectura humana, formato legacy `PHQ9.md`).
+- Textos del formulario:
+  - `description` = **técnica** (qué es / qué evalúa). Para profesionales.
+  - `instructions` = **llenado** (cómo responder). Para el paciente. Nullable.
+  - **amigable** (presentación) = solo en el `<key>.md`; **no** se modela.
 - Carpetas y `key`/slugs en inglés; `name`/`text`/`description` en español.
 - `kind`: `INSTRUMENT` | `CLINICAL_HISTORY`.
 - `id` (uuid/string) estable, para que `expression`/`condition` puedan referenciar.
@@ -39,6 +45,7 @@ nivel arriba; este directorio solo contiene **datos**.
   "kind": "INSTRUMENT",
   "name": "...",
   "description": "...",
+  "instructions": null,
   "verified": false,
   "condition": null,
   "expression": { /* definitions? / scoring? / evaluation? / subscales? */ },

@@ -74,6 +74,9 @@ erDiagram
         %% name == filename ej: test.frm
         String name
         Text description
+        %% instructions: texto de LLENADO para el paciente (como responder). Nullable.
+        %% Distinto de description (tecnica). El texto amigable vive en el .md del banco.
+        Text instructions
         %% envelope de recetas AST: {scoring?, evaluation?, subscales?}
         Jsonb expression
         %% condicion de visibilidad del formulario (AST booleano, raiz SIN wrapper)

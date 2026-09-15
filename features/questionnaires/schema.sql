@@ -52,7 +52,8 @@ CREATE TABLE form (
     id SERIAL PRIMARY KEY,
     key VARCHAR(100) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
-    description TEXT,
+    description TEXT,              -- Descripción TÉCNICA del instrumento (qué es / qué evalúa). Ver catalog/bank/README.md
+    instructions TEXT,             -- Texto de LLENADO para el paciente (cómo responder); nullable. Ver catalog/bank/README.md
     expression JSONB,              -- Envelope de recetas AST: {definitions?, scoring?, evaluation?, subscales?}. Ver expressions/README.md
     condition JSONB,               -- Condición de visibilidad del formulario (AST booleano, raíz sin wrapper). Ausente = siempre visible. Ver expressions/conditions.md (ADR 039)
     verified BOOLEAN NOT NULL DEFAULT false  -- Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable
@@ -64,7 +65,9 @@ COMMENT ON COLUMN form.key IS 'Identificador semántico y estable (ej. "onboardi
 
 COMMENT ON COLUMN form.name IS 'Nombre legible del formulario para usuarios finales (ej. "Encuesta de Bienvenida").';
 
-COMMENT ON COLUMN form.description IS 'Descripción explicativa del propósito del formulario.';
+COMMENT ON COLUMN form.description IS 'Descripción TÉCNICA del instrumento (qué es, qué evalúa, propósito). Distinta de instructions (llenado).';
+
+COMMENT ON COLUMN form.instructions IS 'Texto de LLENADO para el paciente: cómo responder el formulario (p. ej. "En las últimas dos semanas…"). Nullable. El texto de presentación amigable NO se modela aquí: vive en el .md legible del banco (catalog/bank/). Distinto de description (técnica).';
 
 COMMENT ON COLUMN form.expression IS 'Envelope de recetas de expresión (AST) del formulario. Claves opcionales: definitions (mapa de fórmulas con nombre, leídas con {ref}), scoring (operador aggregate, raíz SIN wrapper), evaluation (operador case/when condition-based: cada when es una condición booleana) y subscales (arreglo de ámbitos, cada uno con scoring/evaluation propios). Los operandos anidados SÍ llevan wrapper {expression:...} (discriminante de la unión). Gramática: features/questionnaires/expressions/README.md. Ejemplo (PHQ-9): {"scoring": {"type": "aggregate", "operator": "sum", "args": [{"subject": {"entity": "question", "property": "value", "selector": {"all": true}}}], "output": {"type": "number"}}, "evaluation": {"type": "case", "operator": "when", "cases": [{"when": {"expression": {"type": "comparison", "operator": "<", "args": [{"subject": {"entity": "form", "property": "result.scoring"}}, {"const": {"value": 5, "type": "number"}}], "output": {"type": "boolean"}}}, "then": {"const": {"value": "Depresión mínima", "type": "string"}}}], "default": {"const": {"value": "Puntuación fuera de rango", "type": "string"}}, "output": {"type": "string"}, "args": []}}. Se evalúa al enviar (SUBMITTED) y su resultado se guarda en assignment.result.';
 

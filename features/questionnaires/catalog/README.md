@@ -87,7 +87,7 @@ contra el contrato `Instrument` del MVP frontend (`types.ts`).
 | Campo | Descripción |
 |---|---|
 | `area` / `area_desc` | Categoría clínica (p. ej. `Emocional`) para render/agrupación |
-| `instrucciones` | Texto introductorio del cuestionario |
+| `instructions` | Texto de **llenado** del cuestionario (cómo responder), para el paciente. Distinto de `description` (técnica). |
 | `scoring` `{tipo:'suma'|'subescalas', maximo, items, subescalas[]}` | Configuración de puntuación |
 | `interpretacion[]` `{desde, hasta, texto, subescala?}` | Rangos de interpretación |
 
@@ -100,10 +100,10 @@ interface Instrument {
   id: string;
   key: string;
   name: string;
-  description: string;
+  description: string;           // técnica (qué es / qué evalúa)
+  instructions?: string;         // llenado (cómo responder); nullable
   area?: string;                 // extensión MVP
   area_desc?: string;            // extensión MVP
-  instrucciones?: string;        // extensión MVP
 
   list_categories: { key_industry: number; name: string }[];
   list_cie11_codes: { code: string }[];
