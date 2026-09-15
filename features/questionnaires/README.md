@@ -26,7 +26,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 - Reglas de formato: `.agents/rules/DOCUMENTATION_ERD.md` y
   `.agents/rules/MERMAID_ENUM_REPRESENTATION.md`.
 - Referencia (no fuente de verdad): contrato del motor frontend en
-  `docs/diagrams/schemas/cuestionario/README.md`.
+  [`reference/questionnaire-engine.md`](./reference/questionnaire-engine.md).
 
 ## Capas
 
@@ -35,6 +35,8 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 | Catálogo / Definición | [`catalog/`](./catalog/) | Comparativa de 4 fuentes, matriz de concordancia, ERD y diagrama de clases del instrumento. |
 | Ejecución / Respuestas (V2) | [`responses/`](./responses/) | Modelo V2 (`assignment` como tarea/evento), cardinalidades y diferencias V1 → V2. |
 | Lenguaje de expresiones | [`expressions/`](./expressions/) | AST del envelope `form.expression` (`scoring`/`evaluation`/`subscales`) y `condition`, con ejemplos. Transversal a definición y ejecución. |
+| Banco de datos | [`catalog/bank/`](./catalog/bank/) | Instancias JSON del catálogo (instrumentos e historia clínica) + `categories.json`. |
+| Referencia externa | [`reference/`](./reference/) | Contrato del motor frontend (`questionnaire-engine.md`). No es fuente de verdad. |
 
 ## Decisiones tomadas en el modelo
 
@@ -84,6 +86,11 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
   - Si un ejemplo no necesita comentarios, puede usarse `.json`.
 - **`question_types/`**: carpeta (en `catalog/`) con un doc por tipo de pregunta;
   documenta la forma de `question.config` según `question.type`.
+- **`bank/`**: carpeta (en `catalog/`) con las instancias JSON del catálogo.
+  Planas por `kind` (`instruments/`, `clinical_history/`); la categoría es
+  metadata (`list_categories[]`), no carpeta. Ver `catalog/bank/README.md`.
+- **`reference/`**: documentación de referencia (no fuente de verdad), como el
+  contrato del motor frontend.
 - **`expressions/`**: gramática del AST y del envelope `form.expression`
   (`scoring`/`evaluation`/`subscales`) + `examples/` con ejemplos `.jsonc`
   reutilizables.
@@ -100,7 +107,12 @@ questionnaires/
 │   ├── ERD.mmd
 │   ├── CLASS.mmd
 │   ├── example.jsonc
-│   └── question_types/  # Un doc por tipo de pregunta (config por tipo)
+│   ├── question_types/  # Un doc por tipo de pregunta (config por tipo)
+│   └── bank/            # Instancias JSON del catálogo
+│       ├── README.md
+│       ├── categories.json
+│       ├── instruments/       # kind: INSTRUMENT (*.json)
+│       └── clinical_history/  # kind: CLINICAL_HISTORY (*.json)
 ├── expressions/         # Lenguaje de expresiones (AST)
 │   ├── README.md        # Índice + envelope expression/result
 │   ├── operands.md      # Operandos y selectores
@@ -108,11 +120,13 @@ questionnaires/
 │   ├── factories.md     # Factory functions (referencia)
 │   ├── operators/       # Un doc por operador (math, case, aggregate, ...)
 │   └── examples/        # Ejemplos .jsonc + casos médicos
-└── responses/           # Capa ejecución / respuestas (V2)
-    ├── README.md
-    ├── ERD.mmd
-    ├── CLASS.mmd
-    └── example.jsonc
+├── responses/           # Capa ejecución / respuestas (V2)
+│   ├── README.md
+│   ├── ERD.mmd
+│   ├── CLASS.mmd
+│   └── example.jsonc
+└── reference/           # Referencia (no fuente de verdad)
+    └── questionnaire-engine.md  # Contrato del motor frontend
 ```
 
 ## Pendientes
@@ -121,6 +135,8 @@ Lista viva y detallada: [`../../TODO/cuestionarios.md`](../../TODO/cuestionarios
 
 - Confirmar el nombre del schema PostgreSQL (`form`) y añadirlo a `ALL_SCHEMAS`
   (`dh_shared/base.py`) — C10 (backend).
+- Generar los JSON del banco (`catalog/bank/`) a partir de
+  `docs/diagrams/<dominio>/flows/*.mmd` — ver `catalog/bank/README.md`.
 - Motor frontend: faltan tipos y migración al AST completo (condición AST,
   `definitions`/`ref`, `time: minutes`, `case` condition-based) y al envelope
   `{value, type}` — D12 (frontend).

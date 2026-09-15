@@ -21,7 +21,6 @@ Transversal:
 |---|---|
 | `conventions/` | Guía de conversión drawio → Mermaid (`SKILL_DRAWIO_MERMAID.md`). |
 | `catalog/` | Catálogo de instrumentos con metadata (`instruments.csv`). |
-| `schemas/` | Contratos de referencia (motor de cuestionarios). |
 
 ## Estructura
 

@@ -31,4 +31,4 @@ Fecha (sin hora).
 ## Fuente
 
 `config` definitivo (ver `README.md`). Contrato del motor frontend
-(`docs/diagrams/schemas/cuestionario/README.md`) como referencia inicial.
+(`../../reference/questionnaire-engine.md`) como referencia inicial.

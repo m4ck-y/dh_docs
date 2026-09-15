@@ -91,7 +91,7 @@
   `expression.md` decía "6 operadores" y documenta 7.
 - **Reflejo**: `schema.sql` (ejemplos inválidos corregidos), `catalog/README.md`
   §9/§11/§12, `catalog/example.jsonc`, `questionnaires/README.md`,
-  `docs/db/postgres/form/README.md`, `docs/diagrams/schemas/cuestionario/README.md`.
+  `docs/db/postgres/form/README.md`, `docs/features/questionnaires/reference/questionnaire-engine.md`.
 
 ### A3 — Decisión column-JSON vs tabla ✅ (resuelto)
 
@@ -304,7 +304,7 @@
 - **Incluye**: soportar el motor de expresiones ampliado — **`definitions` +
   `{ref}`**, **`time: minutes`** y **`case` condition-based** (C7b), además de
   la condición AST.
-- **Refs**: `docs/diagrams/schemas/cuestionario/README.md:23`
+- **Refs**: `docs/features/questionnaires/reference/questionnaire-engine.md:23`
   (describe el **estado actual implementado**, no el objetivo).
 - **Objetivo**: `catalog/question_types/` (9 tipos) + AST completo
   (condición, definitions/ref, time:minutes, case condition-based).

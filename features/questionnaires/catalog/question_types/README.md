@@ -47,7 +47,7 @@ array (`number[]`).
   (`my_arquitecture/question/types/range.md` y `timer.md`; evidencia de uso en
   `cuestionarios/IPAQ.json`).
 - El resto de tipos proviene del contrato del motor frontend
-  (`docs/diagrams/schemas/cuestionario/README.md`) y del DDL de referencia.
+  (`../../reference/questionnaire-engine.md`) y del DDL de referencia.
 
 ## Desviación respecto a la fuente
 

@@ -18,7 +18,7 @@ están representados en `frontend/ls_frontend_app/src/domain/questionnaire-engin
 > `scoring`/`interpretacion`). El **modelo canónico** definido para el catálogo es
 > el **AST de expresiones** (envelope `form.expression` con
 > `definitions`/`scoring`/`evaluation`/`subscales`; `case` condition-based), en
-> [`features/questionnaires/expressions/`](../../features/questionnaires/expressions/).
+> [`expressions/`](../expressions/).
 > La migración del motor a esa forma es una fase posterior (D12).
 
 ---
@@ -263,7 +263,7 @@ export type AnswerMap = Record<string, AnswerValue>;
 
 > **Destino.** `AnswerMap` es la forma **en memoria actual** (provisional: sin
 > tipo, aplanada). El modelo canónico persistido es el envelope
-> `{value, type}` (ver `schema.sql` y `catalog/README.md` §8); migrar el
+> `{value, type}` (ver `../schema.sql` y `../catalog/README.md` §8); migrar el
 > motor a esa forma es parte de **D12**.
 
 - Persistencia en AppDB (claves `questionnaire_answers:{key}` y
