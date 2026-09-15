@@ -23,6 +23,9 @@ CREATE TYPE EBiologicalSex AS ENUM ('HOMBRE', 'MUJER', 'INTERSEXUAL');  -- PENDI
 -- Tipo de recurso enlazado (alineado con EUrlType del ERD)
 CREATE TYPE EUrlType AS ENUM ('LINK', 'FILE', 'IMAGE');
 
+-- Unidad de un rango numerico (age_group, estimated_duration). Vocabulario controlado.
+CREATE TYPE EUnit AS ENUM ('SECOND', 'MINUTE', 'HOUR', 'DAY', 'WEEK', 'MONTH', 'YEAR');
+
 -- Origen de una respuesta (answer.source): ingresada por un usuario o
 -- autocalculada por una expresion (question.expression). Ver features/questionnaires/expressions/README.md (C7c).
 CREATE TYPE EAnswerSource AS ENUM ('USER', 'CALCULATED');
@@ -238,9 +241,10 @@ COMMENT ON TABLE form_categories IS 'Vincula formularios con categorias.';
 CREATE TABLE estimated_duration (
     id SERIAL PRIMARY KEY,
     id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
-    min_minutes INTEGER,
-    max_minutes INTEGER,
-    description TEXT
+    name VARCHAR(255),             -- etiqueta legible para el usuario final (representacion de la fuente, ej. "<=10 minutos")
+    min INTEGER,                   -- limite inferior del rango (en `unit`)
+    max INTEGER,                   -- limite superior del rango (en `unit`)
+    unit EUnit NOT NULL            -- unidad del rango (ver EUnit)
 );
 
 COMMENT ON TABLE estimated_duration IS 'Duracion estimada de completar un formulario.';
@@ -251,9 +255,10 @@ COMMENT ON TABLE estimated_duration IS 'Duracion estimada de completar un formul
 -- ===================================================================
 CREATE TABLE age_group (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    min_age INTEGER,
-    max_age INTEGER
+    name VARCHAR(255) NOT NULL,    -- etiqueta legible para el usuario final (representacion de la fuente, ej. ">60")
+    min INTEGER,                   -- edad minima (en `unit`)
+    max INTEGER,                   -- edad maxima (en `unit`)
+    unit EUnit NOT NULL            -- unidad del rango (ver EUnit; tipicamente YEAR o MONTH)
 );
 
 COMMENT ON TABLE age_group IS 'Grupo etario definido por rango de edades.';

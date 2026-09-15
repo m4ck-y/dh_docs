@@ -63,6 +63,17 @@ erDiagram
         String IMAGE "IMAGE"
     }
 
+    %% EUnit: unidad de un rango (age_group, estimated_duration)
+    EUnit {
+        String SECOND "SECOND"
+        String MINUTE "MINUTE"
+        String HOUR "HOUR"
+        String DAY "DAY"
+        String WEEK "WEEK"
+        String MONTH "MONTH"
+        String YEAR "YEAR"
+    }
+
     %% ============ ENTIDADES ============
     %% form.key: UNIQUE NOT NULL
     %% form.verified: DEFAULT false
@@ -136,14 +147,14 @@ erDiagram
     }
 
     estimated_duration {
-        %% Alternativa de tipado: duraciones en formato ISO 8601.
-        %% Ejemplo: timedelta(days=1, hours=2, minutes=30)
-        %% Futuro (IA): sugerir description a partir del resto de los datos y viceversa (f >> description, description >> f)
+        %% name: etiqueta legible (fuente) para UI. El valor estructurado va en min/max/unit.
+        %% unit: EUnit (MINUTE, HOUR, ...). Futuro (IA): sugerir name a partir del rango.
         Integer id PK
         Integer id_form FK
-        Integer min_minutes
-        Integer max_minutes
-        Text description
+        String name
+        Integer min
+        Integer max
+        Enum(EUnit) unit
     }
 
     target_age_groups {
@@ -153,11 +164,12 @@ erDiagram
     }
 
     age_group {
-        %% Futuro (IA): sugerir "name" a partir de las edades proporcionadas y viceversa
+        %% name: etiqueta legible (fuente) para UI. min/max/unit llevan el valor (tipicamente YEAR o MONTH).
         Integer id PK
         String name
-        Integer min_age
-        Integer max_age
+        Integer min
+        Integer max
+        Enum(EUnit) unit
     }
 
     %% section.key: opcional (identificador semantico de la seccion)

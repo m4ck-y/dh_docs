@@ -149,16 +149,19 @@
     { "key_industry": "string", "name": "string", "id": 0 }
   ],
   "estimated_duration": {
-    "min_minutes": 0,
-    "max_minutes": 0,
-    "description": "string",
+    /* name: etiqueta legible (fuente) para UI; el valor va en min/max/unit */
+    "name": "≤10 minutos",
+    "min": 5,
+    "max": 10,
+    "unit": "MINUTE",
     "id": 0
   },
   "list_age_groups": [
     {
-      "name": "string",
-      "min_age": 0,
-      "max_age": 0,
+      "name": "≥18 años",
+      "min": 18,
+      "max": 99,
+      "unit": "YEAR",
       "id": 0
     }
   ],

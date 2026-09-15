@@ -21,6 +21,13 @@ nivel arriba; este directorio solo contiene **datos**.
   `wellbeing_physical` + `wellbeing_social`), sin duplicar el archivo.
 - **Vocabularios controlados**: `list_categories` usa `categories.json` y
   `list_population` usa `population.json`.
+- **Rangos** (`list_age_groups`, `estimated_duration`): forma
+  `{ name, min, max, unit }`. `name` = **etiqueta legible** de la fuente (UI);
+  `min`/`max` = valor numérico; `unit` = `EUnit` (`YEAR`, `MONTH`, `MINUTE`, ...).
+  No se usa `description` para etiquetas.
+- **Enums sin bank**: los campos cuyo valor viene de un **enum del DDL**
+  (`EUnit`, `EQuestionType`, `EAssignmentStatus`, `EBiologicalSex`, `EUrlType`)
+  **no** tienen archivo de vocabulario; su fuente es `schema.sql`.
 - **`population` = grupo objetivo NO etario** (contexto/condición clínica). Las
   etiquetas que solo describen edad **no** van aquí: se expresan en
   `list_age_groups`. Excluidas por eso: `Adultos` (IPAQ, ya `18–65`) y
@@ -60,8 +67,8 @@ nivel arriba; este directorio solo contiene **datos**.
   "list_evaluation_topics": [ { "key": "...", "name": "..." } ],
   "list_cie11_codes": [ { "code": "6A7" } ],
   "list_population": [ { "name": "..." } ],
-  "estimated_duration": { "min_minutes": 5, "max_minutes": 10, "description": "..." },
-  "list_age_groups": [ { "name": "...", "min_age": 18, "max_age": 99 } ],
+  "estimated_duration": { "name": "≤10 minutos", "min": 5, "max": 10, "unit": "MINUTE" },
+  "list_age_groups": [ { "name": "≥18 años", "min": 18, "max": 99, "unit": "YEAR" } ],
   "target_sex": null,
   "list_references": [],
   "list_questions": [ /* ... */ ]

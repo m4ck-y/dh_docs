@@ -168,8 +168,9 @@ classDiagram
 
     class AgeGroup {
         +string name
-        +int min_age
-        +int max_age
+        +int min
+        +int max
+        +string unit
     }
 
     class Population {
@@ -185,9 +186,10 @@ classDiagram
     }
 
     class EstimatedDuration {
-        +int min_minutes
-        +int max_minutes
-        +string description
+        +string name
+        +int min
+        +int max
+        +string unit
     }
 
     Form "1" *-- "0..*" Section : list_sections (XOR list_questions)

@@ -110,8 +110,8 @@ interface Instrument {
   list_evaluation_topics: { id?: number; name: string; key_industry?: string }[];
   list_population: { id?: number; name: string }[];   // espeja population vía form_population (N:N)
 
-  estimated_duration?: { min_minutes?: number; max_minutes?: number; description?: string };
-  list_age_groups: { id?: number; name?: string; min_age?: number; max_age?: number }[];
+  estimated_duration?: { name?: string; min?: number; max?: number; unit?: string };
+  list_age_groups: { id?: number; name?: string; min?: number; max?: number; unit?: string }[];
   target_sex?: { type_biological_sex: EBiologicalSex; id?: number };   // espeja target_sex del ERD
   list_references?: Reference[];
   list_sections?: Section[];     // XOR con list_questions (ver §7 y ADR 038)

@@ -56,6 +56,7 @@
 | C13 | `list_population` (N:N) | Modelo | ✅ |
 | C14 | Prefijo `list_` en colecciones | Modelo | ✅ |
 | C15 | ¿`target_*` (sex/age/population) dentro de `condition`? | Modelo | ⏳ |
+| C16 | Rangos: `min`/`max`/`unit` + `name` legible (Diseño C) | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -347,6 +348,25 @@
   `schema.sql` (header de `target_sex`).
 - **A decidir**: semántica (visibilidad vs. metadata consultable), impacto en
   reportes/filtros y en `condition`.
+
+### C16 — Rangos: `min`/`max`/`unit` + `name` legible (Diseño C) ✅ (resuelto)
+
+- **Qué era**: `age_group` usaba `min_age`/`max_age`; `estimated_duration`
+  `min_minutes`/`max_minutes` + `description`; `config` usaba `min`/`max`.
+  Naming mixto e incapaz de expresar unidades (meses en pediatría, seg/h).
+- **Decisión (Diseño C)**: rangos genéricos `{ name, min, max, unit }`.
+  - `min`/`max` (sin sufijo de dimensión) + `unit` (`EUnit`: `SECOND`, `MINUTE`,
+    `HOUR`, `DAY`, `WEEK`, `MONTH`, `YEAR`).
+  - `name` = **etiqueta legible** de la fuente para UI; se renombra
+    `estimated_duration.description` → `name`. No se usa `description` para
+    etiquetas.
+  - El texto literal de la fuente (caso 3) vive en `name`; el valor en
+    `min`/`max`/`unit`. Ej.: `>60` → `{ name: ">60", min: 61, unit: "YEAR" }`.
+- **Reflejo**: `schema.sql` (`EUnit`, `age_group`, `estimated_duration`),
+  `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md` §5,
+  `catalog/example.jsonc`, `catalog/bank/README.md` (plantilla + regla),
+  `reference/questionnaire-engine.md` (nota de destino).
+- **Pendiente**: `question.config` (¿también `unit`? hoy fuera de alcance).
 
 ## D. Motor frontend
 

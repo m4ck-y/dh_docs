@@ -90,6 +90,12 @@ export interface Instrument {
 > (inglés) y lo agrega como columna `form.instructions` (texto de llenado). El
 > renombre en el motor es parte de D12. `description` se mantiene **técnica**; el
 > texto de presentación amigable vive solo en el `.md` del banco.
+>
+> **Destino (rangos).** El canónico usa `list_age_groups: {name, min, max, unit}[]`
+> y `estimated_duration: {name, min, max, unit}` (Diseño C: `min`/`max` + `unit`
+> `EUnit`; `name` = etiqueta legible). El frontend actual (`target_age_group` con
+> `min_age`/`max_age`, `estimated_duration` con `min_minutes`/`description`) se
+> migra en D12.
 
 **Campos `dh_forms` conservados verbatim** (vía index signature, no
 re-declarados en el tipo): `area_desc`, `list_categories`, `list_cie11_codes`,
