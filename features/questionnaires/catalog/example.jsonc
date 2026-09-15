@@ -154,7 +154,7 @@
     "description": "string",
     "id": 0
   },
-  "target_age_groups": [
+  "list_age_groups": [
     {
       "name": "string",
       "min_age": 0,

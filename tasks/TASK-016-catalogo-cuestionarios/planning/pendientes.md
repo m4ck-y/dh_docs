@@ -54,6 +54,8 @@
 | C11 | Remanentes V1 en `schema.sql` | Modelo | ✅ |
 | C12 | `instructions` (técnica vs llenado) | Modelo | ✅ |
 | C13 | `list_population` (N:N) | Modelo | ✅ |
+| C14 | Prefijo `list_` en colecciones | Modelo | ✅ |
+| C15 | ¿`target_*` (sex/age/population) dentro de `condition`? | Modelo | ⏳ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -318,6 +320,33 @@
   `target_age_groups`, `list_population`, `list_references`, `estimated_duration`,
   `target_sex` + clases `Category`/`Cie11Code`/`EvaluationTopic`/`AgeGroup`/
   `Population`/`Reference`/`EstimatedDuration`).
+
+### C14 — Prefijo `list_` en colecciones ✅ (resuelto)
+
+- **Qué era**: el `CLASS.mmd` usaba `sections`/`questions`/`options` y
+  `target_age_groups`, mientras el payload ya usaba `list_sections`/
+  `list_questions`/`list_options`.
+- **Decisión**: toda colección (1:N y N:N) lleva **`list_`** +
+  `{secondary_entity_plural}` (regla `PYTHON_INFRA_DB_RELATIONSHIPS.md` y
+  `PYTHON_DOMAIN_RELATIONSHIPS.md`). Se unifica:
+  - `sections` → `list_sections`, `questions` → `list_questions`,
+    `options` → `list_options`.
+  - `target_age_groups` → **`list_age_groups`** (payload incluido).
+- **Reflejo**: `catalog/CLASS.mmd`, `catalog/example.jsonc`,
+  `catalog/bank/README.md`, `catalog/README.md` §5.
+- **Pendiente asociado**: decidir `target_sex` (¿escolar único `target_sex` o
+  colección `list_sexes`? hoy es objeto único en el contrato).
+
+### C15 — ¿`target_*` (sex/age/population) dentro de `condition`? ⏳ (abierto)
+
+- **Qué**: evaluar si `target_sex`, `age_group` y `population` deberían modelarse
+  como **parte de `condition`** (AST de visibilidad del form) en lugar de tablas
+  propias, ya que "a quién aplica" es afín a "cuándo es visible".
+- **Estatus**: **sin decidir**. No bloquea la definición ni el banco actual.
+- **Reflejo**: nota de diseño en `catalog/ERD.mmd` (NOTAS DE DISENO) y en
+  `schema.sql` (header de `target_sex`).
+- **A decidir**: semántica (visibilidad vs. metadata consultable), impacto en
+  reportes/filtros y en `condition`.
 
 ## D. Motor frontend
 

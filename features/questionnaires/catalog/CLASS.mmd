@@ -10,7 +10,7 @@ classDiagram
     %% dentro de Form y Section.
     %%
     %% INVARIANTE DE COMPOSICION (ver ADR 038): Form se compone de
-    %% 'questions' (preguntas directas) O de 'sections', NUNCA de ambas.
+    %% 'list_questions' (preguntas directas) O de 'list_sections', NUNCA de ambas.
     %% La exclusividad la valida la capa de aplicacion.
     %%
     %% Las expresiones (scoring/evaluation/condition) se TIPAN como Expression
@@ -31,14 +31,14 @@ classDiagram
         +Category[] list_categories
         +Cie11Code[] list_cie11_codes
         +EvaluationTopic[] list_evaluation_topics
-        +AgeGroup[] target_age_groups
+        +AgeGroup[] list_age_groups
         +Population[] list_population
         +Reference[] list_references
         +EstimatedDuration estimated_duration
         +string target_sex
-        %% XOR: o 'sections' o 'questions', nunca ambos (ver ADR 038)
-        +Section[] sections
-        +Question[] questions
+        %% XOR: o 'list_sections' o 'list_questions', nunca ambos (ver ADR 038)
+        +Section[] list_sections
+        +Question[] list_questions
     }
 
     class Section {
@@ -47,7 +47,7 @@ classDiagram
         +string description
         +int order
         +Expression condition
-        +Question[] questions
+        +Question[] list_questions
     }
 
     class Question {
@@ -58,7 +58,7 @@ classDiagram
         +Jsonb config
         +Expression condition
         +Expression expression
-        +Option[] options
+        +Option[] list_options
     }
 
     %% Question.config: JSONB nullable, forma segun Question.type
@@ -190,16 +190,16 @@ classDiagram
         +string description
     }
 
-    Form "1" *-- "0..*" Section : contiene (XOR questions)
-    Form "1" *-- "0..*" Question : contiene (XOR sections)
-    Section "1" *-- "0..*" Question : contiene
-    Question "1" *-- "0..*" Option : contiene
-    Option "1" o-- "0..1" Url : puede tener
+    Form "1" *-- "0..*" Section : list_sections (XOR list_questions)
+    Form "1" *-- "0..*" Question : list_questions (XOR list_sections)
+    Section "1" *-- "0..*" Question : list_questions
+    Question "1" *-- "0..*" Option : list_options
+    Option "1" o-- "0..1" Url : url
     %% Metadata embebida del Form (en el ERD son puentes/tablas normalizadas).
     Form "1" *-- "0..*" Category : list_categories
     Form "1" *-- "0..*" Cie11Code : list_cie11_codes
     Form "1" *-- "0..*" EvaluationTopic : list_evaluation_topics
-    Form "1" *-- "0..*" AgeGroup : target_age_groups
+    Form "1" *-- "0..*" AgeGroup : list_age_groups
     Form "1" *-- "0..*" Population : list_population
     Form "1" *-- "0..*" Reference : list_references
     Form "1" *-- "0..1" EstimatedDuration : estimated_duration

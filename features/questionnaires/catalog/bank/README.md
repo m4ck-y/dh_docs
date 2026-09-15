@@ -21,6 +21,10 @@ nivel arriba; este directorio solo contiene **datos**.
   `wellbeing_physical` + `wellbeing_social`), sin duplicar el archivo.
 - **Vocabularios controlados**: `list_categories` usa `categories.json` y
   `list_population` usa `population.json`.
+- **`population` = grupo objetivo NO etario** (contexto/condición clínica). Las
+  etiquetas que solo describen edad **no** van aquí: se expresan en
+  `list_age_groups`. Excluidas por eso: `Adultos` (IPAQ, ya `18–65`) y
+  `Pacientes geriátricos` (GDS, ya `>60`).
 - **Fuente humana** de cada instrumento: `docs/diagrams/<dominio>/flows/<key>.mmd`
   (+ `reviews/<key>-review.md`).
 
@@ -57,7 +61,7 @@ nivel arriba; este directorio solo contiene **datos**.
   "list_cie11_codes": [ { "code": "6A7" } ],
   "list_population": [ { "name": "..." } ],
   "estimated_duration": { "min_minutes": 5, "max_minutes": 10, "description": "..." },
-  "target_age_group": { "name": "...", "min_age": 18, "max_age": 99 },
+  "list_age_groups": [ { "name": "...", "min_age": 18, "max_age": 99 } ],
   "target_sex": null,
   "list_references": [],
   "list_questions": [ /* ... */ ]
