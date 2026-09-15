@@ -103,6 +103,7 @@ erDiagram
     %%   SIN wrapper); pregunta solo lectura. Ausente = la responde el usuario (C7c).
     %% El ORDEN no vive aqui: pertenece a la relacion (questions_form / questions_section),
     %% porque la pregunta es reutilizable y su posicion depende del contexto.
+    %% question.text: NULLABLE (items sin enunciado, ej. CDI "elige la frase"; ver C17).
     question {
         Integer id PK
         String key

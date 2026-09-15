@@ -1,0 +1,537 @@
+{
+  "id": "form-phq-9",
+  "key": "phq-9",
+  "kind": "INSTRUMENT",
+  "name": "PHQ-9",
+  "description": "Instrumento diseñado para dar apoyo al diagnóstico de la depresión y determinar su nivel de gravedad. También puede utilizarse para observar los cambios experimentados por el paciente a lo largo del tiempo.",
+  "instructions": "En las últimas dos semanas usted sintió...",
+  "verified": false,
+  "condition": null,
+  "expression": {
+    "scoring": {
+      "type": "aggregate",
+      "operator": "sum",
+      "args": [
+        {
+          "subject": {
+            "entity": "question",
+            "property": "value",
+            "selector": {
+              "all": true
+            }
+          }
+        }
+      ],
+      "output": {
+        "type": "number"
+      }
+    },
+    "evaluation": {
+      "type": "case",
+      "operator": "when",
+      "cases": [
+        {
+          "when": {
+            "expression": {
+              "type": "comparison",
+              "operator": "<",
+              "args": [
+                {
+                  "subject": {
+                    "entity": "form",
+                    "property": "result.scoring"
+                  }
+                },
+                {
+                  "const": {
+                    "value": 5,
+                    "type": "number"
+                  }
+                }
+              ],
+              "output": {
+                "type": "boolean"
+              }
+            }
+          },
+          "then": {
+            "const": {
+              "value": "Depresión mínima",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "when": {
+            "expression": {
+              "type": "comparison",
+              "operator": "<",
+              "args": [
+                {
+                  "subject": {
+                    "entity": "form",
+                    "property": "result.scoring"
+                  }
+                },
+                {
+                  "const": {
+                    "value": 10,
+                    "type": "number"
+                  }
+                }
+              ],
+              "output": {
+                "type": "boolean"
+              }
+            }
+          },
+          "then": {
+            "const": {
+              "value": "Depresión leve",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "when": {
+            "expression": {
+              "type": "comparison",
+              "operator": "<",
+              "args": [
+                {
+                  "subject": {
+                    "entity": "form",
+                    "property": "result.scoring"
+                  }
+                },
+                {
+                  "const": {
+                    "value": 15,
+                    "type": "number"
+                  }
+                }
+              ],
+              "output": {
+                "type": "boolean"
+              }
+            }
+          },
+          "then": {
+            "const": {
+              "value": "Depresión moderada",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "when": {
+            "expression": {
+              "type": "comparison",
+              "operator": "<",
+              "args": [
+                {
+                  "subject": {
+                    "entity": "form",
+                    "property": "result.scoring"
+                  }
+                },
+                {
+                  "const": {
+                    "value": 20,
+                    "type": "number"
+                  }
+                }
+              ],
+              "output": {
+                "type": "boolean"
+              }
+            }
+          },
+          "then": {
+            "const": {
+              "value": "Depresión moderadamente severa",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "when": {
+            "expression": {
+              "type": "comparison",
+              "operator": "<=",
+              "args": [
+                {
+                  "subject": {
+                    "entity": "form",
+                    "property": "result.scoring"
+                  }
+                },
+                {
+                  "const": {
+                    "value": 27,
+                    "type": "number"
+                  }
+                }
+              ],
+              "output": {
+                "type": "boolean"
+              }
+            }
+          },
+          "then": {
+            "const": {
+              "value": "Depresión severa",
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "default": {
+        "const": {
+          "value": "Puntuación fuera de rango",
+          "type": "string"
+        }
+      },
+      "output": {
+        "type": "string"
+      },
+      "args": []
+    }
+  },
+  "list_categories": [
+    {
+      "key": "wellbeing_mental",
+      "name": "Bienestar mental"
+    }
+  ],
+  "list_evaluation_topics": [
+    {
+      "name": "Depresión"
+    }
+  ],
+  "list_cie11_codes": [
+    {
+      "code": "6A7"
+    }
+  ],
+  "list_population": [],
+  "estimated_duration": {
+    "name": "≤10 minutos",
+    "max": 10,
+    "unit": "MINUTE"
+  },
+  "list_age_groups": [
+    {
+      "name": "A partir de los 18 años",
+      "min": 18,
+      "unit": "YEAR"
+    }
+  ],
+  "target_sex": null,
+  "list_references": [
+    {
+      "name": "Validation of a Brief Depression Severity Measure",
+      "url_reference": "https://pubmed.ncbi.nlm.nih.gov/11485122/",
+      "type_media": "LINK"
+    }
+  ],
+  "list_questions": [
+    {
+      "id": 1,
+      "key": "phq9.1",
+      "type": "SINGLE_CHOICE",
+      "text": "Poco interés o placer en hacer cosas",
+      "order": 1,
+      "list_options": [
+        {
+          "id": 1,
+          "text": "Ningún día",
+          "value": 0,
+          "order": 1
+        },
+        {
+          "id": 2,
+          "text": "Varios días",
+          "value": 1,
+          "order": 2
+        },
+        {
+          "id": 3,
+          "text": "Más de la mitad de los días",
+          "value": 2,
+          "order": 3
+        },
+        {
+          "id": 4,
+          "text": "Casi todos los días",
+          "value": 3,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "key": "phq9.2",
+      "type": "SINGLE_CHOICE",
+      "text": "Se ha sentido decaído(a), deprimido(a) o sin esperanzas",
+      "order": 2,
+      "list_options": [
+        {
+          "id": 5,
+          "text": "Ningún día",
+          "value": 0,
+          "order": 1
+        },
+        {
+          "id": 6,
+          "text": "Varios días",
+          "value": 1,
+          "order": 2
+        },
+        {
+          "id": 7,
+          "text": "Más de la mitad de los días",
+          "value": 2,
+          "order": 3
+        },
+        {
+          "id": 8,
+          "text": "Casi todos los días",
+          "value": 3,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "key": "phq9.3",
+      "type": "SINGLE_CHOICE",
+      "text": "Ha tenido dificultad para quedarse o permanecer dormido(a), o ha dormido demasiado",
+      "order": 3,
+      "list_options": [
+        {
+          "id": 9,
+          "text": "Ningún día",
+          "value": 0,
+          "order": 1
+        },
+        {
+          "id": 10,
+          "text": "Varios días",
+          "value": 1,
+          "order": 2
+        },
+        {
+          "id": 11,
+          "text": "Más de la mitad de los días",
+          "value": 2,
+          "order": 3
+        },
+        {
+          "id": 12,
+          "text": "Casi todos los días",
+          "value": 3,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "key": "phq9.4",
+      "type": "SINGLE_CHOICE",
+      "text": "Se ha sentido cansado(a) o con poca energía",
+      "order": 4,
+      "list_options": [
+        {
+          "id": 13,
+          "text": "Ningún día",
+          "value": 0,
+          "order": 1
+        },
+        {
+          "id": 14,
+          "text": "Varios días",
+          "value": 1,
+          "order": 2
+        },
+        {
+          "id": 15,
+          "text": "Más de la mitad de los días",
+          "value": 2,
+          "order": 3
+        },
+        {
+          "id": 16,
+          "text": "Casi todos los días",
+          "value": 3,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "key": "phq9.5",
+      "type": "SINGLE_CHOICE",
+      "text": "Sin apetito o ha comido en exceso",
+      "order": 5,
+      "list_options": [
+        {
+          "id": 17,
+          "text": "Ningún día",
+          "value": 0,
+          "order": 1
+        },
+        {
+          "id": 18,
+          "text": "Varios días",
+          "value": 1,
+          "order": 2
+        },
+        {
+          "id": 19,
+          "text": "Más de la mitad de los días",
+          "value": 2,
+          "order": 3
+        },
+        {
+          "id": 20,
+          "text": "Casi todos los días",
+          "value": 3,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "key": "phq9.6",
+      "type": "SINGLE_CHOICE",
+      "text": "Se ha sentido mal con usted mismo(a) – o que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia",
+      "order": 6,
+      "list_options": [
+        {
+          "id": 21,
+          "text": "Ningún día",
+          "value": 0,
+          "order": 1
+        },
+        {
+          "id": 22,
+          "text": "Varios días",
+          "value": 1,
+          "order": 2
+        },
+        {
+          "id": 23,
+          "text": "Más de la mitad de los días",
+          "value": 2,
+          "order": 3
+        },
+        {
+          "id": 24,
+          "text": "Casi todos los días",
+          "value": 3,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "key": "phq9.7",
+      "type": "SINGLE_CHOICE",
+      "text": "Ha tenido dificultad para concentrarse en ciertas actividades, tales como leer el periódico o ver la televisión",
+      "order": 7,
+      "list_options": [
+        {
+          "id": 25,
+          "text": "Ningún día",
+          "value": 0,
+          "order": 1
+        },
+        {
+          "id": 26,
+          "text": "Varios días",
+          "value": 1,
+          "order": 2
+        },
+        {
+          "id": 27,
+          "text": "Más de la mitad de los días",
+          "value": 2,
+          "order": 3
+        },
+        {
+          "id": 28,
+          "text": "Casi todos los días",
+          "value": 3,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "key": "phq9.8",
+      "type": "SINGLE_CHOICE",
+      "text": "¿Se ha movido o hablado tan lento que otras personas podrían haberlo notado? o lo contrario – muy inquieto(a) o agitado(a) que ha estado moviéndose mucho más de lo normal",
+      "order": 8,
+      "list_options": [
+        {
+          "id": 29,
+          "text": "Ningún día",
+          "value": 0,
+          "order": 1
+        },
+        {
+          "id": 30,
+          "text": "Varios días",
+          "value": 1,
+          "order": 2
+        },
+        {
+          "id": 31,
+          "text": "Más de la mitad de los días",
+          "value": 2,
+          "order": 3
+        },
+        {
+          "id": 32,
+          "text": "Casi todos los días",
+          "value": 3,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "key": "phq9.9",
+      "type": "SINGLE_CHOICE",
+      "text": "Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera",
+      "order": 9,
+      "list_options": [
+        {
+          "id": 33,
+          "text": "Ningún día",
+          "value": 0,
+          "order": 1
+        },
+        {
+          "id": 34,
+          "text": "Varios días",
+          "value": 1,
+          "order": 2
+        },
+        {
+          "id": 35,
+          "text": "Más de la mitad de los días",
+          "value": 2,
+          "order": 3
+        },
+        {
+          "id": 36,
+          "text": "Casi todos los días",
+          "value": 3,
+          "order": 4
+        }
+      ]
+    }
+  ]
+}

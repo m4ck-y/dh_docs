@@ -1,0 +1,142 @@
+{
+  "id": "form-ipaq",
+  "key": "ipaq",
+  "kind": "INSTRUMENT",
+  "name": "Cuestionario Internacional de Actividad Física",
+  "description": "El Cuestionario Internacional de Actividad Física (IPAQ), en su versión corta, provee un instrumento común para obtener datos internacionalmente comparables relacionados con actividad física relacionada con salud. Puede aplicarse por teléfono o de forma autoadministrada.",
+  "instructions": "Definiciones: actividad moderada = incremento moderado en respiración, frecuencia cardíaca y sudoración ≥10 min; actividad vigorosa = incremento mayor, ≥10 min.",
+  "verified": false,
+  "condition": null,
+  "expression": {
+    "definitions": {
+      "min_vig": { "type": "time", "operator": "minutes",
+        "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 2 } } } ],
+        "output": { "type": "number" } },
+      "min_mod": { "type": "time", "operator": "minutes",
+        "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 4 } } } ],
+        "output": { "type": "number" } },
+      "min_cam": { "type": "time", "operator": "minutes",
+        "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 6 } } } ],
+        "output": { "type": "number" } },
+      "total_vig": { "type": "math", "operator": "*",
+        "args": [ { "const": { "value": 8, "type": "number" } }, { "ref": "min_vig" },
+                  { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } } ],
+        "output": { "type": "number" } },
+      "total_mod": { "type": "math", "operator": "*",
+        "args": [ { "const": { "value": 4, "type": "number" } }, { "ref": "min_mod" },
+                  { "subject": { "entity": "question", "property": "value", "selector": { "id": 3 } } } ],
+        "output": { "type": "number" } },
+      "total_cam": { "type": "math", "operator": "*",
+        "args": [ { "const": { "value": 3.3, "type": "number" } }, { "ref": "min_cam" },
+                  { "subject": { "entity": "question", "property": "value", "selector": { "id": 5 } } } ],
+        "output": { "type": "number" } },
+      "total_mets": { "type": "math", "operator": "+",
+        "args": [ { "ref": "total_vig" }, { "ref": "total_mod" }, { "ref": "total_cam" } ],
+        "output": { "type": "number" } },
+      "days_total": { "type": "math", "operator": "+",
+        "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
+                  { "subject": { "entity": "question", "property": "value", "selector": { "id": 3 } } },
+                  { "subject": { "entity": "question", "property": "value", "selector": { "id": 5 } } } ],
+        "output": { "type": "number" } },
+      "days_mod_cam": { "type": "math", "operator": "+",
+        "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 3 } } },
+                  { "subject": { "entity": "question", "property": "value", "selector": { "id": 5 } } } ],
+        "output": { "type": "number" } },
+      "min_mod_cam": { "type": "math", "operator": "+",
+        "args": [ { "ref": "min_mod" }, { "ref": "min_cam" } ],
+        "output": { "type": "number" } },
+      "es_alto": { "type": "logic", "operator": "or", "args": [
+        { "expression": { "type": "logic", "operator": "and", "args": [
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "ref": "days_total" }, { "const": { "value": 7, "type": "number" } } ],
+            "output": { "type": "boolean" } } },
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "ref": "total_mets" }, { "const": { "value": 3000, "type": "number" } } ],
+            "output": { "type": "boolean" } } }
+        ], "output": { "type": "boolean" } } },
+        { "expression": { "type": "logic", "operator": "and", "args": [
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
+                      { "const": { "value": 3, "type": "number" } } ],
+            "output": { "type": "boolean" } } },
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "ref": "total_vig" }, { "const": { "value": 1500, "type": "number" } } ],
+            "output": { "type": "boolean" } } }
+        ], "output": { "type": "boolean" } } }
+      ], "output": { "type": "boolean" } },
+      "es_moderado": { "type": "logic", "operator": "or", "args": [
+        { "expression": { "type": "logic", "operator": "and", "args": [
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "id": 1 } } },
+                      { "const": { "value": 3, "type": "number" } } ],
+            "output": { "type": "boolean" } } },
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "ref": "min_vig" }, { "const": { "value": 20, "type": "number" } } ],
+            "output": { "type": "boolean" } } }
+        ], "output": { "type": "boolean" } } },
+        { "expression": { "type": "logic", "operator": "and", "args": [
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "ref": "days_mod_cam" }, { "const": { "value": 5, "type": "number" } } ],
+            "output": { "type": "boolean" } } },
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "ref": "min_mod_cam" }, { "const": { "value": 30, "type": "number" } } ],
+            "output": { "type": "boolean" } } }
+        ], "output": { "type": "boolean" } } },
+        { "expression": { "type": "logic", "operator": "and", "args": [
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "ref": "days_total" }, { "const": { "value": 5, "type": "number" } } ],
+            "output": { "type": "boolean" } } },
+          { "expression": { "type": "comparison", "operator": ">=",
+            "args": [ { "ref": "total_mets" }, { "const": { "value": 600, "type": "number" } } ],
+            "output": { "type": "boolean" } } }
+        ], "output": { "type": "boolean" } } }
+      ], "output": { "type": "boolean" } }
+    },
+    "scoring": { "ref": "total_mets" },
+    "evaluation": {
+      "type": "case",
+      "operator": "when",
+      "cases": [
+        { "when": { "ref": "es_alto" },     "then": { "const": { "value": "Alto",     "type": "string" } } },
+        { "when": { "ref": "es_moderado" }, "then": { "const": { "value": "Moderado", "type": "string" } } }
+      ],
+      "default": { "const": { "value": "Bajo", "type": "string" } },
+      "output": { "type": "string" },
+      "args": []
+    }
+  },
+  "list_categories": [ { "key": "wellbeing_physical", "name": "Bienestar físico" } ],
+  "list_evaluation_topics": [ { "name": "Actividad física" } ],
+  "list_cie11_codes": [ { "code": "QE20" } ],
+  "list_population": [],
+  "estimated_duration": { "name": "7 minutos", "max": 7, "unit": "MINUTE" },
+  "list_age_groups": [ { "name": "18 - 65", "min": 18, "max": 65, "unit": "YEAR" } ],
+  "target_sex": null,
+  "list_references": [
+    { "name": "El Cuestionario Internacional de Actividad Física (IPAQ)", "url_reference": "https://www.elsevier.es/es-revista-revista-iberoamericana-fisioterapia-kinesiologia-176-articulo-el-cuestionario-internacional-actividad-fisica--13107139", "type_media": "LINK" },
+    { "name": "IPAQ scoring protocol", "url_reference": "https://r2d2.kumc.edu/ADC/Protocols/IPAQ/IPAQ_scoring_protocol.pdf", "type_media": "FILE" }
+  ],
+  "list_questions": [
+    { "id": 1, "key": "ipaq.dias_vigorosa", "type": "RANGE", "order": 1,
+      "text": "Durante los últimos 7 días, ¿cuántos días realizó usted actividades físicas vigorosas como levantar objetos pesados, excavar, aeróbicos o pedalear rápido en bicicleta?",
+      "config": { "required": true, "min": 0, "max": 7, "step": 1, "integer": true } },
+    { "id": 2, "key": "ipaq.tiempo_vigorosa", "type": "TIMER", "order": 2,
+      "text": "¿Cuánto tiempo en total usualmente le tomó realizar actividades físicas vigorosas en uno de esos días que las realizó?",
+      "config": { "required": true } },
+    { "id": 3, "key": "ipaq.dias_moderada", "type": "RANGE", "order": 3,
+      "text": "Durante los últimos 7 días, ¿cuántos días hizo usted actividades físicas moderadas tal como cargar objetos livianos, pedalear en bicicleta a paso regular, o jugar dobles de tenis? No incluya caminatas.",
+      "config": { "required": true, "min": 0, "max": 7, "step": 1, "integer": true } },
+    { "id": 4, "key": "ipaq.tiempo_moderada", "type": "TIMER", "order": 4,
+      "text": "Usualmente, ¿cuánto tiempo dedica usted en uno de esos días haciendo actividades físicas moderadas?",
+      "config": { "required": true } },
+    { "id": 5, "key": "ipaq.dias_caminata", "type": "RANGE", "order": 5,
+      "text": "Durante los últimos 7 días, ¿cuántos días caminó usted por al menos 10 minutos continuos?",
+      "config": { "required": true, "min": 0, "max": 7, "step": 1, "integer": true } },
+    { "id": 6, "key": "ipaq.tiempo_caminata", "type": "TIMER", "order": 6,
+      "text": "Usualmente, ¿cuánto tiempo gastó usted en uno de esos días caminando?",
+      "config": { "required": true } },
+    { "id": 7, "key": "ipaq.tiempo_sentado", "type": "TIMER", "order": 7,
+      "text": "Durante los últimos 7 días, ¿cuánto tiempo permaneció sentado(a) en un día en la semana?",
+      "config": { "required": true } }
+  ]
+}

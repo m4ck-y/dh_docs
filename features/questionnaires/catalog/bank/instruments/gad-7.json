@@ -1,0 +1,75 @@
+{
+  "id": "form-gad-7",
+  "key": "gad-7",
+  "kind": "INSTRUMENT",
+  "name": "Escala para el trastorno de ansiedad generalizada",
+  "description": "Instrumento creado para ser utilizado como tamizaje en el trastorno de ansiedad generalizada.",
+  "instructions": "En las últimas dos semanas usted sintió...",
+  "verified": false,
+  "condition": null,
+  "expression": {
+    "scoring": {
+      "type": "aggregate",
+      "operator": "sum",
+      "args": [ { "subject": { "entity": "question", "property": "value", "selector": { "all": true } } } ],
+      "output": { "type": "number" }
+    },
+    "evaluation": {
+      "type": "case",
+      "operator": "when",
+      "cases": [
+        { "when": { "expression": { "type": "comparison", "operator": "<=",
+                    "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                              { "const": { "value": 4, "type": "number" } } ],
+                    "output": { "type": "boolean" } } },
+          "then": { "const": { "value": "Ansiedad mínima", "type": "string" } } },
+        { "when": { "expression": { "type": "comparison", "operator": "<=",
+                    "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                              { "const": { "value": 9, "type": "number" } } ],
+                    "output": { "type": "boolean" } } },
+          "then": { "const": { "value": "Ansiedad leve", "type": "string" } } },
+        { "when": { "expression": { "type": "comparison", "operator": "<=",
+                    "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                              { "const": { "value": 14, "type": "number" } } ],
+                    "output": { "type": "boolean" } } },
+          "then": { "const": { "value": "Ansiedad moderada", "type": "string" } } }
+      ],
+      "default": { "const": { "value": "Ansiedad severa", "type": "string" } },
+      "output": { "type": "string" },
+      "args": []
+    }
+  },
+  "list_categories": [ { "key": "wellbeing_mental", "name": "Bienestar mental" } ],
+  "list_evaluation_topics": [ { "name": "Ansiedad" } ],
+  "list_cie11_codes": [ { "code": "6B0" } ],
+  "list_population": [],
+  "estimated_duration": { "name": "≤10 minutos", "max": 10, "unit": "MINUTE" },
+  "list_age_groups": [ { "name": "A partir de los 18 años", "min": 18, "unit": "YEAR" } ],
+  "target_sex": null,
+  "list_references": [
+    { "name": "GAD-7 — Generalized Anxiety Disorder", "url_reference": "https://pubmed.ncbi.nlm.nih.gov/20089179/", "type_media": "LINK" }
+  ],
+  "list_questions": [
+    { "id": 1, "key": "gad7.1", "type": "SINGLE_CHOICE", "order": 1,
+      "text": "Se ha sentido nervioso(a), ansioso(a) o como los nervios de punta",
+      "list_options": [ { "id": 1, "text": "Ningún día", "value": 0, "order": 1 }, { "id": 2, "text": "Varios días", "value": 1, "order": 2 }, { "id": 3, "text": "Más de la mitad de los días", "value": 2, "order": 3 }, { "id": 4, "text": "Casi todos los días", "value": 3, "order": 4 } ] },
+    { "id": 2, "key": "gad7.2", "type": "SINGLE_CHOICE", "order": 2,
+      "text": "No ha sido capaz de parar o controlar su preocupación",
+      "list_options": [ { "id": 5, "text": "Ningún día", "value": 0, "order": 1 }, { "id": 6, "text": "Varios días", "value": 1, "order": 2 }, { "id": 7, "text": "Más de la mitad de los días", "value": 2, "order": 3 }, { "id": 8, "text": "Casi todos los días", "value": 3, "order": 4 } ] },
+    { "id": 3, "key": "gad7.3", "type": "SINGLE_CHOICE", "order": 3,
+      "text": "Se ha preocupado demasiado por motivos diferentes",
+      "list_options": [ { "id": 9, "text": "Ningún día", "value": 0, "order": 1 }, { "id": 10, "text": "Varios días", "value": 1, "order": 2 }, { "id": 11, "text": "Más de la mitad de los días", "value": 2, "order": 3 }, { "id": 12, "text": "Casi todos los días", "value": 3, "order": 4 } ] },
+    { "id": 4, "key": "gad7.4", "type": "SINGLE_CHOICE", "order": 4,
+      "text": "Ha tenido dificultades para relajarse",
+      "list_options": [ { "id": 13, "text": "Ningún día", "value": 0, "order": 1 }, { "id": 14, "text": "Varios días", "value": 1, "order": 2 }, { "id": 15, "text": "Más de la mitad de los días", "value": 2, "order": 3 }, { "id": 16, "text": "Casi todos los días", "value": 3, "order": 4 } ] },
+    { "id": 5, "key": "gad7.5", "type": "SINGLE_CHOICE", "order": 5,
+      "text": "Se ha sentido tan inquieto(a) que no ha podido quedarse quieto(a)",
+      "list_options": [ { "id": 17, "text": "Ningún día", "value": 0, "order": 1 }, { "id": 18, "text": "Varios días", "value": 1, "order": 2 }, { "id": 19, "text": "Más de la mitad de los días", "value": 2, "order": 3 }, { "id": 20, "text": "Casi todos los días", "value": 3, "order": 4 } ] },
+    { "id": 6, "key": "gad7.6", "type": "SINGLE_CHOICE", "order": 6,
+      "text": "Se ha molestado o irritado fácilmente",
+      "list_options": [ { "id": 21, "text": "Ningún día", "value": 0, "order": 1 }, { "id": 22, "text": "Varios días", "value": 1, "order": 2 }, { "id": 23, "text": "Más de la mitad de los días", "value": 2, "order": 3 }, { "id": 24, "text": "Casi todos los días", "value": 3, "order": 4 } ] },
+    { "id": 7, "key": "gad7.7", "type": "SINGLE_CHOICE", "order": 7,
+      "text": "Ha tenido miedo de que algo terrible fuera a pasar",
+      "list_options": [ { "id": 25, "text": "Ningún día", "value": 0, "order": 1 }, { "id": 26, "text": "Varios días", "value": 1, "order": 2 }, { "id": 27, "text": "Más de la mitad de los días", "value": 2, "order": 3 }, { "id": 28, "text": "Casi todos los días", "value": 3, "order": 4 } ] }
+  ]
+}

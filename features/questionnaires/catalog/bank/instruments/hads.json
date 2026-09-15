@@ -1,0 +1,232 @@
+{
+  "id": "form-hads",
+  "key": "hads",
+  "kind": "INSTRUMENT",
+  "name": "Escala de Ansiedad y Depresión Hospitalaria",
+  "description": "Instrumento diseñado para detectar trastornos de ansiedad y depresión en servicios hospitalarios no psiquiátricos en pacientes que no estuvieran contaminados por la sintomatología de una enfermedad física.",
+  "instructions": "Lea cada pregunta y seleccione la respuesta que usted considere que coincide con su propio estado emocional en la última semana. No es necesario que piense mucho tiempo cada respuesta; en este cuestionario las respuestas espontáneas tienen más valor que las que se piensan mucho.",
+  "verified": false,
+  "condition": null,
+  "expression": {
+    "subscales": [
+      {
+        "id": "A",
+        "name": "Ansiedad",
+        "items": [1, 3, 5, 7, 9, 11, 13],
+        "max": 21,
+        "scoring": {
+          "type": "aggregate",
+          "operator": "sum",
+          "args": [ { "subject": { "entity": "question", "property": "value" } } ],
+          "output": { "type": "number" }
+        },
+        "evaluation": {
+          "type": "case",
+          "operator": "when",
+          "cases": [
+            { "when": { "expression": { "type": "comparison", "operator": "<=",
+                        "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                                  { "const": { "value": 7, "type": "number" } } ],
+                        "output": { "type": "boolean" } } },
+              "then": { "const": { "value": "Normalidad", "type": "string" } } },
+            { "when": { "expression": { "type": "comparison", "operator": "<=",
+                        "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                                  { "const": { "value": 10, "type": "number" } } ],
+                        "output": { "type": "boolean" } } },
+              "then": { "const": { "value": "Probable ansiedad", "type": "string" } } }
+          ],
+          "default": { "const": { "value": "Caso de ansiedad", "type": "string" } },
+          "output": { "type": "string" },
+          "args": []
+        }
+      },
+      {
+        "id": "D",
+        "name": "Depresión",
+        "items": [2, 4, 6, 8, 10, 12, 14],
+        "max": 21,
+        "scoring": {
+          "type": "aggregate",
+          "operator": "sum",
+          "args": [ { "subject": { "entity": "question", "property": "value" } } ],
+          "output": { "type": "number" }
+        },
+        "evaluation": {
+          "type": "case",
+          "operator": "when",
+          "cases": [
+            { "when": { "expression": { "type": "comparison", "operator": "<=",
+                        "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                                  { "const": { "value": 7, "type": "number" } } ],
+                        "output": { "type": "boolean" } } },
+              "then": { "const": { "value": "Normalidad", "type": "string" } } },
+            { "when": { "expression": { "type": "comparison", "operator": "<=",
+                        "args": [ { "subject": { "entity": "form", "property": "result.scoring" } },
+                                  { "const": { "value": 10, "type": "number" } } ],
+                        "output": { "type": "boolean" } } },
+              "then": { "const": { "value": "Probable depresión", "type": "string" } } }
+          ],
+          "default": { "const": { "value": "Caso de depresión", "type": "string" } },
+          "output": { "type": "string" },
+          "args": []
+        }
+      }
+    ]
+  },
+  "list_categories": [ { "key": "wellbeing_mental", "name": "Bienestar mental" } ],
+  "list_evaluation_topics": [ { "name": "Ansiedad y depresión en pacientes con visitas constantes al hospital" } ],
+  "list_cie11_codes": [ { "code": "6A7" }, { "code": "6B0" } ],
+  "list_population": [ { "name": "Población con tratamiento hospitalario" } ],
+  "estimated_duration": { "name": "≤15 minutos", "max": 15, "unit": "MINUTE" },
+  "list_age_groups": [ { "name": "≥14 años", "min": 14, "unit": "YEAR" } ],
+  "target_sex": null,
+  "list_references": [
+    {
+      "name": "Escala de Ansiedad y Depresión Hospitalaria (HADS)",
+      "url_reference": "https://www.redalyc.org/pdf/1339/133930525004.pdf",
+      "type_media": "LINK"
+    }
+  ],
+  "list_questions": [
+    {
+      "id": 1, "key": "A.1", "type": "SINGLE_CHOICE", "order": 1,
+      "text": "Me siento tenso/a o nervioso/a",
+      "list_options": [
+        { "id": 1, "text": "Nunca", "value": 0, "order": 1 },
+        { "id": 2, "text": "De vez en cuando", "value": 1, "order": 2 },
+        { "id": 3, "text": "Gran parte del día", "value": 2, "order": 3 },
+        { "id": 4, "text": "Casi todo el día", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 2, "key": "D.1", "type": "SINGLE_CHOICE", "order": 2,
+      "text": "Sigo disfrutando de las cosas como siempre",
+      "list_options": [
+        { "id": 5, "text": "Ciertamente, igual que antes", "value": 0, "order": 1 },
+        { "id": 6, "text": "No tanto como antes", "value": 1, "order": 2 },
+        { "id": 7, "text": "Solamente un poco", "value": 2, "order": 3 },
+        { "id": 8, "text": "Ya no disfruto con nada", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 3, "key": "A.2", "type": "SINGLE_CHOICE", "order": 3,
+      "text": "Siento una especie de temor como si algo malo fuera a suceder",
+      "list_options": [
+        { "id": 9, "text": "No siento nada de eso", "value": 0, "order": 1 },
+        { "id": 10, "text": "Sí, pero no me preocupa", "value": 1, "order": 2 },
+        { "id": 11, "text": "Sí, pero no muy intenso", "value": 2, "order": 3 },
+        { "id": 12, "text": "Sí, y muy intenso", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 4, "key": "D.2", "type": "SINGLE_CHOICE", "order": 4,
+      "text": "Soy capaz de reírme y ver el lado gracioso de las cosas",
+      "list_options": [
+        { "id": 13, "text": "Igual que siempre", "value": 0, "order": 1 },
+        { "id": 14, "text": "Actualmente, algo menos", "value": 1, "order": 2 },
+        { "id": 15, "text": "Actualmente, mucho menos", "value": 2, "order": 3 },
+        { "id": 16, "text": "Actualmente, en absoluto", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 5, "key": "A.3", "type": "SINGLE_CHOICE", "order": 5,
+      "text": "Tengo la cabeza llena de preocupaciones",
+      "list_options": [
+        { "id": 17, "text": "Nunca", "value": 0, "order": 1 },
+        { "id": 18, "text": "De vez en cuando", "value": 1, "order": 2 },
+        { "id": 19, "text": "Gran parte del día", "value": 2, "order": 3 },
+        { "id": 20, "text": "Casi todo el día", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 6, "key": "D.3", "type": "SINGLE_CHOICE", "order": 6,
+      "text": "Me siento alegre",
+      "list_options": [
+        { "id": 21, "text": "Gran parte del día", "value": 0, "order": 1 },
+        { "id": 22, "text": "En algunas ocasiones", "value": 1, "order": 2 },
+        { "id": 23, "text": "Muy pocas veces", "value": 2, "order": 3 },
+        { "id": 24, "text": "Nunca", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 7, "key": "A.4", "type": "SINGLE_CHOICE", "order": 7,
+      "text": "Soy capaz de permanecer sentado/a tranquilo/a y relajado/a",
+      "list_options": [
+        { "id": 25, "text": "Siempre", "value": 0, "order": 1 },
+        { "id": 26, "text": "A menudo", "value": 1, "order": 2 },
+        { "id": 27, "text": "Raras veces", "value": 2, "order": 3 },
+        { "id": 28, "text": "Nunca", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 8, "key": "D.4", "type": "SINGLE_CHOICE", "order": 8,
+      "text": "Me siento lento/a y torpe",
+      "list_options": [
+        { "id": 29, "text": "Nunca", "value": 0, "order": 1 },
+        { "id": 30, "text": "A veces", "value": 1, "order": 2 },
+        { "id": 31, "text": "A menudo", "value": 2, "order": 3 },
+        { "id": 32, "text": "Gran parte del día", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 9, "key": "A.5", "type": "SINGLE_CHOICE", "order": 9,
+      "text": "Experimento una desagradable sensación de «nervios y hormigueos» en el estómago",
+      "list_options": [
+        { "id": 33, "text": "Nunca", "value": 0, "order": 1 },
+        { "id": 34, "text": "Sólo en algunas ocasiones", "value": 1, "order": 2 },
+        { "id": 35, "text": "A menudo", "value": 2, "order": 3 },
+        { "id": 36, "text": "Muy a menudo", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 10, "key": "D.5", "type": "SINGLE_CHOICE", "order": 10,
+      "text": "He perdido el interés por mi aspecto personal",
+      "list_options": [
+        { "id": 37, "text": "Me cuido como siempre lo he hecho", "value": 0, "order": 1 },
+        { "id": 38, "text": "Es posible que no me cuide como debiera", "value": 1, "order": 2 },
+        { "id": 39, "text": "No me cuido como debería hacerlo", "value": 2, "order": 3 },
+        { "id": 40, "text": "Completamente", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 11, "key": "A.6", "type": "SINGLE_CHOICE", "order": 11,
+      "text": "Me siento inquieto/a como si no pudiera parar de moverme",
+      "list_options": [
+        { "id": 41, "text": "En absoluto", "value": 0, "order": 1 },
+        { "id": 42, "text": "No mucho", "value": 1, "order": 2 },
+        { "id": 43, "text": "Bastante", "value": 2, "order": 3 },
+        { "id": 44, "text": "Realmente mucho", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 12, "key": "D.6", "type": "SINGLE_CHOICE", "order": 12,
+      "text": "Espero las cosas con ilusión",
+      "list_options": [
+        { "id": 45, "text": "Como siempre", "value": 0, "order": 1 },
+        { "id": 46, "text": "Algo menos que antes", "value": 1, "order": 2 },
+        { "id": 47, "text": "Mucho menos que antes", "value": 2, "order": 3 },
+        { "id": 48, "text": "En absoluto", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 13, "key": "A.7", "type": "SINGLE_CHOICE", "order": 13,
+      "text": "Experimento de repente sensaciones de gran angustia o temor",
+      "list_options": [
+        { "id": 49, "text": "Nunca", "value": 0, "order": 1 },
+        { "id": 50, "text": "Raramente", "value": 1, "order": 2 },
+        { "id": 51, "text": "Con cierta frecuencia", "value": 2, "order": 3 },
+        { "id": 52, "text": "Muy a menudo", "value": 3, "order": 4 }
+      ]
+    },
+    {
+      "id": 14, "key": "D.7", "type": "SINGLE_CHOICE", "order": 14,
+      "text": "Soy capaz de disfrutar con un buen libro o con un buen programa de radio o televisión",
+      "list_options": [
+        { "id": 53, "text": "A menudo", "value": 0, "order": 1 },
+        { "id": 54, "text": "Algunas veces", "value": 1, "order": 2 },
+        { "id": 55, "text": "Pocas veces", "value": 2, "order": 3 },
+        { "id": 56, "text": "Casi nunca", "value": 3, "order": 4 }
+      ]
+    }
+  ]
+}

@@ -28,12 +28,28 @@ nivel arriba; este directorio solo contiene **datos**.
 - **Enums sin bank**: los campos cuyo valor viene de un **enum del DDL**
   (`EUnit`, `EQuestionType`, `EAssignmentStatus`, `EBiologicalSex`, `EUrlType`)
   **no** tienen archivo de vocabulario; su fuente es `schema.sql`.
+- **`question.text` nullable**: hay instrumentos cuyos ítems **no tienen
+  enunciado** (ej. **CDI**, formato "elige la frase"). En ese caso `text` va en
+  `null`, el contexto en `form.instructions`, y se muestran **solo las opciones**.
 - **`population` = grupo objetivo NO etario** (contexto/condición clínica). Las
   etiquetas que solo describen edad **no** van aquí: se expresan en
   `list_age_groups`. Excluidas por eso: `Adultos` (IPAQ, ya `18–65`) y
   `Pacientes geriátricos` (GDS, ya `>60`).
 - **Fuente humana** de cada instrumento: `docs/diagrams/<dominio>/flows/<key>.mmd`
   (+ `reviews/<key>-review.md`).
+
+## Inventario
+
+| key | `kind` | ítems | categoría(s) | expresión |
+|---|---|---|---|---|
+| `phq-9` | INSTRUMENT | 9 | bienestar mental | scoring + evaluation |
+| `hads` | INSTRUMENT | 14 | bienestar mental | subscales (A/D) |
+| `gds` | INSTRUMENT | 15 | bienestar mental | scoring + evaluation |
+| `cdi` | INSTRUMENT | 27 | bienestar mental | scoring + evaluation (`text: null`) |
+| `gad-7` | INSTRUMENT | 7 | bienestar mental | scoring + evaluation |
+| `pss` | INSTRUMENT | 14 | bienestar mental | scoring (sin evaluación) |
+| `crafft` | INSTRUMENT | 9 | bienestar físico + social | scoring + evaluation (`list_sections` A/B + `condition`) |
+| `ipaq` | INSTRUMENT | 7 | bienestar físico | scoring (METs) + evaluation (Alto/Moderado/Bajo) |
 
 ## Convención de un instrumento
 
@@ -78,10 +94,12 @@ nivel arriba; este directorio solo contiene **datos**.
 ## Derivación
 
 ```
-docs/diagrams/<dominio>/flows/<key>.mmd      (drawio -> mmd)
-        + reviews/<key>-review.md            (tabla Puntuacion | Interpretacion)
-        -> bank/instruments|clinical_history/<key>.json   (definicion)
-        -> ../../expressions/                (scoring / evaluation)
+docs/diagrams/catalog/instruments.csv    (metadata: nombre, descripción, edad, tiempo, CIE-11, LS, población)
+        + docs/diagrams/<dominio>/flows/<key>.mmd   (preguntas y opciones; drawio -> mmd)
+        + reviews/<key>-review.md                    (tabla Puntuacion | Interpretacion)
+        -> bank/instruments|clinical_history/<key>.json   (definicion canonica)
+        -> bank/instruments|clinical_history/<key>.md     (lectura para usuario final)
+        -> ../../expressions/                        (scoring / evaluation)
 ```
 
 ## Pendientes
@@ -90,3 +108,28 @@ docs/diagrams/<dominio>/flows/<key>.mmd      (drawio -> mmd)
 - Completar `categories.json` con el vocabulario (columna `LS` del
   `docs/diagrams/catalog/instruments.csv`).
 - Definir el/los formulario(s) de historia clínica (`clinical_history/`).
+
+## Decisiones y dudas
+
+**Decisiones de llenado del banco** (registradas en
+[`TASK-016`](../../../../tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md)):
+
+- **C12** `description` (técnica) vs `instructions` (llenado); amigable solo en `.md`.
+- **C13** `list_population` (N:N).
+- **C14** prefijo `list_` en colecciones.
+- **C16** rangos `{name, min, max, unit}` + `EUnit`.
+- **C17** `question.text` nullable (ítems sin enunciado, ej. CDI).
+
+**Dudas abiertas** (a resolver en el futuro):
+
+- **`question.config`** ¿también lleva `unit`? (C16).
+- **`target_*`** (`target_sex`, `list_age_groups`, `list_population`) ¿deberían ir
+  dentro de `condition`? (C15).
+- **IPAQ**: el drawio **no** define categorías; Alto/Moderado/Bajo vienen del AST
+  estándar (nota en `ipaq.md`). Además, `TIMER` sin límites.
+- **CRAFFT**: el nombre del CSV es "CARLOS (CRAFFT)"; los ítems **F** (truncado) y
+  **T** (duplicado) venían rotos en el drawio (corregidos desde el legacy; nota en
+  `crafft.md`).
+- **CDI**: ítem 25 invertido respecto al estándar (nota en `cdi.md`).
+- **"No sabe / no está seguro"** se representa como **`null`** (sin respuesta),
+  no como opción.

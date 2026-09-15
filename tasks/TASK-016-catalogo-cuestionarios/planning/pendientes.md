@@ -57,6 +57,7 @@
 | C14 | Prefijo `list_` en colecciones | Modelo | ✅ |
 | C15 | ¿`target_*` (sex/age/population) dentro de `condition`? | Modelo | ⏳ |
 | C16 | Rangos: `min`/`max`/`unit` + `name` legible (Diseño C) | Modelo | ✅ |
+| C17 | `question.text` nullable (ítems sin enunciado, ej. CDI) | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -367,6 +368,19 @@
   `catalog/example.jsonc`, `catalog/bank/README.md` (plantilla + regla),
   `reference/questionnaire-engine.md` (nota de destino).
 - **Pendiente**: `question.config` (¿también `unit`? hoy fuera de alcance).
+
+### C17 — `question.text` nullable (ítems sin enunciado, ej. CDI) ✅ (resuelto)
+
+- **Qué era**: `question.text` era `NOT NULL`, pero hay instrumentos cuyos ítems
+  **no tienen enunciado** (ej. **CDI**, formato "elige la frase": las 3 opciones
+  son las frases y el enunciado no existe).
+- **Decisión**: `question.text` **nullable**. Si es `null`, el contexto vive en
+  `form.instructions` y se muestran **solo las opciones**.
+- **Reflejo**: `schema.sql` (`question.text` sin `NOT NULL` + `COMMENT`),
+  `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md` §5 (nota),
+  `catalog/bank/README.md` (convención), `features/questionnaires/README.md`
+  (tabla de decisiones).
+- **Ejemplo**: `cdi` (los 27 ítems con `text: null`, `instructions: "En las últimas dos semanas"`).
 
 ## D. Motor frontend
 

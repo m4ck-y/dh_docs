@@ -46,6 +46,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 | Condicional | AST booleano JSONB en `form.condition` / `section.condition` / `question.condition` (ver ADR 039) | ✅ columnas JSONB |
 | Agrupación | `section` + tablas puente; un form usa preguntas directas **XOR** secciones (ver ADR 038) | ✅ `section`, `questions_form`, `questions_section` |
 | Tipo de pregunta | Enum tipado | ✅ Columna `"type"` de tipo `EQuestionType` |
+| Enunciado de pregunta | `question.text` **nullable**: ítems sin enunciado (ej. CDI, "elige la frase"); contexto en `form.instructions` | ✅ `question.text` sin `NOT NULL` (C17) |
 | Config por tipo | `config` JSONB en `question`, forma según `type` (ver `catalog/question_types/`) | ✅ `question.config` |
 | Scoring / evaluación | **AST** en `form.expression` (`scoring`/`evaluation`/`subscales`); resultado en `assignment.result` como `{value, type}` | ✅ JSONB (ver `expressions/`) |
 | Valor por pregunta | `question.expression` (AST, una expresión) = valor autocalculado solo lectura; se persiste como `answer` (`source = CALCULATED`, snapshot) | ✅ `question.expression`, `answer.source` (ver ADR 041) |

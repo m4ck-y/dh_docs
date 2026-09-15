@@ -140,6 +140,10 @@ interface Section {
 }
 ```
 
+> **`question.text` es nullable (C17)**: hay instrumentos cuyos ítems **no tienen
+> enunciado** (ej. **CDI**, formato "elige la frase"); en ese caso el contexto va
+> en `form.instructions` y se muestran **solo las opciones** (`text?: string`).
+
 > **`list_sections` no es un gap**: su forma sale del ERD del proyecto (tabla
 > `section` + puente `questions_section`), no del `[]` vacío de la referencia.
 > Ver [ADR 038](../../../decisions/038-formulario-preguntas-vs-secciones.md).
