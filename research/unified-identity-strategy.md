@@ -24,7 +24,7 @@ El flujo debe invertirse para garantizar la integridad de los datos y la gestió
     - El usuario solicita el rol de **Tutor**.
     - Proporciona documentos adicionales (si aplica).
     - Una vez aprobado, se habilita la opción: **"Gestionar personas bajo mi cuidado"**.
-    - El Tutor registra a los dependientes (Pacientes). Esto resuelve el problema detectado en [A_REGISTRO.mmd](../historial_clinico/diagram/A_REGISTRO.mmd) al permitir que la persona legalmente responsable sea la que crea el expediente del dependiente.
+    - El Tutor registra a los dependientes (Pacientes). Esto resuelve el problema detectado en el registro clínico al permitir que la persona legalmente responsable sea la que crea el expediente del dependiente.
 
     ### Caso B: Profesional de la Salud
     - El usuario solicita el rol de **Médico**.
@@ -38,5 +38,4 @@ El flujo debe invertirse para garantizar la integridad de los datos y la gestió
 
 ## Archivos Relacionados
 - [onboarding_legacy.mmd](../management/1_onboarding_legacy/onboarding_legacy.mmd)
-- [A_REGISTRO.mmd](../historial_clinico/diagram/A_REGISTRO.mmd)
 - [PROPOSAL_ROLE_ESCALATION_FLOW.mmd](../management/1_onboarding/PROPOSAL_ROLE_ESCALATION_FLOW.mmd) (En desarrollo)
