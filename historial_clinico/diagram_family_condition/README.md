@@ -11,12 +11,11 @@
 | `condition_first.html` | Vista interactiva (autónoma) | Condición primero: se navega por padecimientos y se marcan los familiares |
 | `family_first.html` | Vista interactiva (autónoma) | Familiar primero: tabs por miembro con categorías desplegables |
 | `matrix.html` | Vista interactiva (autónoma) | Matriz 2D: filas = padecimientos, columnas = familiares |
-| `family_tree.html` | Vista interactiva (autónoma) | Árbol genealógico interactivo (Material You): genograma visual con panel lateral |
-| `family_tree_v2.html` | Vista interactiva (autónoma) | Árbol genealógico v2 (Light Glassmorphism): diseño claro con íconos vectoriales online (man, woman, elderly, person) |
+| `family_tree.html` | Vista interactiva (autónoma) | Árbol genealógico (Light Glassmorphism): diseño claro con íconos vectoriales online (man, woman, elderly, person) |
 
 ## Vistas interactivas (HTML autónomos)
 
-Las **cinco vistas** capturan los mismos datos y comparten las mismas reglas de captura:
+Las **cuatro vistas** capturan los mismos datos y comparten las mismas reglas de captura:
 
 - **"Otro"**: cada categoría termina en una opción `Otro` que despliega un input de texto libre con **capitalización automática** (`capFirst` al escribir, `capSpec` al salir). Las claves de estado son compuestas (`catId||disease[||fi]`) para evitar colisiones entre categorías y familiares.
 - **"¿Vive actualmente?"**: respondido **una vez por familiar** (no por padecimiento), evitando redundancia. Si responde "No", aparece el campo de causa de fallecimiento.
@@ -26,7 +25,7 @@ Las **cinco vistas** capturan los mismos datos y comparten las mismas reglas de 
 
 ### Export CSV
 
-Las cinco vistas exportan el **mismo formato transpuesto** (por eso el nombre del archivo no revela la vista de origen):
+Las cuatro vistas exportan el **mismo formato transpuesto** (por eso el nombre del archivo no revela la vista de origen):
 
 - **Columnas**: los 6 familiares.
 - **Filas**: `¿Aún vive?` (`Sí`/`No`, vacío si no se respondió) → `Causa de muerte` → una fila separadora por categoría → una fila por padecimiento.
@@ -67,12 +66,11 @@ Cada vista define su estado en memoria; el esquema exacto está comentado en el 
 | `family_first.html` | nombre plano; `catId\|\|disease` solo para "Otro" | `otherSpecs[catId\|\|disease\|\|fi]` — **por miembro** | `viveState[fi] = { vive, cause }` |
 | `matrix.html` | `catId\|\|disease` **para todos** (anti-colisión) | `otherSpecs[catId\|\|Otro\|\|fi]` — **por coordenada** | `viveState[fi] = { dead, cause }` (fila "¿Aún vive?" marcada por defecto) |
 | `family_tree.html` | nombre plano; `catId\|\|disease` solo para "Otro" | `otherSpecs[catId\|\|disease\|\|fi]` — **por miembro** | `viveState[fi] = { vive, cause }` |
-| `family_tree_v2.html` | nombre plano; `catId\|\|disease` solo para "Otro" | `otherSpecs[catId\|\|disease\|\|fi]` — **por miembro** | `viveState[fi] = { vive, cause }` |
 
 Diferencias clave a recordar antes de modificar:
 - El texto "Otro" **no** se almacena igual en todas las vistas (por categoría vs por miembro vs por coordenada).
 - En matrix **todas** las claves son compuestas; en las demás solo las de "Otro".
-- El árbol (`family_tree.html` / `family_tree_v2.html`) guarda el texto "Otro" **por miembro** (igual que `family_first`) y usa los mismos acordeones del catálogo dentro de un panel lateral.
+- El árbol (`family_tree.html`) guarda el texto "Otro" **por miembro** (igual que `family_first`) y usa los mismos acordeones del catálogo dentro de un panel lateral.
 - La capitalización del texto libre se hace en JS (`capFirst` en vivo, `capSpec` al salir), no con CSS, para que el valor exportado ya llegue formateado.
 
 ## Origen de los datos

@@ -1,6 +1,6 @@
 **Proyecto o Apartado:** Historia Clínica / Antecedentes Heredo-Familiares (AHF)
 
-**Título de la actividad o tarea:** Prototipo de árbol genealógico (genograma interactivo) para antecedentes heredofamiliares — v1 Material You y v2 Light Glassmorphism
+**Título de la actividad o tarea:** Prototipo de árbol genealógico (genograma interactivo) para antecedentes heredofamiliares — Light Glassmorphism
 
 **Descripción de la actividad o tarea:**
 Partiendo del mismo diagrama fuente `Diagram_family-condition-matrix.drawio` que define la lógica del módulo de **Antecedentes Heredo-Familiares (AHF)**, y continuando con la exploración de UI iniciada en el reporte del 2026-07-29 (vistas `condition_first`, `family_first` y `matrix`), se decidió construir una **cuarta representación del flujo y del llenado de datos**, más interactiva que las anteriores: un **árbol genealógico interactivo** (genograma) que representa visualmente a los 6 familiares en tres niveles jerárquicos —abuelos, padres y paciente— en lugar de recorrer el catálogo en listas o matrices.
@@ -31,19 +31,18 @@ Al tocar una tarjeta se abre un **drawer lateral** que concentra la captura de u
 - **Estado vital**: toggle segmentado "¿Vive actualmente?" (Sí, vive / No, falleció). Si falleció, aparece el campo de causa de fallecimiento.
 - **Catálogo CIE-11**: las 13 categorías (4.1–4.13) en acordeones colapsables con buscador por texto, checkboxes por padecimiento y la opción `Otro`/`Otro (Especifique)` con texto libre capitalizado en JS (`capFirst` en vivo, `capSpec` al salir).
 
-### V1 y V2: mismo modelo, dos lenguajes visuales
+### Modelo y lenguaje visual
 
-Se generaron dos versiones del prototipo que comparten el **mismo modelo de datos en memoria** (`registered` con claves compuestas `catId||disease`, `otherSpecs` para el texto del "Otro" y `viveState[fi] = { vive, cause }`):
+El prototipo usa el **modelo de datos en memoria** del módulo (`registered` con claves compuestas `catId||disease`, `otherSpecs` para el texto del "Otro" y `viveState[fi] = { vive, cause }`):
 
-- `family_tree.html` (v1): lenguaje visual **Material You** con tarjetas `node-card`.
-- `family_tree_v2.html` (v2): rediseño **Light Glassmorphism** con paleta clara, orbes ambientales difuminados, tarjetas de vidrio, tipografía Plus Jakarta Sans y avatares con íconos Material Symbols cargados por CDN.
+- `family_tree.html` (**Light Glassmorphism**): paleta clara, orbes ambientales difuminados, tarjetas de vidrio, tipografía Plus Jakarta Sans y avatares con íconos Material Symbols cargados por CDN.
 
-Ambas conservan la **barra de acciones superior** (Exportar CSV / Limpiar todo con confirmación), el mismo formato de exportación CSV transpuesto (UTF-8 con BOM, escaping RFC 4180, nombre `export_family_conditions_YYYYMMDD_HHMMSS.csv`) y las reglas de usabilidad del ADR 037 (loops de confirmación eliminados, "¿Vive?" elevado al ámbito del familiar).
+Conserva la **barra de acciones superior** (Exportar CSV / Limpiar todo con confirmación), el formato de exportación CSV transpuesto (UTF-8 con BOM, escaping RFC 4180, nombre `export_family_conditions_YYYYMMDD_HHMMSS.csv`) y las reglas de usabilidad del ADR 037 (loops de confirmación eliminados, "¿Vive?" elevado al ámbito del familiar).
 
 ### Referencias
 
 - Diagrama fuente: `docs/historial_clinico/diagram_family_condition/Diagram_family-condition-matrix.drawio`
-- Prototipos: `docs/historial_clinico/diagram_family_condition/family_tree.html`, `family_tree_v2.html`
+- Prototipo: `docs/historial_clinico/diagram_family_condition/family_tree.html`
 - Documentación de la propuesta: `docs/historial_clinico/diagram_family_condition/README.md`
 - Vistas previas: `condition_first.html`, `family_first.html`, `matrix.html`
 - [ADR 037 — Prototipos UI de Antecedentes Familiares](../decisions/037-family-conditions-ui-prototype.md)
@@ -52,10 +51,10 @@ Ambas conservan la **barra de acciones superior** (Exportar CSV / Limpiar todo c
 **Estado de la actividad o tarea:** Concluido (fase de exploración / prototipo)
 
 **Avances de la actividad (si lo requiere):**
-- Construido el genograma interactivo en dos versiones visuales (`family_tree.html` Material You y `family_tree_v2.html` Light Glassmorphism) con los 6 familiares en tres niveles jerárquicos y nodo de paciente como referencia.
+- Construido el genograma interactivo (`family_tree.html`, Light Glassmorphism) con los 6 familiares en tres niveles jerárquicos y nodo de paciente como referencia.
 - Implementada la captura por panel lateral: estado vital con causa de fallecimiento y catálogo CIE-11 en acordeones con buscador, reutilizando las reglas del ADR 037 (claves compuestas, "¿Vive?" por familiar, capitalización en JS).
 - Añadida retroalimentación visual en las tarjetas: punto de estado vital, insignias de categoría con tooltip, resaltado de miembros registrados y líneas SVG conectoras recalculadas en `resize`.
 - Mantenida la uniformidad con las vistas previas: mismo formato CSV transpuesto, botón "Limpiar todo" con modal de confirmación y estadísticas de avance.
-- Actualizado el `README.md` del directorio con los dos nuevos archivos del árbol genealógico.
-- Los prototipos se entregan como propuesta de UI: el estado vive en memoria y se pierde al recargar; no hay backend ni persistencia.
+- Actualizado el `README.md` del directorio con el nuevo archivo del árbol genealógico.
+- El prototipo se entrega como propuesta de UI: el estado vive en memoria y se pierde al recargar; no hay backend ni persistencia.
 - Próximo paso: validar con stakeholders cuál de las cuatro direcciones (condición-primero, familiar-primero, matriz o árbol) es la ruta de captura definitiva, y articular el modelo de persistencia con TASK-015 (FHIR R5 híbrido PostgreSQL + MongoDB).
