@@ -35,6 +35,10 @@ feature [`../mapper/`](../mapper/) (vista en
 | D | Antecedentes personales patológicos | ⏳ | ⏳ |
 | E | Padecimiento actual | ⏳ | ⏳ |
 
+> **Bloqueos**: **B** (AHF: catálogo vs form) y **D** (grupos repetibles) tienen
+> decisiones abiertas. Ver [TASK-017 / preguntas abiertas](../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md).
+> C y E pueden redactarse desde los `.mmd`.
+
 ## Propuestas UI
 
 - [`proposals/family_condition/`](./proposals/family_condition/): prototipos de

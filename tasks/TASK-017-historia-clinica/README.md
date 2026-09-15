@@ -15,11 +15,21 @@ tags: ["clinical_history", "historia_clinica", "secciones", "ahf", "mappers"]
 ## Descripción
 
 Modelar la historia clínica como formularios estructurales (secciones A-E,
-`kind: CLINICAL_HISTORY`) **reutilizando el contrato `form` definido en
+`type: CLINICAL_HISTORY`) **reutilizando el contrato `form` definido en
 [TASK-016](../TASK-016-catalogo-cuestionarios/README.md)** (mismo shape).
 Fuente: `docs/diagrams/0_HISTORIA_CLINICA` (el form `0`; va **después** de los
 cuestionarios `1,2,3`). Genera sus fichas de estructura y sus vínculos a dominio
 (feature `mapper`).
+
+## Estado y siguiente paso
+
+- **A (Registro)**: ficha (`sections/A_registro.md`) y mapper listos.
+- **C (APNP)** y **E (Padecimiento actual)**: **siguiente** — redactar fichas
+  desde `docs/diagrams/0_HISTORIA_CLINICA/flows/{apnp,padecimiento_actual}.mmd`.
+- **B (AHF)** y **D (Antecedentes PP)**: **bloqueadas** por decisiones abiertas
+  → ver [`planning/OPEN-QUESTIONS.md`](planning/OPEN-QUESTIONS.md) (H1, H2).
+- **Banco** (`features/questionnaires/catalog/bank/clinical_history/`): vacío
+  (espera a cerrar B/D).
 
 ## Objetivos
 
@@ -32,6 +42,7 @@ cuestionarios `1,2,3`). Genera sus fichas de estructura y sus vínculos a domini
 ## Enlaces rápidos
 
 - [Plan de ejecución](planning/README.md)
+- [Preguntas abiertas / stoppers](planning/OPEN-QUESTIONS.md)
 - [Registro de progreso](progress/)
 - [Artefactos](artifacts/)
 - [Feature](../../features/clinical_history/README.md)
