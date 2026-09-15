@@ -1,15 +1,15 @@
 # Cuestionario mental — Índice Mermaid
 
-Conversión tab por tab del drawio `1_DEMO_CUESTIONARIOS_MENTAL.drawio`
+Conversión tab por tab del drawio `source/1_DEMO_CUESTIONARIOS_MENTAL.drawio`
 (6 páginas) a archivos **Mermaid** (`.mmd`) individuales.
 
 | Página (tab) | Diagrama | Revisión |
 |---|---|---|
-| HADS | `hads.mmd` | `hads-review.md` |
-| CDI | `cdi.mmd` | `cdi-review.md` |
-| GDS | `gds.mmd` | `gds-review.md` |
-| PHQ | `phq.mmd` | `phq-review.md` |
-| GAD | `gad.mmd` | `gad-review.md` |
-| PSS | `pss.mmd` | `pss-review.md` |
+| HADS | `flows/hads.mmd` | `reviews/hads-review.md` |
+| CDI | `flows/cdi.mmd` | `reviews/cdi-review.md` |
+| GDS | `flows/gds.mmd` | `reviews/gds-review.md` |
+| PHQ | `flows/phq.mmd` | `reviews/phq-review.md` |
+| GAD | `flows/gad.mmd` | `reviews/gad-review.md` |
+| PSS | `flows/pss.mmd` | `reviews/pss-review.md` |
 
 Cada `-review.md` contiene la tabla `Puntuación | Interpretación` del drawio.

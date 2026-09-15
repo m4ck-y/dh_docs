@@ -159,7 +159,7 @@
   banco del MVP al portarlo.
 - **Decisión**: la redacción canónica es **"periódico"**, usada por las **cuatro**
   referencias reales: drawio fuente de verdad
-  (`docs/diagrams/1_CUESTIONARIO_MENTAL/…drawio`), drawio legacy
+  (`docs/diagrams/1_CUESTIONARIO_MENTAL/source/…drawio`), drawio legacy
   (`index.DEMO_quewstionnaire.drawio`), `PHQ9.json`/`PHQ9.md` y `phq.mmd`.
 - **Aplicado**: `phq9Instrument.ts` ítem 7 → `"…leer el periódico o ver la
   televisión"` (antes `"…cuerpo del texto o ver la television"`).
@@ -203,7 +203,7 @@
   `operators/time.md` (`minutes`), `operators/case.md` (condition-based),
   `examples/ipaq-expression.jsonc` + `ipaq-result.jsonc`, `schema.sql`
   (COMMENTs), `catalog/README.md` §9/§11, `catalog/CLASS.mmd`.
-- **Refs**: `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint` (algoritmo).
+- **Refs**: `docs/diagrams/3_CUESTIONARIO_FISICO/source/IPAQ.pseint` (algoritmo).
 
 ### C7c — `question.expression` por pregunta (valor autocalculado) ✅ (resuelto)
 

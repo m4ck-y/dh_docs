@@ -4,9 +4,28 @@ Concentrado de diagramas `.drawio` que definen el **Producto Mínimo Viable (MVP
 Esta es la referencia canónica de la lógica de negocio de la historia clínica,
 los cuestionarios clínicos y su lógica de activación/derivación.
 
+## Convención de carpetas
+
+Cada dominio separa sus artefactos por **formato**:
+
+| Carpeta | Contenido |
+|---|---|
+| `source/` | Original binario: `.drawio` (+ algoritmos `.pseint`). |
+| `flows/` | Conversión legible a Mermaid (`.mmd`), tab por tab. |
+| `reviews/` | Tabla derivada `Puntuacion \| Interpretacion` (`-review.md`). |
+| `activation/` | Rúbricas de activación/derivación (anexos C y D). |
+
+Transversal:
+
+| Carpeta | Contenido |
+|---|---|
+| `conventions/` | Guía de conversión drawio → Mermaid (`SKILL_DRAWIO_MERMAID.md`). |
+| `catalog/` | Catálogo de instrumentos con metadata (`instruments.csv`). |
+| `schemas/` | Contratos de referencia (motor de cuestionarios). |
+
 ## Estructura
 
-| Carpeta | Drawio | Contenido (páginas/tabs) |
+| Dominio | Drawio (`source/`) | Contenido (páginas/tabs) |
 |---|---|---|
 | `0_HISTORIA_CLINICA/` | `0_DEMO_HISTORIA_CLINICA.drawio` | A Registro, B Antecedentes heredofamiliares, C APNP, D Antecedentes PP, E Padecimiento actual, ANEXO C, ANEXO D |
 | `1_CUESTIONARIO_MENTAL/` | `1_DEMO_CUESTIONARIOS_MENTAL.drawio` | HADS, CDI, GDS, PHQ, GAD, PSS |
@@ -15,17 +34,17 @@ los cuestionarios clínicos y su lógica de activación/derivación.
 
 ## Conversión a Mermaid
 
-Cada drawio se convirtió **tab por tab** a diagramas **Mermaid** (`.mmd`)
-individuales, siguiendo la convención del legacy (un nodo por ítem/pregunta,
-cadena secuencial, y un `-review.md` con la tabla
-`Puntuación | Interpretación` para los instrumentos psicométricos).
+Cada drawio se convirtió **tab por tab** a diagramas **Mermaid** (`.mmd`) en
+`flows/`, siguiendo la convención del legacy (un nodo por ítem/pregunta, cadena
+secuencial), y un `reviews/-review.md` con la tabla
+`Puntuación | Interpretación` para los instrumentos psicométricos.
 
-| Carpeta | Índice | Archivos `.mmd` |
-|---|---|---|
-| `0_HISTORIA_CLINICA/` | `index.md` | `registro.mmd`, `antecedentes_heredofamiliares.mmd`, `apnp.mmd`, `antecedentes_pp.mmd`, `padecimiento_actual.mmd`, `anexo_c.mmd`, `anexo_d.mmd` |
-| `1_CUESTIONARIO_MENTAL/` | `index.md` | `hads.mmd`, `cdi.mmd`, `gds.mmd`, `phq.mmd`, `gad.mmd`, `pss.mmd` (+ `-review.md`) |
-| `2_CUESTIONARIO_SOCIAL/` | `index.md` | `crafft.mmd` (+ `crafft-review.md`) |
-| `3_CUESTIONARIO_FISICO/` | `index.md` | `ipaq.mmd` (+ `ipaq-review.md`) |
+| Carpeta | Índice | `flows/` | `reviews/` | `activation/` |
+|---|---|---|---|---|
+| `0_HISTORIA_CLINICA/` | `index.md` | `registro`, `antecedentes_heredofamiliares`, `apnp`, `antecedentes_pp`, `padecimiento_actual` | — | `anexo_c`, `anexo_d` |
+| `1_CUESTIONARIO_MENTAL/` | `index.md` | `hads`, `cdi`, `gds`, `phq`, `gad`, `pss` | `hads`, `cdi`, `gds`, `phq`, `gad`, `pss` | — |
+| `2_CUESTIONARIO_SOCIAL/` | `index.md` | `crafft` | `crafft` | — |
+| `3_CUESTIONARIO_FISICO/` | `index.md` | `ipaq` | `ipaq` | — |
 
 Los formularios estructurales de la historia clínica (A-E y anexos) no llevan
 `-review.md` (solo los instrumentos psicométricos lo llevan).
@@ -38,8 +57,8 @@ Los formularios estructurales de la historia clínica (A-E y anexos) no llevan
   expediente. Funciona como un formulario/cuestionario de varias secciones
   habilitadas para edición por defecto mientras no estén completas.
 - Incluye además los **anexos de la lógica de activación** de cada
-  cuestionario (`ANEXO C` y `ANEXO D`): la condición que habilita o deriva al
-  cuestionario correspondiente.
+  cuestionario (`activation/anexo_c.mmd` y `activation/anexo_d.mmd`): la
+  condición que habilita o deriva al cuestionario correspondiente.
 
 ### Cuestionarios (`1_`, `2_`, `3_`)
 
@@ -56,10 +75,8 @@ Los formularios estructurales de la historia clínica (A-E y anexos) no llevan
 
 ## Catálogo de instrumentos (CSV)
 
-El archivo
-`HE-001-01-LS-GE Herramientas de  evaluación (cuestionarios) - General .csv`
-es el **catálogo con metadata** de los cuestionarios. Cada registro describe
-un instrumento con:
+El archivo `catalog/instruments.csv` es el **catálogo con metadata** de los
+cuestionarios. Cada registro describe un instrumento con:
 
 - `Clave` — sigla/código del instrumento.
 - `Nombre de la herramienta` — nombre completo.

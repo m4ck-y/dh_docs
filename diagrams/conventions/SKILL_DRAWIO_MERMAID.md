@@ -30,9 +30,13 @@ cualquier carpeta de este workspace que tenga drawios (p. ej. `docs/diagrams/`).
 
 ## Convención de nombres
 
-- Diagrama: `{tab_name}.mmd` en `snake_case` (p. ej. `cuestionario_phq.mmd`,
-  `padecimiento_actual.mmd`, `anexo_c.mmd`, `a.mmd`).
-- Tabla de interpretación: `{tab_name}-review.md` (mismo `snake_case` +
+Los artefactos de cada dominio se separan por formato: `source/` (`.drawio`),
+`flows/` (`.mmd`), `reviews/` (`-review.md`) y `activation/` (anexos).
+
+- Diagrama: `flows/{tab_name}.mmd` en `snake_case` (p. ej.
+  `flows/cuestionario_phq.mmd`, `flows/padecimiento_actual.mmd`,
+  `activation/anexo_c.mmd`, `flows/a.mmd`).
+- Tabla de interpretación: `reviews/{tab_name}-review.md` (mismo `snake_case` +
   sufijo `-review`). **Solo** los instrumentos psicométricos llevan
   `-review.md`; los formularios estructurales no.
 - Índice por familia: `index.md` que enlista los `.mmd` generados.

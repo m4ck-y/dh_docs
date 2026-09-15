@@ -47,9 +47,10 @@ No es una migración legacy→frontend; es una definición de dominio.
 
 ### 3.3 `docs/diagrams/` (lógica de negocio / flujo)
 
-- `docs/diagrams/SKILL_DRAWIO_MERMAID.md` — convención drawio→mermaid.
-- `docs/diagrams/0_HISTORIA_CLINICA/`, `1_CUESTIONARIO_MENTAL/`, `2_CUESTIONARIO_SOCIAL/`, `3_CUESTIONARIO_FISICO/`.
-- `docs/diagrams/README.md` — pendientes (GDS ítem 15).
+- `docs/diagrams/conventions/SKILL_DRAWIO_MERMAID.md` — convención drawio→mermaid.
+- Dominios: `docs/diagrams/0_HISTORIA_CLINICA/`, `1_CUESTIONARIO_MENTAL/`, `2_CUESTIONARIO_SOCIAL/`, `3_CUESTIONARIO_FISICO/`; cada uno separa `source/` (`.drawio`), `flows/` (`.mmd`), `reviews/` (`-review.md`) y `activation/` (anexos).
+- `docs/diagrams/catalog/instruments.csv` — catálogo con metadata (columna `LS` = categoría de bienestar).
+- `docs/diagrams/README.md` — índice general.
 
 ### 3.4 `reference_projects/reference_questionnaire_v1_legacy/FormsFlow2.drawio` (referencia de persistencia)
 
@@ -352,7 +353,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
    **código legacy** (`reference_frontend_app_legacy/.../cuestionarios/phq9.js`) y
    lo **heredó** el banco del MVP al portarlo. La redacción canónica es
    **"periódico"**, que es la que usan las **cuatro** referencias reales: drawio
-   fuente de verdad (`docs/diagrams/1_CUESTIONARIO_MENTAL/…drawio`), drawio legacy
+   fuente de verdad (`docs/diagrams/1_CUESTIONARIO_MENTAL/source/…drawio`), drawio legacy
    (`…/index.DEMO_quewstionnaire.drawio`), `PHQ9.json`/`PHQ9.md` y `phq.mmd`.
    Corregido en `phq9Instrument.ts` ("cuerpo del texto" → "periódico").
 
@@ -368,7 +369,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 
 5. ~~**IPAQ scoring por METs.**~~ Resuelto: modelado con `definitions`
    (`time: minutes` + `{ref}`) y `case` condition-based. El único algoritmo
-   completo de referencia está en `docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
+   completo de referencia está en `docs/diagrams/3_CUESTIONARIO_FISICO/source/IPAQ.pseint`.
 
 6. **`type_media` vs `type` en `list_references`**: la referencia usa `type_media`
    (`PHQ9.json`, `IA_DEVELOPMENT.json`); el ERD define `reference.type_media`

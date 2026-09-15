@@ -123,4 +123,4 @@ Se modela con el AST (ver [`../README.md`](../README.md) §7):
 
 Ejemplo completo: [`ipaq-expression.jsonc`](./ipaq-expression.jsonc) y
 [`ipaq-result.jsonc`](./ipaq-result.jsonc). Algoritmo de referencia:
-`docs/diagrams/3_CUESTIONARIO_FISICO/IPAQ.pseint`.
+`docs/diagrams/3_CUESTIONARIO_FISICO/source/IPAQ.pseint`.
