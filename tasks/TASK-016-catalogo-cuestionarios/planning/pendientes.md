@@ -53,6 +53,7 @@
 | C10 | Schema `form` en `ALL_SCHEMAS` | Infra | ⏳ |
 | C11 | Remanentes V1 en `schema.sql` | Modelo | ✅ |
 | C12 | `instructions` (técnica vs llenado) | Modelo | ✅ |
+| C13 | `list_population` (N:N) | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -302,6 +303,21 @@
   `catalog/CLASS.mmd`, `catalog/README.md` (§5 + extensiones), `catalog/example.jsonc`,
   `catalog/bank/README.md` (convención y plantilla), `reference/questionnaire-engine.md`
   (nota de destino).
+
+### C13 — `list_population` (N:N) ✅ (resuelto)
+
+- **Qué era**: `form ↔ population` es **N:N** (`form_population` con
+  `UNIQUE(id_form, id_population)`); el DDL/ERD ya estaban bien, pero el
+  contrato/ejemplo/plantilla **no** exponían la relación, y `CLASS.mmd` no
+  modelaba ninguna metadata.
+- **Decisión**: exponer `list_population: { id?, name }[]` (naming elegido:
+  `list_population`). El ERD no se toca.
+- **Reflejo**: `catalog/README.md` §5, `catalog/example.jsonc`,
+  `catalog/bank/README.md` (plantilla), `catalog/CLASS.mmd` (metadata embebida
+  del `Form`: `list_categories`, `list_cie11_codes`, `list_evaluation_topics`,
+  `target_age_groups`, `list_population`, `list_references`, `estimated_duration`,
+  `target_sex` + clases `Category`/`Cie11Code`/`EvaluationTopic`/`AgeGroup`/
+  `Population`/`Reference`/`EstimatedDuration`).
 
 ## D. Motor frontend
 

@@ -27,6 +27,15 @@ classDiagram
         +string instructions
         +ExpressionSet expression
         +Expression condition
+        %% Metadata embebida (en el ERD relational son tablas normalizadas + puentes).
+        +Category[] list_categories
+        +Cie11Code[] list_cie11_codes
+        +EvaluationTopic[] list_evaluation_topics
+        +AgeGroup[] target_age_groups
+        +Population[] list_population
+        +Reference[] list_references
+        +EstimatedDuration estimated_duration
+        +string target_sex
         %% XOR: o 'sections' o 'questions', nunca ambos (ver ADR 038)
         +Section[] sections
         +Question[] questions
@@ -143,11 +152,57 @@ classDiagram
         +string type
     }
 
+    %% Metadata embebida del Form (value objects; en el ERD son tablas + puentes).
+    class Category {
+        +string key
+        +string name
+    }
+
+    class Cie11Code {
+        +string code
+    }
+
+    class EvaluationTopic {
+        +string name
+    }
+
+    class AgeGroup {
+        +string name
+        +int min_age
+        +int max_age
+    }
+
+    class Population {
+        +string name
+    }
+
+    class Reference {
+        +string url_reference
+        +string name
+        +string notes
+        +string url_thumbnail
+        +string type_media
+    }
+
+    class EstimatedDuration {
+        +int min_minutes
+        +int max_minutes
+        +string description
+    }
+
     Form "1" *-- "0..*" Section : contiene (XOR questions)
     Form "1" *-- "0..*" Question : contiene (XOR sections)
     Section "1" *-- "0..*" Question : contiene
     Question "1" *-- "0..*" Option : contiene
     Option "1" o-- "0..1" Url : puede tener
+    %% Metadata embebida del Form (en el ERD son puentes/tablas normalizadas).
+    Form "1" *-- "0..*" Category : list_categories
+    Form "1" *-- "0..*" Cie11Code : list_cie11_codes
+    Form "1" *-- "0..*" EvaluationTopic : list_evaluation_topics
+    Form "1" *-- "0..*" AgeGroup : target_age_groups
+    Form "1" *-- "0..*" Population : list_population
+    Form "1" *-- "0..*" Reference : list_references
+    Form "1" *-- "0..1" EstimatedDuration : estimated_duration
     Form "1" *-- "0..1" ExpressionSet : expression
     Form "1" *-- "0..1" Expression : condition
     Section "1" *-- "0..1" Expression : condition

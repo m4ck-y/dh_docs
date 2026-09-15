@@ -108,6 +108,7 @@ interface Instrument {
   list_categories: { key_industry: number; name: string }[];
   list_cie11_codes: { code: string }[];
   list_evaluation_topics: { id?: number; name: string; key_industry?: string }[];
+  list_population: { id?: number; name: string }[];   // espeja population vía form_population (N:N)
 
   estimated_duration?: { min_minutes?: number; max_minutes?: number; description?: string };
   target_age_group?: { name?: string; min_age?: number; max_age?: number };

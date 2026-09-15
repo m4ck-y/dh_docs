@@ -131,6 +131,10 @@
   "list_evaluation_topics": [
     { "name": "string", "id": 0 }
   ],
+  /* list_population corresponde a las tablas form_population (puente) y population del ERD.mmd */
+  "list_population": [
+    { "name": "string", "id": 0 }
+  ],
   "list_references": [
     {
       "url_reference": "string",

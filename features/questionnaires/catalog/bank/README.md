@@ -12,12 +12,15 @@ nivel arriba; este directorio solo contiene **datos**.
 | Ruta | Contenido |
 |---|---|
 | `categories.json` | Vocabulario controlado de categorías de bienestar (`key` + `name`). |
+| `population.json` | Vocabulario controlado de poblaciones objetivo (`name`). |
 | `instruments/` | Un `.json` + un `.md` por instrumento psicométrico (`kind: INSTRUMENT`). |
 | `clinical_history/` | Un `.json` + un `.md` por formulario clínico (`kind: CLINICAL_HISTORY`). |
 
 - **Plano**: la categoría (mental/físico/social) **no** es carpeta; vive en
   `list_categories[]`. Un instrumento puede pertenecer a varias (p. ej. CRAFFT:
   `wellbeing_physical` + `wellbeing_social`), sin duplicar el archivo.
+- **Vocabularios controlados**: `list_categories` usa `categories.json` y
+  `list_population` usa `population.json`.
 - **Fuente humana** de cada instrumento: `docs/diagrams/<dominio>/flows/<key>.mmd`
   (+ `reviews/<key>-review.md`).
 
@@ -52,6 +55,7 @@ nivel arriba; este directorio solo contiene **datos**.
   "list_categories": [ { "key": "wellbeing_mental", "name": "Bienestar mental" } ],
   "list_evaluation_topics": [ { "key": "...", "name": "..." } ],
   "list_cie11_codes": [ { "code": "6A7" } ],
+  "list_population": [ { "name": "..." } ],
   "estimated_duration": { "min_minutes": 5, "max_minutes": 10, "description": "..." },
   "target_age_group": { "name": "...", "min_age": 18, "max_age": 99 },
   "target_sex": null,
