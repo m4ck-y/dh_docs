@@ -10,9 +10,23 @@ flowchart TD
 
     b2 --> b3["3.0 ¿Esta persona vive actualmente?<br/>3.1 Sí / 3.2 No → 3.2.1 ¿Cuál fue la causa de su fallecimiento? (texto libre / 3.2.1.2 No lo sé)"]
 
-    b3 --> b4["4.0 Seleccione la categoría de salud donde desea registrar un padecimiento.<br/>4.1 Diabetes, colesterol y metabolismo / 4.2 Presión alta y corazón / 4.3 Cerebro y sistema nervioso / 4.4 Mente, emociones y aprendizaje / 4.5 Pulmones y respiración / 4.6 Visión y ojos / 4.7 Estómago, intestino y digestión / 4.8 Hígado, riñón y páncreas / 4.9 Huesos, músculos y articulaciones / 4.10 Piel, cabello y uñas / 4.11 Cáncer y tumores / 4.12 Enfermedades hereditarias y autoinmunes / 4.13 Enfermedades de la sangre"]
+    b3 --> b4["4.0 Seleccione la categoría de salud donde desea registrar un padecimiento."]
 
-    b4 --> b4a["4.1A-4.13A Seleccione la enfermedad o enfermedades que presenta o presentó su familiar."]
+    b4 --> c41["4.1 Diabetes, colesterol y metabolismo<br/>• Diabetes (Block 2-5A1)<br/>• Prediabetes (5A40)<br/>• Obesidad (5B81)<br/>• Colesterol o triglicéridos altos (5C80)<br/>• Hipotiroidismo (5A00)<br/>• Hipertiroidismo (5A02)<br/>• Otro"]
+    b4 --> c42["4.2 Presión alta y corazón<br/>• Presión alta (BA00)<br/>• Infarto (BlockL1-BA4)<br/>• Arritmias (BlockL1-BC6)<br/>• Insuficiencia cardiaca (BlockL1-BD1)<br/>• Otro"]
+    b4 --> c43["4.3 Cerebro y sistema nervioso<br/>• Migraña (8A80)<br/>• Embolia o derrame cerebral (BlockL1-8B0)<br/>• Alzheimer (8A20)<br/>• Demencia / Problemas de memoria (BlockL1-6D7)<br/>• Parkinson (8A00)<br/>• Epilepsias (BlockL1-8A6)<br/>• Enfermedad de Huntington (8A01.10)<br/>• Otro"]
+    b4 --> c44["4.4 Mente, emociones y aprendizaje<br/>• Depresión (BlockL2-6A7)<br/>• Ansiedad (BlockL1-6B0)<br/>• Trastorno bipolar (BlockL2-6A6)<br/>• Autismo (6A02)<br/>• TDAH (6A05)<br/>• Esquizofrenia (6A20)<br/>• Otro"]
+    b4 --> c45["4.5 Pulmones y respiración<br/>• Asma (CA23)<br/>• EPOC (CA22)<br/>• Rinitis alérgica (CA08)<br/>• Ronquidos (7A41)<br/>• Fibrosis pulmonar (BlockL1-CB0)<br/>• Otro (Especifique)"]
+    b4 --> c46["4.6 Visión y ojos<br/>• Cataratas (9B10)<br/>• Glaucoma (BlockL1-9C6)<br/>• Problemas de graduación (9D00)<br/>• Retinopatía diabética (9B71.0)<br/>• Otro (Especifique)"]
+    b4 --> c47["4.7 Estómago, intestino y digestión<br/>• Gastritis o úlceras (DA42)<br/>• Reflujo (DA22)<br/>• Colitis o intestino irritable (DD91.0)<br/>• Enfermedad inflamatoria intestinal (BlockL1-DD7)<br/>• Piedras en la vesícula (DC11)<br/>• Otro"]
+    b4 --> c48["4.8 Hígado, riñón y páncreas<br/>• Hígado graso no alcohólico (DB92)<br/>• Hígado graso por alcohol (DB94)<br/>• Hepatitis por virus (BlockL1-1E5)<br/>• Cirrosis o daño hepático (DB93)<br/>• Enfermedad renal crónica (GB61)<br/>• Piedras en los riñones (GB70.0)<br/>• Pancreatitis (BlockL1-DC3)<br/>• Otro"]
+    b4 --> c49["4.9 Huesos, músculos y articulaciones<br/>• Artritis reumatoide (BlockL2-FA2)<br/>• Osteoporosis / Huesos frágiles (FB83)<br/>• Desgaste de articulaciones (BlockL2-FA0)<br/>• Fibromialgia (MG30.01)<br/>• Otro (Especifique)"]
+    b4 --> c410["4.10 Piel, cabello y uñas<br/>• Piel sensible o dermatitis (BlockL2-EA8)<br/>• Psoriasis (EA90)<br/>• Vitiligo (ED63.0)<br/>• Alopecia o caída del pelo (ED70)<br/>• Otro (Especifique)"]
+    b4 --> c411["4.11 Cáncer y tumores<br/>• Cáncer de mama (BlockL3-2C6)<br/>• Cáncer de próstata (2C82)<br/>• Cáncer de colon (2B90)<br/>• Leucemia (2B33)<br/>• Cáncer de ovario (2C73)<br/>• Otro (Especifique)"]
+    b4 --> c412["4.12 Enfermedades hereditarias y autoinmunes<br/>• Síndrome de Down (LD40.0)<br/>• Lupus (4A40)<br/>• Esclerosis múltiple (8A40)<br/>• Fibrosis quística (CA25)<br/>• Otro (Especifique)"]
+    b4 --> c413["4.13 Enfermedades de la sangre<br/>• Anemia (BlockL1-3A0)<br/>• Problemas de coagulación (BlockL1-3B1)<br/>• Várices (BD74)<br/>• Trombosis venosa (BD71)<br/>• Otro (Especifique)"]
+
+    c41 & c42 & c43 & c44 & c45 & c46 & c47 & c48 & c49 & c410 & c411 & c412 & c413 --> b4a["4.1A-4.13A Seleccione la enfermedad o enfermedades que presenta o presentó su familiar."]
 
     b4a --> b5["5.0 ¿Desea completar los antecedentes de otro familiar?<br/>5.1 Sí (repite flujo) / 5.2 No"]
 
