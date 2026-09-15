@@ -2,6 +2,7 @@
   "categories": [
     { "key": "wellbeing_mental", "name": "Bienestar mental" },
     { "key": "wellbeing_physical", "name": "Bienestar físico" },
+    { "key": "wellbeing_nutritional", "name": "Bienestar nutricional" },
     { "key": "wellbeing_social", "name": "Bienestar social" }
   ]
 }
