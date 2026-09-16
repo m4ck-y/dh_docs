@@ -59,6 +59,7 @@
 | C16 | Rangos: `min`/`max`/`unit` + `name` legible (Diseño C) | Modelo | ✅ |
 | C17 | `question.text` nullable (ítem sin enunciado propio) | Modelo | ✅ |
 | C18 | `form.type` (`EFormType`) formalizado | Modelo | ✅ |
+| C19 | Contrato de la pregunta calculada | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -226,7 +227,8 @@
     calculadas**, con **validación de ciclos**), `person`, `const`, `{ref}` a
     `definitions` del form, operadores anidados.
   - **Prohibido**: `form.result.*` (circular).
-  - **Ejemplos**: "Total" (suma de preguntas) e IMC (`person`).
+  - **Ejemplos**: IMC (`person`) y una diferencia entre ítems; no el resultado
+    global del instrumento (eso es `form.expression`, ver C19).
 - **Decisión — persistencia**: el valor calculado **se persiste** como fila de
   `answer` con `data = {value, type}` (`source = CALCULATED`, `answered_by = NULL`).
   Se recalcula en vivo y se guarda al enviar (`SUBMITTED`), junto con
@@ -404,6 +406,40 @@
   `catalog/example.jsonc`, `catalog/bank/README.md` y los 8
   `bank/instruments/*.json` (`kind`→`type`), `features/README.md`,
   `features/questionnaires/README.md`, `features/clinical_history/README.md`.
+
+### C19 — Contrato de la pregunta calculada ✅ (resuelto)
+
+- **Qué era**: C7c definió el campo y la persistencia, pero quedaban abiertos el
+  `text`, el `type`, el `config`, la interacción con el scoring/progreso y **qué
+  está prohibido** modelar como pregunta calculada.
+- **Decisiones** (ver [ADR 042](../../../decisions/042-contrato-pregunta-calculada.md)):
+  - **`text` obligatorio** si hay `expression` (es la etiqueta del valor; no hay
+    opciones que den contexto). Validación de aplicación.
+  - **`type` libre**, pero `expression.output.type` debe ser **compatible** con
+    `question.type` / `answer.data.type`.
+  - **Sin `config`** (config = solo input); el valor persistido es el **cálculo
+    crudo** y el formato es **presentación** (no hay operador `round`).
+  - **No es el resultado global del instrumento**: `question.expression` modela
+    un valor **derivado de la pregunta** (IMC, edad, diferencia entre ítems); el
+    resultado global (puntaje/evaluación/subescalas) vive en `form.expression` /
+    `assignment.result`. Poner el "total" como pregunta **duplica el scoring** y
+    provoca **doble conteo**. `form.result.*` sigue prohibido (circular).
+  - **`all` incluye las calculadas** (literal): el scoring **selecciona**
+    (`range`/`id`) las preguntas que puntúan.
+  - **Presentación**: read-only; el widget lo decide la capa de presentación.
+  - **Progreso**: excluidas de numerador y denominador → el 100% es alcanzable
+    (8 respondibles + 2 calculadas = `8/8`, no `8/10`).
+- **Por qué (duda resuelta)**: no tiene sentido una pregunta que sea el "total
+  del cuestionario" — eso es `form.expression.scoring`; y si `all` sumara una
+  calculada numérica (IMC incluido), inflaría el puntaje. Por eso se prohíbe el
+  resultado global como pregunta y se documenta la selección explícita.
+- **Reflejo**: `schema.sql` (COMMENTs de `question.expression`/`text`/`config`),
+  `expressions/README.md` §1, `expressions/operands.md` (selector `all`),
+  `expressions/examples/question-expression.jsonc`, `catalog/README.md` §6,
+  `catalog/example.jsonc`, `catalog/question_types/README.md`,
+  `catalog/bank/README.md`, `catalog/CLASS.mmd`, `catalog/ERD.mmd`,
+  `responses/README.md` (progreso), `reference/questionnaire-engine.md`,
+  `questionnaires/README.md`.
 
 ## D. Motor frontend
 

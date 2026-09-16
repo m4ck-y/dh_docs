@@ -111,6 +111,8 @@ erDiagram
     %% question.condition: condicion de visibilidad (AST booleano), ver ADR 039
     %% question.expression: receta del valor autocalculado (AST, una expresion, raiz
     %%   SIN wrapper); pregunta solo lectura. Ausente = la responde el usuario (C7c).
+    %%   Contrato (ADR 042): text OBLIGATORIO, type compatible con el output, SIN
+    %%   config, y NO es el resultado global del instrumento (eso es form.expression).
     %% El ORDEN no vive aqui: pertenece a la relacion (questions_form / questions_section),
     %% porque la pregunta es reutilizable y su posicion depende del contexto.
     %% question.text: NULLABLE (item sin enunciado propio, ej. CDI "elige la frase"; ver C17).

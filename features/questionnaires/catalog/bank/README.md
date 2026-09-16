@@ -32,10 +32,12 @@ nivel arriba; este directorio solo contiene **datos**.
   formato "elige la frase"). El modelo guarda `text: null` + las opciones; las
   instrucciones generales van **una vez** en `form.instructions`. Cómo se da
   contexto al ítem es decisión de la **presentación** (ver C17).
-- **`question.expression`** (C7c): una pregunta puede declarar `expression`
+- **`question.expression`** (C7c/C19): una pregunta puede declarar `expression`
   (valor **autocalculado**, solo lectura; el usuario no la responde y su valor
-  se persiste como `answer` con `source = CALCULATED`). Ningún instrumento del
-  banco lo usa hoy. Ejemplo: `../../expressions/examples/question-expression.jsonc`.
+  se persiste como `answer` con `source = CALCULATED`). Contrato (ADR 042):
+  `text` obligatorio, `type` compatible con el output, **sin `config`**, y **no
+  es el resultado global** del instrumento. Ningún instrumento del banco lo usa
+  hoy. Ejemplo: `../../expressions/examples/question-expression.jsonc`.
 - **`population` = grupo objetivo NO etario** (contexto/condición clínica). Las
   etiquetas que solo describen edad **no** van aquí: se expresan en
   `list_age_groups`. Excluidas por eso: `Adultos` (IPAQ, ya `18–65`) y

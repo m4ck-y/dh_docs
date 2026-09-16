@@ -181,10 +181,19 @@ Cada `question` tiene un `type` (`EQuestionType`) y una configuración `config`
 
 Una pregunta puede declarar `expression` (AST, **una** expresión, raíz sin
 wrapper). En ese caso es de **solo lectura**: su valor lo computa el motor y el
-usuario no la responde. Aplica a cualquier `type` (p. ej. un `NUMBER` con el IMC
-o un total). El valor se persiste como `answer` con `source = CALCULATED` (ver
-§8). Gramática y semántica en
+usuario no la responde. El valor se persiste como `answer` con
+`source = CALCULATED` (ver §8). Gramática y semántica en
 [`../expressions/README.md`](../expressions/README.md) §1.
+
+Contrato (ver [ADR 042](../../../decisions/042-contrato-pregunta-calculada.md)):
+
+- **`text` obligatorio** (es la etiqueta del valor).
+- **`type` libre**, pero `expression.output.type` compatible con
+  `question.type`/`answer.data.type`.
+- **Sin `config`**: el valor persistido es el cálculo crudo; el formato es
+  presentación.
+- **No es el resultado global**: modela un valor derivado (IMC, diferencia entre
+  ítems); el puntaje/evaluación global vive en `form.expression`.
 
 ## 7. Regla de orden (dónde vive `order`)
 

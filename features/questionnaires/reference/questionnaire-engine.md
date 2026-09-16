@@ -67,6 +67,12 @@ export interface Question {
 }
 ```
 
+> **Destino (pregunta calculada).** El canónico agrega `question.expression`
+> (valor autocalculado, solo lectura): `text` obligatorio, `type` compatible con
+> `expression.output.type`, **sin `config`**, y nunca el resultado global del
+> instrumento (ver ADR 042). El motor lo muestra como campo read-only; el widget
+> es decisión de la **presentación**.
+
 ### 1.4 `Instrument` (raíz del banco)
 
 ```ts

@@ -1,29 +1,14 @@
 {
   /* Ejemplos de question.expression: la receta de un valor AUTOCALCULADO.
-     Es UNA expresion (raiz SIN wrapper), como condition. La pregunta es de solo
-     lectura (el usuario no la responde); su valor se recalcula en vivo y se
-     persiste como answer con source=CALCULATED al enviar (snapshot).
-     Ver ../README.md (Preguntas autocalculadas y persistencia). */
+     Es UNA expresion (raiz SIN wrapper = un operador), como condition. La
+     pregunta es de solo lectura (el usuario no la responde); su valor se
+     recalcula en vivo y se persiste como answer con source=CALCULATED al
+     enviar (snapshot).
+     Contrato (C19 / ADR 042): text obligatorio, type compatible con el output,
+     SIN config, y NUNCA el resultado global del instrumento (eso va en
+     form.expression.scoring). Ver ../README.md (Preguntas autocalculadas). */
 
-  /* Ej 1: pregunta "Total" = suma de las respuestas de las preguntas 1..9.
-     Puede leer otras preguntas del mismo form (aqui, por rango de ids). */
-  "total": {
-    "type": "aggregate",
-    "operator": "sum",
-    "args": [
-      {
-        "subject": {
-          "entity": "question",
-          "property": "value",
-          "selector": { "range": [1, 9] }
-        }
-      }
-    ],
-    "output": { "type": "number" }
-  },
-
-  /* Ej 2: pregunta "IMC" = person.weight / person.height^2.
-     Aqui no depende de otras preguntas, sino de datos de la persona. */
+  /* Ej 1: "IMC" = person.weight / person.height^2. Derivado externo (person). */
   "imc": {
     "type": "math",
     "operator": "/",
@@ -42,9 +27,22 @@
       }
     ],
     "output": { "type": "number" }
+  },
+
+  /* Ej 2: "Diferencia" entre dos items (referencia a otras preguntas, PERMITIDO).
+     No es el resultado global: es un derivado acotado entre dos respuestas. */
+  "diferencia": {
+    "type": "math",
+    "operator": "-",
+    "args": [
+      { "subject": { "entity": "question", "property": "value", "selector": { "id": 3 } } },
+      { "subject": { "entity": "question", "property": "value", "selector": { "id": 7 } } }
+    ],
+    "output": { "type": "number" }
   }
 
-  /* Valor persistido al enviar (fila de answer resultante del IMC):
-     { "id_question": "imc", "source": "CALCULATED", "answered_by": null,
-       "data": { "value": 24.5, "type": "number" } } */
+  /* PROHIBIDO como pregunta: el "total del instrumento" (suma de todas las
+     respuestas) va en form.expression.scoring, no en question.expression.
+     Duplicarlo aqui duplicaria el scoring y, con selector {all}, provocaria
+     doble conteo. Ver ../README.md (Contrato de la pregunta calculada, C19). */
 }

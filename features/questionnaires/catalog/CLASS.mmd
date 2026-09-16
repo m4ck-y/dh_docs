@@ -68,7 +68,9 @@ classDiagram
     %% Question.order: aqui SI vive el orden (subdocumento embebido);
     %% en el ERD el orden vive en la puente (ver ERD.mmd).
     %% Question.expression: receta del valor autocalculado (una Expression, raiz
-    %% SIN wrapper; pregunta solo lectura). Ver expressions/README.md (C7c).
+    %% SIN wrapper; pregunta solo lectura). Contrato (ADR 042): text OBLIGATORIO,
+    %% type compatible con el output, SIN config, y NO es el resultado global.
+    %% Ver expressions/README.md (C7c/C19).
     %% ExpressionSet (Form.expression): envelope de recetas.
     %% definitions: mapa de formulas con nombre (reutilizables via {ref}).
     %% scoring/evaluation son operadores (raiz SIN wrapper); subscales es un

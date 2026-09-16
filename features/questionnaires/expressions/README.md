@@ -121,8 +121,31 @@ su valor es de **solo lectura**: el motor lo calcula y el usuario no la responde
   documentan en [`../schema.sql`](../schema.sql) y
   [ADR 041](../../../decisions/041-origen-answer-valores-calculados.md).
 
+### Contrato de la pregunta calculada (C19)
+
+Reglas que fija la pregunta calculada (ver
+[ADR 042](../../../decisions/042-contrato-pregunta-calculada.md)):
+
+- **`text` obligatorio**: una calculada **debe** llevar `text` (es la etiqueta
+  del valor; no hay opciones que den contexto). Validación de aplicación.
+- **`type` libre, pero compatible**: `expression.output.type` debe coincidir con
+  `question.type` / `answer.data.type` (p. ej. `NUMBER`↔`number`,
+  `TEXT`↔`string`, `TIMER`↔`duration`).
+- **Sin `config`**: `config` describe cómo **responde** el usuario; una calculada
+  no lo lleva. El valor persistido es el **cálculo crudo**; el formato (redondeo,
+  unidades) es **presentación** (no hay operador `round`).
+- **No es el resultado global del instrumento**: una calculada expresa un valor
+  **derivado de la pregunta** (IMC, edad, diferencia entre ítems). El puntaje/
+  evaluación global vive en `form.expression` y `assignment.result`; poner el
+  "total" como pregunta **duplica el scoring** y provoca **doble conteo**.
+- **`all` incluye las calculadas** (literal, ver [`operands.md`](./operands.md)):
+  el scoring **selecciona** las preguntas que puntúan con `range`/`id`.
+- **Presentación**: read-only; el widget lo decide la **capa de presentación**.
+- **Progreso**: las calculadas se excluyen del progreso (numerador y
+  denominador); el 100% es alcanzable (8 respondibles + 2 calculadas = `8/8`).
+
 Ejemplo: [`examples/question-expression.jsonc`](./examples/question-expression.jsonc)
-(Total + IMC).
+(IMC y diferencia entre ítems).
 
 ## 2. Alcance y frontera
 
@@ -333,7 +356,7 @@ y [`examples/ipaq-result.jsonc`](./examples/ipaq-result.jsonc).
 | [`examples/ipaq-expression.jsonc`](./examples/ipaq-expression.jsonc) | `definitions` + `{ref}` + `time: minutes` (METs) |
 | [`examples/ipaq-result.jsonc`](./examples/ipaq-result.jsonc) | `assignment.result` con `definitions` |
 | [`examples/imc-math.jsonc`](./examples/imc-math.jsonc) | `math` anidado (demuestra el AST) |
-| [`examples/question-expression.jsonc`](./examples/question-expression.jsonc) | `question.expression`: valor autocalculado ("Total" + IMC) |
+| [`examples/question-expression.jsonc`](./examples/question-expression.jsonc) | `question.expression`: valor autocalculado (IMC, diferencia) |
 | [`examples/medical-cases.md`](./examples/medical-cases.md) | PHQ-9, CRAFFT, riesgo alto, METs |
 
 ## Fuente

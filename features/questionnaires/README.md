@@ -49,7 +49,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 | Enunciado de pregunta | `question.text` **nullable**: ítem sin enunciado propio (ej. CDI, "elige la frase"); las instrucciones generales van una vez en `form.instructions` (la presentación decide el contexto) | ✅ `question.text` sin `NOT NULL` (C17) |
 | Config por tipo | `config` JSONB en `question`, forma según `type` (ver `catalog/question_types/`) | ✅ `question.config` |
 | Scoring / evaluación | **AST** en `form.expression` (`scoring`/`evaluation`/`subscales`); resultado en `assignment.result` como `{value, type}` | ✅ JSONB (ver `expressions/`) |
-| Valor por pregunta | `question.expression` (AST, una expresión) = valor autocalculado solo lectura; se persiste como `answer` (`source = CALCULATED`, snapshot) | ✅ `question.expression`, `answer.source` (ver ADR 041) |
+| Valor por pregunta | `question.expression` (AST, una expresión) = valor autocalculado solo lectura; `text` obligatorio, `type` compatible, sin `config`, no es el resultado global; se persiste como `answer` (`source = CALCULATED`, snapshot) | ✅ `question.expression`, `answer.source` (ver ADR 041/042) |
 | Orden de pregunta | En la relación: `questions_form.order` / `questions_section.order` (la pregunta es reutilizable) | ✅ `order` en los puentes |
 | Metadatos | Tablas normalizadas | ✅ `category`, `cie11_code`, `evaluation_topic`, `reference`, `estimated_duration`, `age_group`, `target_sex`, `population` + puentes |
 | Schema PostgreSQL | `form` | ✅ Documentado en comentarios del DDL (`-- Schema: form`); aún no se ejecuta `CREATE SCHEMA form` |

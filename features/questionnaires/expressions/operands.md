@@ -181,6 +181,13 @@ interface SubjectReference {
 | por rango | `{ range }` | `{ "range": [1, 9] }` | Sumar un rango de preguntas |
 | condición | `{ condition }` | ver bloque siguiente | Filtro complejo |
 
+> **`all` incluye las calculadas.** `{ all: true }` es literal: lee **todas** las
+> preguntas con valor, **incluidas** las autocalculadas (`question.expression`).
+> Si un instrumento tiene calculadas (p. ej. un IMC numérico) y el scoring usa
+> `{ all: true }`, esas también entrarán en el `aggregate` → **doble conteo /
+> puntaje inflado**. Para puntuar **solo las respondibles**, usa `{ range }` o
+> `{ id }` explícito (ver [ADR 042](../../../decisions/042-contrato-pregunta-calculada.md)).
+
 **Formas:**
 
 ```jsonc

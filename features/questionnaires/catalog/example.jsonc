@@ -111,16 +111,29 @@
         {
           /* Pregunta AUTOCALCULADA (solo lectura): su valor sale de "expression",
              no la responde el usuario. Se persiste como answer con source=CALCULATED
-             al enviar (snapshot). Ver ../expressions/README.md (C7c). */
+             al enviar (snapshot). Contrato (ADR 042): text obligatorio, type
+             compatible con el output, SIN config, y no el resultado global del
+             instrumento (eso es form.expression). Ver ../expressions/README.md (C19). */
           "type": "NUMBER",
-          "text": "Puntaje total (calculado)",
+          "text": "IMC (calculado)",
           "order": 4,
           "id": 0,
           "expression": {
-            "type": "aggregate",
-            "operator": "sum",
+            "type": "math",
+            "operator": "/",
             "args": [
-              { "subject": { "entity": "question", "property": "value", "selector": { "range": [1, 3] } } }
+              { "subject": { "entity": "person", "property": "weight" } },
+              {
+                "expression": {
+                  "type": "math",
+                  "operator": "^",
+                  "args": [
+                    { "subject": { "entity": "person", "property": "height" } },
+                    { "const": { "value": 2, "type": "number" } }
+                  ],
+                  "output": { "type": "number" }
+                }
+              }
             ],
             "output": { "type": "number" }
           }

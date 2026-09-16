@@ -41,6 +41,15 @@ array (`number[]`).
 \* `shuffle` es opcional/aditivo. El orden determinista de las opciones es
 `option.order`.
 
+### Calculadas (`expression`)
+
+Una pregunta con `expression` (valor **autocalculado**, solo lectura) **no lleva
+`config`**: los campos de `config` describen cómo **responde** el usuario
+(`required`, `default`, `shuffle`, límites de input), y una calculada no tiene
+input. El valor persistido es el **cálculo crudo**; el formato (redondeo,
+unidades) es **presentación** (ver ADR 042). El `type` sí debe ser compatible con
+`expression.output.type`.
+
 ## Rescate de fuentes
 
 - **`RANGE`** y **`TIMER`** se rescataron de `other_projects/app_questionnaire/`

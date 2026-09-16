@@ -65,6 +65,12 @@ responde. Su valor se persiste como una fila de `answer` con
   [`../expressions/README.md`](../expressions/README.md) y
   [ADR 041](../../../decisions/041-origen-answer-valores-calculados.md)).
 
+**Progreso:** las calculadas se **excluyen** del progreso (numerador **y**
+denominador), de modo que el 100% es alcanzable. Un form con 8 respondibles y 2
+calculadas se completa en `8/8`, no `8/10`. El denominador son las preguntas
+**sin** `expression`; el numerador, las respuestas `source = USER` (ver
+[ADR 042](../../../decisions/042-contrato-pregunta-calculada.md)).
+
 ## Diferencias V1 → V2
 
 El modelo V1 (referencia `other_projects/app_questionnaire/backend/docs/bd_mermaid.mmd`)
