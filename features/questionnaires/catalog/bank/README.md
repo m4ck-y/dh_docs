@@ -28,9 +28,10 @@ nivel arriba; este directorio solo contiene **datos**.
 - **Enums sin bank**: los campos cuyo valor viene de un **enum del DDL**
   (`EUnit`, `EQuestionType`, `EAssignmentStatus`, `EBiologicalSex`, `EUrlType`)
   **no** tienen archivo de vocabulario; su fuente es `schema.sql`.
-- **`question.text` nullable**: hay instrumentos cuyos ítems **no tienen
-  enunciado** (ej. **CDI**, formato "elige la frase"). En ese caso `text` va en
-  `null`, el contexto en `form.instructions`, y se muestran **solo las opciones**.
+- **`question.text` nullable**: hay ítems **sin enunciado propio** (ej. **CDI**,
+  formato "elige la frase"). El modelo guarda `text: null` + las opciones; las
+  instrucciones generales van **una vez** en `form.instructions`. Cómo se da
+  contexto al ítem es decisión de la **presentación** (ver C17).
 - **`question.expression`** (C7c): una pregunta puede declarar `expression`
   (valor **autocalculado**, solo lectura; el usuario no la responde y su valor
   se persiste como `answer` con `source = CALCULATED`). Ningún instrumento del
@@ -122,7 +123,7 @@ docs/diagrams/catalog/instruments.csv    (metadata: nombre, descripción, edad, 
 - **C13** `list_population` (N:N).
 - **C14** prefijo `list_` en colecciones.
 - **C16** rangos `{name, min, max, unit}` + `EUnit`.
-- **C17** `question.text` nullable (ítems sin enunciado, ej. CDI).
+- **C17** `question.text` nullable (ítem sin enunciado propio, ej. CDI).
 
 **Dudas abiertas** (a resolver en el futuro):
 

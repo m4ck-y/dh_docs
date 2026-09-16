@@ -141,9 +141,10 @@ interface Section {
 }
 ```
 
-> **`question.text` es nullable (C17)**: hay instrumentos cuyos ítems **no tienen
-> enunciado** (ej. **CDI**, formato "elige la frase"); en ese caso el contexto va
-> en `form.instructions` y se muestran **solo las opciones** (`text?: string`).
+> **`question.text` es nullable (C17)**: hay ítems **sin enunciado propio**
+> (ej. **CDI**, formato "elige la frase"); las instrucciones generales van **una
+> vez** en `form.instructions` (`text?: string`). Cómo se da contexto al ítem es
+> decisión de la **presentación** (ver C17).
 
 > **`list_sections` no es un gap**: su forma sale del ERD del proyecto (tabla
 > `section` + puente `questions_section`), no del `[]` vacío de la referencia.

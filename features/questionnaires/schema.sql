@@ -97,7 +97,7 @@ COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y
 CREATE TABLE question (
     id SERIAL PRIMARY KEY,
     key VARCHAR(100) NOT NULL,
-    text TEXT,          -- Enunciado de la pregunta. NULLABLE: hay instrumentos sin enunciado (ej. CDI, formato "elige la frase"); el contexto va en form.instructions. Ver catalog/bank/README.md
+    text TEXT,          -- Enunciado de la pregunta. NULLABLE: hay items sin enunciado propio (ej. CDI, "elige la frase"); las instrucciones generales van en form.instructions. Ver catalog/bank/README.md
     "type" EQuestionType NOT NULL,
     config JSONB,       -- Configuracion segun el tipo de pregunta (ver catalog/question_types/)
     condition JSONB,    -- Condicion de visibilidad de la pregunta (AST booleano). Ausente = siempre visible. Ver expressions/conditions.md
@@ -108,7 +108,7 @@ COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a for
 
 COMMENT ON COLUMN question.key IS 'Identificador único de la pregunta (ej. "satisfaction_rating"). Se usa en las expresiones de scoring/evaluación y en las respuestas.';
 
-COMMENT ON COLUMN question.text IS 'Enunciado de la pregunta. NULLABLE: hay instrumentos cuyos ítems no tienen enunciado (ej. CDI, formato "elige la frase"); en ese caso el contexto vive en form.instructions y se muestran solo las opciones. Ver catalog/bank/README.md.';
+COMMENT ON COLUMN question.text IS 'Enunciado de la pregunta. NULLABLE: hay items sin enunciado propio (ej. CDI, formato "elige la frase"). Las instrucciones generales del instrumento viven una sola vez en form.instructions; como se da contexto al item en la presentacion es decision de esa capa (ver C17). Ver catalog/bank/README.md.';
 
 COMMENT ON COLUMN question."type" IS 'Tipo de pregunta segun el enum EQuestionType: TEXT, TEXT_LONG, NUMBER, SINGLE_CHOICE, MULTIPLE_CHOICE, DATE, DATE_TIME, TIMER, RANGE.';
 

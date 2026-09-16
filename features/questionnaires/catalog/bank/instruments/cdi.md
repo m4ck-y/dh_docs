@@ -22,7 +22,7 @@
 
 En las últimas dos semanas
 
-> Cada ítem no tiene enunciado: elige la frase que mejor te describe.
+> Cada ítem no tiene enunciado propio; el contexto lo da la instrucción del formulario.
 
 ---
 

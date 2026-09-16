@@ -57,7 +57,7 @@
 | C14 | Prefijo `list_` en colecciones | Modelo | ✅ |
 | C15 | ¿`target_*` (sex/age/population) dentro de `condition`? | Modelo | ⏳ |
 | C16 | Rangos: `min`/`max`/`unit` + `name` legible (Diseño C) | Modelo | ✅ |
-| C17 | `question.text` nullable (ítems sin enunciado, ej. CDI) | Modelo | ✅ |
+| C17 | `question.text` nullable (ítem sin enunciado propio) | Modelo | ✅ |
 | C18 | `form.type` (`EFormType`) formalizado | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
@@ -370,13 +370,20 @@
   `reference/questionnaire-engine.md` (nota de destino).
 - **Pendiente**: `question.config` (¿también `unit`? hoy fuera de alcance).
 
-### C17 — `question.text` nullable (ítems sin enunciado, ej. CDI) ✅ (resuelto)
+### C17 — `question.text` nullable (ítem sin enunciado propio) ✅ (resuelto)
 
 - **Qué era**: `question.text` era `NOT NULL`, pero hay instrumentos cuyos ítems
-  **no tienen enunciado** (ej. **CDI**, formato "elige la frase": las 3 opciones
-  son las frases y el enunciado no existe).
-- **Decisión**: `question.text` **nullable**. Si es `null`, el contexto vive en
-  `form.instructions` y se muestran **solo las opciones**.
+  **no tienen enunciado propio** (ej. **CDI**, formato "elige la frase": las 3
+  opciones *son* las frases y no existe un enunciado separado).
+- **Decisión (modelo)**: `question.text` es **nullable**. El modelo guarda
+  `text: null` + las opciones del ítem; las **instrucciones generales** del
+  instrumento viven **una sola vez** en `form.instructions`.
+- **Presentación (no es modelo)**: cómo se da **contexto** a un ítem con
+  `text: null` es decisión de la **capa de presentación** (frontend, móvil, CLI,
+  API…), no del modelo. Opciones válidas:
+  - mostrar `form.instructions` **una vez** por bloque/carrusel de preguntas, o
+  - **replicarlo en cada ítem** (mostrar la instrucción antes de sus opciones).
+  El modelo **no** impone "solo las opciones".
 - **Reflejo**: `schema.sql` (`question.text` sin `NOT NULL` + `COMMENT`),
   `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md` §5 (nota),
   `catalog/bank/README.md` (convención), `features/questionnaires/README.md`
