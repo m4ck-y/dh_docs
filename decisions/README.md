@@ -49,6 +49,7 @@ Cada decision tecnica importante debe documentarse siguiendo el formato de **ADR
 - **[041: Origen de la `answer` (`source`) y persistencia de valores calculados](041-origen-answer-valores-calculados.md)**
 - **[042: Contrato de la pregunta calculada (`question.expression`)](042-contrato-pregunta-calculada.md)**
 - **[043: AHF como componente/servicio dedicado (fuera del motor de formularios)](043-ahf-componente-dedicado.md)**
+- **[044: Catálogos con gobernanza (vocabularios controlados extensibles)](044-catalogos-gobernados.md)**
 
 ---
 *Para crear una nueva decision, utiliza la plantilla `_template.md` (proximamente).*
