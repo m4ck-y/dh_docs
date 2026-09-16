@@ -50,6 +50,7 @@ Cada decision tecnica importante debe documentarse siguiendo el formato de **ADR
 - **[042: Contrato de la pregunta calculada (`question.expression`)](042-contrato-pregunta-calculada.md)**
 - **[043: AHF como componente/servicio dedicado (fuera del motor de formularios)](043-ahf-componente-dedicado.md)**
 - **[044: Catálogos con gobernanza (vocabularios controlados extensibles)](044-catalogos-gobernados.md)**
+- **[045: Historia clínica — componentes/endpoints de dominio vs formularios](045-historia-clinica-componentes-vs-formularios.md)**
 
 ---
 *Para crear una nueva decision, utiliza la plantilla `_template.md` (proximamente).*

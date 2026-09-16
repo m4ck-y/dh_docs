@@ -40,6 +40,18 @@
 - Son **reglas de activación** (condición → cuestionario), **no** secciones del
   expediente. ¿Dónde viven (feature `mapper`, doc aparte)?
 
+## Gaps de la fuente (drawio)
+
+Campos que la **fuente** no define, detectados al reconciliar la ficha A con el
+`.mmd` (ver `features/clinical_history/sections/README.md`):
+
+- **G1 — Nombre del tutor (`1.1.1`)**: ausente en el drawio/`.mmd`; se agrega en
+  la ficha como **divergencia intencional** (necesario para identificar al
+  tutor/responsable). Pendiente: confirmar si se actualiza el drawio/`.mmd`.
+- **G2 — Grupo étnico**: el drawio trae el TODO **"FALTA PONER GRUPO ÉTNICO"**.
+  No hay pregunta, opciones ni columna de dominio (`docs/db` no tiene etnia).
+  Pendiente: definir vocabulario + destino (¿`people.sociocultural_identity`?).
+
 ## Notas
 
 - Estos pendientes no bloquean las fichas de estructura de **A** (lista), **C** y

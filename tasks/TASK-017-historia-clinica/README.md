@@ -23,7 +23,8 @@ cuestionarios `1,2,3`). Genera sus fichas de estructura y sus vínculos a domini
 
 ## Estado y siguiente paso
 
-- **A (Registro)**: ficha (`sections/A_registro.md`) y mapper listos.
+- **A (Registro)**: **componente/endpoint de dominio** (ADR 045) — spec en
+  `sections/A_registro.md` y contrato en `mapper/views/clinical_history/A_registro.md`.
 - **C (APNP)** y **E (Padecimiento actual)**: **siguiente** — redactar fichas
   desde `docs/diagrams/0_HISTORIA_CLINICA/flows/{apnp,padecimiento_actual}.mmd`.
 - **B (AHF)**: **componente propio** (ADR 043), **modelado pendiente** — no es
@@ -31,7 +32,14 @@ cuestionarios `1,2,3`). Genera sus fichas de estructura y sus vínculos a domini
 - **D (Antecedentes PP)**: **bloqueada** por **H2** (grupos repetibles) →
   ver [`planning/OPEN-QUESTIONS.md`](planning/OPEN-QUESTIONS.md).
 - **Banco** (`features/questionnaires/catalog/bank/clinical_history/`): vacío
-  (espera a cerrar D).
+  (solo forms C/E/D; A y B son componentes).
+
+## Proceso por sección
+
+Antes de crear el JSON de una sección: **reconciliar la ficha con su `.mmd`**
+(cadena de verdad `drawio → .mmd → ficha → bank JSON`; divergencias y TODO de la
+fuente se anotan — ver
+[`features/clinical_history/sections/README.md`](../../features/clinical_history/sections/README.md)).
 
 ## Objetivos
 

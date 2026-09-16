@@ -1,4 +1,8 @@
-# A. REGISTRO — Mapper DB
+# A. REGISTRO — Componente → Dominio
+
+> **A es un componente/endpoint de dominio** (ADR 045), no un `form`: lee y
+> edita directamente el perfil de la persona. Este mapa documenta **qué entidad
+> y columna** toca cada campo del componente (read + write-through).
 
 > **Convención:**
 > - 🟢 `schema.entidad.columna` — campo ya modelado en la DB
@@ -7,7 +11,7 @@
 
 ---
 
-## 1.0 ¿Requiere apoyo de tutor o responsable? _(pregunta condicional)_
+## 1.0 ¿Requiere apoyo de tutor o responsable? _(condicional)_
 
 🟢 `care.person_responsible` — la existencia de un registro implica "sí requiere tutor"
 

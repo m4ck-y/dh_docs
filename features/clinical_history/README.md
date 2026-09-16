@@ -1,12 +1,12 @@
 # Historia clínica
 
 Especificaciones de la **historia clínica** del Hospital Digital. Se compone de
-formularios estructurales (secciones A-E) que se modelan y almacenan con el
-mismo motor/catálogo de formularios del módulo
-[`../questionnaires/`](../questionnaires/) (`form.type = CLINICAL_HISTORY`).
+**formularios** (secciones C, D, E — motor de [`../questionnaires/`](../questionnaires/),
+`form.type = CLINICAL_HISTORY`) y **componentes/endpoints de dominio** (A, B),
+según el criterio de [ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md).
 
-**Estado:** En definición (sección A modelada; AHF = componente propio, modelado
-pendiente).
+**Estado:** En definición (A = componente de dominio; AHF = componente propio,
+modelado pendiente).
 
 **Depende de:** [`questionnaires/`](../questionnaires/) — motor, schema (`form`,
 `question`, `section`, `answer`, `assignment`) y banco
@@ -16,7 +16,7 @@ pendiente).
 
 | Carpeta | Contenido |
 |---|---|
-| [`sections/`](./sections/) | Una ficha por sección del expediente (estructura del formulario: preguntas, opciones, subrutas). |
+| [`sections/`](./sections/) | Una ficha por sección del expediente (estructura del `form` **o** del componente: preguntas/opciones/subrutas). |
 | [`proposals/`](./proposals/) | Prototipos de UI (propuestas, no diseño final). |
 
 **Mapeo a dominio:** los vínculos pregunta → propiedad de dominio viven en el
@@ -30,15 +30,15 @@ feature [`../mapper/`](../mapper/) (vista en
 
 | # | Sección | Ficha | Vínculos (mapper) |
 |---|---|---|---|
-| A | Registro | [`sections/A_registro.md`](./sections/A_registro.md) | [`views/clinical_history/A_registro.md`](../mapper/views/clinical_history/A_registro.md) |
+| A | Registro | componente de dominio ([ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md)) — spec en [`sections/A_registro.md`](./sections/A_registro.md) | [contrato dominio](../mapper/views/clinical_history/A_registro.md) |
 | B | Antecedentes heredofamiliares | componente propio ([ADR 043](../../decisions/043-ahf-componente-dedicado.md)) | — |
 | C | APNP | ⏳ | ⏳ |
 | D | Antecedentes personales patológicos | ⏳ | ⏳ |
 | E | Padecimiento actual | ⏳ | ⏳ |
 
 > **Bloqueos**: **D** (grupos repetibles) tiene decisión abierta (**H2**).
-> **B** (AHF) es un **componente propio** (ADR 043), con modelado pendiente.
-> C y E pueden redactarse desde los `.mmd`.
+> **A** y **B** son **componentes de dominio** (ADR 045 / ADR 043), con modelado
+> pendiente. C y E pueden redactarse desde los `.mmd`.
 
 ## Propuestas UI
 
@@ -48,8 +48,13 @@ feature [`../mapper/`](../mapper/) (vista en
 
 ## Convención
 
+- **Cadena de verdad**: `drawio → .mmd → ficha → artefacto` (`bank JSON` para un
+  `form`; contrato de dominio para un componente). La ficha es **derivada** y
+  debe **reconciliarse** con el `.mmd` antes de crear el artefacto; las
+  divergencias intencionales y los TODO de la fuente se anotan (ver
+  [`sections/README.md`](./sections/README.md)).
 - Cada sección produce una ficha `<seccion>.md` en `sections/`.
-- El mapeo a dominio (pregunta → entidad/columna) vive en el feature
+- El mapeo a dominio (campo → entidad/columna) vive en el feature
   [`../mapper/`](../mapper/): contrato en `mapper/README.md` y vista legible en
   `mapper/views/<dominio>/`.
 - Contenido en español; carpetas y nombres de archivo en inglés `snake_case`.
