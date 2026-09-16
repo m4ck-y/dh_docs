@@ -383,7 +383,7 @@
   API…), no del modelo. Opciones válidas:
   - mostrar `form.instructions` **una vez** por bloque/carrusel de preguntas, o
   - **replicarlo en cada ítem** (mostrar la instrucción antes de sus opciones).
-  El modelo **no** impone "solo las opciones".
+  El modelo no fija cómo se presenta; solo permite `text: null`.
 - **Reflejo**: `schema.sql` (`question.text` sin `NOT NULL` + `COMMENT`),
   `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md` §5 (nota),
   `catalog/bank/README.md` (convención), `features/questionnaires/README.md`
