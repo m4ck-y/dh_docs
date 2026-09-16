@@ -5,7 +5,8 @@ formularios estructurales (secciones A-E) que se modelan y almacenan con el
 mismo motor/catálogo de formularios del módulo
 [`../questionnaires/`](../questionnaires/) (`form.type = CLINICAL_HISTORY`).
 
-**Estado:** En definición (sección A modelada; AHF con propuesta de UI).
+**Estado:** En definición (sección A modelada; AHF = componente propio, modelado
+pendiente).
 
 **Depende de:** [`questionnaires/`](../questionnaires/) — motor, schema (`form`,
 `question`, `section`, `answer`, `assignment`) y banco
@@ -30,13 +31,13 @@ feature [`../mapper/`](../mapper/) (vista en
 | # | Sección | Ficha | Vínculos (mapper) |
 |---|---|---|---|
 | A | Registro | [`sections/A_registro.md`](./sections/A_registro.md) | [`views/clinical_history/A_registro.md`](../mapper/views/clinical_history/A_registro.md) |
-| B | Antecedentes heredofamiliares | ⏳ | ⏳ |
+| B | Antecedentes heredofamiliares | componente propio ([ADR 043](../../decisions/043-ahf-componente-dedicado.md)) | — |
 | C | APNP | ⏳ | ⏳ |
 | D | Antecedentes personales patológicos | ⏳ | ⏳ |
 | E | Padecimiento actual | ⏳ | ⏳ |
 
-> **Bloqueos**: **B** (AHF: catálogo vs form) y **D** (grupos repetibles) tienen
-> decisiones abiertas. Ver [TASK-017 / preguntas abiertas](../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md).
+> **Bloqueos**: **D** (grupos repetibles) tiene decisión abierta (**H2**).
+> **B** (AHF) es un **componente propio** (ADR 043), con modelado pendiente.
 > C y E pueden redactarse desde los `.mmd`.
 
 ## Propuestas UI

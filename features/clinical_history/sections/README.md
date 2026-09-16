@@ -7,7 +7,7 @@ formulario (preguntas, opciones y subrutas) tal como debe modelarse como `form`
 | Sección | Ficha | Estado |
 |---|---|---|
 | A - Registro | [`A_registro.md`](./A_registro.md) | ✅ |
-| B - Antecedentes heredofamiliares | — | ⏳ pendiente |
+| B - Antecedentes heredofamiliares | componente propio ([ADR 043](../../../decisions/043-ahf-componente-dedicado.md)) | ⏳ modelado pendiente |
 | C - APNP | — | ⏳ pendiente |
 | D - Antecedentes personales patológicos | — | ⏳ pendiente |
 | E - Padecimiento actual | — | ⏳ pendiente |

@@ -3,18 +3,21 @@
 > Stoppers y decisiones sin resolver que bloquean la modelación de secciones.
 > Estado: 2026-09-15.
 
-## H1 — AHF (sección B): ¿catálogo + dominio, o form con secciones?
+## H1 — AHF (sección B): componente/servicio dedicado ✅ (arquitectura decidida)
 
-- **Problema**: AHF es una **matriz** familiar × enfermedad (6 familiares fijos ×
-  catálogo de ~60 enfermedades con CIE-11), **no** una lista plana de preguntas.
-  El estado de los prototipos lo confirma (`registered[key].families`,
-  `viveState[fi]`). Ver [`proposals/family_condition/`](../../../features/clinical_history/proposals/family_condition/).
-- **Alternativas**:
-  1. **Catálogo `disease` + entidad de dominio** (`family_condition`,
-     `family_status`) — recomendado; encaja con el feature `mapper`.
-  2. **Form con secciones por familiar** (6) o repetible, con 13
-     `MULTIPLE_CHOICE` + "Otro" por familiar.
-- **Bloquea**: ficha `sections/B_...` y su JSON en el banco.
+- **Decisión** ([ADR 043](../../../decisions/043-ahf-componente-dedicado.md)):
+  AHF es una **matriz** familiar × enfermedad (~6 × ~60, CIE-11), **no** una
+  lista de preguntas → **no** se modela como `form.section`. Es un
+  **componente/servicio dedicado** (captura tipo family-tree) con endpoint
+  propio, **fuera** de `form`/`answer`. Ver
+  [`proposals/family_condition/`](../../../features/clinical_history/proposals/family_condition/).
+- **Pendiente (modelado de datos)**: las entidades de dominio (`family_member`,
+  `family_condition`, catálogo `disease`/`disease_category`) y su endpoint **no**
+  se modelan en esta fase. Sub-decisiones abiertas: schema de destino
+  (`family_history` vs `health_profile`), reuso de CIE-11 (`form.cie11_code`) y
+  grano de "Otro".
+- **Impacto**: la HC `form` cubre A, C, D, E; B queda fuera del motor (sin
+  `assignment`/`answer`/progreso).
 
 ## H2 — Grupos repetibles (sección D)
 

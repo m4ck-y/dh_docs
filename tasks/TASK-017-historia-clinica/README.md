@@ -26,18 +26,20 @@ cuestionarios `1,2,3`). Genera sus fichas de estructura y sus vínculos a domini
 - **A (Registro)**: ficha (`sections/A_registro.md`) y mapper listos.
 - **C (APNP)** y **E (Padecimiento actual)**: **siguiente** — redactar fichas
   desde `docs/diagrams/0_HISTORIA_CLINICA/flows/{apnp,padecimiento_actual}.mmd`.
-- **B (AHF)** y **D (Antecedentes PP)**: **bloqueadas** por decisiones abiertas
-  → ver [`planning/OPEN-QUESTIONS.md`](planning/OPEN-QUESTIONS.md) (H1, H2).
+- **B (AHF)**: **componente propio** (ADR 043), **modelado pendiente** — no es
+  sección del `form`.
+- **D (Antecedentes PP)**: **bloqueada** por **H2** (grupos repetibles) →
+  ver [`planning/OPEN-QUESTIONS.md`](planning/OPEN-QUESTIONS.md).
 - **Banco** (`features/questionnaires/catalog/bank/clinical_history/`): vacío
-  (espera a cerrar B/D).
+  (espera a cerrar D).
 
 ## Objetivos
 
-- [ ] Fichas de estructura `features/clinical_history/sections/` (A lista; B-E pendientes).
+- [ ] Fichas de estructura `features/clinical_history/sections/` (A lista; C y E
+      siguientes; B = componente propio; D pendiente por H2).
 - [ ] JSON de HC en `features/questionnaires/catalog/bank/clinical_history/`.
 - [ ] Vínculos pregunta → dominio (vista en `features/mapper/views/clinical_history/`).
-- [ ] Mapper de AHF (sección B).
-- [ ] Propuestas UI de AHF → definitivas.
+- [ ] Modelado de AHF (componente propio): entidades + endpoint (pendiente, ADR 043).
 
 ## Enlaces rápidos
 

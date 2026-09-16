@@ -48,6 +48,7 @@ Cada decision tecnica importante debe documentarse siguiendo el formato de **ADR
 - **[040: Propiedades Derivadas en el AST (`question.value`, `form.result.*`)](040-ast-propiedades-derivadas.md)**
 - **[041: Origen de la `answer` (`source`) y persistencia de valores calculados](041-origen-answer-valores-calculados.md)**
 - **[042: Contrato de la pregunta calculada (`question.expression`)](042-contrato-pregunta-calculada.md)**
+- **[043: AHF como componente/servicio dedicado (fuera del motor de formularios)](043-ahf-componente-dedicado.md)**
 
 ---
 *Para crear una nueva decision, utiliza la plantilla `_template.md` (proximamente).*

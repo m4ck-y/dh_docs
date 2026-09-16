@@ -4,6 +4,11 @@
 > `source/0_DEMO_HISTORIA_CLINICA.drawio` (tab "B - ANTECEDENTES
 > HEREDOFAMILIARES") y conversión `flows/antecedentes_heredofamiliares.mmd`.
 
+> **Nota (ADR 043):** AHF es un **componente/servicio dedicado** (fuera del motor
+> de formularios). Estas vistas son prototipos de **ese componente**; su
+> **modelado de datos queda pendiente** (ver
+> [ADR 043](../../../../decisions/043-ahf-componente-dedicado.md)).
+
 ## Archivos en este directorio
 
 | Archivo | Tipo | Descripción |
