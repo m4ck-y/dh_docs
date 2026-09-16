@@ -1,0 +1,6 @@
+[
+  { "value": "MOTHER", "label": "Madre", "description": null, "status": "VALIDATED", "merged_into": null, "order": 0 },
+  { "value": "FATHER", "label": "Padre", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 },
+  { "value": "CAREGIVER", "label": "Cuidador(a)", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 },
+  { "value": "LEGAL_GUARDIAN", "label": "Tutor legal", "description": null, "status": "VALIDATED", "merged_into": null, "order": 3 }
+]

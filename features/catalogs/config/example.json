@@ -1,0 +1,47 @@
+[
+  {
+    "key": "occupation",
+    "name": "Ocupación",
+    "description": "Ocupaciones declaradas por el usuario.",
+    "engine": "POSTGRES",
+    "config": { "schema": "catalog", "table": "occupation" },
+    "extensible": true,
+    "governed": true
+  },
+  {
+    "key": "religion",
+    "name": "Religión",
+    "description": "Religiones declaradas por el usuario.",
+    "engine": "POSTGRES",
+    "config": { "schema": "catalog", "table": "religion" },
+    "extensible": true,
+    "governed": true
+  },
+  {
+    "key": "housing_type",
+    "name": "Tipo de vivienda",
+    "description": "Taxonomía fija de tipos de vivienda.",
+    "engine": "POSTGRES",
+    "config": { "schema": "catalog", "table": "housing_type" },
+    "extensible": false,
+    "governed": false
+  },
+  {
+    "key": "postal_code",
+    "name": "Código postal",
+    "description": "Catálogo masivo de códigos postales (baja mutabilidad).",
+    "engine": "CLICKHOUSE",
+    "config": { "database": "catalogs", "table": "postal_code" },
+    "extensible": false,
+    "governed": false
+  },
+  {
+    "key": "interest_tags",
+    "name": "Intereses",
+    "description": "Etiquetas de interés de la persona.",
+    "engine": "MONGO",
+    "config": { "database": "dh_catalogs", "collection": "items", "filter": { "catalog": "interest_tags" } },
+    "extensible": true,
+    "governed": false
+  }
+]

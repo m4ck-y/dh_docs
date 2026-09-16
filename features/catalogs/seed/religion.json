@@ -1,0 +1,4 @@
+[
+  { "value": "CATHOLIC", "label": "Católica", "description": null, "status": "VALIDATED", "merged_into": null, "order": 0 },
+  { "value": "CHRISTIAN", "label": "Cristiana", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 }
+]

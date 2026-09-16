@@ -1,0 +1,5 @@
+[
+  { "value": "FEMALE", "label": "Femenino", "description": null, "status": "VALIDATED", "merged_into": null, "order": 0 },
+  { "value": "MALE", "label": "Masculino", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 },
+  { "value": "NON_BINARY", "label": "No binario", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 }
+]

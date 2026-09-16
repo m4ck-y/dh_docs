@@ -1,0 +1,37 @@
+classDiagram
+    %% ===============================================================
+    %% Feature catalogs — vista lógica / documental (motor-agnóstico).
+    %%   - CatalogConfig: el REGISTRO (un documento por catálogo; vive en
+    %%     Mongo: dh_catalogs.catalogs). `engine` (EStorageEngine:
+    %%     POSTGRES | CLICKHOUSE | MONGO) discrimina el motor; `config`
+    %%     lleva la forma específica (validada contra engine):
+    %%       POSTGRES   -> { schema, table }
+    %%       CLICKHOUSE -> { database, table }
+    %%       MONGO      -> { database, collection, filter? }
+    %%   - CatalogItem: el ÍTEM (shape canónico); vive en el motor indicado.
+    %%     status ∈ ECatalogStatus (PENDING, VALIDATED, MERGED, REJECTED).
+    %% Ver: README.md, config/README.md, postgres/README.md,
+    %% clickhouse/README.md, seed/README.md. Decisión: ADR 044.
+    %% ===============================================================
+
+    class CatalogConfig {
+        +string key
+        +string name
+        +string description
+        +EStorageEngine engine
+        +object config
+        +bool extensible
+        +bool governed
+    }
+
+    class CatalogItem {
+        +string value
+        +string label
+        +string description
+        +ECatalogStatus status
+        +string merged_into
+        +int order
+    }
+
+    CatalogConfig "1" *-- "0..*" CatalogItem : items
+    CatalogItem "1" o-- "0..1" CatalogItem : merged_into
