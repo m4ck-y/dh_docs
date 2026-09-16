@@ -1,7 +1,7 @@
 classDiagram
     %% ===============================================================
     %% Vista de documentos (MongoDB) del modelo de ejecución V2.
-    %% Cada 'assignment' es un evento/documento raíz; sus 'answers' van
+    %% Cada 'assignment' es un evento/documento raíz; sus 'list_answers' van
     %% embebidas. 'Form' se referencia (es compartido e inmutable).
     %% ===============================================================
 
@@ -19,7 +19,7 @@ classDiagram
         %% {definitions?, scoring?, evaluation?, subscales?}; cada valor {value, type}
         +Jsonb result
         +Scheduled scheduled
-        +Answer[] answers
+        +Answer[] list_answers
     }
 
     class Scheduled {
@@ -52,8 +52,8 @@ classDiagram
         +Jsonb expression
     }
 
-    %% Assignment embebe sus answers (composición)
-    Assignment "1" *-- "0..*" Answer : contiene
+    %% Assignment embebe sus list_answers (composición)
+    Assignment "1" *-- "0..*" Answer : list_answers
     %% Scheduled es un subdocumento opcional embebido (solo flujo programado)
     Assignment "1" *-- "0..1" Scheduled : programa
     %% Form se referencia (agregación), no se embebe

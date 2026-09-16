@@ -31,6 +31,10 @@ nivel arriba; este directorio solo contiene **datos**.
 - **`question.text` nullable**: hay instrumentos cuyos ítems **no tienen
   enunciado** (ej. **CDI**, formato "elige la frase"). En ese caso `text` va en
   `null`, el contexto en `form.instructions`, y se muestran **solo las opciones**.
+- **`question.expression`** (C7c): una pregunta puede declarar `expression`
+  (valor **autocalculado**, solo lectura; el usuario no la responde y su valor
+  se persiste como `answer` con `source = CALCULATED`). Ningún instrumento del
+  banco lo usa hoy. Ejemplo: `../../expressions/examples/question-expression.jsonc`.
 - **`population` = grupo objetivo NO etario** (contexto/condición clínica). Las
   etiquetas que solo describen edad **no** van aquí: se expresan en
   `list_age_groups`. Excluidas por eso: `Adultos` (IPAQ, ya `18–65`) y
