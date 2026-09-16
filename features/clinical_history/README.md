@@ -32,13 +32,13 @@ feature [`../mapper/`](../mapper/) (vista en
 |---|---|---|---|
 | A | Registro | componente de dominio ([ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md)) — spec en [`sections/A_registro.md`](./sections/A_registro.md) | [contrato dominio](../mapper/views/clinical_history/A_registro.md) |
 | B | Antecedentes heredofamiliares | componente propio ([ADR 043](../../decisions/043-ahf-componente-dedicado.md)) | — |
-| C | APNP | ⏳ | ⏳ |
+| C | APNP | [`sections/C_apnp.md`](./sections/C_apnp.md) | ⏳ |
 | D | Antecedentes personales patológicos | ⏳ | ⏳ |
-| E | Padecimiento actual | ⏳ | ⏳ |
+| E | Padecimiento actual | [`sections/E_padecimiento_actual.md`](./sections/E_padecimiento_actual.md) | ⏳ |
 
 > **Bloqueos**: **D** (grupos repetibles) tiene decisión abierta (**H2**).
 > **A** y **B** son **componentes de dominio** (ADR 045 / ADR 043), con modelado
-> pendiente. C y E pueden redactarse desde los `.mmd`.
+> pendiente. C y E tienen ficha lista (banco JSON diferido).
 
 ## Propuestas UI
 

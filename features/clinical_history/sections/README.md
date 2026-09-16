@@ -9,9 +9,9 @@ dominio** (A/B) — ver ADR 045.
 |---|---|---|
 | A - Registro | [`A_registro.md`](./A_registro.md) — componente de dominio | ✅ (ADR 045) |
 | B - Antecedentes heredofamiliares | componente propio ([ADR 043](../../../decisions/043-ahf-componente-dedicado.md)) | ⏳ modelado pendiente |
-| C - APNP | — | ⏳ pendiente |
+| C - APNP | [`C_apnp.md`](./C_apnp.md) | ✅ |
 | D - Antecedentes personales patológicos | — | ⏳ pendiente |
-| E - Padecimiento actual | — | ⏳ pendiente |
+| E - Padecimiento actual | [`E_padecimiento_actual.md`](./E_padecimiento_actual.md) | ✅ |
 
 Fuente de los flujos: `docs/diagrams/0_HISTORIA_CLINICA/flows/`.
 
