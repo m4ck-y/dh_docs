@@ -31,7 +31,7 @@ feature [`../mapper/`](../mapper/) (vista en
 | # | Sección | Ficha | Vínculos (mapper) |
 |---|---|---|---|
 | A | Registro | componente de dominio ([ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md)) — spec en [`sections/A_registro.md`](./sections/A_registro.md) | [contrato dominio](../mapper/views/clinical_history/A_registro.md) |
-| B | Antecedentes heredofamiliares | componente propio ([ADR 043](../../decisions/043-ahf-componente-dedicado.md)) | — |
+| B | Antecedentes heredofamiliares | componente propio ([ADR 043](../../decisions/043-ahf-componente-dedicado.md)) — spec en [`sections/B_ahf.md`](./sections/B_ahf.md) | — |
 | C | APNP | [`sections/C_apnp.md`](./sections/C_apnp.md) | ⏳ |
 | D | Antecedentes personales patológicos | ⏳ | ⏳ |
 | E | Padecimiento actual | [`sections/E_padecimiento_actual.md`](./sections/E_padecimiento_actual.md) | ⏳ |
