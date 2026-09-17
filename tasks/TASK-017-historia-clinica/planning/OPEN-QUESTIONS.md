@@ -62,18 +62,19 @@
   instrumentos faltantes** del banco (ZARIT-CBI, SF-12, ASQ-15, AES-S, CTH, ASRS,
   EDAH, DTS, SPIN, TAS-20, DAI-10).
 
-## H5 — Composición de sección híbrida (D)
+## H5 — Composición de sección híbrida (D) ✅ (resuelto)
 
-- **Problema**: D mezcla `form` (preguntas planas: tabaco/alcohol/drogas/donación)
+- **Problema**: D mezcla `form` (preguntas lineales: tabaco/alcohol/drogas/donación)
   y **componentes** (registros: alergias/cirugías/lesiones/transfusiones/
-  hospitalizaciones). El `form` se crea **sin** los componentes; el front los
-  **inyecta** en el orden de la sección.
+  hospitalizaciones). El `form` se crea **sin** los componentes.
 - **Decidido** ([ADR 045](../../../decisions/045-historia-clinica-componentes-vs-formularios.md)):
-  el front reconoce la sección híbrida **por el `key` (o `id`) del `form`** —
-  registro en el front (`key → componentes + orden`), **sin** cambiar el shape del
-  `form`.
-- **Pendiente**: dónde vive ese **registro de composición** (constante del front /
-  doc de contrato) y el **orden/posición** exacto de cada componente dentro de D.
+  - El registro de composición vive en el **front** (definición **estática**); **no**
+    se modela (ni en el `form` ni en BD).
+  - El front reconoce la sección por el **`key`/`uuid` del `form`** y **ancla** cada
+    componente al **`key`/`uuid` de la sección o pregunta** donde se **intercala**.
+  - **No** se toca el `form`: solo se almacenan preguntas lineales (shape intacto).
+- **Detalle del front** (no se modela): el orden/posición concreta de cada
+  componente dentro de D.
 
 ## Gaps de la fuente (drawio)
 
