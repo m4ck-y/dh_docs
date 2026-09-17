@@ -73,8 +73,12 @@ Los tabs **ANEXO C** ([`activation/anexo_c.mmd`](../../diagrams/0_HISTORIA_CLINI
 y **ANEXO D** ([`activation/anexo_d.mmd`](../../diagrams/0_HISTORIA_CLINICA/activation/anexo_d.mmd))
 del drawio (`docs/diagrams/0_HISTORIA_CLINICA/`) son **reglas de activación**
 (*respuesta de la HC → cuestionario habilitado*), **no** secciones del expediente.
-**Pendiente ([H4](../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md))**:
-dónde viven.
+**Viven en el `form.condition` del instrumento** que se habilita (mecanismo
+[ADR 039](../../decisions/039-condicion-visibilidad-ast.md): *"el formulario se
+habilita si…"*); representación con el selector `uuid` y evaluación por `person`
+([ADR 047](../../decisions/047-contexto-evaluacion-expresiones.md)). Ver
+[H4](../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md) — queda
+abierto solo para **enfermedades/medicamentos** (entidades de dominio).
 
 Su **nomenclatura no coincide** con las secciones reales: usan "Formulario A/B/C"
 donde `B` = *Padecimiento actual* (nuestra **E**) y `C` = *Antecedentes personales

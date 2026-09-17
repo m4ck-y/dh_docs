@@ -46,10 +46,21 @@
   (a) `filter` en ADR 046, (b) catálogo por categoría, (c) categoría en el ítem + UI).
   El **"Otro"** de B/D queda **resuelto**: es **buscador del CIE-11 completo** (no create).
 
-## H4 — Anexos C/D (activación)
+## H4 — Anexos C/D (activación) ✅ (dónde viven resuelto)
 
-- Son **reglas de activación** (condición → cuestionario), **no** secciones del
-  expediente. ¿Dónde viven (feature `mapper`, doc aparte)?
+- **Qué son**: **reglas de activación** (*respuesta de la HC → cuestionario
+  habilitado*), **no** secciones del expediente.
+- **Dónde viven** ✅: en el **`form.condition` del instrumento** que se habilita
+  (mecanismo [ADR 039](../../../decisions/039-condicion-visibilidad-ast.md):
+  *"el formulario se habilita si…"*). **No** van en el `mapper` ni en un doc aparte.
+- **Representación y evaluación** ✅: selector **`uuid`**
+  (`features/questionnaires/expressions/operands.md`) + contexto **`person`**
+  ([ADR 047](../../../decisions/047-contexto-evaluacion-expresiones.md)).
+- **Pendiente**: los activadores de **enfermedades/medicamentos** (D, CIE-11;
+  antipsicóticos) requieren **entidades de dominio** (`condition`, `medication`) en
+  el AST, que hoy solo lee `question`/`person`/`form`. Además, **crear los
+  instrumentos faltantes** del banco (ZARIT-CBI, SF-12, ASQ-15, AES-S, CTH, ASRS,
+  EDAH, DTS, SPIN, TAS-20, DAI-10).
 
 ## H5 — Composición de sección híbrida (D)
 
