@@ -163,6 +163,7 @@ type SubjectSelector =
   | { id: number }                                              // una pregunta concreta
   | { range: [number, number] }                                 // un rango de ids
   | { group: string }                                           // por grupo/subescala
+  | { uuid: string }                                            // una pregunta por su uuid (global)
   | { condition: OperandExpression & { property: string } };    // por condición
 
 interface SubjectReference {
@@ -179,6 +180,7 @@ interface SubjectReference {
 | por grupo | `{ group }` | `{ "group": "A" }` | Subescalas (A, D) |
 | por id | `{ id }` | `{ "id": 103 }` | Una pregunta concreta |
 | por rango | `{ range }` | `{ "range": [1, 9] }` | Sumar un rango de preguntas |
+| por uuid | `{ uuid }` | `{ "uuid": "0f8f…" }` | Referencia **global** a una pregunta (incluso de **otro** form) |
 | condición | `{ condition }` | ver bloque siguiente | Filtro complejo |
 
 > **`all` incluye las calculadas.** `{ all: true }` es literal: lee **todas** las
@@ -195,7 +197,15 @@ interface SubjectReference {
 { "subject": { "entity": "question", "property": "value", "selector": { "group": "A" } } }
 { "subject": { "entity": "question", "property": "value", "selector": { "id": 103 } } }
 { "subject": { "entity": "question", "property": "value", "selector": { "range": [1, 9] } } }
+{ "subject": { "entity": "question", "property": "value", "selector": { "uuid": "0f8f…" } } }
 ```
+
+> **Nota — `uuid` desconocido al autorar.** El `uuid` lo asigna la DB al
+> **insertar** la pregunta → **no se conoce** al escribir el JSON a mano. Por eso la
+> expresión/condición **no se autora manualmente**: se **construye** (insert en el
+> AST) **después** de crear las preguntas, reutilizando el **`uuid` retornado** por
+> el create. Si hiciera falta autoría manual, usar un selector **local**
+> (`id`/`range`) o **resolver el `uuid` a partir del `key`** antes de armar el AST.
 
 Condición personalizada — filtra por una expresión sobre `property`:
 
@@ -227,7 +237,7 @@ Condición personalizada — filtra por una expresión sobre `property`:
 - El `selector` es **opcional**. Si se **omite**, el sujeto se toma **en
   singular** (la pregunta/entidad del contexto).
 - Para operar sobre **varias** entidades se **exige selector explícito**
-  (`all`/`group`/`id`/`range`/`condition`).
+  (`all`/`group`/`id`/`range`/`uuid`/`condition`).
 - En un `aggregate` (scoring), el selector **nunca se omite**: se usa `{ "all": true }`
   o `{ "range": [...] }`.
 
