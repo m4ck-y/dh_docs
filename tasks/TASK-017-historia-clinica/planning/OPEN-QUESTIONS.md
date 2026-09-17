@@ -31,20 +31,19 @@
 - **Impacto**: el `form` de D queda **sin** los registros (solo tabaco / alcohol /
   drogas / donación).
 
-## H3 — Catálogos externos ✅ (regla aplicable por pregunta)
+## H3 — Catálogos externos ✅ (cerrado)
 
-- **Decisión**: **no** se decide en bloque; se resuelve **por pregunta** al crear
-  cada ficha/bank, mirando los **ítems del `.mmd`**: pocas/cerradas → **enum**;
-  un **vocabulario** → **catálogo** (se apunta al `key`). Regla en
-  [`sections/README.md`](../../../features/clinical_history/sections/README.md#enum-o-catálogo).
-- **Motor y política** del catálogo (PostgreSQL/ClickHouse/Mongo; gobernado/masivo)
-  los define el **registro** ([`features/catalogs/`](../../../features/catalogs/README.md));
+- **Regla** (aplicable **por pregunta** al crear cada ficha/bank, mirando los ítems del
+  `.mmd`): pocas/cerradas → **enum**; un **vocabulario** → **catálogo** (se apunta al
+  `key`). Ver [`sections/README.md`](../../../features/clinical_history/sections/README.md#enum-o-catálogo).
+- **Motor y política** del catálogo (PostgreSQL/ClickHouse/Mongo; gobernado/masivo) los
+  define el **registro** ([`features/catalogs/`](../../../features/catalogs/README.md));
   la ficha **solo apunta al `key`**.
-- **Aplicado en**: C (4 catálogos); B/D `disease`/`disease_category` (CIE-11);
-  D Vademecum; E body/estudios.
-- **Al modelar cada pregunta** (no bloquea): **filtro por categoría** del `disease`
-  (a) `filter` en ADR 046, (b) catálogo por categoría, (c) categoría en el ítem + UI).
-  El **"Otro"** de B/D queda **resuelto**: es **buscador del CIE-11 completo** (no create).
+- **Aplicado en**: C (4 catálogos); D Vademecum; E body/estudios.
+- **`disease` / `disease_category` (CIE-11)** ✅: **no** es `list_options` de un
+  formulario — lo consume el **componente** (B/D). El **filtro categoría → enfermedades**
+  es **UI del componente** → [ADR 046](../../../decisions/046-opciones-pregunta.md)
+  **no aplica**. El **"Otro"** de B/D es **buscador del CIE-11 completo** (no create).
 
 ## H4 — Anexos C/D (activación) ✅ (dónde viven resuelto)
 

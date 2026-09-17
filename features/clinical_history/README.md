@@ -36,10 +36,10 @@ feature [`../mapper/`](../mapper/) (vista en
 | D | Antecedentes personales patológicos | híbrido ([ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md)) — spec en [`sections/D_antecedentes_pp.md`](./sections/D_antecedentes_pp.md) | ⏳ |
 | E | Padecimiento actual | [`sections/E_padecimiento_actual.md`](./sections/E_padecimiento_actual.md) | ⏳ |
 
-> **Bloqueos**: **D** es **híbrido** (ficha lista; **H2 cerrado** = registros 1:N →
-> componentes); sus **componentes** tienen composición pendiente (**H5**). **A** y
-> **B** son **componentes de dominio** (ADR 045 / ADR 043), con modelado pendiente.
-> **C** tiene banco (`bank/clinical_history/apnp.json`); **D** banco del `form`
+> **Bloqueos**: **D** es **híbrido** (ficha lista; **H2** y **H5** cerrados); sus
+> **componentes** se **inyectan** por el front. **A** y **B** son **componentes de
+> dominio** (ADR 045 / ADR 043), con modelado pendiente. **C** tiene banco
+> (`bank/clinical_history/apnp.json`); **D** banco del `form`
 > (`antecedentes_pp.json`); **E** ficha lista (banco diferido).
 
 ## Clasificación por bloque

@@ -90,7 +90,7 @@
 
 ---
 
-## Componentes — registros 1:N inyectados (modelado ⏳ H5)
+## Componentes — registros 1:N inyectados por el front
 
 ### 2.0 Enfermedades — `Condition`
 - _¿Padece o ha padecido alguna de estas enfermedades alguna vez en su vida?_ — 13
@@ -102,9 +102,9 @@
   uñas · 2.11 Cáncer y tumores · 2.12 Enfermedades hereditarias y autoinmunes · 2.13
   Enfermedades de la sangre y vasculares.
 - **Registro 1:N**: una `Condition` por enfermedad seleccionada.
-- ⏳ **Al modelar**: el filtro del catálogo `disease` **por categoría** no es expresable con
-  `{source:"catalog", catalog:{key}}` (ADR 046 no tiene `filter`). Alternativas:
-  catálogo por categoría, o categoría en el ítem + agrupación en UI.
+- **UI del componente**: el selector es **categoría → enfermedades** (elegir una de las
+  13 categorías y filtrar sus padecimientos). El filtro es **lógica/UI del componente**,
+  **no** una pregunta de formulario → `list_options`/ADR 046 **no aplican**.
 
 ### 6.0 Alergias — `AllergyIntolerance` (1:N)
 - ¿Padece algún tipo de alergia? Sí → **¿A qué?** (Medicamentos *(Vademecum)* /
@@ -133,9 +133,9 @@
   repetible (11.1.7 ¿otra hospitalización?).
 
 ## Pendientes
-- **H5** (composición híbrida) → registro `key → componentes + orden` (front).
-- **H3** (regla por pregunta): al modelar `disease` resolver el **filtro por
-  categoría** y el **"Otro"**; `drug`/`body` según la regla.
+- **H5** ✅ (composición híbrida) → registro en el **front** (estático), por `key`/`uuid`.
+- **H3** ✅ (filtro): **no aplica** como catálogo de formulario — el `disease` lo consume
+  el **componente** (categoría → enfermedades). **"Otro"** = buscador CIE-11.
 - **10.0** (`Condition` vs `Procedure`).
 - Banco: `bank/clinical_history/antecedentes_pp.json` (**solo el `form`**).
 - **H2 cerrado**: los registros son **1:N** → **componentes**; la repetición vive en

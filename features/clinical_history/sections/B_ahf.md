@@ -96,8 +96,9 @@ diseño final.
 
 ## Vocabularios y catálogos
 
-- **`disease` / `disease_category`** (CIE-11) — **catálogo** (la ficha apunta al
-  `key`; el motor lo resuelve el registro — `catalogs/`).
+- **`disease` / `disease_category`** (CIE-11) — **catálogo**, consumido por el
+  **componente** (no `list_options` de un form); el motor lo resuelve el registro
+  (`catalogs/`).
 - **Parentesco** (Padre/Madre/Hijo/abuelos) → la **arista** `relationships.family`
   (no un enum en la pregunta).
 - **"Otro"** del `.mmd` = **buscador del CIE-11 completo** (no texto libre).
@@ -116,4 +117,4 @@ diseño final.
   pariente) + escritura **orquestada** (crear `person` + arista + condición).
 - **`clinical_history.encounter` + `encounter_diagnosis`** (consultas) — pendientes
   de diseño; **no** bloquean AHF.
-- Ver [`OPEN-QUESTIONS.md`](../../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md) (H1, H3).
+- Ver [`OPEN-QUESTIONS.md`](../../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md) (H1).
