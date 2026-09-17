@@ -121,7 +121,7 @@ erDiagram
     %% question.text: NULLABLE (item sin enunciado propio, ej. CDI "elige la frase"; ver C17).
     question {
         Integer id PK
-        String key
+        String key "UNIQUE global"
         Enum(EQuestionType) type
         Text text
         Jsonb config

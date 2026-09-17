@@ -95,8 +95,8 @@ COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y
 -- (questions_form.order / questions_section.order).
 -- ===================================================================
 CREATE TABLE question (
-    id SERIAL PRIMARY KEY,
-    key VARCHAR(100) NOT NULL,
+    id SERIAL PRIMARY KEY,  -- PK interno incremental GLOBAL (unico en toda la tabla question)
+    key VARCHAR(100) NOT NULL UNIQUE,  -- identificador GLOBAL del atomo pregunta (unico entre todos los forms)
     text TEXT,          -- Enunciado de la pregunta. NULLABLE: hay items sin enunciado propio (ej. CDI, "elige la frase"); las instrucciones generales van en form.instructions. Ver catalog/bank/README.md
     "type" EQuestionType NOT NULL,
     config JSONB,       -- Configuracion segun el tipo de pregunta (ver catalog/question_types/). Incluye "required" y los parametros propios del tipo
@@ -107,7 +107,8 @@ CREATE TABLE question (
 
 COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a formularios mediante questions_form y a secciones mediante questions_section. Permite validar respuestas y definir su comportamiento. El orden NO vive aqui: la pregunta es un atomo reutilizable y su posicion depende del contexto (ver questions_form.order y questions_section.order).';
 
-COMMENT ON COLUMN question.key IS 'Identificador único de la pregunta (ej. "satisfaction_rating"). Se usa en las expresiones de scoring/evaluación y en las respuestas.';
+COMMENT ON COLUMN question.id IS 'PK interno incremental GLOBAL: identifica la pregunta en toda la tabla (unico entre todos los forms).';
+COMMENT ON COLUMN question.key IS 'Identificador GLOBAL de la pregunta (UNIQUE; ej. "satisfaction_rating", "phq9.1"). Unico entre todos los forms (las preguntas son atomos reutilizables). Se usa en expresiones/condiciones (selector uuid/key) y en las respuestas.';
 
 COMMENT ON COLUMN question.text IS 'Enunciado de la pregunta. NULLABLE: hay items sin enunciado propio (ej. CDI, formato "elige la frase"). Las instrucciones generales del instrumento viven una sola vez en form.instructions; como se da contexto al item en la presentacion es decision de esa capa (ver C17). Con expression (pregunta calculada), text es OBLIGATORIO: es la etiqueta del valor (ver ADR 042). Ver catalog/bank/README.md.';
 
@@ -499,7 +500,6 @@ COMMENT ON COLUMN answer.data IS 'Estructura normalizada {value, type}: mismos c
 -- ===================================================================
 CREATE INDEX idx_assignment_form_person ON assignment (id_form, id_person);
 CREATE INDEX idx_answer_assignment ON answer (id_assignment);
-CREATE INDEX idx_question_key ON question (key);
 CREATE INDEX idx_section_form ON section (id_form);
 CREATE INDEX idx_section_key ON section (key);
 CREATE INDEX idx_questions_form_form ON questions_form (id_form);
