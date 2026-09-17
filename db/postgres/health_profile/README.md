@@ -2,7 +2,7 @@
 
 Schema de PostgreSQL para perfiles de salud biologica y clinica.
 
-Almacena atributos biologicos y clinicos estables del individuo, como sexo biologico, tipo de sangre, alergias cronicas y condiciones de salud de largo plazo.
+Almacena atributos biologicos y clinicos estables del individuo, como sexo biologico, tipo de sangre y alergias.
 
 ## Entidades (FK a person)
 
@@ -10,8 +10,10 @@ Almacena atributos biologicos y clinicos estables del individuo, como sexo biolo
 |---|---|
 | `biological_profile` | Perfil biologico (sexo biologico, tipo de sangre). Relacion 1:1 con person. |
 | `person_allergy` | Alergias del paciente. Relacion 1:N con person. |
-| `chronic_condition` | Condiciones cronicas de salud. Relacion 1:N con person. |
 | `vaccination_record` | Historial de vacunacion. Relacion 1:N con person. |
+| `death` | Detalles de fallecimiento (fecha, causa). Relacion 1:1 con person; existe **solo si** la persona fallecio. |
+
+> Las **condiciones/enfermedades** viven en `clinical_history.condition` (no aqui).
 
 ## Enums
 
@@ -32,5 +34,4 @@ Almacena atributos biologicos y clinicos estables del individuo, como sexo biolo
 |---|---|
 | `allergy_severity` | Severidad de alergias (LEVE, MODERADA, SEVERA) |
 | `allergy_reaction_type` | Tipos de reaccion (RESPIRATORIA, CUTANEA, DIGESTIVA) |
-| `condition_status` | Estado de condicion (ACTIVA, REMITIDA, CRONICA) |
 | `vaccine_catalog` | Vacunas disponibles |

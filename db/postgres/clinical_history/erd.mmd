@@ -1,0 +1,55 @@
+erDiagram
+    %% CLINICAL_HISTORY SCHEMA
+    %% Historial clinico con trazabilidad temporal.
+    %% condition: condiciones/enfermedades de la persona (CIE-11).
+    %% PENDIENTE de diseno: encounter (consultas) + encounter_diagnosis (puente).
+
+    %% REFERENCIAS EXTERNAS
+    %% person: definida en schema people
+
+    %% RELACIONES
+    person ||--o{ condition : "has_conditions"
+
+    %% ENUMS
+    EConditionCategory {
+        String PROBLEM_LIST "PROBLEM_LIST"
+        String ENCOUNTER_DIAGNOSIS "ENCOUNTER_DIAGNOSIS"
+    }
+    EConditionClinicalStatus {
+        String ACTIVE "ACTIVE"
+        String RECURRENCE "RECURRENCE"
+        String RELAPSE "RELAPSE"
+        String INACTIVE "INACTIVE"
+        String REMISSION "REMISSION"
+        String RESOLVED "RESOLVED"
+    }
+    EConditionSeverity {
+        String MILD "MILD"
+        String MODERATE "MODERATE"
+        String SEVERE "SEVERE"
+    }
+
+    %% ENTIDADES
+    %% condition: enfermedad/condicion (unifica chronic_condition + diagnosis_record)
+    %% id_person: persona que la padece (paciente o pariente)
+    %% cie11_code: codigo CIE-11 (catalogo disease); name = fallback / "Otro"
+    %% category: PROBLEM_LIST (lista de problemas) | ENCOUNTER_DIAGNOSIS (diagnostico de consulta)
+    %% contributed_to_death: la condicion contribuyo a la muerte (FHIR)
+    condition {
+        UUID id PK
+        Integer id_person FK
+        String cie11_code
+        Text name
+        Enum(EConditionCategory) category
+        Enum(EConditionClinicalStatus) clinical_status
+        Enum(EConditionSeverity) severity
+        Date onset_date
+        Boolean contributed_to_death
+        Text notes
+    }
+
+    %% PENDIENTE DE DISENO (comentado)
+    %% encounter: consultas/atenciones (Encounter)
+    %% encounter_diagnosis: puente condicion <-> consulta (Encounter.diagnosis)
+    %%   id_encounter FK, id_condition FK, use (EEncounterDiagnosisUse), rank (int)
+    %%   Nota: no toda condicion tiene consulta (paciente / data perdida) -> puente opcional.

@@ -71,6 +71,10 @@ Contiene el historial médico formal con trazabilidad temporal, incluyendo diagn
 - `hospital_stay`
 - `treatment_plan`
 
+> **ADOPTADO** → [`../clinical_history/`](../clinical_history/): `condition` (unifica
+> `chronic_condition` + `diagnosis_record`). `encounter` y `encounter_diagnosis`
+> quedan **pendientes** de diseño.
+
 ---
 
 ## Schema: `security`
