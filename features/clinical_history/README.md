@@ -67,6 +67,58 @@ abiertas (ver
 > `key`. Regla:
 > [`sections/README.md`](./sections/README.md#enum-o-catálogo).
 
+## Anexos de activación (C/D)
+
+Los tabs **ANEXO C** ([`activation/anexo_c.mmd`](../../diagrams/0_HISTORIA_CLINICA/activation/anexo_c.mmd))
+y **ANEXO D** ([`activation/anexo_d.mmd`](../../diagrams/0_HISTORIA_CLINICA/activation/anexo_d.mmd))
+del drawio (`docs/diagrams/0_HISTORIA_CLINICA/`) son **reglas de activación**
+(*respuesta de la HC → cuestionario habilitado*), **no** secciones del expediente.
+**Pendiente ([H4](../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md))**:
+dónde viven.
+
+Su **nomenclatura no coincide** con las secciones reales: usan "Formulario A/B/C"
+donde `B` = *Padecimiento actual* (nuestra **E**) y `C` = *Antecedentes personales
+patológicos* (nuestra **D**).
+
+### Reconciliación (a revisar/validar)
+
+| Anexo | Sección real |
+|---|---|
+| `A.1.0` (tutor) | **A** — Registro (`1.0`) |
+| `A.1.2.13` (edad) | **A** — edad |
+| `B.2.0` (motivo / `2.1–2.4`) | **E** — Padecimiento |
+| `C.1.1` (mental) | **D** — categoría **`2.4`** (mente/emociones) |
+| `C.2.1.*` (enfermedades) · `C.2.2.1.1.1` (medicamentos) · `C.3.0/4.0/5.0` (tabaco/alcohol/drogas) | **D** |
+| `j-2.0` (Nutrición) | *fuera de la HC* (formulario de Nutrición) |
+
+> Mapa **provisional**: hay que **revisarlo/validarlo** contra el drawio.
+
+### Gaps / divergencias de la fuente
+
+- La categoría **`2.4 Mente, emociones y aprendizaje`** de **D** **no incluye**
+  varias condiciones que el anexo **sí** activa. **Se agregaron temporalmente** para
+  que esos activadores funcionen:
+
+  | Condición | Instrumento (anexo) |
+  |---|---|
+  | Estrés | PSS |
+  | Estrés postraumático | DTS |
+  | Fobia social | SPIN |
+  | Alexitimia | TAS-20 |
+
+- El anexo **se contradice**: depresión en `2.1.8` (Anexo C) vs `2.1.6` (Anexo D).
+- El bloque `1.0/1.1 MENTAL` del anexo **se mapea a la categoría `2.4`** (no se
+  agrega un `1.0`).
+
+### Activadores por fuente
+
+| Activador | Fuente |
+|---|---|
+| `A.1.0` (tutor) · `A.1.2.13` (edad) | **dominio** (`care.person_responsible`, `people.birth`) |
+| `C.2.1.*` (enfermedades) · medicamentos | **dominio** (`clinical_history.condition`, …) |
+| `C.3.0/4.0/5.0` (tabaco/alcohol/drogas) · `B.2.0` (motivo) | **`answer`** (respuestas de D/E) |
+| `j-2.0` (Nutrición) | fuera de la HC |
+
 ## Propuestas UI
 
 - [`proposals/family_condition/`](./proposals/family_condition/): prototipos de
