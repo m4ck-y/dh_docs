@@ -7,9 +7,9 @@
 
 ## Naturaleza (por qué no es `form`)
 
-- Es una **matriz** (~6 familiares × ~60 enfermedades en **13 categorías** CIE-11),
+- Es una **matriz** (~6 familiares × enfermedades en **13 categorías** CIE-11),
   no una lista plana de preguntas; + "¿vive?" + causa de fallecimiento **por
-  familiar** + "**Otro**" por celda.
+  familiar**.
 - Dato **persistente de dominio** (`id_person`), precargable; **no** `answer` de un
   `assignment`.
 - **Componente propio** (captura tipo family-tree) — [ADR 043](../../../decisions/043-ahf-componente-dedicado.md);
@@ -80,24 +80,27 @@ diseño final.
 > Los códigos CIE-11 por enfermedad están en el `.mmd` (p. ej. Diabetes `Block
 > 2-5A1`, Infarto `BlockL1-BA4`, Depresión `BlockL2-6A7`).
 
-## Entidades (dominio, a modelar — H1)
+## Modelo de datos (dominio)
 
-| Entidad | Campos | Rol |
-|---|---|---|
-| `family_member` | `id_person`, `type_relationship`, `alive`, `death_cause`, `name?` | Un familiar (Hijos repetibles) |
-| `family_condition` | `id_family_member`, `id_disease`, `other_text` | La **celda** familiar × enfermedad |
-| `disease` / `disease_category` | código CIE-11, categoría | Catálogo (`key`) |
+- **Familiar** → `people.person` (basta `first_name` + apellidos).
+- **Relación** → [`relationships.family`](../../../db/postgres/relationships/erd.mmd)
+  (arista **dirigida** progenitor→hijo).
+- **Enfermedades** → [`clinical_history.condition`](../../../db/postgres/clinical_history/erd.mmd)
+  (la padece el pariente).
+- **Fallecimiento** → [`health_profile.death`](../../../db/postgres/health_profile/erd.mmd)
+  (`deceased_at`, `cause_code`/`cause_text`).
+- **Vocabulario** de enfermedades → catálogo `disease` (CIE-11).
 
-- Mapea a FHIR **`FamilyMemberHistory`** (relación + condiciones + fallecimiento).
+**AHF = agregado** (sin tablas propias): `relationships.family` (¿quiénes?) +
+`clinical_history.condition` (¿qué padecen?). Mapea a FHIR **`FamilyMemberHistory`**.
 
 ## Vocabularios y catálogos
 
-- **`disease` / `disease_category`** (CIE-11) — **catálogo** (la ficha apunta al `key`;
-  el motor lo resuelve el registro — `catalogs/`). El "Otro" del `.mmd` se resuelve al
-  modelar (buscar en CIE-11 completo vs crear) — H3.
-- **`type_relationship`** (Padre/Madre/Hijo/abuelos) — **enum** (cerrado).
-- **"Otro"** (texto por celda) — ⏳ definir grano (**por categoría** vs **por
-  enfermedad**) — H1.
+- **`disease` / `disease_category`** (CIE-11) — **catálogo** (la ficha apunta al
+  `key`; el motor lo resuelve el registro — `catalogs/`).
+- **Parentesco** (Padre/Madre/Hijo/abuelos) → la **arista** `relationships.family`
+  (no un enum en la pregunta).
+- **"Otro"** del `.mmd` = **buscador del CIE-11 completo** (no texto libre).
 
 ## Divergencias de la fuente
 
@@ -107,9 +110,10 @@ diseño final.
   con botones (ver [`../proposals/family_condition/README.md`](../proposals/family_condition/README.md)),
   no como preguntas.
 
-## Pendiente (H1)
+## Pendiente
 
-- Modelado de las entidades de dominio + endpoint (`family_member`,
-  `family_condition`, catálogo `disease`): schema de destino (`family_history` vs
-  `health_profile`), reuso de CIE-11 (`form.cie11_code`) y grano de "Otro".
-  Ver [`OPEN-QUESTIONS.md`](../../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md) (H1, H3).
+- **Endpoint/UI de AHF**: lectura **agregada** (`relationships.family` + clínica del
+  pariente) + escritura **orquestada** (crear `person` + arista + condición).
+- **`clinical_history.encounter` + `encounter_diagnosis`** (consultas) — pendientes
+  de diseño; **no** bloquean AHF.
+- Ver [`OPEN-QUESTIONS.md`](../../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md) (H1, H3).

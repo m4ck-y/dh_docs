@@ -3,19 +3,19 @@
 > Stoppers y decisiones sin resolver que bloquean la modelación de secciones.
 > Estado: 2026-09-15.
 
-## H1 — AHF (sección B): componente/servicio dedicado ✅ (arquitectura decidida)
+## H1 — AHF (sección B) ✅ (arquitectura + modelo decididos)
 
 - **Decisión** ([ADR 043](../../../decisions/043-ahf-componente-dedicado.md)):
-  AHF es una **matriz** familiar × enfermedad (~6 × ~60, CIE-11), **no** una
-  lista de preguntas → **no** se modela como `form.section`. Es un
-  **componente/servicio dedicado** (captura tipo family-tree) con endpoint
-  propio, **fuera** de `form`/`answer`. Ver
-  [`proposals/family_condition/`](../../../features/clinical_history/proposals/family_condition/).
-- **Pendiente (modelado de datos)**: las entidades de dominio (`family_member`,
-  `family_condition`, catálogo `disease`/`disease_category`) y su endpoint **no**
-  se modelan en esta fase. Sub-decisiones abiertas: schema de destino
-  (`family_history` vs `health_profile`), reuso de CIE-11 (`form.cie11_code`) y
-  grano de "Otro".
+  AHF es una **matriz** familiar × enfermedad (CIE-11) → **componente/endpoint**
+  (captura tipo family-tree), **fuera** de `form`/`answer`.
+- **Modelo (resuelto)**: familiar = **`people.person`**; relación =
+  **`relationships.family`** (dirigida) + `partnership`; enfermedades =
+  **`clinical_history.condition`**; fallecimiento = **`health_profile.death`**;
+  **AHF = agregado** (sin `family_member`/`family_condition`); **"Otro" = buscador
+  del CIE-11 completo**; `form.cie11_code` **no aplica**.
+- **Pendiente**: (a) endpoint/vista de AHF (lectura agregada + escritura
+  orquestada); (b) `clinical_history.encounter` + `encounter_diagnosis` (consultas)
+  — **no bloquea** AHF.
 - **Impacto**: la HC `form` cubre A, C, D, E; B queda fuera del motor (sin
   `assignment`/`answer`/progreso).
 
@@ -43,8 +43,8 @@
 - **Aplicado en**: C (4 catálogos); B/D `disease`/`disease_category` (CIE-11);
   D Vademecum; E body/estudios.
 - **Al modelar cada pregunta** (no bloquea): **filtro por categoría** del `disease`
-  (a) `filter` en ADR 046, (b) catálogo por categoría, (c) categoría en el ítem + UI)
-  y el **"Otro"** de B/D (buscar en CIE-11 completo vs crear).
+  (a) `filter` en ADR 046, (b) catálogo por categoría, (c) categoría en el ítem + UI).
+  El **"Otro"** de B/D queda **resuelto**: es **buscador del CIE-11 completo** (no create).
 
 ## H4 — Anexos C/D (activación)
 
@@ -78,5 +78,5 @@ Campos que la **fuente** no define, detectados al reconciliar la ficha A con el
 
 ## Notas
 
-- Estos pendientes no bloquean las fichas de estructura de **A** (lista), **C** y
-  **E**, que pueden redactarse desde los `.mmd`.
+- Las fichas de estructura **A–E** ya están redactadas (ver
+  [`sections/README.md`](../../../features/clinical_history/sections/README.md)).
