@@ -31,10 +31,20 @@
 - **Impacto**: el `form` de D queda **sin** los registros (solo tabaco / alcohol /
   drogas / donación).
 
-## H3 — Catálogos externos
+## H3 — Catálogos externos ✅ (regla aplicable por pregunta)
 
-- Medicamentos (Vademecum, 5.x/Y), estudios (E 22.1.1) y selector corporal
-  (E 9.0). ¿Cómo se referencian? (¿feature `mapper` / `reference` / catálogo propio?).
+- **Decisión**: **no** se decide en bloque; se resuelve **por pregunta** al crear
+  cada ficha/bank, mirando los **ítems del `.mmd`**: pocas/cerradas → **enum**;
+  un **vocabulario** → **catálogo** (se apunta al `key`). Regla en
+  [`sections/README.md`](../../../features/clinical_history/sections/README.md#enum-o-catálogo).
+- **Motor y política** del catálogo (PostgreSQL/ClickHouse/Mongo; gobernado/masivo)
+  los define el **registro** ([`features/catalogs/`](../../../features/catalogs/README.md));
+  la ficha **solo apunta al `key`**.
+- **Aplicado en**: C (4 catálogos); B/D `disease`/`disease_category` (CIE-11);
+  D Vademecum; E body/estudios.
+- **Al modelar cada pregunta** (no bloquea): **filtro por categoría** del `disease`
+  (a) `filter` en ADR 046, (b) catálogo por categoría, (c) categoría en el ítem + UI)
+  y el **"Otro"** de B/D (buscar en CIE-11 completo vs crear).
 
 ## H4 — Anexos C/D (activación)
 

@@ -31,16 +31,19 @@ Fuente de los flujos: `docs/diagrams/0_HISTORIA_CLINICA/flows/`.
 > `assignment`. Por eso se modela como **componente/endpoint** y no como `form`
 > (ver [ADR 045](../../../decisions/045-historia-clinica-componentes-vs-formularios.md)).
 
-### ¿Catálogo o enum?
+### ¿Enum o catálogo?
 
-Regla (derivada de los `.mmd`): si la lista de un campo incluye **"Otro" /
-"Especifique"**, es un **catálogo gobernado** (`extensible: true`, con curaduría —
-[ADR 044](../../../decisions/044-catalogos-gobernados.md)); si la lista es
-**cerrada**, es un **enum**.
+Regla derivada de los `.mmd`, aplicada **por pregunta** al crear cada ficha/bank:
 
-> **"Otro" → create-request:** crea un ítem `PENDING` en el catálogo; al curarse
-> pasa a `VALIDATED` (o se fusiona vía `merged_into`) — ADR 044. Modelo, política y
-> flujo en [`../../catalogs/`](../../catalogs/).
+| Se ve así en el `.mmd` | Se modela como |
+|---|---|
+| Opciones **pocas y cerradas** | **enum** → `list_options.items` |
+| Un **vocabulario** (gobernado/extensible o masivo/estándar: CIE-11, Vademecum, estudios, body, …) | **catálogo** → `list_options.catalog.{key}` |
+
+> La ficha/pregunta **solo apunta al `key`** del catálogo. El **motor**
+> (PostgreSQL/ClickHouse/Mongo) y la **política** (`extensible`/`governed`) los
+> define el **registro** de catálogos ([`../../catalogs/`](../../catalogs/),
+> [ADR 044](../../../decisions/044-catalogos-gobernados.md)), **no** la ficha.
 
 ### Secciones híbridas
 

@@ -86,14 +86,15 @@ diseño final.
 |---|---|---|
 | `family_member` | `id_person`, `type_relationship`, `alive`, `death_cause`, `name?` | Un familiar (Hijos repetibles) |
 | `family_condition` | `id_family_member`, `id_disease`, `other_text` | La **celda** familiar × enfermedad |
-| `disease` / `disease_category` | código CIE-11, categoría | Catálogo ⏳ |
+| `disease` / `disease_category` | código CIE-11, categoría | Catálogo (`key`) |
 
 - Mapea a FHIR **`FamilyMemberHistory`** (relación + condiciones + fallecimiento).
 
 ## Vocabularios y catálogos
 
-- **`disease` / `disease_category`** (CIE-11) — ⏳ decidir **gobernado** (PG, subset
-  curado + "Otro" extensible) vs **masivo** (ClickHouse, CIE-11 completo) — H1/H3.
+- **`disease` / `disease_category`** (CIE-11) — **catálogo** (la ficha apunta al `key`;
+  el motor lo resuelve el registro — `catalogs/`). El "Otro" del `.mmd` se resuelve al
+  modelar (buscar en CIE-11 completo vs crear) — H3.
 - **`type_relationship`** (Padre/Madre/Hijo/abuelos) — **enum** (cerrado).
 - **"Otro"** (texto por celda) — ⏳ definir grano (**por categoría** vs **por
   enfermedad**) — H1.

@@ -6,4 +6,4 @@
   (`form.type = CLINICAL_HISTORY`), no define tablas propias.
 - Vínculos a dominio: feature [`mapper`](../../../features/mapper/README.md).
 - **Decisiones abiertas / stoppers**: [`OPEN-QUESTIONS.md`](./OPEN-QUESTIONS.md)
-  (H1 AHF, H2 grupos repetibles, H3 catálogos, H4 anexos).
+  (H1 AHF, H4 anexos; **H2** y **H3** cerrados; **H5** composición híbrida).

@@ -2,7 +2,11 @@
 
 > **Fuente:** `flows/padecimiento_actual.mmd` (drawio
 > `0_DEMO_HISTORIA_CLINICA.drawio`, tab "E - PADECIMIENTO ACTUAL").
-> **Modelado:** **form** (`type: CLINICAL_HISTORY`, `expression: null`).
+> **Modelado:** **form** (`key: padecimiento_actual`, `type: CLINICAL_HISTORY`,
+> `expression: null`).
+
+> **Artefacto:** [`bank/clinical_history/padecimiento_actual.json`](../../questionnaires/catalog/bank/clinical_history/padecimiento_actual.json)
+> _(⏳ pendiente)_.
 
 ## Bloques de captura
 
@@ -12,6 +16,15 @@ Motivo → Caracterización del síntoma → Síntomas asociados → Impacto/acc
 > - El título interno del drawio dice **"B. PADECIMIENTO ACTUAL"** (aquí E).
 > - **`20.0` y `21.0` "Antecedentes relacionados"** están **duplicados** en el
 >   drawio; se unifican en `20.0`.
+
+## Origen de las listas
+
+| Campo | Origen |
+|---|---|
+| 9.0 Localización (selector corporal) | catálogo `body_site` |
+| 22.1.1 Estudios previos | catálogo `study` |
+| 6.0 Causa real o aparente (`6.8 Otro`) | catálogo (key por definir) |
+| Resto (escalas, Sí/No) | **enum** |
 
 ## Motivo
 

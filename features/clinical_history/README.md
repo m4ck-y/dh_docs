@@ -45,7 +45,7 @@ feature [`../mapper/`](../mapper/) (vista en
 ## Clasificación por bloque
 
 Qué parte de cada sección es **endpoint/componente**, **form** (cuestionario) o
-**catálogo gobernado** (ver ADR 045 / ADR 046). Las celdas `¿?` son decisiones
+**catálogo** (ver ADR 045 / ADR 046). Las celdas `¿?` son decisiones
 abiertas (ver
 [`OPEN-QUESTIONS.md`](../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md)).
 
@@ -59,7 +59,13 @@ abiertas (ver
 | **D — Antec. PP** | cirugías / lesiones / transfusiones | ✅ | — | — | `Procedure` (H2) |
 | **D — Antec. PP** | hospitalizaciones | ✅ | — | — | `Encounter` (H2) |
 | **D — Antec. PP** | enfermedades `2.0` | ✅ | — | disease | componente `Condition` (1:N) |
-| **E — Padecimiento** | motivo + caracterización del síntoma | ¿? | ✅ | body, studies | decidir `Encounter`/`Condition` (H3) |
+| **E — Padecimiento** | motivo + caracterización del síntoma | ¿? | ✅ | body, studies | decidir `Encounter`/`Condition` |
+
+> Las preguntas de elección son **enum** (`list_options.items`) o **catálogo**
+> (`list_options.catalog.key`). El **motor** y la **política** del catálogo los
+> define el **registro** ([`../catalogs/`](../catalogs/)); la ficha solo apunta al
+> `key`. Regla:
+> [`sections/README.md`](./sections/README.md#enum-o-catálogo).
 
 ## Propuestas UI
 

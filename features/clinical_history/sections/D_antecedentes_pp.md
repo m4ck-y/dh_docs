@@ -53,8 +53,8 @@
 |---|---|
 | 2.1–2.13 enfermedades (`2.0`) | catálogo `disease` |
 | 6.0 `¿A qué?` categoría (Medicamentos/Alimentos/Ambiente/**Otro**) | catálogo `allergy_category` |
-| 6.0 Medicamentos | catálogo externo **Vademecum** ⏳(H3) |
-| 5.1.1 drogas `¿Cuál(es)?` | texto libre ⏳ (¿catálogo? H3) |
+| 6.0 Medicamentos | catálogo `medication` (Vademecum) |
+| 5.1.1 drogas `¿Cuál(es)?` | texto libre (regla por pregunta: ¿catálogo?) |
 | 3.0A.1.1 lugares · 3.0B.1.1 sustancias · 3.0B.1.2 frecuencia · 11 duración/traslado | **enum** |
 | Resto (Sí/No, `Nunca`/`Prefiere no decirlo`) | **enum** |
 
@@ -83,7 +83,7 @@
 
 ### 5.0 Drogas
 - **5.0 ¿Ha consumido algún tipo de droga?** — 5.1 Sí · 5.2 No
-  - 5.1.1 ¿Cuál(es)? _(texto libre; cond. `5.0 = Sí`)_ ⏳(H3: ¿catálogo?)
+  - 5.1.1 ¿Cuál(es)? _(texto libre; cond. `5.0 = Sí`; ¿catálogo? — regla por pregunta)_
 
 ### 9.0 Donación
 - **9.0 ¿Ha donado sangre?** — 9.1 Sí · 9.2 No
@@ -102,14 +102,14 @@
   uñas · 2.11 Cáncer y tumores · 2.12 Enfermedades hereditarias y autoinmunes · 2.13
   Enfermedades de la sangre y vasculares.
 - **Registro 1:N**: una `Condition` por enfermedad seleccionada.
-- ⏳ **H3**: el filtro del catálogo `disease` **por categoría** no es expresable con
+- ⏳ **Al modelar**: el filtro del catálogo `disease` **por categoría** no es expresable con
   `{source:"catalog", catalog:{key}}` (ADR 046 no tiene `filter`). Alternativas:
   catálogo por categoría, o categoría en el ítem + agrupación en UI.
 
 ### 6.0 Alergias — `AllergyIntolerance` (1:N)
 - ¿Padece algún tipo de alergia? Sí → **¿A qué?** (Medicamentos *(Vademecum)* /
   Alimentos / Ambiente / Otro) / No · **registro**: sustancia + categoría.
-- ⏳ Vademecum = catálogo externo (H3).
+- Vademecum = catálogo `medication`.
 
 ### 7.0 Cirugías — `Procedure` (1:N)
 - ¿Ha tenido alguna operación o cirugía? Sí → **registro**: `fecha`; *Agregar otra*
@@ -134,7 +134,8 @@
 
 ## Pendientes
 - **H5** (composición híbrida) → registro `key → componentes + orden` (front).
-- **H3** (catálogos externos): `disease` (filtro por categoría), Vademecum, drogas.
+- **H3** (regla por pregunta): al modelar `disease` resolver el **filtro por
+  categoría** y el **"Otro"**; `drug`/`body` según la regla.
 - **10.0** (`Condition` vs `Procedure`).
 - Banco: `bank/clinical_history/antecedentes_pp.json` (**solo el `form`**).
 - **H2 cerrado**: los registros son **1:N** → **componentes**; la repetición vive en

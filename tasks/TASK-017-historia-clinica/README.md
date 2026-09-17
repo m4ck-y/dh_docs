@@ -25,14 +25,19 @@ cuestionarios `1,2,3`). Genera sus fichas de estructura y sus vínculos a domini
 
 - **A (Registro)**: **componente/endpoint de dominio** (ADR 045) — spec en
   `sections/A_registro.md` y contrato en `mapper/views/clinical_history/A_registro.md`.
-- **C (APNP)** y **E (Padecimiento actual)**: **siguiente** — redactar fichas
-  desde `docs/diagrams/0_HISTORIA_CLINICA/flows/{apnp,padecimiento_actual}.mmd`.
-- **B (AHF)**: **componente propio** (ADR 043), **modelado pendiente** — no es
-  sección del `form`.
-- **D (Antecedentes PP)**: **bloqueada** por **H2** (grupos repetibles) →
-  ver [`planning/OPEN-QUESTIONS.md`](planning/OPEN-QUESTIONS.md).
-- **Banco** (`features/questionnaires/catalog/bank/clinical_history/`): vacío
-  (solo forms C/E/D; A y B son componentes).
+- **B (AHF)**: **componente propio** (ADR 043), **modelado pendiente** — ficha
+  `sections/B_ahf.md`; no es sección del `form`.
+- **C (APNP)**: **form** — ficha `sections/C_apnp.md` + banco
+  `bank/clinical_history/apnp.json`.
+- **D (Antecedentes PP)**: **híbrido** (form + componentes) — ficha
+  `sections/D_antecedentes_pp.md` + banco `bank/clinical_history/antecedentes_pp.json`
+  (solo el `form`); **H2 cerrado** (registros = componentes 1:N).
+- **E (Padecimiento actual)**: **form** — ficha `sections/E_padecimiento_actual.md`;
+  banco ⏳.
+- **Banco** (`features/questionnaires/catalog/bank/clinical_history/`): `apnp.json`,
+  `antecedentes_pp.json` (A y B son componentes, sin banco).
+- **Pendiente**: modelado de los componentes (A/B/D) y banco de E — ver
+  [`planning/OPEN-QUESTIONS.md`](planning/OPEN-QUESTIONS.md) (H1, H4, H5).
 
 ## Proceso por sección
 
@@ -43,11 +48,11 @@ fuente se anotan — ver
 
 ## Objetivos
 
-- [ ] Fichas de estructura `features/clinical_history/sections/` (A lista; C y E
-      siguientes; B = componente propio; D pendiente por H2).
-- [ ] JSON de HC en `features/questionnaires/catalog/bank/clinical_history/`.
+- [x] Fichas de estructura `features/clinical_history/sections/` (A–E).
+- [x] JSON de los `form` de HC: `apnp.json` (C), `antecedentes_pp.json` (D).
+- [ ] JSON del `form` de E (`padecimiento_actual.json`).
 - [ ] Vínculos pregunta → dominio (vista en `features/mapper/views/clinical_history/`).
-- [ ] Modelado de AHF (componente propio): entidades + endpoint (pendiente, ADR 043).
+- [ ] Modelado de los componentes (A, B, D): entidades + endpoints (ADR 043/045).
 
 ## Enlaces rápidos
 

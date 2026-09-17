@@ -15,6 +15,8 @@ microservicio **`dh_catalogs`** (multi-motor).
 | **CIE-11** | clasificación de enfermedades (masiva, estándar) |
 | **Catálogos de salud** | medicamentos, estudios, etc. (masivos) |
 
+> Reparto completo (incl. gobernados): [`../README.md` §Catálogos externos](../README.md#catálogos-externos).
+
 ## Características
 
 - **Columnar**: lecturas masivas y rápidas (autocomplete/búsqueda de CP, CIE, etc.).
