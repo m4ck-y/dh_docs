@@ -40,7 +40,7 @@ ficha/bank (regla: [`clinical_history/sections/README.md`](../clinical_history/s
 |---|---|---|
 | `disease` (CIE-11) | **CLICKHOUSE** | estándar masivo, solo lectura |
 | `disease_category` (CIE-11) | **CLICKHOUSE** | agrupación CIE-11 |
-| `medication` (Vademecum) | **CLICKHOUSE** | sync; sin "Otro" |
+| `medication` (Vademecum) | **CLICKHOUSE** | sync; sin "Otro" — [propuesta](./clickhouse/medication.md) |
 | `study` (estudios) | **CLICKHOUSE** | masivo |
 | `allergen` (alimentos/ambiente) | **POSTGRES** | gobernado (categoría de D `6.0` con "Otro") |
 | `drug` · `body_site` | por definir | se resuelve al modelar (regla por pregunta) |

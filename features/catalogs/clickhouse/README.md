@@ -13,7 +13,7 @@ microservicio **`dh_catalogs`** (multi-motor).
 |---|---|
 | **Código postal** | volumétrico (país → estado → municipio → colonia → CP) |
 | **CIE-11** | clasificación de enfermedades (masiva, estándar) |
-| **Catálogos de salud** | medicamentos, estudios, etc. (masivos) |
+| **`medication`** (Vademecum) | medicamentos — **propuesta** ([spec](./medication.md)); estudios pendientes |
 
 > Reparto completo (incl. gobernados): [`../README.md` §Catálogos externos](../README.md#catálogos-externos).
 

@@ -9,3 +9,4 @@ Schema de ClickHouse — orientado a analítica, eventos y series de tiempo.
 | Archivo | Descripción |
 |---|---|
 | [TODO.md](./TODO.md) | Catálogos y elementos pendientes de modelar (catálogos de código postal, etc.) |
+| [catalogs/erd.mmd](./catalogs/erd.mmd) | ERD de la base `catalogs` (catálogos masivos: `medication`) — **propuesta** |

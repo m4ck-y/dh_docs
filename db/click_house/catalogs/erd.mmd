@@ -1,0 +1,15 @@
+erDiagram
+    %% CLICKHOUSE — database: catalogs
+    %% Estado: PROPUESTA (columnas por definir/consolidar).
+    %% Catalogos masivos (columnar). SIN relaciones/FK (ClickHouse no las tiene):
+    %% se listan solo los ATRIBUTOS.
+    %% Fuente: Vademecum (pendiente de definir).
+
+    medication {
+        String code "id estable (Vademecum / ATC)"
+        String name "nombre (generico / comercial)"
+        String form "forma farmaceutica"
+        String strength "concentracion"
+        String atc "codigo ATC (N05A = antipsicoticos)"
+        String group "grupo terapeutico"
+    }
