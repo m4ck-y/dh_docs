@@ -52,6 +52,7 @@ Cada decision tecnica importante debe documentarse siguiendo el formato de **ADR
 - **[044: Catálogos con gobernanza (vocabularios controlados extensibles)](044-catalogos-gobernados.md)**
 - **[045: Historia clínica — componentes/endpoints de dominio vs formularios](045-historia-clinica-componentes-vs-formularios.md)**
 - **[046: Opciones de pregunta — estáticas o de catálogo (`question.list_options`)](046-opciones-pregunta.md)**
+- **[047: Contexto de evaluación de expresiones — `question.value` por la `person`](047-contexto-evaluacion-expresiones.md)**
 
 ---
 *Para crear una nueva decision, utiliza la plantilla `_template.md` (proximamente).*
