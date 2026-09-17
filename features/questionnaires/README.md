@@ -50,7 +50,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 | Config por tipo | `config` JSONB en `question`, forma según `type` (ver `catalog/question_types/`) | ✅ `question.config` |
 | Scoring / evaluación | **AST** en `form.expression` (`scoring`/`evaluation`/`subscales`); resultado en `assignment.result` como `{value, type}` | ✅ JSONB (ver `expressions/`) |
 | Valor por pregunta | `question.expression` (AST, una expresión) = valor autocalculado solo lectura; `text` obligatorio, `type` compatible, sin `config`, no es el resultado global; se persiste como `answer` (`source = CALCULATED`, snapshot) | ✅ `question.expression`, `answer.source` (ver ADR 041/042) |
-| Orden de pregunta | En la relación: `questions_form.order` / `questions_section.order` (la pregunta es reutilizable) | ✅ `order` en los puentes |
+| Orden de pregunta | En el puente: `questions_form.order` / `questions_section.order` (la pregunta pertenece a un form o a una sección) | ✅ `order` en los puentes |
 | Metadatos | Tablas normalizadas | ✅ `category`, `cie11_code`, `evaluation_topic`, `reference`, `estimated_duration`, `age_group`, `target_sex`, `population` + puentes |
 | Schema PostgreSQL | `form` | ✅ Documentado en comentarios del DDL (`-- Schema: form`); aún no se ejecuta `CREATE SCHEMA form` |
 | Campos de auditoria | Heredados de `BaseModel` en Python | ✅ Documentado en comentarios del DDL (`uuid`, `created_at`, `updated_at`, `deleted_at`, `*_by_id_user`); el ORM los agrega |

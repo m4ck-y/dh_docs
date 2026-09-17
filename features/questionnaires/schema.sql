@@ -86,12 +86,12 @@ COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y
 
 -- ===================================================================
 -- TABLA: question
--- Define cada pregunta reutilizable (atomo del catalogo).
--- Las preguntas se vinculan a un formulario mediante questions_form o a
--- una seccion mediante questions_section; ambos vinculos son EXCLUYENTES
--- por formulario (ver ADR 038 e invariante en la tabla form).
--- El ORDEN de presentacion NO vive aqui: como una pregunta puede reutilizarse
--- en varios formularios/secciones, su posicion pertenece a la RELACION
+-- Define cada pregunta (atomo del catalogo). Relacion 1:N: una pregunta
+-- pertenece a UN formulario (questions_form) O a UNA seccion
+-- (questions_section), nunca a ambos (XOR, ver ADR 038).
+-- Hay DOS puentes porque la pregunta cuelga directo del form O de una
+-- seccion; NO es N:N (no se reutiliza en varios formularios).
+-- El ORDEN de presentacion NO vive aqui: vive en el puente que la vincula
 -- (questions_form.order / questions_section.order).
 -- ===================================================================
 CREATE TABLE question (
@@ -105,10 +105,10 @@ CREATE TABLE question (
     expression JSONB    -- Receta del valor autocalculado (AST, UNA expresion, raiz SIN wrapper). Ausente = la responde el usuario. Ver expressions/README.md (C7c)
 );
 
-COMMENT ON TABLE question IS 'Pregunta individual reutilizable. Se vincula a formularios mediante questions_form y a secciones mediante questions_section. Permite validar respuestas y definir su comportamiento. El orden NO vive aqui: la pregunta es un atomo reutilizable y su posicion depende del contexto (ver questions_form.order y questions_section.order).';
+COMMENT ON TABLE question IS 'Pregunta individual. Relacion 1:N: pertenece a UN formulario (questions_form) O a UNA seccion (questions_section), nunca a ambos (XOR, ver ADR 038). Permite validar respuestas y definir su comportamiento. El orden NO vive aqui: vive en el puente que la vincula (questions_form.order / questions_section.order).';
 
 COMMENT ON COLUMN question.id IS 'PK interno incremental GLOBAL: identifica la pregunta en toda la tabla (unico entre todos los forms).';
-COMMENT ON COLUMN question.key IS 'Identificador GLOBAL de la pregunta (UNIQUE; ej. "satisfaction_rating", "phq9.1"). Unico entre todos los forms (las preguntas son atomos reutilizables). Se usa en expresiones/condiciones (selector uuid/key) y en las respuestas.';
+COMMENT ON COLUMN question.key IS 'Identificador GLOBAL de la pregunta (UNIQUE; ej. "satisfaction_rating", "phq9.1"). Unico entre todos los forms (una pregunta pertenece a un solo form/seccion). Se usa en expresiones/condiciones (selector uuid/key) y en las respuestas.';
 
 COMMENT ON COLUMN question.text IS 'Enunciado de la pregunta. NULLABLE: hay items sin enunciado propio (ej. CDI, formato "elige la frase"). Las instrucciones generales del instrumento viven una sola vez en form.instructions; como se da contexto al item en la presentacion es decision de esa capa (ver C17). Con expression (pregunta calculada), text es OBLIGATORIO: es la etiqueta del valor (ver ADR 042). Ver catalog/bank/README.md.';
 
@@ -146,9 +146,10 @@ COMMENT ON COLUMN section.condition IS 'Condición de visibilidad de la sección
 
 -- ===================================================================
 -- TABLA: questions_form
--- Puente N:N entre form y question. Permite reutilizar preguntas en
--- multiples formularios. El orden de la pregunta DENTRO de este formulario
--- vive aqui (no en question), porque la posicion depende del contexto.
+-- Vincula una pregunta DIRECTAMENTE con un formulario (relacion 1:N). Es uno
+-- de los DOS puentes posibles (el otro es questions_section); NO es N:N ni
+-- implica reutilizacion en varios formularios.
+-- El orden de la pregunta DENTRO de este formulario vive aqui.
 -- EXCLUSIVO con el uso de secciones: si el formulario tiene filas aqui,
 -- no debe tener filas en section (ver ADR 038).
 -- ===================================================================
@@ -160,15 +161,16 @@ CREATE TABLE questions_form (
     UNIQUE (id_form, id_question)
 );
 
-COMMENT ON TABLE questions_form IS 'Vincula preguntas con formularios (preguntas directas). La misma pregunta puede presentarse en posiciones distintas segun el formulario. Exclusivo con el uso de secciones en el mismo formulario (ver ADR 038).';
+COMMENT ON TABLE questions_form IS 'Vincula preguntas directamente con un formulario (1:N). Puente de la via directa (el otro es questions_section). Exclusivo con el uso de secciones en el mismo formulario (ver ADR 038).';
 
-COMMENT ON COLUMN questions_form."order" IS 'Orden de presentacion de la pregunta dentro de ESTE formulario. Es la fuente de verdad del orden en el contexto de formulario (la pregunta puede reutilizarse en varios formularios con ordenes distintos).';
+COMMENT ON COLUMN questions_form."order" IS 'Orden de presentacion de la pregunta dentro de ESTE formulario. Es la fuente de verdad del orden en el contexto de formulario.';
 
 -- ===================================================================
 -- TABLA: questions_section
--- Puente N:N entre section y question. Permite reutilizar preguntas en
--- multiples secciones. El orden de la pregunta DENTRO de esta seccion
--- vive aqui (no en question), porque la posicion depende del contexto.
+-- Vincula una pregunta con una seccion (relacion 1:N). Es el segundo puente
+-- (el otro es questions_form); una pregunta va directo al form O via seccion
+-- (XOR, ADR 038), NO en ambos ni reutilizada en varias secciones.
+-- El orden de la pregunta DENTRO de esta seccion vive aqui.
 -- ===================================================================
 CREATE TABLE questions_section (
     id SERIAL PRIMARY KEY,
@@ -178,9 +180,9 @@ CREATE TABLE questions_section (
     UNIQUE (id_section, id_question)
 );
 
-COMMENT ON TABLE questions_section IS 'Vincula preguntas con secciones. La misma pregunta puede presentarse en posiciones distintas segun la seccion.';
+COMMENT ON TABLE questions_section IS 'Vincula preguntas con una seccion (1:N). Puente de la via seccion (el otro es questions_form).';
 
-COMMENT ON COLUMN questions_section."order" IS 'Orden de presentacion de la pregunta dentro de ESTA seccion. Es la fuente de verdad del orden en el contexto de seccion (la pregunta puede reutilizarse en varias secciones con ordenes distintos).';
+COMMENT ON COLUMN questions_section."order" IS 'Orden de presentacion de la pregunta dentro de ESTA seccion. Es la fuente de verdad del orden en el contexto de seccion.';
 
 -- NOTA (ADR 046 / C20): las tablas `option` y `url` se ELIMINARON.
 -- Las opciones estaticas viven en `question.list_options` (JSONB array de

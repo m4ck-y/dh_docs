@@ -6,7 +6,7 @@ erDiagram
     %%   id Integer PK interno incremental, uuid UUID externo, created_at, updated_at, deleted_at, *_by_id_user
     %% Solo se listan las columnas especificas de cada entidad.
     %% Las FK referencian el id Integer interno de la tabla destino.
-    %% Excepcion (decision de diseno): las tablas puente N:N conservan id propio.
+    %% Excepcion (decision de diseno): las tablas puente conservan id propio.
 
     %% ============ RELACIONES ============
     %% INVARIANTE DE COMPOSICION (ver ADR 038): un form se compone de
@@ -116,8 +116,8 @@ erDiagram
     %%   SIN wrapper); pregunta solo lectura. Ausente = la responde el usuario (C7c).
     %%   Contrato (ADR 042): text OBLIGATORIO, type compatible con el output, SIN
     %%   config, y NO es el resultado global del instrumento (eso es form.expression).
-    %% El ORDEN no vive aqui: pertenece a la relacion (questions_form / questions_section),
-    %% porque la pregunta es reutilizable y su posicion depende del contexto.
+    %% El ORDEN no vive aqui: pertenece al puente (questions_form / questions_section).
+    %% Relacion 1:N: la pregunta cuelga de UN form O de UNA seccion (XOR, ADR 038).
     %% question.text: NULLABLE (item sin enunciado propio, ej. CDI "elige la frase"; ver C17).
     question {
         Integer id PK

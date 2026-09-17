@@ -221,21 +221,24 @@ Contrato (ver [ADR 042](../../../decisions/042-contrato-pregunta-calculada.md)):
 
 ## 7. Regla de orden (dónde vive `order`)
 
-**El orden pertenece a la relación, no a la entidad**, porque un mismo elemento
-puede reutilizarse en varios contextos con posiciones distintas.
+**El orden de la pregunta vive en el puente**, no en la entidad: el puente es donde
+la pregunta se vincula a su formulario (`questions_form`) o a su sección
+(`questions_section`). Las opciones van embebidas en la pregunta (JSONB).
 
 | Elemento | Dónde vive su `order` | Por qué |
 |---|---|---|
 | opción (ítem) | **En `item.order`** (dentro de `list_options`) | Las opciones viven embebidas en la pregunta (JSONB); su orden de presentación va en el ítem. |
-| `question` | **En `questions_form` / `questions_section`** | La pregunta es un **átomo reutilizable**: su posición depende del formulario o sección que la usa. |
+| `question` | **En `questions_form` / `questions_section`** | El puente guarda la posición de la pregunta en **su** formulario o sección (relación **1:N**). |
 
 - `question` **no tiene** columna `order`. Su orden se define en:
   - `questions_form.order` → posición de la pregunta dentro de un formulario.
   - `questions_section.order` → posición de la pregunta dentro de una sección.
 - `section.order` sí vive en la entidad, porque una sección pertenece a un único
   formulario.
-- Una misma pregunta puede aparecer en el **Form A** en la posición 1 y en el
-  **Form B** en la posición 7: eso lo permite tener el orden en la puente.
+- Una pregunta pertenece a **un** formulario (o a **una** sección) → relación
+  **1:N**. Los **dos** puentes (`questions_form` / `questions_section`) existen
+  porque la pregunta cuelga **directo del form O vía sección** (XOR, ADR 038) —
+  **no** por reutilización en varios formularios.
 - `item.order` es el orden **canónico**; si la pregunta usa `shuffle`
   (presentación aleatoria, ver §6), `item.order` sigue siendo la referencia
   estable para scoring.
