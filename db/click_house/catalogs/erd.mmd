@@ -6,7 +6,8 @@ erDiagram
     %% Fuente: Vademecum (pendiente de definir).
 
     medication {
-        String code "id estable (Vademecum / ATC)"
+        String code_system "sistema del codigo (ATC / SNOMED / RXNORM / nacional)"
+        String code "codigo del medicamento en ese sistema"
         String name "nombre (generico / comercial)"
         String form "forma farmaceutica"
         String strength "concentracion"

@@ -16,12 +16,19 @@
 
 | Columna | Tipo | Nota |
 |---|---|---|
-| `code` | varchar | id estable (Vademecum / ATC) |
+| `code_system` | varchar | sistema del código (`ATC` / `SNOMED` / `RXNORM` / nacional) |
+| `code` | varchar | código del medicamento en ese sistema |
 | `name` | text | nombre (genérico/comercial) |
 | `form` | varchar | forma farmacéutica |
 | `strength` | varchar | concentración |
 | `atc` | varchar | código **ATC** (p. ej. `N05A` = antipsicóticos) |
 | `group` | varchar | grupo terapéutico (legible) |
+
+> **Identificador**: `code_system` + `code` (equivale a un `CodeableConcept` de FHIR;
+> `Medication.code` tiene binding **Example** → cualquier sistema, ver FHIR).
+> ⚠️ Si `code_system = "ATC"`, la columna `atc` es **redundante** (el clasificador
+> DAI-10 usaría `code`/`N05A`); si el `code` es un código **nacional/comercial**,
+> `atc` se **conserva** para clasificar.
 
 ## Uso
 
