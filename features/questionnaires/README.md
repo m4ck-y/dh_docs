@@ -42,7 +42,7 @@ Módulo del **catálogo de cuestionarios**. Cubre dos capas:
 
 | Tema | Decisión | Reflejo en el DDL |
 |---|---|---|
-| Opciones de respuesta | Tabla propia `option` | ✅ `option` (+ `url` asociada) |
+| Opciones de respuesta | `question.list_options` (JSONB, unión `static` \| `catalog`, ADR 046) | ✅ `question.list_options` |
 | Condicional | AST booleano JSONB en `form.condition` / `section.condition` / `question.condition` (ver ADR 039) | ✅ columnas JSONB |
 | Agrupación | `section` + tablas puente; un form usa preguntas directas **XOR** secciones (ver ADR 038) | ✅ `section`, `questions_form`, `questions_section` |
 | Tipo de pregunta | Enum tipado | ✅ Columna `"type"` de tipo `EQuestionType` |

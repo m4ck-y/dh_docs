@@ -99,7 +99,8 @@ CREATE TABLE question (
     key VARCHAR(100) NOT NULL,
     text TEXT,          -- Enunciado de la pregunta. NULLABLE: hay items sin enunciado propio (ej. CDI, "elige la frase"); las instrucciones generales van en form.instructions. Ver catalog/bank/README.md
     "type" EQuestionType NOT NULL,
-    config JSONB,       -- Configuracion segun el tipo de pregunta (ver catalog/question_types/)
+    config JSONB,       -- Configuracion segun el tipo de pregunta (ver catalog/question_types/). Incluye "required" y los parametros propios del tipo
+    list_options JSONB, -- Opciones de la pregunta (eleccion), UNION taggeada: {source:"static", items:[...]} o {source:"catalog", catalog:{key}}. NULL si no es choice. Ver ADR 046
     condition JSONB,    -- Condicion de visibilidad de la pregunta (AST booleano). Ausente = siempre visible. Ver expressions/conditions.md
     expression JSONB    -- Receta del valor autocalculado (AST, UNA expresion, raiz SIN wrapper). Ausente = la responde el usuario. Ver expressions/README.md (C7c)
 );
@@ -117,6 +118,8 @@ COMMENT ON COLUMN question.config IS 'Configuracion en JSONB especifica del tipo
 COMMENT ON COLUMN question.condition IS 'Condición de visibilidad de la pregunta, como expresión AST booleana en JSONB (raíz SIN wrapper; ver features/questionnaires/expressions/conditions.md, ADR 039). Su ausencia significa siempre visible. Ejemplo (PHQ-9 Q10): {"type":"collection","operator":"any","args":[{"expression":{"type":"comparison","operator":">","args":[{"subject":{"entity":"question","property":"value","selector":{"range":[1,9]}}},{"const":{"value":0,"type":"number"}}],"output":{"type":"boolean"}}}],"output":{"type":"boolean"}}.';
 
 COMMENT ON COLUMN question.expression IS 'Receta de un valor AUTOCALCULADO de la pregunta: un operador AST (raíz SIN wrapper, ver features/questionnaires/expressions/README.md). La pregunta es de SOLO LECTURA (el usuario no la responde); su valor se computa con la expresión y se persiste como una fila de answer con source=CALCULATED. Ausente = la pregunta la responde el usuario. Referencias permitidas: preguntas del mismo form (incl. otras calculadas, con validación de ciclos), person, const y {ref} a definitions del form; form.result.* está PROHIBIDO (sería circular). Contrato (ver ADR 042): text OBLIGATORIO (etiqueta del valor), type compatible con expression.output.type, y SIN config (el valor persistido es el cálculo crudo; el formato es presentación). NO modela el resultado global del instrumento (eso vive en form.expression/assignment.result). Ejemplos: IMC (math sobre person.weight/person.height) y una diferencia entre dos ítems.';
+
+COMMENT ON COLUMN question.list_options IS 'Opciones de la pregunta (tipos SINGLE_CHOICE/MULTIPLE_CHOICE) como UNION taggeada JSONB: {"source":"static","items":[{value,label,description?,order?,url?},...]} o {"source":"catalog","catalog":{"key":"<key del registro>"}}. value es number (escalas/scoring) o string. Es NULL cuando la pregunta no es de eleccion. Obligacion (app/Pydantic): en choice, source="static" exige items no vacio; source="catalog" exige key existente en el registro (ver ADR 046). Los sentinels ("Ninguna", "Prefiere no decirlo") son items del catalogo con su propio value; el dominio los mapea a NULL (o 0/otro segun el campo).';
 
 -- ===================================================================
 -- TABLA: section
@@ -178,37 +181,12 @@ COMMENT ON TABLE questions_section IS 'Vincula preguntas con secciones. La misma
 
 COMMENT ON COLUMN questions_section."order" IS 'Orden de presentacion de la pregunta dentro de ESTA seccion. Es la fuente de verdad del orden en el contexto de seccion (la pregunta puede reutilizarse en varias secciones con ordenes distintos).';
 
--- ===================================================================
--- TABLA: option
--- Opcion de respuesta para preguntas de tipo choice.
--- ===================================================================
-CREATE TABLE option (
-    id SERIAL PRIMARY KEY,
-    id_question INTEGER NOT NULL REFERENCES question(id) ON DELETE CASCADE,
-    text VARCHAR(255) NOT NULL,
-    value INTEGER NOT NULL,
-    "order" INTEGER NOT NULL DEFAULT 0,  -- Orden canonico/base de la opcion en su pregunta
-    help TEXT
-);
-
-COMMENT ON TABLE option IS 'Opcion de respuesta para preguntas de tipo SINGLE_CHOICE o MULTIPLE_CHOICE.';
-
-COMMENT ON COLUMN option."order" IS 'Orden canonico/base de la opcion dentro de su pregunta. Si la pregunta usa shuffle (presentacion aleatoria), este orden sigue siendo la referencia estable para scoring y para cuando la aleatorizacion esta apagada.';
-
-COMMENT ON COLUMN option.help IS 'Texto de ayuda o descripcion tecnica de la opcion, visible solo para roles distintos al paciente.';
-
--- ===================================================================
--- TABLA: url
--- Recurso enlazado a una opcion de respuesta (redireccion, archivo, imagen).
--- ===================================================================
-CREATE TABLE url (
-    id SERIAL PRIMARY KEY,
-    id_option INTEGER NOT NULL REFERENCES option(id) ON DELETE CASCADE,
-    url VARCHAR(2048) NOT NULL,
-    type EUrlType NOT NULL
-);
-
-COMMENT ON TABLE url IS 'URL asociada a una opcion de respuesta. Puede ser un enlace, archivo o imagen.';
+-- NOTA (ADR 046 / C20): las tablas `option` y `url` se ELIMINARON.
+-- Las opciones estaticas viven en `question.list_options` (JSONB array de
+-- {value, label, description?, order?, url?}); los recursos enlazados (url) se
+-- embeben en cada item. Las opciones de catalogo se referencian con
+-- `question.config.catalog` (key del registro de catalogos, ver
+-- features/catalogs/). XOR `list_options` vs `config.catalog`, validado en app.
 
 -- NOTA (ADR 039): las tablas conditional_logic (condicion de pregunta) y
 -- form_condition (condicion de formulario) se ELIMINARON. La condicion de
@@ -512,7 +490,7 @@ COMMENT ON COLUMN answer.data IS 'Estructura normalizada {value, type}: mismos c
   - Fecha: {"value": "2026-08-26", "type": "date"}
   - Fecha-hora: {"value": "2026-08-26T14:30:00Z", "type": "datetime"}
   - Duracion: {"value": "PT1H30M", "type": "duration"}
-  Las respuestas de opcion guardan el value numerico de la opcion (option.value), no la etiqueta.
+  Las respuestas de opcion guardan el `value` del item elegido (number en escalas, string en catalogos), no la etiqueta.
   En filas con source=CALCULATED, data guarda el valor computado por question.expression (p. ej. IMC: {"value": 24.5, "type": "number"}).
   ⚠️ La coherencia entre type y question_type debe validarse en la capa de aplicacion (ej. con Pydantic).';
 
@@ -528,8 +506,6 @@ CREATE INDEX idx_questions_form_form ON questions_form (id_form);
 CREATE INDEX idx_questions_form_question ON questions_form (id_question);
 CREATE INDEX idx_questions_section_section ON questions_section (id_section);
 CREATE INDEX idx_questions_section_question ON questions_section (id_question);
-CREATE INDEX idx_option_question ON option (id_question);
-CREATE INDEX idx_url_option ON url (id_option);
 CREATE INDEX idx_form_categories_form ON form_categories (id_form);
 CREATE INDEX idx_form_categories_category ON form_categories (id_category);
 CREATE INDEX idx_estimated_duration_form ON estimated_duration (id_form);

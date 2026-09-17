@@ -72,6 +72,8 @@ nivel arriba; este directorio solo contiene **datos**.
 - `id` (uuid/string) estable, para que `expression`/`condition` puedan referenciar.
 - Un form usa `list_questions` **XOR** `list_sections` (ver ADR 038).
 - `expression` (envelope AST) y `condition` (AST) según `../../expressions/`.
+- Opciones de pregunta (`list_options`): unión `{source:"static", items:[…]}` |
+  `{source:"catalog", catalog:{key}}` (ver ADR 046 y `../question_types/`).
 
 ## Plantilla
 

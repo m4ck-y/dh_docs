@@ -24,8 +24,9 @@ erDiagram
     questions_form }o--|| question : "includes"
     section ||--o{ questions_section : "groups"
     questions_section }o--|| question : "includes"
-    question ||--o{ option : "offers"
-    option ||--o| url : "links_to"
+    %% Nota (ADR 046 / C20): las opciones de la pregunta son JSONB
+    %% (question.list_options, union {source:"static", items:[...]} |
+    %% {source:"catalog", catalog:{key}}); ya no hay tablas option/url.
     form ||--o{ target_sex : "restricts_sex"
     form ||--o{ form_population : "applies_to"
     form_population }o--|| population : "targets"
@@ -108,6 +109,8 @@ erDiagram
 
     %% question.key: NOT NULL (usado en scoring/evaluacion y respuestas)
     %% question.config: JSONB nullable; forma segun question.type (ver catalog/question_types/)
+    %% question.list_options: opciones (JSONB, union {source:"static", items} |
+    %%   {source:"catalog", catalog}); ver ADR 046.
     %% question.condition: condicion de visibilidad (AST booleano), ver ADR 039
     %% question.expression: receta del valor autocalculado (AST, una expresion, raiz
     %%   SIN wrapper); pregunta solo lectura. Ausente = la responde el usuario (C7c).
@@ -122,6 +125,7 @@ erDiagram
         Enum(EQuestionType) type
         Text text
         Jsonb config
+        Jsonb list_options "union {source:static|catalog} (ADR 046)"
         Jsonb condition
         Jsonb expression
     }
@@ -216,21 +220,10 @@ erDiagram
         Integer order
     }
 
-    option {
-        Integer id PK
-        Integer id_question FK
-        String text
-        Integer value
-        Integer order
-        Text help
-    }
-
-    url {
-        Integer id PK
-        Integer id_option FK
-        Enum(EUrlType) type
-        String url
-    }
+    %% NOTA (ADR 046): `option` y `url` se ELIMINARON. Las opciones viven en
+    %% question.list_options (JSONB union); el recurso enlazado (url) se embebe en
+    %% cada item ({value, label, description?, order?, url?}). EUrlType sigue
+    %% vigente para reference.type_media.
 
     target_sex {
         Integer id PK
@@ -265,9 +258,9 @@ erDiagram
     %% embebida en el propio elemento (form.condition / section.condition /
     %% question.condition). No hay tabla ni entidad compartida. Ausente = siempre
     %% visible. Ver features/questionnaires/expressions/conditions.md.
-    %% Alternativa de optimizacion: embeber options en question como JSONB
-    %% (question.options JSONB) en lugar de tabla option. Util cuando las preguntas
-    %% siempre se leen junto con sus opciones.
+    %% (ADR 046 / C20): las opciones ya se EMBEBEN en question.list_options (JSONB
+    %% union {source:"static", items} | {source:"catalog", catalog}); la tabla option
+    %% se elimino. EUrlType sigue vigente para reference.type_media.
     %% redirect_to: es necesario? Para saber a donde redirige despues de elegir una opcion
     %% de respuesta, despues de responder una pregunta, una seccion o un form.
     %% Agregar technical_description o hidden_description, visible solo para roles

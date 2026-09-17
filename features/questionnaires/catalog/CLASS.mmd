@@ -58,9 +58,12 @@ classDiagram
         +string text
         +int order
         +Jsonb config
+        %% opciones: union expuesta como clases Options (ADR 046):
+        %%   Options <|-- StaticOptions {items: OptionItem[]}
+        %%   Options <|-- CatalogOptions {catalog: CatalogRef}
+        +Options list_options
         +Expression condition
         +Expression expression
-        +Option[] list_options
     }
 
     %% Question.config: JSONB nullable, forma segun Question.type
@@ -142,17 +145,29 @@ classDiagram
         +string name
     }
 
-    class Option {
-        +string id
-        +string text
-        +string value
+    %% Opciones de la pregunta (ADR 046): union Options -> StaticOptions | CatalogOptions.
+    class Options {
+        <<abstract>>
+        +string source
+    }
+    class StaticOptions {
+        +OptionItem[] items
+    }
+    class CatalogOptions {
+        +CatalogRef catalog
+    }
+    class OptionItem {
+        +number|string value
+        +string label
+        +string description
         +int order
         +Url url
     }
-
+    class CatalogRef {
+        +string key
+    }
     class Url {
-        +string id
-        +string href
+        +string value
         +string type
     }
 
@@ -199,8 +214,6 @@ classDiagram
     Form "1" *-- "0..*" Section : list_sections (XOR list_questions)
     Form "1" *-- "0..*" Question : list_questions (XOR list_sections)
     Section "1" *-- "0..*" Question : list_questions
-    Question "1" *-- "0..*" Option : list_options
-    Option "1" o-- "0..1" Url : url
     %% Metadata embebida del Form (en el ERD son puentes/tablas normalizadas).
     Form "1" *-- "0..*" Category : list_categories
     Form "1" *-- "0..*" Cie11Code : list_cie11_codes
@@ -214,6 +227,12 @@ classDiagram
     Section "1" *-- "0..1" Expression : condition
     Question "1" *-- "0..1" Expression : condition
     Question "1" *-- "0..1" Expression : expression
+    Question "1" *-- "0..1" Options : list_options
+    Options <|-- StaticOptions
+    Options <|-- CatalogOptions
+    StaticOptions "1" *-- "0..*" OptionItem : items
+    CatalogOptions "1" *-- "0..1" CatalogRef : catalog
+    OptionItem "1" o-- "0..1" Url : url
     ExpressionSet "1" *-- "0..*" Definition : definitions
     Definition "1" *-- "0..1" Expression : expression
     ExpressionSet "1" *-- "0..1" Expression : scoring

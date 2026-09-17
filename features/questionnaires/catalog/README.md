@@ -76,8 +76,8 @@ contra el contrato `Instrument` del MVP frontend (`types.ts`).
 | `list_evaluation_topics` | ✅ (`{id,name,key_industry}`) | ✅ (`{name,key_industry}`, sin `id`) | MVP simplificado |
 | `estimated_duration` | ✅ | ✅ | Igual |
 | `target_age_group` `{name,min_age,max_age}` | ✅ | ✅ | Igual |
-| `list_questions[]` `{id,type,text,order,list_options,condition}` | ✅ | ✅ | Ver §8 |
-| `list_options` `{text,value,id,url}` | ✅ | ✅ (`url` opcional/extra) | Igual |
+| `list_questions[]` `{id,type,text,order,config,list_options,condition}` | ✅ | ✅ | Ver §6 |
+| `list_options` (unión `{source:"static", items:[…]}` \| `{source:"catalog", catalog:{key}}`) | ✅ | ✅ | Forma del proyecto (ADR 046) |
 | `list_sections` `[]` | ✅ (siempre vacío) | ✅ `Section[]` (espejo del ERD) | Forma propia del proyecto, ver §5 y ADR 038 |
 | `list_references` `[]` | ✅ | ✅ `Reference[]` | Resuelto (era gap) |
 | `target_sex` | ✅ (`null`) | ✅ objeto `{type_biological_sex,id}` | Inconsistencia corregida: el ejemplo ya lo modelaba así; no era gap (ver §11) |
@@ -177,6 +177,30 @@ Cada `question` tiene un `type` (`EQuestionType`) y una configuración `config`
 - La coherencia de `config` con `type` se valida en la capa de aplicación
   (Pydantic), igual que `answer.data`.
 
+### Opciones de pregunta (`list_options`)
+
+Las preguntas de **elección** (`SINGLE_CHOICE`, `MULTIPLE_CHOICE`) declaran sus
+opciones en **`list_options`** (JSONB), como **unión taggeada**:
+
+```jsonc
+// estáticas
+"list_options": { "source": "static", "items": [ { "value": 0, "label": "Nunca" } ] }
+// catálogo gobernado (ver features/catalogs)
+"list_options": { "source": "catalog", "catalog": { "key": "countries" } }
+```
+
+- `source: "static"` → `items` (array **no vacío**) de
+  `{value, label, description?, order?, url?}`.
+- `source: "catalog"` → `catalog.key` (key de un catálogo **existente** en el
+  registro); las opciones salen del catálogo gobernado ([ADR 044](../../../decisions/044-catalogos-gobernados.md)).
+- **Obligación (app/Pydantic)**: en choice, exactamente una fuente (`static` no
+  vacío **XOR** `catalog` con key existente).
+- `value` es `number` (escalas/scoring) o `string` (catálogos). La respuesta
+  guarda ese `value`.
+- Los **sentinels** ("Ninguna", "Prefiere no decirlo") son **ítems del catálogo**
+  con su propio `value`; el dominio los mapea (`NULL`, `0`, …).
+- Ver [ADR 046](../../../decisions/046-opciones-pregunta.md).
+
 ### Preguntas autocalculadas (`question.expression`)
 
 Una pregunta puede declarar `expression` (AST, **una** expresión, raíz sin
@@ -202,7 +226,7 @@ puede reutilizarse en varios contextos con posiciones distintas.
 
 | Elemento | Dónde vive su `order` | Por qué |
 |---|---|---|
-| `option` | **En `option`** (entidad propia) | Una opción pertenece a una **única** pregunta; no se comparte. |
+| opción (ítem) | **En `item.order`** (dentro de `list_options`) | Las opciones viven embebidas en la pregunta (JSONB); su orden de presentación va en el ítem. |
 | `question` | **En `questions_form` / `questions_section`** | La pregunta es un **átomo reutilizable**: su posición depende del formulario o sección que la usa. |
 
 - `question` **no tiene** columna `order`. Su orden se define en:
@@ -212,8 +236,8 @@ puede reutilizarse en varios contextos con posiciones distintas.
   formulario.
 - Una misma pregunta puede aparecer en el **Form A** en la posición 1 y en el
   **Form B** en la posición 7: eso lo permite tener el orden en la puente.
-- `option.order` es el orden **canónico**; si la pregunta usa `shuffle`
-  (presentación aleatoria, ver §6), `option.order` sigue siendo la referencia
+- `item.order` es el orden **canónico**; si la pregunta usa `shuffle`
+  (presentación aleatoria, ver §6), `item.order` sigue siendo la referencia
   estable para scoring.
 
 ### Exclusividad: preguntas directas XOR secciones
@@ -284,7 +308,7 @@ todo valor del módulo usa un solo vocabulario.
 
 `type` ∈ `number | string | boolean | date | datetime | duration |
 array_string | array_number | array_object`. Las respuestas de opción guardan el
-`value` **numérico** de la opción (`option.value`), no la etiqueta.
+`value` del ítem elegido (number en escalas, string en catálogos), no la etiqueta.
 
 ```ts
 // Representación en memoria del motor del frontend (provisional).

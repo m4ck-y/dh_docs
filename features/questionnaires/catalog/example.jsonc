@@ -73,15 +73,14 @@
           "text": "¿Cómo calificaría la atención recibida?",
           "order": 1,
           "id": 0,
-          "list_options": [
-            {
-              "text": "string",
-              "value": 0,
-              "order": 1,
-              "id": 0,
-              "url": { "value": "http://wwww.pinterest.com/image.png", "type": "LINK", "id": 0 }
-            }
-          ],
+          "list_options": {
+            "source": "static",
+            "items": [
+              { "value": 0, "label": "string", "order": 1, "url": { "value": "http://wwww.pinterest.com/image.png", "type": "LINK" } }
+            ]
+            /* o de catálogo:
+               "list_options": { "source": "catalog", "catalog": { "key": "countries" } } */
+          },
           "condition": {
             /* Visibilidad: AST booleano, raíz sin wrapper. Ver expressions/conditions.md */
             "type": "comparison",

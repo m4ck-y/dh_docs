@@ -13,7 +13,7 @@ aplicación (Pydantic); el motor del frontend la interpreta para renderizar.
 - Los límites se nombran **`min`/`max`** en **todos** los tipos (numéricos,
   fechas, rango, timer, selección múltiple). Ver nota de desviación abajo.
 - `shuffle` (en tipos choice) es **opcional/aditivo**: el orden canónico de las
-  opciones vive en `option.order`, no en `config`.
+  opciones vive en `item.order` (dentro de `list_options`), no en `config`.
 - En los ejemplos, el campo `"order"` de la **pregunta** representa su posición
   dentro de un formulario **o** de una sección (payload), **no** una columna de
   `question` (ver `catalog/README.md` §7). Un formulario usa preguntas directas
@@ -39,7 +39,22 @@ aplicación (Pydantic); el motor del frontend la interpreta para renderizar.
 array (`number[]`).
 
 \* `shuffle` es opcional/aditivo. El orden determinista de las opciones es
-`option.order`.
+`item.order` (dentro de `list_options`).
+
+### Opciones (`list_options`)
+
+Las preguntas de elección (`SINGLE_CHOICE`, `MULTIPLE_CHOICE`) declaran sus
+opciones en `list_options` (JSONB), como **unión taggeada** (ADR 046):
+
+```jsonc
+{ "source": "static",  "items": [ { "value": 0, "label": "Nunca" } ] }
+{ "source": "catalog", "catalog": { "key": "countries" } }
+```
+
+- `value` es `number` (escalas) o `string` (catálogos); la respuesta guarda ese
+  `value` (no la etiqueta).
+- `source: "static"` exige `items` no vacío; `source: "catalog"` exige `key`
+  existente en el registro (validado en app).
 
 ### Calculadas (`expression`)
 

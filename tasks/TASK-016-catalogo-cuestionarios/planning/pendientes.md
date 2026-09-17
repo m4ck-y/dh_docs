@@ -60,6 +60,7 @@
 | C17 | `question.text` nullable (ítem sin enunciado propio) | Modelo | ✅ |
 | C18 | `form.type` (`EFormType`) formalizado | Modelo | ✅ |
 | C19 | Contrato de la pregunta calculada | Modelo | ✅ |
+| C20 | Opciones de pregunta (estáticas o de catálogo) | Modelo | ✅ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -440,6 +441,27 @@
   `catalog/bank/README.md`, `catalog/CLASS.mmd`, `catalog/ERD.mmd`,
   `responses/README.md` (progreso), `reference/questionnaire-engine.md`,
   `questionnaires/README.md`.
+
+### C20 — Opciones de pregunta: estáticas o de catálogo ✅ (resuelto)
+
+- **Qué era**: las opciones de `SINGLE_CHOICE`/`MULTIPLE_CHOICE` vivían en las
+  tablas relacionales `option`/`url`; con los catálogos gobernados (ADR 044) falta
+  un segundo origen (catálogo).
+- **Decisión** ([ADR 046](../../decisions/046-opciones-pregunta.md)):
+  `question.list_options` (JSONB, nullable) es una **unión taggeada**:
+  - `{ "source": "static", "items": [ {value,label,description?,order?,url?} ] }`
+  - `{ "source": "catalog", "catalog": { "key": "<key del registro>" } }`
+  - `value` es `number` (escalas) o `string` (catálogos); la respuesta guarda ese `value`.
+  - **Obligación (app/Pydantic)**: en choice, exactamente una fuente (`static` no
+    vacío XOR `catalog` con key existente); en el resto, `list_options` NULL.
+  - `required` se mantiene en `config`.
+  - Sentinels ("Ninguna"/"Prefiere no decirlo") = ítems del catálogo; el dominio
+    los mapea (`NULL`/`0`/…).
+  - DDL: se eliminan `option`/`url` (el `url` se embebe en el ítem).
+- **Reflejo**: `schema.sql` (`list_options` + retiro de `option`/`url`),
+  `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md` §4/§6/§7/§8,
+  `catalog/question_types/{README,single_choice,multiple_choice}.md`,
+  `catalog/bank/README.md`, `catalog/example.jsonc`.
 
 ## D. Motor frontend
 
