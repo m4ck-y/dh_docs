@@ -15,6 +15,22 @@ dominio** (A/B) — ver ADR 045.
 
 Fuente de los flujos: `docs/diagrams/0_HISTORIA_CLINICA/flows/`.
 
+### ¿Cuándo es `form` y cuándo componente?
+
+- **`form`** (cuestionario **lineal**): secuencia de preguntas con **una**
+  respuesta cada una, guardadas como `answer` por `assignment`. Ej.: **C (APNP)**,
+  **E (Padecimiento actual)**.
+- **Componente/endpoint de dominio**: dato **persistente** con cardinalidad
+  **1:N** (o matriz/registros), que se **actualiza/precarga** y mapea a entidades
+  de dominio. Ej.: **A (Registro)**, **B (AHF)**.
+
+> **A — Registro NO es un cuestionario lineal.** Aunque el flujo del drawio se vea
+> como una **secuencia**, sus datos son el **perfil 1:N** — domicilios, teléfonos,
+> correos, **tutor** (`person_responsible`) y **contacto de emergencia** — y es
+> dato **persistente** (CRUD de `people`/`care`), **no** `answer` de un
+> `assignment`. Por eso se modela como **componente/endpoint** y no como `form`
+> (ver [ADR 045](../../../decisions/045-historia-clinica-componentes-vs-formularios.md)).
+
 ## Convención — reconciliación con la fuente
 
 Cadena de verdad: **drawio → `.mmd` → ficha → artefacto** (`bank/…json` para un
