@@ -1,11 +1,11 @@
 erDiagram
     %% RELATIONSHIPS SCHEMA
-    %% Manejo de vínculos legales, sociales y de cuidado entre personas.
-    %% Ideas para futuras tablas:
-    %% - emergency_contacts: Contactos para avisos de crisis.
-    %% - family_units: Agrupación por núcleo familiar o vivienda.
-    %% - power_of_attorney: Representación legal con poderes específicos.
-    %% - insurance_links: Vínculo entre titular de póliza y beneficiarios.
+    %% Vinculos legales, sociales y de cuidado entre personas.
+    %% Cada tabla = un tipo de arista (dirigida o simetrica); base del futuro grafo (Neo4j).
+    %% Nodos = people.person.
+    %% Aristas: family=:PARENT_OF (dir), partnership=:SPOUSE_OF (sim),
+    %%          person_responsible=:RESPONSIBLE_FOR (dir).
+    %% Diferidas: friendship=:FRIEND_OF (sim), follow=:FOLLOWS (dir).
 
     %% REFERENCIAS EXTERNAS
     %% person: definida en schema people
@@ -13,11 +13,12 @@ erDiagram
     %% RELACIONES
     person ||--o{ person_responsible : "is_dependent"
     person ||--o{ person_responsible : "is_responsible"
+    person ||--o{ family : "is_parent"
+    person ||--o{ family : "is_child"
+    person ||--o{ partnership : "is_partner_a"
+    person ||--o{ partnership : "is_partner_b"
 
     %% ENUMS
-    %% ERelationship: tipo de relacion (MOTHER, FATHER, CAREGIVER, LEGAL_GUARDIAN, OTHER)
-    %% ECareRole: rol del cuidador (LIVES_WITH_AND_CARES, CARES_NOT_LIVING_WITH, ADMINISTRATIVE_SUPPORT_ONLY)
-    %% EEconomicDependence: dependencia economica (YES, PARTIALLY, NO)
     ERelationship {
         String MOTHER "MOTHER"
         String FATHER "FATHER"
@@ -25,30 +26,56 @@ erDiagram
         String LEGAL_GUARDIAN "LEGAL_GUARDIAN"
         String OTHER "OTHER"
     }
-
     ECareRole {
         String LIVES_WITH_AND_CARES "LIVES_WITH_AND_CARES"
         String CARES_NOT_LIVING_WITH "CARES_NOT_LIVING_WITH"
         String ADMINISTRATIVE_SUPPORT_ONLY "ADMINISTRATIVE_SUPPORT_ONLY"
     }
-
     EEconomicDependence {
         String YES "YES"
         String PARTIALLY "PARTIALLY"
         String NO "NO"
     }
+    EParentageKind {
+        String BIOLOGICAL "BIOLOGICAL"
+        String ADOPTIVE "ADOPTIVE"
+        String FOSTER "FOSTER"
+        String STEP "STEP"
+    }
+    EUnionType {
+        String SPOUSE "SPOUSE"
+        String PARTNER "PARTNER"
+        String DIVORCED "DIVORCED"
+    }
 
     %% ENTIDADES
-    %% person_responsible: vinculacion responsable-dependiente
-    %% id_dependent: persona que depende (paciente)
-    %% id_responsible: responsable o tutor
-    %% economic_dependence: dependencia economica del responsable hacia el dependiente
+    %% person_responsible: tutor/cuidador (dirigido dependiente -> responsable)
     person_responsible {
         UUID id PK
         Integer id_dependent FK
         Integer id_responsible FK
-        Enum(ERelationship) type_relationship
+        Enum(ERelationship) type
         Enum(ECareRole) care_role
         Enum(EEconomicDependence) economic_dependence
         String(100) relationship_other
+    }
+
+    %% family: filiacion (dirigido progenitor -> hijo)
+    family {
+        UUID id PK
+        Integer id_parent FK
+        Integer id_child FK
+        Enum(EParentageKind) type
+        Text notes
+    }
+
+    %% partnership: pareja (simetrico; guardar una vez con orden canonico)
+    partnership {
+        UUID id PK
+        Integer id_person FK
+        Integer id_partner FK
+        Enum(EUnionType) type
+        Date start_date
+        Date end_date
+        Text notes
     }
