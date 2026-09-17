@@ -19,16 +19,17 @@
 - **Impacto**: la HC `form` cubre A, C, D, E; B queda fuera del motor (sin
   `assignment`/`answer`/progreso).
 
-## H2 — Grupos repetibles (sección D)
+## H2 — Grupos repetibles (sección D) ✅ (cerrado)
 
-- **Problema**: D tiene **registros que el usuario agrega** (cirugías, lesiones,
-  hospitalizaciones) con varios campos; el modelo no tiene repetición.
-- **Alternativas**:
-  - **A.** `answer.repetition` + `section.repeatable` / `question.repeatable`
-    (recomendado; alinea con FHIR `item.repeats`, ADR 036).
-  - **B.** Entidad `response_group` (registro explícito).
-  - **C.** Workaround `array_object` (no recomendado).
-- **Bloquea**: ficha `sections/D_...` y su JSON.
+- **Decisión**: los registros de D son **componentes de dominio 1:N**
+  (`Condition`/`AllergyIntolerance`/`Procedure`/`Encounter`), **no** `answer`. La
+  repetición vive en el **dominio** (filas 1:N) y el front **inyecta** el componente
+  ([ADR 045](../../../decisions/045-historia-clinica-componentes-vs-formularios.md), §"Secciones
+  híbridas"; H5). Por eso **no** se repite dentro del `form`.
+- **Descartado**: A (`answer.repetition` + `section/question.repeatable`),
+  B (`response_group`), C (`array_object`) — asumían repetir **dentro del `form`**.
+- **Impacto**: el `form` de D queda **sin** los registros (solo tabaco / alcohol /
+  drogas / donación).
 
 ## H3 — Catálogos externos
 

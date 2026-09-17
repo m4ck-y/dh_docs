@@ -33,13 +33,14 @@ feature [`../mapper/`](../mapper/) (vista en
 | A | Registro | componente de dominio ([ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md)) — spec en [`sections/A_registro.md`](./sections/A_registro.md) | [contrato dominio](../mapper/views/clinical_history/A_registro.md) |
 | B | Antecedentes heredofamiliares | componente propio ([ADR 043](../../decisions/043-ahf-componente-dedicado.md)) — spec en [`sections/B_ahf.md`](./sections/B_ahf.md) | — |
 | C | APNP | [`sections/C_apnp.md`](./sections/C_apnp.md) | ⏳ |
-| D | Antecedentes personales patológicos | ⏳ | ⏳ |
+| D | Antecedentes personales patológicos | híbrido ([ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md)) — spec en [`sections/D_antecedentes_pp.md`](./sections/D_antecedentes_pp.md) | ⏳ |
 | E | Padecimiento actual | [`sections/E_padecimiento_actual.md`](./sections/E_padecimiento_actual.md) | ⏳ |
 
-> **Bloqueos**: **D** (grupos repetibles) tiene decisión abierta (**H2**).
-> **A** y **B** son **componentes de dominio** (ADR 045 / ADR 043), con modelado
-> pendiente. **C** tiene banco (`bank/clinical_history/apnp.json`); **E** ficha
-> lista (banco diferido).
+> **Bloqueos**: **D** es **híbrido** (ficha lista; **H2 cerrado** = registros 1:N →
+> componentes); sus **componentes** tienen composición pendiente (**H5**). **A** y
+> **B** son **componentes de dominio** (ADR 045 / ADR 043), con modelado pendiente.
+> **C** tiene banco (`bank/clinical_history/apnp.json`); **D** banco del `form`
+> (`antecedentes_pp.json`); **E** ficha lista (banco diferido).
 
 ## Clasificación por bloque
 
@@ -57,7 +58,7 @@ abiertas (ver
 | **D — Antec. PP** | alergias | ✅ | — | — | `AllergyIntolerance` |
 | **D — Antec. PP** | cirugías / lesiones / transfusiones | ✅ | — | — | `Procedure` (H2) |
 | **D — Antec. PP** | hospitalizaciones | ✅ | — | — | `Encounter` (H2) |
-| **D — Antec. PP** | enfermedades `2.0` | ¿? | ¿? | disease | decidir (H3) |
+| **D — Antec. PP** | enfermedades `2.0` | ✅ | — | disease | componente `Condition` (1:N) |
 | **E — Padecimiento** | motivo + caracterización del síntoma | ¿? | ✅ | body, studies | decidir `Encounter`/`Condition` (H3) |
 
 ## Propuestas UI

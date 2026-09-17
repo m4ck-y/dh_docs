@@ -61,6 +61,7 @@ nivel arriba; este directorio solo contiene **datos**.
 | `crafft` | INSTRUMENT | 9 | bienestar físico + social | scoring + evaluation (`list_sections` A/B + `condition`) |
 | `ipaq` | INSTRUMENT | 7 | bienestar físico | scoring (METs) + evaluation (Alto/Moderado/Bajo) |
 | `apnp` | CLINICAL_HISTORY | 33 | — | — |
+| `antecedentes_pp` | CLINICAL_HISTORY | 16 | — | — |
 
 ## Convención de un instrumento
 
@@ -120,7 +121,7 @@ docs/diagrams/catalog/instruments.csv    (metadata: nombre, descripción, edad, 
 - Convertir los `.mmd` de `docs/diagrams/` a `<key>.json`.
 - Completar `categories.json` con el vocabulario (columna `LS` del
   `docs/diagrams/catalog/instruments.csv`).
-- Definir los formularios de historia clínica (`clinical_history/`): **C (`apnp`)** ✅; **D/E** ⏳.
+- Definir los formularios de historia clínica (`clinical_history/`): **C (`apnp`)** ✅; **D (`antecedentes_pp`, solo el `form`)** ✅; **E** ⏳.
 
 ## Decisiones y dudas
 
