@@ -14,7 +14,7 @@ nivel arriba; este directorio solo contiene **datos**.
 | `categories.json` | Vocabulario controlado de categorías de bienestar (`key` + `name`). |
 | `population.json` | Vocabulario controlado de poblaciones objetivo (`name`). |
 | `instruments/` | Un `.json` + un `.md` por instrumento psicométrico (`type: INSTRUMENT`). |
-| `clinical_history/` | Un `.json` + un `.md` por formulario clínico (`type: CLINICAL_HISTORY`). |
+| `clinical_history/` | Un `.json` por formulario clínico (`type: CLINICAL_HISTORY`); su doc legible es la **ficha** (`../../../clinical_history/sections/`). |
 
 - **Plano**: la categoría (mental/físico/social) **no** es carpeta; vive en
   `list_categories[]`. Un instrumento puede pertenecer a varias (p. ej. CRAFFT:
@@ -44,6 +44,9 @@ nivel arriba; este directorio solo contiene **datos**.
   `Pacientes geriátricos` (GDS, ya `>60`).
 - **Fuente humana** de cada instrumento: `docs/diagrams/<dominio>/flows/<key>.mmd`
   (+ `reviews/<key>-review.md`).
+- **Historia clínica** (`clinical_history/`): solo `<key>.json`; su documento
+  legible es la **ficha** de la sección (`../../../clinical_history/sections/`),
+  no un `.md` del banco.
 
 ## Inventario
 
@@ -57,6 +60,7 @@ nivel arriba; este directorio solo contiene **datos**.
 | `pss` | INSTRUMENT | 14 | bienestar mental | scoring (sin evaluación) |
 | `crafft` | INSTRUMENT | 9 | bienestar físico + social | scoring + evaluation (`list_sections` A/B + `condition`) |
 | `ipaq` | INSTRUMENT | 7 | bienestar físico | scoring (METs) + evaluation (Alto/Moderado/Bajo) |
+| `apnp` | CLINICAL_HISTORY | 33 | — | — |
 
 ## Convención de un instrumento
 
@@ -107,7 +111,7 @@ docs/diagrams/catalog/instruments.csv    (metadata: nombre, descripción, edad, 
         + docs/diagrams/<dominio>/flows/<key>.mmd   (preguntas y opciones; drawio -> mmd)
         + reviews/<key>-review.md                    (tabla Puntuacion | Interpretacion)
         -> bank/instruments|clinical_history/<key>.json   (definicion canonica)
-        -> bank/instruments|clinical_history/<key>.md     (lectura para usuario final)
+        -> bank/instruments/<key>.md                       (lectura para usuario final; solo instrumentos)
         -> ../../expressions/                        (scoring / evaluation)
 ```
 
@@ -116,7 +120,7 @@ docs/diagrams/catalog/instruments.csv    (metadata: nombre, descripción, edad, 
 - Convertir los `.mmd` de `docs/diagrams/` a `<key>.json`.
 - Completar `categories.json` con el vocabulario (columna `LS` del
   `docs/diagrams/catalog/instruments.csv`).
-- Definir el/los formulario(s) de historia clínica (`clinical_history/`).
+- Definir los formularios de historia clínica (`clinical_history/`): **C (`apnp`)** ✅; **D/E** ⏳.
 
 ## Decisiones y dudas
 
@@ -140,5 +144,3 @@ docs/diagrams/catalog/instruments.csv    (metadata: nombre, descripción, edad, 
   **T** (duplicado) venían rotos en el drawio (corregidos desde el legacy; nota en
   `crafft.md`).
 - **CDI**: ítem 25 invertido respecto al estándar (nota en `cdi.md`).
-- **"No sabe / no está seguro"** se representa como **`null`** (sin respuesta),
-  no como opción.

@@ -1,21 +1,41 @@
 # C. APNP (Antecedentes Personales No Patológicos)
 
 > **Fuente:** `flows/apnp.mmd` (drawio `0_DEMO_HISTORIA_CLINICA.drawio`, tab
-> "C - APNP"). **Modelado:** **form** (`type: CLINICAL_HISTORY`,
+> "C - APNP"). **Modelado:** **form** (`key: apnp`, `type: CLINICAL_HISTORY`,
 > `expression: null`).
+
+> **Artefacto:** [`bank/clinical_history/apnp.json`](../../questionnaires/catalog/bank/clinical_history/apnp.json).
+
+## Instrucciones (`form.instructions`)
+
+> "A continuación, se realizarán algunas preguntas sobre hábitos y aspectos de la
+> vida diaria que pueden influir en su estado de salud y bienestar."
+
+Nodo **intro `1.0`** del `.mmd`; va en `form.instructions` (**no** como pregunta).
 
 ## Bloques de captura
 
 Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacunas.
 
 > **Divergencias de la fuente:**
+> - Hay **dos nodos `1.0`** (la instrucción general y la pregunta de vivienda).
 > - La numeración salta de `1.0` a `3.0` (falta el `2.0`).
 > - `18.0 Cepillado` trae opciones redundantes (`18.7 "1 o 2 veces"` repite
 >   `18.2`/`18.3`).
 
+## Origen de las listas
+
+| Campo | Origen |
+|---|---|
+| 1.0 Tipo de vivienda (1.7 "Otro") | catálogo `housing_type` |
+| 12.0 Combustible (12.8 "Otro") | catálogo `fuel_type` |
+| 14.0A Tipo de animal (14.4A "Otro") | catálogo `animal_type` |
+| 21.0 Turno (21.5 "Otro") | catálogo `work_shift` |
+| Resto (Sí/No/No sabe, escalas, multiselección) | **enum** |
+
 ## Vivienda
 
-- **1.0 ¿Qué tipo de vivienda tiene?**
+- **1.0 ¿Qué tipo de vivienda tiene?** _(catálogo `housing_type`)_
   - 1.1 Casa independiente
   - 1.2 Dúplex / Tríplex
   - 1.3 Casa en hilera
@@ -24,8 +44,8 @@ Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacu
   - 1.6 Móvil / Tráiler
   - 1.7 Otro _(especificar)_
 - **3.0 ¿Se usa como granja o rancho?** — Sí / No
-- **4.0 Edad aproximada del edificio (años)**
-- **5.0 ¿Cuándo empezó a vivir aquí? (año)**
+- **4.0 Edad aproximada del edificio (años)** _(numérica)_
+- **5.0 ¿Cuándo empezó a vivir aquí? (año)** _(numérica)_
 - **6.0 ¿Cuántas personas viven en esta dirección?** — 1 / 2 / 3 / 4 / 5 o más
 - **7.0 ¿Hay cochera cerrada?**
   - 7.1 Sí → 7.0A ¿Se estacionan vehículos en la cochera? (7.1A Sí / 7.2A No)
@@ -36,13 +56,13 @@ Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacu
 - **11.0 ¿Usa aire acondicionado?**
   - 11.1 Sí → 11.0A ¿Qué tipo? (11.1A Central / 11.2A Ventana/Pared / 11.3A Portátil)
   - 11.2 No
-- **12.0 ¿Qué combustible usa para calefacción?**
+- **12.0 ¿Qué combustible usa para calefacción?** _(catálogo `fuel_type`)_
   - 12.1 Gas de tubería · 12.2 Gas LP · 12.3 Electricidad · 12.4 Queroseno ·
     12.5 Carbón · 12.6 Madera · 12.7 Solar · 12.8 Otro · 12.9 Ninguno · 12.10 No sabe
 - **13.0 ¿Tiene calefacción central con ductos?** — Sí / No
 - **14.0 ¿Ha tenido animales dentro del hogar (últimos 12 meses)?**
   - 14.1 Sí → 14.0A ¿Qué tipo? (14.1A Perro / 14.2A Gato / 14.3A Animal pequeño
-    peludo / 14.4A Otro / 14.5A No sabe)
+    peludo / 14.4A Otro / 14.5A No sabe) _(catálogo `animal_type`)_
   - 14.2 No
 
 ## Higiene
@@ -51,7 +71,7 @@ Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacu
   Varias veces a la semana / Una vez a la semana o menos / Rara vez o casi nunca
 - **16.0 ¿Con qué frecuencia cambia de ropa?** — Diario / 2–3 veces por semana /
   Menos de 2 veces por semana
-- **17.0 ¿En cuáles situaciones acostumbra lavarse las manos? (seleccione todas)**
+- **17.0 ¿En cuáles situaciones acostumbra lavarse las manos? (seleccione todas)** _(MULTIPLE_CHOICE)_
   - 17.1 Antes de preparar alimentos
   - 17.2 Antes de comer o alimentar a otra persona
   - 17.3 Después de usar el baño
@@ -67,12 +87,12 @@ Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacu
 
 ## Trabajo
 
-- **21.0 ¿En qué horario o turno trabaja?**
+- **21.0 ¿En qué horario o turno trabaja?** _(catálogo `work_shift`)_
   - 21.1 Diurno · 21.2 Vespertino · 21.3 Nocturno · 21.4 Rotativo
     (21.4A Con noches / 21.4B Sin noches) · 21.5 Otro
 - **22.0 ¿Cuántas horas trabaja al día en promedio?** — 8 o menos / 9 a 12 / Más de 12
-- **23.0 ¿Cuántos días a la semana trabaja?**
-- **24.0 ¿A cuáles riesgos laborales está expuesto? (seleccione todas)**
+- **23.0 ¿Cuántos días a la semana trabaja?** _(numérica)_
+- **24.0 ¿A cuáles riesgos laborales está expuesto? (seleccione todas)** _(MULTIPLE_CHOICE)_
   - 24.1 Químicos · 24.2 Biológicos · 24.3 Físicos · 24.4 Ergonómicos ·
     24.5 Psicosociales · 24.6 Seguridad/mecánicos
 

@@ -1,0 +1,463 @@
+{
+  "id": "form-apnp",
+  "key": "apnp",
+  "type": "CLINICAL_HISTORY",
+  "name": "APNP (Antecedentes Personales No Patológicos)",
+  "description": "Formulario de historia clínica que captura hábitos y entorno del paciente: vivienda, higiene, trabajo, actividad física, alimentación, sueño y vacunas.",
+  "instructions": "A continuación, se realizarán algunas preguntas sobre hábitos y aspectos de la vida diaria que pueden influir en su estado de salud y bienestar.",
+  "verified": false,
+  "condition": null,
+  "expression": null,
+  "list_categories": [],
+  "list_evaluation_topics": [],
+  "list_cie11_codes": [],
+  "list_population": [],
+  "estimated_duration": null,
+  "list_age_groups": [],
+  "target_sex": null,
+  "list_references": [],
+  "list_questions": [
+    {
+      "id": 1,
+      "key": "apnp.1",
+      "type": "SINGLE_CHOICE",
+      "order": 1,
+      "text": "¿Qué tipo de vivienda tiene?",
+      "config": { "required": true },
+      "list_options": { "source": "catalog", "catalog": { "key": "housing_type" } }
+    },
+    {
+      "id": 2,
+      "key": "apnp.3",
+      "type": "SINGLE_CHOICE",
+      "order": 2,
+      "text": "¿Se usa como granja o rancho?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 }
+      ] }
+    },
+    {
+      "id": 3,
+      "key": "apnp.4",
+      "type": "NUMBER",
+      "order": 3,
+      "text": "Edad aproximada del edificio (años)",
+      "config": { "required": true, "decimals": 0, "min": 0 }
+    },
+    {
+      "id": 4,
+      "key": "apnp.5",
+      "type": "NUMBER",
+      "order": 4,
+      "text": "¿Cuándo empezó a vivir aquí? (año)",
+      "config": { "required": true, "decimals": 0 }
+    },
+    {
+      "id": 5,
+      "key": "apnp.6",
+      "type": "SINGLE_CHOICE",
+      "order": 5,
+      "text": "¿Cuántas personas viven en esta dirección?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "1", "order": 1 },
+        { "value": 2, "label": "2", "order": 2 },
+        { "value": 3, "label": "3", "order": 3 },
+        { "value": 4, "label": "4", "order": 4 },
+        { "value": 5, "label": "5 o más", "order": 5 }
+      ] }
+    },
+    {
+      "id": 6,
+      "key": "apnp.7",
+      "type": "SINGLE_CHOICE",
+      "order": 6,
+      "text": "¿Hay cochera cerrada?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 }
+      ] }
+    },
+    {
+      "id": 7,
+      "key": "apnp.7a",
+      "type": "SINGLE_CHOICE",
+      "order": 7,
+      "text": "¿Se estacionan vehículos en la cochera?",
+      "config": { "required": true },
+      "condition": {
+        "type": "comparison",
+        "operator": "==",
+        "args": [
+          { "subject": { "entity": "question", "property": "value", "selector": { "id": 6 } } },
+          { "const": { "value": 1, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
+      },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 }
+      ] }
+    },
+    {
+      "id": 8,
+      "key": "apnp.8",
+      "type": "SINGLE_CHOICE",
+      "order": 8,
+      "text": "¿Hay dispositivos de gas en cuartos o cochera?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 },
+        { "value": 2, "label": "No sabe", "order": 3 }
+      ] }
+    },
+    {
+      "id": 9,
+      "key": "apnp.9",
+      "type": "SINGLE_CHOICE",
+      "order": 9,
+      "text": "¿Ha habido humedad o fugas en los últimos 12 meses?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 },
+        { "value": 2, "label": "No sabe", "order": 3 }
+      ] }
+    },
+    {
+      "id": 10,
+      "key": "apnp.10",
+      "type": "SINGLE_CHOICE",
+      "order": 10,
+      "text": "¿Huele frecuentemente a moho?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 },
+        { "value": 2, "label": "No sabe", "order": 3 }
+      ] }
+    },
+    {
+      "id": 11,
+      "key": "apnp.11",
+      "type": "SINGLE_CHOICE",
+      "order": 11,
+      "text": "¿Usa aire acondicionado?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 }
+      ] }
+    },
+    {
+      "id": 12,
+      "key": "apnp.11a",
+      "type": "SINGLE_CHOICE",
+      "order": 12,
+      "text": "¿Qué tipo de aire acondicionado usa?",
+      "config": { "required": true },
+      "condition": {
+        "type": "comparison",
+        "operator": "==",
+        "args": [
+          { "subject": { "entity": "question", "property": "value", "selector": { "id": 11 } } },
+          { "const": { "value": 1, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
+      },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Central", "order": 1 },
+        { "value": 2, "label": "Ventana o pared", "order": 2 },
+        { "value": 3, "label": "Portátil", "order": 3 }
+      ] }
+    },
+    {
+      "id": 13,
+      "key": "apnp.12",
+      "type": "SINGLE_CHOICE",
+      "order": 13,
+      "text": "¿Qué combustible usa para calefacción?",
+      "config": { "required": true },
+      "list_options": { "source": "catalog", "catalog": { "key": "fuel_type" } }
+    },
+    {
+      "id": 14,
+      "key": "apnp.13",
+      "type": "SINGLE_CHOICE",
+      "order": 14,
+      "text": "¿Tiene calefacción central con ductos?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 }
+      ] }
+    },
+    {
+      "id": 15,
+      "key": "apnp.14",
+      "type": "SINGLE_CHOICE",
+      "order": 15,
+      "text": "¿Ha tenido animales dentro del hogar en los últimos 12 meses?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 }
+      ] }
+    },
+    {
+      "id": 16,
+      "key": "apnp.14a",
+      "type": "SINGLE_CHOICE",
+      "order": 16,
+      "text": "¿Qué tipo de animal?",
+      "config": { "required": true },
+      "condition": {
+        "type": "comparison",
+        "operator": "==",
+        "args": [
+          { "subject": { "entity": "question", "property": "value", "selector": { "id": 15 } } },
+          { "const": { "value": 1, "type": "number" } }
+        ],
+        "output": { "type": "boolean" }
+      },
+      "list_options": { "source": "catalog", "catalog": { "key": "animal_type" } }
+    },
+    {
+      "id": 17,
+      "key": "apnp.15",
+      "type": "SINGLE_CHOICE",
+      "order": 17,
+      "text": "¿Con qué frecuencia se baña?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Más de una vez al día", "order": 1 },
+        { "value": 2, "label": "A diario", "order": 2 },
+        { "value": 3, "label": "Varias veces a la semana", "order": 3 },
+        { "value": 4, "label": "Una vez a la semana o menos", "order": 4 },
+        { "value": 5, "label": "Rara vez o casi nunca", "order": 5 }
+      ] }
+    },
+    {
+      "id": 18,
+      "key": "apnp.16",
+      "type": "SINGLE_CHOICE",
+      "order": 18,
+      "text": "¿Con qué frecuencia cambia de ropa?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Diario", "order": 1 },
+        { "value": 2, "label": "2–3 veces por semana", "order": 2 },
+        { "value": 3, "label": "Menos de 2 veces por semana", "order": 3 }
+      ] }
+    },
+    {
+      "id": 19,
+      "key": "apnp.17",
+      "type": "MULTIPLE_CHOICE",
+      "order": 19,
+      "text": "¿En cuáles situaciones acostumbra lavarse las manos?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Antes de preparar alimentos", "order": 1 },
+        { "value": 2, "label": "Antes de comer o alimentar a otra persona", "order": 2 },
+        { "value": 3, "label": "Después de usar el baño", "order": 3 },
+        { "value": 4, "label": "Después de toser, estornudar o sonarse", "order": 4 },
+        { "value": 5, "label": "Cuando están visiblemente sucias", "order": 5 }
+      ] }
+    },
+    {
+      "id": 20,
+      "key": "apnp.18",
+      "type": "SINGLE_CHOICE",
+      "order": 20,
+      "text": "¿Cuántas veces al día se cepilla los dientes?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "No se cepilla", "order": 1 },
+        { "value": 2, "label": "1 vez", "order": 2 },
+        { "value": 3, "label": "2 veces", "order": 3 },
+        { "value": 4, "label": "Más de 2 veces", "order": 4 },
+        { "value": 5, "label": "Esporádicamente", "order": 5 },
+        { "value": 6, "label": "No aplica", "order": 6 },
+        { "value": 7, "label": "No sabe", "order": 7 }
+      ] }
+    },
+    {
+      "id": 21,
+      "key": "apnp.19",
+      "type": "SINGLE_CHOICE",
+      "order": 21,
+      "text": "¿Usa hilo dental?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "No", "order": 1 },
+        { "value": 2, "label": "Rara vez", "order": 2 },
+        { "value": 3, "label": "1–3 veces por semana", "order": 3 },
+        { "value": 4, "label": "Diario", "order": 4 }
+      ] }
+    },
+    {
+      "id": 22,
+      "key": "apnp.20",
+      "type": "SINGLE_CHOICE",
+      "order": 22,
+      "text": "¿Hace cuánto fue su última visita al dentista?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "6 meses o menos", "order": 1 },
+        { "value": 2, "label": "6–12 meses", "order": 2 },
+        { "value": 3, "label": "1–2 años", "order": 3 },
+        { "value": 4, "label": "2–3 años", "order": 4 },
+        { "value": 5, "label": "3–5 años", "order": 5 },
+        { "value": 6, "label": "Más de 5 años", "order": 6 },
+        { "value": 7, "label": "Nunca ha ido", "order": 7 }
+      ] }
+    },
+    {
+      "id": 23,
+      "key": "apnp.21",
+      "type": "SINGLE_CHOICE",
+      "order": 23,
+      "text": "¿En qué horario o turno trabaja?",
+      "config": { "required": true },
+      "list_options": { "source": "catalog", "catalog": { "key": "work_shift" } }
+    },
+    {
+      "id": 24,
+      "key": "apnp.22",
+      "type": "SINGLE_CHOICE",
+      "order": 24,
+      "text": "¿Cuántas horas trabaja al día en promedio?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "8 horas o menos", "order": 1 },
+        { "value": 2, "label": "9 a 12 horas", "order": 2 },
+        { "value": 3, "label": "Más de 12 horas", "order": 3 }
+      ] }
+    },
+    {
+      "id": 25,
+      "key": "apnp.23",
+      "type": "NUMBER",
+      "order": 25,
+      "text": "¿Cuántos días a la semana trabaja?",
+      "config": { "required": true, "decimals": 0, "min": 0, "max": 7 }
+    },
+    {
+      "id": 26,
+      "key": "apnp.24",
+      "type": "MULTIPLE_CHOICE",
+      "order": 26,
+      "text": "¿A cuáles riesgos laborales está expuesto?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Químicos", "order": 1 },
+        { "value": 2, "label": "Biológicos", "order": 2 },
+        { "value": 3, "label": "Físicos", "order": 3 },
+        { "value": 4, "label": "Ergonómicos", "order": 4 },
+        { "value": 5, "label": "Psicosociales", "order": 5 },
+        { "value": 6, "label": "Seguridad / mecánicos", "order": 6 }
+      ] }
+    },
+    {
+      "id": 27,
+      "key": "apnp.25",
+      "type": "SINGLE_CHOICE",
+      "order": 27,
+      "text": "¿Con qué frecuencia realiza actividad física?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Todos o casi todos los días", "order": 1 },
+        { "value": 2, "label": "Algunas veces por semana", "order": 2 },
+        { "value": 3, "label": "Ocasionalmente", "order": 3 },
+        { "value": 4, "label": "No realiza", "order": 4 }
+      ] }
+    },
+    {
+      "id": 28,
+      "key": "apnp.26",
+      "type": "SINGLE_CHOICE",
+      "order": 28,
+      "text": "¿Cómo considera su alimentación actualmente?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Excelente", "order": 1 },
+        { "value": 2, "label": "Muy buena", "order": 2 },
+        { "value": 3, "label": "Buena", "order": 3 },
+        { "value": 4, "label": "Regular", "order": 4 },
+        { "value": 5, "label": "Mala", "order": 5 }
+      ] }
+    },
+    {
+      "id": 29,
+      "key": "apnp.27",
+      "type": "SINGLE_CHOICE",
+      "order": 29,
+      "text": "¿Cómo considera la calidad de su sueño?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Buena", "order": 1 },
+        { "value": 2, "label": "Regular", "order": 2 },
+        { "value": 3, "label": "Mala", "order": 3 }
+      ] }
+    },
+    {
+      "id": 30,
+      "key": "apnp.28",
+      "type": "SINGLE_CHOICE",
+      "order": 30,
+      "text": "¿Cuántas horas duerme al día en promedio?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Menos de 5", "order": 1 },
+        { "value": 2, "label": "Entre 5 y 6", "order": 2 },
+        { "value": 3, "label": "Entre 7 y 9", "order": 3 },
+        { "value": 4, "label": "Más de 9", "order": 4 },
+        { "value": 5, "label": "Horario muy variable", "order": 5 }
+      ] }
+    },
+    {
+      "id": 31,
+      "key": "apnp.28a",
+      "type": "SINGLE_CHOICE",
+      "order": 31,
+      "text": "¿Con qué frecuencia ha usado medicamentos para dormir?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Nunca", "order": 1 },
+        { "value": 2, "label": "Una o dos veces", "order": 2 },
+        { "value": 3, "label": "Mensual", "order": 3 },
+        { "value": 4, "label": "Semanal", "order": 4 }
+      ] }
+    },
+    {
+      "id": 32,
+      "key": "apnp.29",
+      "type": "SINGLE_CHOICE",
+      "order": 32,
+      "text": "En los últimos años, ¿ha recibido vacunas o refuerzos recomendados?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 },
+        { "value": 2, "label": "No lo recuerda", "order": 3 }
+      ] }
+    },
+    {
+      "id": 33,
+      "key": "apnp.30",
+      "type": "SINGLE_CHOICE",
+      "order": 33,
+      "text": "¿Cuenta con información o registro reciente de sus vacunas?",
+      "config": { "required": true },
+      "list_options": { "source": "static", "items": [
+        { "value": 1, "label": "Sí", "order": 1 },
+        { "value": 0, "label": "No", "order": 2 }
+      ] }
+    }
+  ]
+}

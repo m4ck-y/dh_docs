@@ -52,7 +52,7 @@ abiertas (ver
 |---|---|---|---|---|---|
 | **A — Registro** | perfil (tutor, domicilio, contacto) | ✅ | — | religión, ocupación, relación, género | ADR 045 |
 | **B — AHF** | matriz familiar × enfermedad | ✅ | — | disease, disease_category | ADR 043 |
-| **C — APNP** (`apnp`) | vivienda / higiene / trabajo / actividad / sueño / vacunas | — | ✅ | (enums cerrados) | form |
+| **C — APNP** (`apnp`) | vivienda / higiene / trabajo / actividad / sueño / vacunas | — | ✅ | housing_type, fuel_type, animal_type, work_shift | form |
 | **D — Antec. PP** | tabaco / alcohol / drogas / donación | — | ✅ | — | form |
 | **D — Antec. PP** | alergias | ✅ | — | — | `AllergyIntolerance` |
 | **D — Antec. PP** | cirugías / lesiones / transfusiones | ✅ | — | — | `Procedure` (H2) |

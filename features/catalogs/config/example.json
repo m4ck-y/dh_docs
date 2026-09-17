@@ -18,6 +18,15 @@
     "governed": true
   },
   {
+    "key": "housing_type",
+    "name": "Tipo de vivienda",
+    "description": "Tipos de vivienda declarados por el usuario.",
+    "engine": "POSTGRES",
+    "config": { "schema": "catalog", "table": "housing_type" },
+    "extensible": true,
+    "governed": true
+  },
+  {
     "key": "postal_code",
     "name": "Código postal",
     "description": "Catálogo masivo de códigos postales (baja mutabilidad).",
