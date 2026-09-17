@@ -74,6 +74,9 @@ Sembrado/curado → `VALIDATED`; creado por usuario → `PENDING`.
 | `true` | `true` | "Otro" → `PENDING`; se ofrece tras curaduría |
 | `true` | `false` | "Otro" → disponible al instante |
 
+> **Regla (historia clínica):** cuándo un campo es **catálogo** vs **enum** —
+> [`clinical_history/sections/README.md`](../clinical_history/sections/README.md#catálogo-o-enum).
+
 ### Flujo de captura ("Otro → Especifique")
 ```
 selector (catálogo)
@@ -134,4 +137,5 @@ catalogs/
 - Decisión: [ADR 044](../../decisions/044-catalogos-gobernados.md)
 - Estrategia de motores: [ADR 003](../../decisions/003-estrategia-multi-base-de-datos.md)
 - Regla: `.agents/rules/CATALOGS_GOVERNANCE.md`
+- Criterio catálogo vs enum (HC): [`clinical_history/sections/README.md`](../clinical_history/sections/README.md#catálogo-o-enum)
 - Persistencia (diferida): `docs/db/postgres/catalog/`, `docs/db/click_house/`

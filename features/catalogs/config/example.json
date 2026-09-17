@@ -18,15 +18,6 @@
     "governed": true
   },
   {
-    "key": "housing_type",
-    "name": "Tipo de vivienda",
-    "description": "Taxonomía fija de tipos de vivienda.",
-    "engine": "POSTGRES",
-    "config": { "schema": "catalog", "table": "housing_type" },
-    "extensible": false,
-    "governed": false
-  },
-  {
     "key": "postal_code",
     "name": "Código postal",
     "description": "Catálogo masivo de códigos postales (baja mutabilidad).",

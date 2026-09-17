@@ -31,6 +31,17 @@ Fuente de los flujos: `docs/diagrams/0_HISTORIA_CLINICA/flows/`.
 > `assignment`. Por eso se modela como **componente/endpoint** y no como `form`
 > (ver [ADR 045](../../../decisions/045-historia-clinica-componentes-vs-formularios.md)).
 
+### ¿Catálogo o enum?
+
+Regla (derivada de los `.mmd`): si la lista de un campo incluye **"Otro" /
+"Especifique"**, es un **catálogo gobernado** (`extensible: true`, con curaduría —
+[ADR 044](../../../decisions/044-catalogos-gobernados.md)); si la lista es
+**cerrada**, es un **enum**.
+
+> **"Otro" → create-request:** crea un ítem `PENDING` en el catálogo; al curarse
+> pasa a `VALIDATED` (o se fusiona vía `merged_into`) — ADR 044. Modelo, política y
+> flujo en [`../../catalogs/`](../../catalogs/).
+
 ## Convención — reconciliación con la fuente
 
 Cadena de verdad: **drawio → `.mmd` → ficha → artefacto** (`bank/…json` para un
