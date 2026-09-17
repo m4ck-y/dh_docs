@@ -42,6 +42,21 @@ Clasificar **cada sección** de la HC según su naturaleza, usando **form** o
 | Captura por evento (`assignment`/`answer`) | Dato persistente de la persona (CRUD, precarga) |
 | Sin cardinalidad propia (1 respuesta por pregunta) | Cardinalidad **1:N / N:N** en el dominio |
 
+### Secciones híbridas (D)
+
+Una sección puede ser **híbrida**: `form` (preguntas planas) **+** componentes de
+dominio (registros). En ese caso:
+
+- El **`form`** del banco (`bank/clinical_history/`) incluye **solo las preguntas
+  nativas**; los **componentes** (registros) **no** se modelan en el `form`.
+- El **frontend compone** la sección: renderiza el `form` e **inyecta** los
+  componentes en su punto del orden de la sección.
+- El front reconoce la sección híbrida **por el `key` (o `id`) del `form`**
+  (registro en el front: `key → componentes + orden`), **sin** agregar campos al
+  `form` ni cambiar su shape.
+
+Ver pendiente de composición: `OPEN-QUESTIONS.md` (H5).
+
 ## Consecuencias
 
 **Positivas:**

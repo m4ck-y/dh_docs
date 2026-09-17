@@ -40,6 +40,19 @@
 - Son **reglas de activación** (condición → cuestionario), **no** secciones del
   expediente. ¿Dónde viven (feature `mapper`, doc aparte)?
 
+## H5 — Composición de sección híbrida (D)
+
+- **Problema**: D mezcla `form` (preguntas planas: tabaco/alcohol/drogas/donación)
+  y **componentes** (registros: alergias/cirugías/lesiones/transfusiones/
+  hospitalizaciones). El `form` se crea **sin** los componentes; el front los
+  **inyecta** en el orden de la sección.
+- **Decidido** ([ADR 045](../../../decisions/045-historia-clinica-componentes-vs-formularios.md)):
+  el front reconoce la sección híbrida **por el `key` (o `id`) del `form`** —
+  registro en el front (`key → componentes + orden`), **sin** cambiar el shape del
+  `form`.
+- **Pendiente**: dónde vive ese **registro de composición** (constante del front /
+  doc de contrato) y el **orden/posición** exacto de cada componente dentro de D.
+
 ## Gaps de la fuente (drawio)
 
 Campos que la **fuente** no define, detectados al reconciliar la ficha A con el

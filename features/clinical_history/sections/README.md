@@ -42,6 +42,15 @@ Regla (derivada de los `.mmd`): si la lista de un campo incluye **"Otro" /
 > pasa a `VALIDATED` (o se fusiona vía `merged_into`) — ADR 044. Modelo, política y
 > flujo en [`../../catalogs/`](../../catalogs/).
 
+### Secciones híbridas
+
+Una sección puede ser **mixta**: `form` **+** componentes. El `form` (banco) lleva
+**solo las preguntas nativas**; los **componentes** se **inyectan** por el front,
+que los reconoce **por el `key` (o `id`) del `form`** — **sin** cambiar el shape
+del `form`. Ej.: **D** (tabaco/alcohol/drogas/donación = `form`;
+alergias/cirugías/lesiones/transfusiones/hospitalizaciones = componentes). Ver
+[ADR 045](../../../decisions/045-historia-clinica-componentes-vs-formularios.md).
+
 ## Convención — reconciliación con la fuente
 
 Cadena de verdad: **drawio → `.mmd` → ficha → artefacto** (`bank/…json` para un
