@@ -38,7 +38,27 @@ feature [`../mapper/`](../mapper/) (vista en
 
 > **Bloqueos**: **D** (grupos repetibles) tiene decisión abierta (**H2**).
 > **A** y **B** son **componentes de dominio** (ADR 045 / ADR 043), con modelado
-> pendiente. C y E tienen ficha lista (banco JSON diferido).
+> pendiente. **C** tiene banco (`bank/clinical_history/apnp.json`); **E** ficha
+> lista (banco diferido).
+
+## Clasificación por bloque
+
+Qué parte de cada sección es **endpoint/componente**, **form** (cuestionario) o
+**catálogo gobernado** (ver ADR 045 / ADR 046). Las celdas `¿?` son decisiones
+abiertas (ver
+[`OPEN-QUESTIONS.md`](../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md)).
+
+| Cuestionario / sección | Bloque | Endpoint (componente) | Form (answers) | Catálogo(s) | Decisión / Notas |
+|---|---|---|---|---|---|
+| **A — Registro** | perfil (tutor, domicilio, contacto) | ✅ | — | religión, ocupación, relación, género | ADR 045 |
+| **B — AHF** | matriz familiar × enfermedad | ✅ | — | disease, disease_category | ADR 043 |
+| **C — APNP** (`apnp`) | vivienda / higiene / trabajo / actividad / sueño / vacunas | — | ✅ | (enums cerrados) | form |
+| **D — Antec. PP** | tabaco / alcohol / drogas / donación | — | ✅ | — | form |
+| **D — Antec. PP** | alergias | ✅ | — | — | `AllergyIntolerance` |
+| **D — Antec. PP** | cirugías / lesiones / transfusiones | ✅ | — | — | `Procedure` (H2) |
+| **D — Antec. PP** | hospitalizaciones | ✅ | — | — | `Encounter` (H2) |
+| **D — Antec. PP** | enfermedades `2.0` | ¿? | ¿? | disease | decidir (H3) |
+| **E — Padecimiento** | motivo + caracterización del síntoma | ¿? | ✅ | body, studies | decidir `Encounter`/`Condition` (H3) |
 
 ## Propuestas UI
 
