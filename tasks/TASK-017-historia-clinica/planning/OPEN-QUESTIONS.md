@@ -13,9 +13,12 @@
   **`clinical_history.condition`**; fallecimiento = **`health_profile.death`**;
   **AHF = agregado** (sin `family_member`/`family_condition`); **"Otro" = buscador
   del CIE-11 completo**; `form.cie11_code` **no aplica**.
-- **Pendiente**: (a) endpoint/vista de AHF (lectura agregada + escritura
-  orquestada); (b) `clinical_history.encounter` + `encounter_diagnosis` (consultas)
-  — **no bloquea** AHF.
+- **Pendiente**: (a) **componente dedicado** — la **UI es el árbol genealógico**
+  (propuesta [`family_tree.html`](../../../features/clinical_history/proposals/family_condition/family_tree.html),
+  [ADR 037](../../../decisions/037-family-conditions-ui-prototype.md)); el endpoint
+  hace **lectura agregada** (`relationships.family` + clínica del pariente) +
+  **escritura orquestada** (crear `person` + arista + condición). (b)
+  `clinical_history.encounter` + `encounter_diagnosis` (consultas) — **no bloquea** AHF.
 - **Impacto**: la HC `form` cubre A, C, D, E; B queda fuera del motor (sin
   `assignment`/`answer`/progreso).
 
