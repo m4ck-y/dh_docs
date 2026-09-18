@@ -31,7 +31,9 @@ Casos de uso: [`uses_cases/`](./uses_cases/README.md).
 features/mapper/
 ├── README.md                 # este índice: problema, alcance, estructura
 ├── uses_cases/
-│   └── README.md             # UC1 write-through · UC2 prefill
+│   ├── README.md             # índice + notas comunes
+│   ├── uc1_write_through.md  # UC1 (WRITE)
+│   └── uc2_prefill.md        # UC2 (READ)
 ├── store/                    # store de bindings (schema por definir)
 │   ├── README.md             # colección, campos, índices (borrador)
 │   └── example.jsonc         # placeholder (pendiente)
