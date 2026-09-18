@@ -3,6 +3,7 @@
   // Store: MongoDB `dh_mapper`, colección `forms`.
   // Útil para render "por form"; pero editar 1 vínculo reescribe el doc entero
   // (riesgo de lost updates) y la unicidad se valida en app, no en índice.
+
   "form": "datos_personales",
 
   "list_bindings": [
@@ -13,12 +14,9 @@
         "engine": "POSTGRES",
         "schema": "people",
         "table": "birth",
-        "property": "birth_date"
-        // 1:N → componente (ADR 045); si aplica, `match_on: [col, ...]`.
+        "property": "birth_date",
+        "operations": ["READ", "WRITE"]
       },
-      "read": true,
-      "write": true,
-      // "transform" diferido (ver binding.example.jsonc)
       "enabled": true
     }
 

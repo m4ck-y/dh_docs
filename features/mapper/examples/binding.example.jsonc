@@ -2,6 +2,7 @@
   // PROPUESTA — un documento por binding.
   // Store: MongoDB `dh_mapper`, colección `bindings`.
   // Vincula el valor de UNA pregunta (de un `form`) con UNA propiedad física 1:1.
+
   "name": "Fecha de nacimiento",             // opcional (display)
 
   "source": {
@@ -13,18 +14,15 @@
     "engine": "POSTGRES",                    // POSTGRES | MONGO
     "schema": "people",
     "table": "birth",
-    "property": "birth_date"
-    // 1:N (varios registros, p.ej. people.address): NO va aquí — es componente
-    // (ADR 045). Si algún día se requiere, se agrega `match_on: [col, ...]`.
+    "property": "birth_date",
+    "operations": ["READ", "WRITE"]          // READ=prefill · WRITE=guardar · [] inválido
+    // 1:N (varios registros): componente (ADR 045); match_on diferido si aplica.
   },
 
-  "read": true,                              // prefill (UC2): solo si la pregunta está vacía
-  "write": true,                             // write-through (UC1): solo si fue respondida; la respuesta manda
-  // "transform" diferido. Opcional; se agrega cuando el valor de la respuesta ≠ columna destino.
-  //   { "op": "SPLIT", "separator": " ", "parts": ["first_name","last_name",...] } // 1 resp → N cols
-  //   { "op": "MAP", "map": { "1": "MUJER", "2": "HOMBRE" } }                     // valor → valor
-  //   { "op": "EXPRESSION", "ast": { ... } }                                      // cálculo (reusa el AST)
   "enabled": true
+
+  // "transform" diferido. Opcional; se agrega cuando el valor ≠ columna destino.
+  //   { "op": "SPLIT", ... } | { "op": "MAP", ... } | { "op": "EXPRESSION", "ast": {...} }
 
   // BaseModel: uuid, created_at, updated_at, deleted_at, *_by_id_user
 }

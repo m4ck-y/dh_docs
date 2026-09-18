@@ -38,8 +38,11 @@ pregunta se **autorrelena**.
 ## Notas comunes
 
 - La **`answer` siempre se guarda**; el binding es **adicional**.
-- Un binding puede ser **solo read**, **solo write**, o **ambos**.
+- `target.operations` determina qué flujos corren: `READ` (prefill), `WRITE` (guardar),
+  o ambos.
 - La pregunta **prefilled** es **editable**.
+- **Reglas de conflicto fijas** (sin campo): prefill solo si la pregunta está vacía;
+  write → la respuesta manda (solo escribe si la pregunta fue respondida).
 - **No aplica a componentes** (A/B/D): tienen su propio endpoint.
 - **No es mapper**: catálogos (`list_options.catalog`), activadores
   (`form.condition`) ni scoring (`expression`).

@@ -25,13 +25,14 @@ Hoy el binding propuesto tiene:
 |---|---|
 | `name` | Etiqueta legible (opcional). |
 | `source` | `{ form, question }` (keys estables). |
-| `target` | `{ engine, schema, table, property }` — propiedad **1:1**. |
-| `read` | Prefill (UC2): solo si la pregunta está vacía. |
-| `write` | Write-through (UC1): solo si fue respondida; la respuesta manda. |
+| `target` | `{ engine, schema, table, property, operations }` — propiedad **1:1**. |
 | `enabled` | Conectar/desconectar. |
 
-> **1:N** (varios registros, p. ej. `people.address`): **no** es mapper → es
-> **componente** (ADR 045). Si algún día se requiere, se agrega `target.match_on`.
+- `target.operations`: `"READ"` (prefill), `"WRITE"` (guardar). `[]` inválido.
+- **Reglas de conflicto** (fijas, sin campo): prefill solo si la pregunta está vacía;
+  write → la respuesta manda.
+
+> **1:N** (varios registros): componente (ADR 045); match_on diferido si aplica.
 
 ## Pendiente
 
