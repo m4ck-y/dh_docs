@@ -17,19 +17,15 @@ Casos de uso: [`uses_cases/`](./uses_cases/README.md).
 
 ## Alcance
 
-- **Solo preguntas** de un `form` (`source.form_key` + `question_key`).
-- **NO** es mapper:
-  - Opciones que vienen de un **catálogo** → `list_options.catalog` (en el form).
-  - **Activadores** (respuesta de HC → instrumento) → `form.condition`.
-  - **Scoring/interpretación** → `expression`.
-- **Componentes de dominio** (A/B/D de historia clínica): **no** pasan por el
-  mapper; tienen su **propio endpoint** que lee/escribe el dominio.
+El mapper vincula **preguntas de forms** ↔ **propiedades 1:1** de dominio.
+Reglas normativas: [`RULES.md`](./RULES.md).
 
 ## Estructura
 
 ```
 features/mapper/
-├── README.md                 # este índice: problema, alcance, estructura
+├── README.md                 # este índice
+├── RULES.md                  # reglas normativas (fuente única)
 ├── uses_cases/
 │   ├── README.md             # índice + notas comunes
 │   ├── uc1_write_through.md  # UC1 (WRITE)

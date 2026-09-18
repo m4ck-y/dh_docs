@@ -29,10 +29,8 @@ Hoy el binding propuesto tiene:
 | `enabled` | Conectar/desconectar. |
 
 - `target.operations`: `"READ"` (prefill), `"WRITE"` (guardar). `[]` inválido.
-- **Reglas de conflicto** (fijas, sin campo): prefill solo si la pregunta está vacía;
-  write → la respuesta manda.
 
-> **1:N** (varios registros): componente (ADR 045); match_on diferido si aplica.
+> Reglas de conflicto y destino en [`../RULES.md`](../RULES.md).
 
 ## Pendiente
 

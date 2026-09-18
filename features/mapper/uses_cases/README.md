@@ -14,12 +14,5 @@ dominio**, en dos direcciones:
 
 ## Notas comunes
 
-- La **`answer` siempre se guarda**; el binding es **adicional**.
-- `target.operations` determina qué flujos corren: `READ` (prefill), `WRITE` (guardar),
-  o ambos.
-- La pregunta **prefilled** es **editable**.
-- **Reglas de conflicto fijas** (sin campo): prefill solo si la pregunta está vacía;
-  write → la respuesta manda (solo se escribe si la pregunta fue respondida).
-- **No aplica a componentes** (A/B/D): tienen su propio endpoint.
-- **No es mapper**: catálogos (`list_options.catalog`), activadores
-  (`form.condition`) ni scoring (`expression`).
+Las reglas normativas (conflicto, divergencia, direccionalidad, alcance) viven
+en [`../RULES.md`](../RULES.md).
