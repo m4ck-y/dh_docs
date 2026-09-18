@@ -1,39 +1,26 @@
 # Store de bindings (mapper)
 
-Store donde vivirán los **bindings** que resuelve el runner (prefill y
-write-through). **Estado: propuesta** — el **schema definitivo está por
-evaluarse**.
+Store donde viven los **bindings** que resuelve el runner (prefill y
+write-through). CRUD gestionado por el microservicio **`dh_bindings`**.
 
-## Store propuesto
+## Store
 
-- **Motor:** MongoDB (motor-agnóstico, editable sin migración, para UI admin).
-- **DB:** `dh_mapper`.
-- **Colección:** **pendiente de decidir** entre las dos propuestas de
-  `examples/`:
-  - `bindings` — **un documento por binding** (`binding.example.jsonc`).
-  - `forms` — **un documento por form** con `list_bindings[]`
-    (`form.example.jsonc`).
+- **Motor:** MongoDB.
+- **DB:** `dh_bindings`.
+- **Colección:** **`bindings`** — un documento por binding.
+- **Shape canónico:** `binding.example.jsonc` (en `examples/`; ver índice del feature).
 
-## Contrato del binding
+## Índices
 
-Ver las propuestas en `examples/` y el alcance/casos de uso en `RULES.md`.
+| Nombre | Campos | Tipo | Propósito |
+|---|---|---|---|
+| `uq_form_question` | `(source.form, source.question)` | unique | 1 binding por pregunta |
+| `ix_form_enabled_ops` | `(source.form, enabled, target.operations)` | non-unique | batch UC2 (prefill / write-through) |
 
-Hoy el binding propuesto tiene:
+## Cómo correr el seed
 
-| Campo | Descripción |
-|---|---|
-| `name` | Etiqueta legible (opcional). |
-| `source` | `{ form, question }` (keys estables). |
-| `target` | `{ engine, schema, table, property, operations }` — propiedad **1:1**. |
-| `enabled` | Conectar/desconectar. |
+```bash
+mongosh < features/mapper/store/seeder.js
+```
 
-- `target.operations`: `"READ"` (prefill), `"WRITE"` (guardar). `[]` inválido.
-
-> Reglas de conflicto y destino en `RULES.md`.
-
-## Pendiente
-
-- **Definir el schema definitivo** (campos finales, enums, índices/unicidad,
-  validaciones).
-- Definir `transform` (`SPLIT` / `MAP` / `EXPRESSION`; `COMBINE` diferido).
-- Implementar la colección Mongo + seed.
+El seed es **idempotente**: re-ejecutar no duplica (upsert por `source.form` + `source.question`).

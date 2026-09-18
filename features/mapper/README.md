@@ -30,18 +30,18 @@ features/mapper/
 │   ├── README.md             # índice + notas comunes
 │   ├── uc1_write_through.md  # UC1 (WRITE)
 │   └── uc2_prefill.md        # UC2 (READ)
-├── store/                    # store de bindings (schema por definir)
-│   ├── README.md             # colección, campos, índices (borrador)
-│   └── example.jsonc         # placeholder (pendiente)
-└── examples/                 # propuestas de schema
+├── store/                    # DB + colección + seed
+│   ├── README.md             # DB, colección, campos, índices, seed
+│   └── seeder.js             # mongosh seed idempotente
+└── examples/                 # shape canónico del binding
     ├── binding.example.jsonc # un documento por binding
-    └── form.example.jsonc    # un documento por form
+    └── form.example.jsonc    # un documento por form (obsoleto)
 ```
 
 ## Estado
 
-En **definición**. El **schema definitivo del store** está por evaluarse
-(ver [`store/README.md`](./store/README.md) y [`examples/`](./examples/)).
+**Schema definitivo del store definido.** DB `dh_bindings`, colección `bindings`.
+Owner: microservicio `dh_bindings`. Ver [`store/README.md`](./store/README.md).
 
 ## Depende de
 

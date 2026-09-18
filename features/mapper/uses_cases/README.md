@@ -1,8 +1,5 @@
 # Casos de uso — Mapper
 
-> **Propuesta** (en definición). El contrato y el store **aún no están
-> decididos**.
-
 El mapper vincula una **pregunta de un `form`** con una **propiedad física de
 dominio**, en dos direcciones:
 

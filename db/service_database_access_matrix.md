@@ -33,6 +33,7 @@ Cuando un schema necesita vincular una entidad de otro servicio:
 | `dh_onboarding` | `dh_onboarding / waitlist` | **Owner** | Leads y waitlist. |
 | `dh_mfa` | `dh_mfa / otp_challenge` | **Owner** | Challenges OTP con TTL. |
 | `dh_logger` | `telemetry_events` | **Owner** | Logs y trazabilidad. |
+| `dh_bindings` | `dh_bindings / bindings` | **Owner** | CRUD de bindings del mapper (mapeo pregunta ↔ propiedad). |
 
 ## Interdependencias por Flujo de Negocio
 

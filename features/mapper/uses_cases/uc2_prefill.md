@@ -11,10 +11,9 @@ pregunta se **autorrelena**.
 
 ---
 
-## Consultas (propuesta)
+## Consultas
 
-> Store propuesto: MongoDB `dh_mapper`, colección `bindings`. Lectura por
-> `person.uuid`.
+DB `dh_bindings`, colección `bindings`.
 
 ### Por pregunta
 
@@ -24,7 +23,8 @@ pregunta se **autorrelena**.
 db.bindings.findOne(
   { "source.form": "datos_personales",
     "source.question": "datos.fecha_nacimiento",
-    "target.operations": "READ" },
+    "target.operations": "READ",
+    "enabled": true },
   { _id: 0, target: 1 }
 );
 ```
@@ -46,7 +46,9 @@ WHERE p.uuid = $1;
 
 ```js
 db.bindings.find(
-  { "source.form": "datos_personales", "target.operations": "READ" },
+  { "source.form": "datos_personales",
+    "target.operations": "READ",
+    "enabled": true },
   { _id: 0, "source.question": 1, target: 1 }
 );
 ```

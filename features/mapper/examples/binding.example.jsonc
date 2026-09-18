@@ -1,6 +1,5 @@
 {
-  // PROPUESTA — un documento por binding.
-  // Store: MongoDB `dh_mapper`, colección `bindings`.
+  // Store: MongoDB `dh_bindings`, colección `bindings`.
   // Vincula el valor de UNA pregunta (de un `form`) con UNA propiedad física 1:1.
 
   "name": "Fecha de nacimiento",             // opcional (display)
@@ -24,5 +23,5 @@
   // "transform" diferido. Opcional; se agrega cuando el valor ≠ columna destino.
   //   { "op": "SPLIT", ... } | { "op": "MAP", ... } | { "op": "EXPRESSION", "ast": {...} }
 
-  // BaseModel: uuid, created_at, updated_at, deleted_at, *_by_id_user
+  // BaseModel: uuid (UUID v4), created_at, updated_at, created_by, updated_by (null al sembrar)
 }
