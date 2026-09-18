@@ -27,7 +27,7 @@ La tabla `person` (schema `people`) es la entidad central del sistema. Los sigui
 | relationships | `person_responsible`, `family`, `partnership` (id_person) |
 | storage | `document` (id_person) |
 | health_profile | `biological_profile`, `person_allergy`, `vaccination_record`, `death` (id_person) |
-| clinical_history | `condition` (id_person) |
+| clinical_history | `condition`, `medication`, `medication_condition` (id_person) |
 | iam | `membership` (id_person) |
 | mfa | `auth_factor`, `otp_challenge`, `recovery_code` (id_person) |
 | form | `assignment` (id_person). Nota: `answer.answered_by` referencia la entidad de usuarios (auth/iam), no `people.person`. |

@@ -1,14 +1,20 @@
 erDiagram
     %% CLINICAL_HISTORY SCHEMA
     %% Historial clinico con trazabilidad temporal.
-    %% condition: condiciones/enfermedades de la persona (CIE-11).
+    %%   condition: condiciones/enfermedades de la persona (CIE-11).
+    %%   medication: medicamentos de la persona (reportados; FHIR MedicationStatement).
+    %%   medication_condition: puente N:N (medicamento <-> condicion; FHIR reason).
     %% PENDIENTE de diseno: encounter (consultas) + encounter_diagnosis (puente).
 
     %% REFERENCIAS EXTERNAS
     %% person: definida en schema people
+    %% catalogs.medication: catalogo (ClickHouse) -> referencia SUAVE (sin FK, cross-engine)
 
     %% RELACIONES
     person ||--o{ condition : "has_conditions"
+    person ||--o{ medication : "takes"
+    medication ||--o{ medication_condition : "reason"
+    condition ||--o{ medication_condition : "reason"
 
     %% ENUMS
     EConditionCategory {
@@ -28,6 +34,11 @@ erDiagram
         String MODERATE "MODERATE"
         String SEVERE "SEVERE"
     }
+    EInformationSource {
+        String PATIENT "PATIENT"
+        String RELATIVE "RELATIVE"
+        String CLINICIAN "CLINICIAN"
+    }
 
     %% ENTIDADES
     %% condition: enfermedad/condicion (unifica chronic_condition + diagnosis_record)
@@ -46,6 +57,38 @@ erDiagram
         Date onset_date
         Boolean contributed_to_death
         Text notes
+    }
+
+    %% medication: medicamento de la persona (reportado; FHIR MedicationStatement)
+    %% id_person: quien lo toma
+    %% medication_code_system + medication_code: CodeableConcept -> item del catalogo
+    %%   medication (Vademecum); referencia SUAVE (catalogo en ClickHouse, sin FK)
+    %% name: display / fallback
+    %% dosage: JSONB (Dosage[] de FHIR)
+    %% instructions: texto libre (renderedDosageInstruction)
+    %% start_date/end_date: periodo (effective[x] -> Period; end_date null = vigente)
+    %% date_asserted: cuando se reporto
+    %% information_source: quien lo reporto (paciente/pariente/clinico)
+    medication {
+        UUID id PK
+        Integer id_person FK
+        String medication_code_system
+        String medication_code
+        Text name
+        Jsonb dosage
+        Text instructions
+        Date start_date
+        Date end_date
+        Timestamp date_asserted
+        Enum(EInformationSource) information_source
+        Text notes
+    }
+
+    %% medication_condition: puente N:N (motivo: para que condicion se toma)
+    medication_condition {
+        UUID id PK
+        Integer id_medication FK
+        Integer id_condition FK
     }
 
     %% PENDIENTE DE DISENO (comentado)
