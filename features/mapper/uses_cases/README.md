@@ -17,8 +17,8 @@ dominio**, en dos direcciones:
 1. Se guarda la `answer` (siempre).
 2. El runner busca el binding de `(form, question)` con `write`.
 3. Si existe → **upsert** en el destino.
-4. Si el destino ya tenía valor → se resuelve según la **política de conflicto**
-   (por definir).
+4. Si el destino ya tenía valor → **la respuesta manda** (solo se escribe si la
+   pregunta fue respondida).
 
 ---
 

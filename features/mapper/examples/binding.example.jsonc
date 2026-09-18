@@ -1,32 +1,29 @@
 {
   // PROPUESTA — un documento por binding.
   // Store: MongoDB `dh_mapper`, colección `bindings`.
-  // Vincula el valor de UNA pregunta con UNA propiedad física de dominio.
-  "key": "apnp.6->people.address.address",   // UNIQUE, estable
-  "name": "Domicilio (APNP)",
-  "domain": "clinical_history",              // clinical_history | questionnaires (agrupación UI)
+  // Vincula el valor de UNA pregunta (de un `form`) con UNA propiedad física 1:1.
+  "name": "Fecha de nacimiento",             // opcional (display)
 
   "source": {
-    "form_key": "apnp",                      // form.key
-    "question_key": "apnp.6",                // question.key
-    "question_uuid": null                    // opcional (ejecución, ADR 047)
+    "form": "datos_personales",              // form.key
+    "question": "datos.fecha_nacimiento"     // question.key
   },
 
   "target": {
     "engine": "POSTGRES",                    // POSTGRES | MONGO
-    "config": { "schema": "people", "table": "address" },  // según engine
-    "property": "address",                   // columna / campo
-    "match_on": ["id_person", "type_address"]  // para 1:N (upsert/append)
+    "schema": "people",
+    "table": "birth",
+    "property": "birth_date"
+    // 1:N (varios registros, p.ej. people.address): NO va aquí — es componente
+    // (ADR 045). Si algún día se requiere, se agrega `match_on: [col, ...]`.
   },
 
-  "operation": {
-    "read": true,                            // prefill (UC2)
-    "write": true,                           // write-through (UC1)
-    "mode": "UPSERT"                         // UPSERT | APPEND | REPLACE
-  },
-
-  "transform": null,                         // null | SPLIT | MAP | EXPRESSION
-  "conflict": "KEEP_EXISTING",               // KEEP_EXISTING | OVERWRITE | FLAG
+  "read": true,                              // prefill (UC2): solo si la pregunta está vacía
+  "write": true,                             // write-through (UC1): solo si fue respondida; la respuesta manda
+  // "transform" diferido. Opcional; se agrega cuando el valor de la respuesta ≠ columna destino.
+  //   { "op": "SPLIT", "separator": " ", "parts": ["first_name","last_name",...] } // 1 resp → N cols
+  //   { "op": "MAP", "map": { "1": "MUJER", "2": "HOMBRE" } }                     // valor → valor
+  //   { "op": "EXPRESSION", "ast": { ... } }                                      // cálculo (reusa el AST)
   "enabled": true
 
   // BaseModel: uuid, created_at, updated_at, deleted_at, *_by_id_user

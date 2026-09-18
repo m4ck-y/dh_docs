@@ -3,27 +3,26 @@
   // Store: MongoDB `dh_mapper`, colección `forms`.
   // Útil para render "por form"; pero editar 1 vínculo reescribe el doc entero
   // (riesgo de lost updates) y la unicidad se valida en app, no en índice.
-  "form_key": "apnp",
-  "domain": "clinical_history",
+  "form": "datos_personales",
 
   "list_bindings": [
     {
-      "key": "apnp.6->people.address.address",
-      "name": "Domicilio (APNP)",
-      "question_key": "apnp.6",
+      "name": "Fecha de nacimiento",
+      "source": { "form": "datos_personales", "question": "datos.fecha_nacimiento" },
       "target": {
         "engine": "POSTGRES",
-        "config": { "schema": "people", "table": "address" },
-        "property": "address",
-        "match_on": ["id_person", "type_address"]
+        "schema": "people",
+        "table": "birth",
+        "property": "birth_date"
+        // 1:N → componente (ADR 045); si aplica, `match_on: [col, ...]`.
       },
-      "operation": { "read": true, "write": true, "mode": "UPSERT" },
-      "transform": null,
-      "conflict": "KEEP_EXISTING",
+      "read": true,
+      "write": true,
+      // "transform" diferido (ver binding.example.jsonc)
       "enabled": true
     }
 
-    // ... resto de bindings del mismo form (una entrada por pregunta con destino)
+    // ... resto de bindings del mismo form (una entrada por pregunta con destino 1:1)
   ]
 
   // BaseModel: uuid, created_at, updated_at, deleted_at, *_by_id_user
