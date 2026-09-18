@@ -31,11 +31,11 @@ features/mapper/
 │   ├── uc1_write_through.md  # UC1 (WRITE)
 │   └── uc2_prefill.md        # UC2 (READ)
 ├── store/                    # DB + colección + seed
-│   ├── README.md             # DB, colección, campos, índices, seed
+│   ├── README.md             # DB, colección, índices, seed
 │   └── seeder.js             # mongosh seed idempotente
-└── examples/                 # shape canónico del binding
-    ├── binding.example.jsonc # un documento por binding
-    └── form.example.jsonc    # un documento por form (obsoleto)
+└── examples/
+    ├── binding.example.jsonc # shape canónico (un documento por binding)
+    └── form.example.jsonc    # propuesta alternativa obsoleta (un documento por form)
 ```
 
 ## Estado

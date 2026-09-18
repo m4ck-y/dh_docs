@@ -1,6 +1,6 @@
 {
-  // PROPUESTA (alternativa) — un documento por form, con los bindings agrupados.
-  // Store: MongoDB `dh_mapper`, colección `forms`.
+  // OBSOLETO — esta propuesta (un documento por form) fue descartada.
+  // Ver binding.example.jsonc y store/seeder.js para el modelo definitivo.
   // Útil para render "por form"; pero editar 1 vínculo reescribe el doc entero
   // (riesgo de lost updates) y la unicidad se valida en app, no en índice.
 
