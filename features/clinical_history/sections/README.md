@@ -45,6 +45,15 @@ Regla derivada de los `.mmd`, aplicada **por pregunta** al crear cada ficha/bank
 > define el **registro** de catálogos ([`../../catalogs/`](../../catalogs/),
 > [ADR 044](../../../decisions/044-catalogos-gobernados.md)), **no** la ficha.
 
+### Componentes (A/B/D) — qué se documenta
+
+- **Estructura**: la ficha `sections/<x>.md` (✅).
+- **Contrato del componente → dominio** (qué entidades/columnas lee/escribe el
+  endpoint): **pendiente** de definir; el **endpoint responsable** está **por
+  definir** (ver `docs/db/service_database_access_matrix.md`).
+- **No** se documenta aquí: el **DDL/modelo** (vive en `db/postgres/…`) ni un
+  **mapper** (el mapper es **solo preguntas** de `form`).
+
 ### Secciones híbridas
 
 Una sección puede ser **mixta**: `form` **+** componentes. El `form` (banco) lleva

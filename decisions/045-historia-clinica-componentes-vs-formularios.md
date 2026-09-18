@@ -74,7 +74,8 @@ Ver pendiente de composición: `OPEN-QUESTIONS.md` (H5).
 - El banco `bank/clinical_history/` guarda **solo forms** (C/E, form de D); A/B
   no tienen banco.
 - El `mapper` (pregunta→columna) aplica a **forms**; para **componentes** el
-  contrato es **componente→dominio** (vista legible en `mapper/views/`).
+  contrato **componente→dominio** está **pendiente** (endpoint por definir) y **no**
+  vive en el mapper.
 - Los "Otro/Especifique" de ambos usan **catálogos gobernados**
   ([ADR 044](044-catalogos-gobernados.md)).
 

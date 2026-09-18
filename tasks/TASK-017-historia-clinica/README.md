@@ -24,7 +24,8 @@ cuestionarios `1,2,3`). Genera sus fichas de estructura y sus vínculos a domini
 ## Estado y siguiente paso
 
 - **A (Registro)**: **componente/endpoint de dominio** (ADR 045) — spec en
-  `sections/A_registro.md` y contrato en `mapper/views/clinical_history/A_registro.md`.
+  `sections/A_registro.md`; contrato **componente → dominio pendiente** (endpoint
+  por definir; no pasa por el mapper).
 - **B (AHF)**: **componente propio** (ADR 043), **modelado pendiente** — ficha
   `sections/B_ahf.md`; no es sección del `form`.
 - **C (APNP)**: **form** — ficha `sections/C_apnp.md` + banco
@@ -51,8 +52,8 @@ fuente se anotan — ver
 - [x] Fichas de estructura `features/clinical_history/sections/` (A–E).
 - [x] JSON de los `form` de HC: `apnp.json` (C), `antecedentes_pp.json` (D).
 - [ ] JSON del `form` de E (`padecimiento_actual.json`).
-- [ ] Vínculos pregunta → dominio (vista en `features/mapper/views/clinical_history/`).
-- [ ] Modelado de los componentes (A, B, D): entidades + endpoints (ADR 043/045).
+- [ ] Vínculos pregunta → dominio (feature [`mapper`](../../features/mapper/README.md); solo `form`).
+- [ ] Modelado de los componentes (A, B, D): entidades + endpoints (ADR 043/045) — contrato **componente → dominio pendiente**.
 
 ## Enlaces rápidos
 

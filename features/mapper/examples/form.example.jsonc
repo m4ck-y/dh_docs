@@ -1,0 +1,30 @@
+{
+  // PROPUESTA (alternativa) — un documento por form, con los bindings agrupados.
+  // Store: MongoDB `dh_mapper`, colección `forms`.
+  // Útil para render "por form"; pero editar 1 vínculo reescribe el doc entero
+  // (riesgo de lost updates) y la unicidad se valida en app, no en índice.
+  "form_key": "apnp",
+  "domain": "clinical_history",
+
+  "list_bindings": [
+    {
+      "key": "apnp.6->people.address.address",
+      "name": "Domicilio (APNP)",
+      "question_key": "apnp.6",
+      "target": {
+        "engine": "POSTGRES",
+        "config": { "schema": "people", "table": "address" },
+        "property": "address",
+        "match_on": ["id_person", "type_address"]
+      },
+      "operation": { "read": true, "write": true, "mode": "UPSERT" },
+      "transform": null,
+      "conflict": "KEEP_EXISTING",
+      "enabled": true
+    }
+
+    // ... resto de bindings del mismo form (una entrada por pregunta con destino)
+  ]
+
+  // BaseModel: uuid, created_at, updated_at, deleted_at, *_by_id_user
+}

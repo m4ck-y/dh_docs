@@ -19,9 +19,10 @@ modelado pendiente).
 | [`sections/`](./sections/) | Una ficha por sección del expediente (estructura del `form` **o** del componente: preguntas/opciones/subrutas). |
 | [`proposals/`](./proposals/) | Prototipos de UI (propuestas, no diseño final). |
 
-**Mapeo a dominio:** los vínculos pregunta → propiedad de dominio viven en el
-feature [`../mapper/`](../mapper/) (vista en
-[`../mapper/views/clinical_history/`](../mapper/views/clinical_history/)).
+**Mapeo a dominio:** el feature [`../mapper/`](../mapper/) vincula **preguntas de
+`form`** con propiedades de dominio. Los **componentes** (A/B/D) **no** pasan por el
+mapper: su contrato (componente → dominio) está **pendiente** (endpoint por
+definir; ver [`sections/README.md`](./sections/README.md)).
 
 **Fuente de los flujos:** `docs/diagrams/0_HISTORIA_CLINICA/` (drawio + `flows/`
 `.mmd` + `activation/` con los anexos).
@@ -30,7 +31,7 @@ feature [`../mapper/`](../mapper/) (vista en
 
 | # | Sección | Ficha | Vínculos (mapper) |
 |---|---|---|---|
-| A | Registro | componente de dominio ([ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md)) — spec en [`sections/A_registro.md`](./sections/A_registro.md) | [contrato dominio](../mapper/views/clinical_history/A_registro.md) |
+| A | Registro | componente de dominio ([ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md)) — spec en [`sections/A_registro.md`](./sections/A_registro.md) | ⏳ (componente → dominio pendiente) |
 | B | Antecedentes heredofamiliares | componente propio ([ADR 043](../../decisions/043-ahf-componente-dedicado.md)) — spec en [`sections/B_ahf.md`](./sections/B_ahf.md) | — |
 | C | APNP | [`sections/C_apnp.md`](./sections/C_apnp.md) | ⏳ |
 | D | Antecedentes personales patológicos | híbrido ([ADR 045](../../decisions/045-historia-clinica-componentes-vs-formularios.md)) — spec en [`sections/D_antecedentes_pp.md`](./sections/D_antecedentes_pp.md) | ⏳ |
@@ -137,7 +138,8 @@ patológicos* (nuestra **D**).
   divergencias intencionales y los TODO de la fuente se anotan (ver
   [`sections/README.md`](./sections/README.md)).
 - Cada sección produce una ficha `<seccion>.md` en `sections/`.
-- El mapeo a dominio (campo → entidad/columna) vive en el feature
-  [`../mapper/`](../mapper/): contrato en `mapper/README.md` y vista legible en
-  `mapper/views/<dominio>/`.
+- El mapeo a dominio **pregunta → columna** vive en el feature
+  [`../mapper/`](../mapper/) (contrato en `mapper/README.md`); aplica **solo a
+  `form`**. Los **componentes** (A/B/D) documentan su contrato **componente →
+  dominio** aparte (pendiente; ver [`sections/README.md`](./sections/README.md)).
 - Contenido en español; carpetas y nombres de archivo en inglés `snake_case`.
