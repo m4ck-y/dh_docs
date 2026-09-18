@@ -13,9 +13,9 @@
 
 ## Consultas (propuesta)
 
-> Store propuesto: MongoDB `dh_mapper`, colección `bindings` (ver
-> `../store/README.md`). El `target` es una propiedad **1:1**; FK `id_person`;
-> la persona se identifica por `person.uuid`.
+> Store propuesto: MongoDB `dh_mapper`, colección `bindings`. El `target` es
+> una propiedad **1:1**; FK `id_person`; la persona se identifica por
+> `person.uuid`.
 
 ### Por pregunta
 

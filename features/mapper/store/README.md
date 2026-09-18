@@ -9,15 +9,14 @@ evaluarse**.
 - **Motor:** MongoDB (motor-agnóstico, editable sin migración, para UI admin).
 - **DB:** `dh_mapper`.
 - **Colección:** **pendiente de decidir** entre las dos propuestas de
-  [`../examples/`](../examples/):
+  `examples/`:
   - `bindings` — **un documento por binding** (`binding.example.jsonc`).
   - `forms` — **un documento por form** con `list_bindings[]`
     (`form.example.jsonc`).
 
 ## Contrato del binding
 
-Ver las propuestas en [`../examples/`](../examples/) y el alcance/casos de uso en
-[`../README.md`](../README.md) y [`../uses_cases/README.md`](../uses_cases/README.md).
+Ver las propuestas en `examples/` y el alcance/casos de uso en `RULES.md`.
 
 Hoy el binding propuesto tiene:
 
@@ -30,7 +29,7 @@ Hoy el binding propuesto tiene:
 
 - `target.operations`: `"READ"` (prefill), `"WRITE"` (guardar). `[]` inválido.
 
-> Reglas de conflicto y destino en [`../RULES.md`](../RULES.md).
+> Reglas de conflicto y destino en `RULES.md`.
 
 ## Pendiente
 
