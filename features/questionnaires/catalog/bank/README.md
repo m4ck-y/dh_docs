@@ -79,6 +79,7 @@ nivel arriba; este directorio solo contiene **datos**.
 - `expression` (envelope AST) y `condition` (AST) según `../../expressions/`.
 - Opciones de pregunta (`list_options`): unión `{source:"static", items:[…]}` |
   `{source:"catalog", catalog:{key}}` (ver ADR 046 y `../question_types/`).
+  Cada ítem estático lleva **`uuid`** (global, estable) en vez de `id`.
 
 ## Plantilla
 

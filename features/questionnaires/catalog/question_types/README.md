@@ -47,10 +47,11 @@ Las preguntas de elección (`SINGLE_CHOICE`, `MULTIPLE_CHOICE`) declaran sus
 opciones en `list_options` (JSONB), como **unión taggeada** (ADR 046):
 
 ```jsonc
-{ "source": "static",  "items": [ { "value": 0, "label": "Nunca" } ] }
+{ "source": "static",  "items": [ { "uuid": "…", "value": 0, "label": "Nunca" } ] }
 { "source": "catalog", "catalog": { "key": "countries" } }
 ```
 
+- Cada ítem estático lleva **`uuid`** (global, estable; used para `PATCH/DELETE /questions/options/{uuid_option}`).
 - `value` es `number` (escalas) o `string` (catálogos); la respuesta guarda ese
   `value` (no la etiqueta).
 - `source: "static"` exige `items` no vacío; `source: "catalog"` exige `key`

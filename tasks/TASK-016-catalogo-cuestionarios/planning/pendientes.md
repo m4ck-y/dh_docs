@@ -61,6 +61,7 @@
 | C18 | `form.type` (`EFormType`) formalizado | Modelo | ✅ |
 | C19 | Contrato de la pregunta calculada | Modelo | ✅ |
 | C20 | Opciones de pregunta (estáticas o de catálogo) | Modelo | ✅ |
+| C21 | Opción con `uuid` (formato + API sub-recurso) | Modelo | ⏳ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -462,6 +463,33 @@
   `catalog/ERD.mmd`, `catalog/CLASS.mmd`, `catalog/README.md` §4/§6/§7/§8,
   `catalog/question_types/{README,single_choice,multiple_choice}.md`,
   `catalog/bank/README.md`, `catalog/example.jsonc`.
+
+### C21 — Opción con `uuid` (formato + API sub-recurso) ⏳
+
+- **Qué era**: los banks usaban `id` (entero) por opción; los 8 instrumentos
+  además usaban array plano (no unión taggeada) y `text` en vez de `label`.
+- **Decisión (formato)**:
+  - Ítem estático = `{ uuid, value, label, description?, order?, url? }`.
+  - `uuid` = identificador **global y estable** por opción (real, no placeholder).
+  - `order` base **1**.
+  - Unión taggeada (no array plano); `text` → `label`.
+- **Decisión (API)**:
+  - `PATCH /questions/options/{uuid_option}` — sub-recurso, parcial.
+  - Sin padre en el path (ADR 034); `uuid` global.
+  - Guardrail: editar `label`/`order` libre; editar **`value`** solo si el form
+    no está `verified`/sin respuestas (rompe scoring).
+- **Modelo** (ya actualizado en esta sesión):
+  - `decisions/046` → item = `{uuid, value, label, …}`.
+  - `question_types/{README,single_choice,multiple_choice}.md` → item = `{uuid, …}`.
+  - `schema.sql` → COMMENT de `list_options` incluye `uuid`.
+  - `bank/README.md` → convenciones §8.
+- **Dónde** (banks, pendientes de corrección):
+  - `bank/instruments/{phq-9,hads,gds,cdi,gad-7,pss,crafft,ipaq}.json` — pasar
+    de array plano a unión taggeada, `text`→`label`, `id`→`uuid`, `order` base 1.
+  - `bank/clinical_history/{apnp,antecedentes_pp}.json` — añadir `uuid` a cada
+    ítem (ya en unión taggeada, pero sin `uuid`).
+- **Aceptación**: toda opción estática tiene `uuid`; ninguna usa `id`.
+- **Estado**: ⏳ — los banks **no** se corrigen ahora.
 
 ## D. Motor frontend
 

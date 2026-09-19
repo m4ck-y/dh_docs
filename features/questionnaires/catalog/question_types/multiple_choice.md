@@ -17,13 +17,13 @@ Selección de **varias** opciones. Las opciones viven en `list_options`
 
 ```jsonc
 // estáticas
-"list_options": { "source": "static", "items": [ { "value": 1, "label": "Fatiga", "order": 0 } ] }
+"list_options": { "source": "static", "items": [ { "uuid": "…", "value": 1, "label": "Fatiga", "order": 1 } ] }
 // catálogo gobernado
 "list_options": { "source": "catalog", "catalog": { "key": "countries" } }
 ```
 
 - `source: "static"` → `items` (array **no vacío**) de
-  `{value, label, description?, order?, url?}`.
+  `{uuid, value, label, description?, order?, url?}`.
 - `source: "catalog"` → `catalog.key` (catálogo **existente** en el registro);
   las opciones salen del catálogo gobernado (ver ADR 044/046).
 - `value` es `number` (escalas) o `string` (catálogos).
