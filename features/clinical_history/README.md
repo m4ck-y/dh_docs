@@ -17,12 +17,14 @@ modelado pendiente).
 | Carpeta | Contenido |
 |---|---|
 | [`sections/`](./sections/) | Una ficha por sección del expediente (estructura del `form` **o** del componente: preguntas/opciones/subrutas). |
+| [`contracts/`](./contracts/) | Contratos de API/dominio para los componentes de dominio (ej. [`medication_statement.md`](./contracts/medication_statement.md)). |
 | [`proposals/`](./proposals/) | Prototipos de UI (propuestas, no diseño final). |
 
 **Mapeo a dominio:** el feature [`../mapper/`](../mapper/) vincula **preguntas de
 `form`** con propiedades de dominio. Los **componentes** (A/B/D) **no** pasan por el
-mapper: su contrato (componente → dominio) está **pendiente** (endpoint por
-definir; ver [`sections/README.md`](./sections/README.md)).
+mapper: su contrato (componente → dominio) se documenta en [`contracts/`](./contracts/)
+(ej. [`medication_statement`](./contracts/medication_statement.md)). El resto de endpoints
+responsables está en definición (ver [`sections/README.md`](./sections/README.md)).
 
 **Fuente de los flujos:** `docs/diagrams/0_HISTORIA_CLINICA/` (drawio + `flows/`
 `.mmd` + `activation/` con los anexos).

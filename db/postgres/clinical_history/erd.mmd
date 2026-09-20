@@ -2,8 +2,9 @@ erDiagram
     %% CLINICAL_HISTORY SCHEMA
     %% Historial clinico con trazabilidad temporal.
     %%   condition: condiciones/enfermedades de la persona (CIE-11).
-    %%   medication: medicamentos de la persona (reportados; FHIR MedicationStatement).
+    %%   medication_statement: medicamentos de la persona (reportados; FHIR MedicationStatement).
     %%   medication_condition: puente N:N (medicamento <-> condicion; FHIR reason).
+    %% Contrato del componente: docs/features/clinical_history/contracts/medication_statement.md
     %% PENDIENTE de diseno: encounter (consultas) + encounter_diagnosis (puente).
 
     %% REFERENCIAS EXTERNAS
@@ -12,8 +13,8 @@ erDiagram
 
     %% RELACIONES
     person ||--o{ condition : "has_conditions"
-    person ||--o{ medication : "takes"
-    medication ||--o{ medication_condition : "reason"
+    person ||--o{ medication_statement : "takes"
+    medication_statement ||--o{ medication_condition : "reason"
     condition ||--o{ medication_condition : "reason"
 
     %% ENUMS
@@ -34,6 +35,19 @@ erDiagram
         String MODERATE "MODERATE"
         String SEVERE "SEVERE"
     }
+    EMedicationStatementStatus {
+        String ACTIVE "ACTIVE"
+        String COMPLETED "COMPLETED"
+        String STOPPED "STOPPED"
+        String ON_HOLD "ON_HOLD"
+        String ENTERED_IN_ERROR "ENTERED_IN_ERROR"
+    }
+    EMedicationAdherence {
+        String ALWAYS "ALWAYS"
+        String SOMETIMES "SOMETIMES"
+        String NEVER "NEVER"
+        String UNKNOWN "UNKNOWN"
+    }
     EInformationSource {
         String PATIENT "PATIENT"
         String RELATIVE "RELATIVE"
@@ -47,7 +61,8 @@ erDiagram
     %% category: PROBLEM_LIST (lista de problemas) | ENCOUNTER_DIAGNOSIS (diagnostico de consulta)
     %% contributed_to_death: la condicion contribuyo a la muerte (FHIR)
     condition {
-        UUID id PK
+        Integer id PK
+        UUID uuid
         Integer id_person FK
         String cie11_code
         Text name
@@ -59,35 +74,40 @@ erDiagram
         Text notes
     }
 
-    %% medication: medicamento de la persona (reportado; FHIR MedicationStatement)
+    %% medication_statement: medicamento de la persona (reportado; FHIR MedicationStatement)
     %% id_person: quien lo toma
     %% medication_code_system + medication_code: CodeableConcept -> item del catalogo
     %%   medication (Vademecum); referencia SUAVE (catalogo en ClickHouse, sin FK)
     %% name: display / fallback
     %% dosage: JSONB (Dosage[] de FHIR)
     %% instructions: texto libre (renderedDosageInstruction)
+    %% status: ACTIVE | COMPLETED | STOPPED | ON_HOLD | ENTERED_IN_ERROR
     %% start_date/end_date: periodo (effective[x] -> Period; end_date null = vigente)
     %% date_asserted: cuando se reporto
+    %% adherence_code: ALWAYS | SOMETIMES | NEVER | UNKNOWN
     %% information_source: quien lo reporto (paciente/pariente/clinico)
-    medication {
-        UUID id PK
+    medication_statement {
+        Integer id PK
+        UUID uuid
         Integer id_person FK
         String medication_code_system
         String medication_code
         Text name
         Jsonb dosage
         Text instructions
+        Enum(EMedicationStatementStatus) status
         Date start_date
         Date end_date
         Timestamp date_asserted
+        Enum(EMedicationAdherence) adherence_code
         Enum(EInformationSource) information_source
         Text notes
     }
 
     %% medication_condition: puente N:N (motivo: para que condicion se toma)
     medication_condition {
-        UUID id PK
-        Integer id_medication FK
+        Integer id PK
+        Integer id_medication_statement FK
         Integer id_condition FK
     }
 

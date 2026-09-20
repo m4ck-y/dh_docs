@@ -49,8 +49,9 @@ Regla derivada de los `.mmd`, aplicada **por pregunta** al crear cada ficha/bank
 
 - **Estructura**: la ficha `sections/<x>.md` (✅).
 - **Contrato del componente → dominio** (qué entidades/columnas lee/escribe el
-  endpoint): **pendiente** de definir; el **endpoint responsable** está **por
-  definir** (ver `docs/db/service_database_access_matrix.md`).
+  endpoint): documentados en [`../contracts/`](../contracts/). Medicación definida
+  en [`../contracts/medication_statement.md`](../contracts/medication_statement.md);
+  el resto (alergias, cirugías, AHF) pendiente de definir.
 - **No** se documenta aquí: el **DDL/modelo** (vive en `db/postgres/…`) ni un
   **mapper** (el mapper es **solo preguntas** de `form`).
 

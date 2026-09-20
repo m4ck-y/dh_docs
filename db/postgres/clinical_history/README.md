@@ -10,7 +10,7 @@ Schema de PostgreSQL para el **historial clínico** con trazabilidad temporal.
 | Entidad | Descripción | Estado |
 |---|---|---|
 | `condition` | Condiciones/enfermedades de la persona (CIE-11) | ✅ |
-| `medication` | Medicamentos de la persona (reportados; FHIR `MedicationStatement`) | ✅ |
+| `medication_statement` | Medicamentos de la persona (reportados; FHIR `MedicationStatement`) | ✅ ([contrato](../../features/clinical_history/contracts/medication_statement.md)) |
 | `medication_condition` | Puente N:N medicamento ↔ condición ("motivo") | ✅ |
 | `encounter` | Consultas / atenciones | ⏳ pendiente de diseño |
 | `encounter_diagnosis` | Puente condición ↔ consulta | ⏳ pendiente (depende de `encounter`) |
@@ -22,14 +22,17 @@ Schema de PostgreSQL para el **historial clínico** con trazabilidad temporal.
 | `EConditionCategory` | `PROBLEM_LIST`, `ENCOUNTER_DIAGNOSIS` |
 | `EConditionClinicalStatus` | `ACTIVE`, `RECURRENCE`, `RELAPSE`, `INACTIVE`, `REMISSION`, `RESOLVED` |
 | `EConditionSeverity` | `MILD`, `MODERATE`, `SEVERE` |
+| `EMedicationStatementStatus` | `ACTIVE`, `COMPLETED`, `STOPPED`, `ON_HOLD`, `ENTERED_IN_ERROR` |
+| `EMedicationAdherence` | `ALWAYS`, `SOMETIMES`, `NEVER`, `UNKNOWN` |
 | `EInformationSource` | `PATIENT`, `RELATIVE`, `CLINICIAN` |
 
 ## Notas
 
 - `condition` **unifica** el antes `health_profile.chronic_condition` y la propuesta
   `diagnosis_record`.
-- `medication` = lo que **toma la persona** (reportado), según FHIR
-  `MedicationStatement`: la **dosis es por persona**, no del producto.
+- `medication_statement` = lo que **toma la persona** (reportado), según FHIR
+  `MedicationStatement`: la **dosis es por persona**, no del producto. Su contrato
+  de componente vive en [`features/clinical_history/contracts/medication_statement.md`](../../features/clinical_history/contracts/medication_statement.md).
 - **Referencia al catálogo**: `medication_code_system` + `medication_code`
   (`CodeableConcept`) apunta a un ítem del catálogo **`medication`** (Vademecum,
   ClickHouse) — referencia **suave** (cross-engine, **sin FK**).
@@ -44,5 +47,5 @@ Schema de PostgreSQL para el **historial clínico** con trazabilidad temporal.
   también se guarda en `health_profile.death` (`cause_code`/`cause_text`).
 - `category` default **`PROBLEM_LIST`** (AHF/D); `ENCOUNTER_DIAGNOSIS` cuando la
   condición proviene de una consulta.
-- `medication.name` = display / fallback si no hay código.
+- `medication_statement.name` = display / fallback si no hay código.
 - Enums en **inglés**.

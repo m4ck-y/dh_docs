@@ -32,9 +32,10 @@
 
 ## Uso
 
-- Lo referencia **`clinical_history.medication_statement.medication_code`**.
+- Lo referencia **`clinical_history.medication_statement.medication_code`** (ver contrato en [`features/clinical_history/contracts/medication_statement.md`](../../clinical_history/contracts/medication_statement.md)).
+- **Búsqueda / Autocomplete en UI**: consumido vía `GET /api/catalogs/medications?q={query}` contra ClickHouse (servicio `dh_catalogs`).
 - El clasificador (`atc`/`group`) habilita el activador **DAI-10**
-  (antipsicóticos) — ver `features/clinical_history/README.md` (anexos C/D).
+  (antipsicóticos) — ver `features/clinical_history/README.md` (anexos C/D) y el contrato de medicación.
 
 ## Fuente / sync (pendiente)
 

@@ -43,7 +43,8 @@
 ### Banco y modelado
 - ⏳ **E** sin banco: `features/questionnaires/catalog/bank/clinical_history/padecimiento_actual.json`.
 - ⏳ **Componentes A/B/D** — **contrato `componente → dominio`** (qué entidades/columnas
-  lee/escribe el endpoint) **pendiente**; **endpoint por definir**. **No** pasan por el
+  lee/escribe el endpoint): ✅ medicación definida en [`contracts/medication_statement.md`](./features/clinical_history/contracts/medication_statement.md);
+  resto (alergias, cirugías, AHF) **pendiente**. **No** pasan por el
   mapper → [`features/clinical_history/sections/README.md`](./features/clinical_history/sections/README.md).
 - ⏳ **`clinical_history.encounter`** + **`encounter_diagnosis`** — pendiente de
   diseño → [`db/postgres/clinical_history/README.md`](./db/postgres/clinical_history/README.md).
@@ -78,7 +79,7 @@
 ## Dudas de modelo sin cerrar
 - ⏳ **D `10.0` lesiones**: `Condition` vs `Procedure`.
 - ⏳ **E**: form vs `Condition`/`Encounter`.
-- ⏳ **`medication`**: ¿`adherence`/`is_active`? (se omitió `status`).
+- ✅ **`medication_statement`**: formalizado con `status`, `adherence_code`, ADR 010 IDs y contrato ([`contracts/medication_statement.md`](./features/clinical_history/contracts/medication_statement.md)).
 - ⏳ **`people.emergency_contact`**: unificar enum de relación con `relationships`.
 
 ## Consistencia / docs menores
