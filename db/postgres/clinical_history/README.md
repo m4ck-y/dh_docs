@@ -22,7 +22,7 @@ Schema de PostgreSQL para el **historial clínico** con trazabilidad temporal.
 | `EConditionCategory` | `PROBLEM_LIST`, `ENCOUNTER_DIAGNOSIS` |
 | `EConditionClinicalStatus` | `ACTIVE`, `RECURRENCE`, `RELAPSE`, `INACTIVE`, `REMISSION`, `RESOLVED` |
 | `EConditionSeverity` | `MILD`, `MODERATE`, `SEVERE` |
-| `EMedicationStatementStatus` | `ACTIVE`, `COMPLETED`, `STOPPED`, `ON_HOLD`, `ENTERED_IN_ERROR` |
+| `EMedicationStatementStatus` | `ACTIVE`, `COMPLETED`, `STOPPED`, `ON_HOLD` |
 | `EMedicationAdherence` | `ALWAYS`, `SOMETIMES`, `NEVER`, `UNKNOWN` |
 | `EInformationSource` | `PATIENT`, `RELATIVE`, `CLINICIAN` |
 
@@ -48,4 +48,12 @@ Schema de PostgreSQL para el **historial clínico** con trazabilidad temporal.
 - `category` default **`PROBLEM_LIST`** (AHF/D); `ENCOUNTER_DIAGNOSIS` cuando la
   condición proviene de una consulta.
 - `medication_statement.name` = display / fallback si no hay código.
+- **`status` (`EMedicationStatementStatus`)** = **estado clínico del tratamiento**
+  (`ACTIVE`/`COMPLETED`/`STOPPED`/`ON_HOLD`) — **desviación intencional** de FHIR R5
+  (`MedicationStatement.status` = `recorded`/`entered-in-error`/`draft`).
+  **Pendiente de revisión posterior.** El registro capturado por error se maneja con
+  **soft-delete** (`deleted_at`), no con un estado.
+- **`uuid`** = identificador externo (ADR 010); default en BD `gen_random_uuid()`
+  (**v4**); los **seeds** se generan en **SQLAlchemy/Python** con la librería **v7**
+  (`uuid6.uuid7()`).
 - Enums en **inglés**.

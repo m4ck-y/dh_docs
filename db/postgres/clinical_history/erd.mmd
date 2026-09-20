@@ -40,7 +40,6 @@ erDiagram
         String COMPLETED "COMPLETED"
         String STOPPED "STOPPED"
         String ON_HOLD "ON_HOLD"
-        String ENTERED_IN_ERROR "ENTERED_IN_ERROR"
     }
     EMedicationAdherence {
         String ALWAYS "ALWAYS"
@@ -81,7 +80,7 @@ erDiagram
     %% name: display / fallback
     %% dosage: JSONB (Dosage[] de FHIR)
     %% instructions: texto libre (renderedDosageInstruction)
-    %% status: ACTIVE | COMPLETED | STOPPED | ON_HOLD | ENTERED_IN_ERROR
+    %% status: ACTIVE | COMPLETED | STOPPED | ON_HOLD (desviacion intencional de FHIR R5)
     %% start_date/end_date: periodo (effective[x] -> Period; end_date null = vigente)
     %% date_asserted: cuando se reporto
     %% adherence_code: ALWAYS | SOMETIMES | NEVER | UNKNOWN

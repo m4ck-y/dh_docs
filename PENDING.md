@@ -87,6 +87,13 @@
 - ⏳ `tasks/TASK-017/.../planning/README.md` lista **H4** como abierto (ya "dónde resuelto").
 - ⏳ Encabezado/“Notas” de `OPEN-QUESTIONS.md` (fecha 2026-09-15).
 - ⏳ `features/catalogs/seed/README.md` “Pendientes” (alinear con lo decidido).
+- ✅ **Review commit `5de841a` (`medication_statement`) — corregido**:
+  - **I1** índice `db/postgres/README.md` → `medication_statement`.
+  - **I2** activador DAI-10 → **texto funcional** + nota *"la sintaxis AST depende de H4"*.
+  - **I3** `status` → **desviación intencional** declarada (estado clínico), **pendiente de revisión posterior**; enum = 4 valores (`ACTIVE`/`COMPLETED`/`STOPPED`/`ON_HOLD`).
+  - **I4** DDL fuera del contrato → **enlace al ERD** + **spec de campos**.
+  - **I5** `uuid` → **v4** (`gen_random_uuid()`) + comentario de seeds **v7** (SQLAlchemy/Python).
+  - **I6** prefijos de endpoint → `/v1/catalogs/medications`.
 
 ## Frontend / componentes (fuera de este repo)
 - ⏳ **UI de AHF** = árbol genealógico (`features/clinical_history/proposals/family_condition/family_tree.html`).

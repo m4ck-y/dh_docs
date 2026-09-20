@@ -13,7 +13,7 @@ El componente de interfaz para la captura de medicamentos de la persona opera co
 
 ```mermaid
 flowchart TD
-    A["Usuario escribe en el buscador de medicamentos"] --> B["Front consulta GET /api/catalogs/medications?q={texto}"]
+    A["Usuario escribe en el buscador de medicamentos"] -->     B["Front consulta GET /v1/catalogs/medications?q={texto}"]
     B --> C{"¿El medicamento está en el catálogo?"}
     C -->|Sí| D["Usuario selecciona el ítem del catálogo\n(autocompleta nombre, código y sistema)"]
     C -->|No / Remedio casero / Desconocido| E["Usuario escribe el nombre libremente\n(ej. 'Té de manzanilla', 'Pastillas naturistas')"]
@@ -121,63 +121,53 @@ Cumple con las normas [ADR 010](../../../decisions/010-database-id-strategy.md) 
 ### 2.4 Descartar o eliminar (Error de captura)
 * **Método**: `DELETE`
 * **Ruta**: `/v1/clinical-history/medication-statements/{uuid_medication_statement}`
-* **Efecto**: Soft-delete / marca de estatus `ENTERED_IN_ERROR`.
+* **Efecto**: **Soft-delete** (`deleted_at`).
 * **Respuesta (204 No Content)**
 
 ---
 
-## 3. Modelo Físico en Base de Datos (PostgreSQL)
+## 3. Modelo Físico (PostgreSQL)
 
-### 3.1 Tabla: `clinical_history.medication_statement`
+> El **modelo** (columnas, tipos, FKs) vive en el **ERD**
+> [`db/postgres/clinical_history/erd.mmd`](../../../db/postgres/clinical_history/erd.mmd)
+> — convención del repo: *"el modelo vive en el ERD; no se mantienen DDL `.md`"*.
+> Aquí solo se documenta el **significado/reglas** de cada campo.
 
-```sql
-CREATE TABLE clinical_history.medication_statement (
-    -- Identificadores (ADR 010)
-    id                      INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    uuid                    UUID NOT NULL DEFAULT uuid_generate_v7() UNIQUE,
-    id_person               INTEGER NOT NULL REFERENCES people.person(id),
+### 3.1 `clinical_history.medication_statement`
 
-    -- Referencia al catálogo o texto libre (FHIR CodeableReference)
-    medication_code_system  VARCHAR(50),    -- ej. 'ATC', 'COFEPRIS', 'RXNORM' (NULL si es texto libre)
-    medication_code         VARCHAR(100),   -- código en el catálogo (NULL si es texto libre)
-    name                    TEXT NOT NULL,  -- display name del catálogo o nombre declarado
+| Campo | Tipo | Significado / regla |
+|---|---|---|
+| `id` | int (PK) | Interno (BaseModel). |
+| `uuid` | UUID | Externo (ADR 010). Default en BD `gen_random_uuid()` (**v4**); los **seeds** se generan en **SQLAlchemy/Python** con la librería **v7** (`uuid6.uuid7()`). |
+| `id_person` | FK `people.person` | Quién lo toma. |
+| `medication_code_system` | varchar | Sistema del código (p. ej. `ATC`, `RXNORM`); `NULL` si es texto libre. |
+| `medication_code` | varchar | Código en el catálogo (Vademecum); `NULL` si es texto libre. |
+| `name` | text | Display del catálogo o nombre declarado. |
+| `dosage` | jsonb | `Dosage[]` de FHIR. |
+| `instructions` | text | Texto legible ("1 tableta cada 8 h"). |
+| `status` | enum `EMedicationStatementStatus` | `ACTIVE` / `COMPLETED` / `STOPPED` / `ON_HOLD` — **desviación intencional** de FHIR R5 (ver nota). |
+| `start_date` / `end_date` | date | Periodo (`effective`); `end_date` NULL = vigente. |
+| `date_asserted` | timestamptz | Cuándo se reportó. |
+| `adherence_code` | enum `EMedicationAdherence` | `ALWAYS` / `SOMETIMES` / `NEVER` / `UNKNOWN`. |
+| `information_source` | enum `EInformationSource` | `PATIENT` / `RELATIVE` / `CLINICIAN`. |
+| `notes` | text | — |
+| *(BaseModel)* | | `created_at`, `updated_at`, `deleted_at`, auditoría. |
 
-    -- Posología y pauta
-    dosage                  JSONB,          -- estructura FHIR Dosage[] estructurada
-    instructions            TEXT,           -- texto legible ("1 tableta cada 8 hrs")
+> **Desviación de FHIR R5 (`status`):** en FHIR, `MedicationStatement.status` es el
+> ciclo de vida del **registro** (`recorded`/`entered-in-error`/`draft`). Aquí
+> `status` = **estado clínico del tratamiento**. Es una **desviación intencional**,
+> **pendiente de revisión posterior**. El registro capturado por error se maneja con
+> **soft-delete** (`deleted_at`), no con un estado.
 
-    -- Temporalidad y vigencia
-    status                  VARCHAR(30) NOT NULL DEFAULT 'ACTIVE', -- ACTIVE, COMPLETED, STOPPED, ON_HOLD, ENTERED_IN_ERROR
-    start_date              DATE,
-    end_date                DATE,           -- NULL indica que continúa vigente
-    date_asserted           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+### 3.2 `clinical_history.medication_condition` (puente N:N)
 
-    -- Auditoría clínica y adherencia
-    adherence_code          VARCHAR(30),    -- ALWAYS, SOMETIMES, NEVER, UNKNOWN
-    information_source      VARCHAR(30) NOT NULL DEFAULT 'PATIENT', -- PATIENT, RELATIVE, CLINICIAN
-    notes                   TEXT,
-
-    -- Auditoría estándar (BaseModel)
-    created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    deleted_at              TIMESTAMPTZ
-);
-
-CREATE INDEX idx_medication_statement_person ON clinical_history.medication_statement(id_person) WHERE deleted_at IS NULL;
-CREATE INDEX idx_medication_statement_status ON clinical_history.medication_statement(id_person, status) WHERE deleted_at IS NULL;
-```
-
-### 3.2 Tabla puente: `clinical_history.medication_condition`
-Liga la toma con el motivo clínico (`Condition`):
-
-```sql
-CREATE TABLE clinical_history.medication_condition (
-    id                          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    id_medication_statement     INTEGER NOT NULL REFERENCES clinical_history.medication_statement(id) ON DELETE CASCADE,
-    id_condition                INTEGER NOT NULL REFERENCES clinical_history.condition(id) ON DELETE CASCADE,
-    CONSTRAINT uq_medication_condition UNIQUE (id_medication_statement, id_condition)
-);
-```
+| Campo | Tipo | Significado |
+|---|---|---|
+| `id` | int (PK) | Interno. |
+| `uuid` | UUID | Externo (ADR 010). |
+| `id_medication_statement` | FK | El medicamento. |
+| `id_condition` | FK | La condición ("motivo"). |
+| — | — | `UNIQUE (id_medication_statement, id_condition)`. |
 
 ---
 
@@ -185,20 +175,15 @@ CREATE TABLE clinical_history.medication_condition (
 
 En el flujo de cuestionarios psicométricos ([`activation/anexo_d.mmd`](../../../diagrams/0_HISTORIA_CLINICA/activation/anexo_d.mmd)), el inventario **DAI-10** (*Drug Attitude Inventory*) se habilita si el paciente consume **fármacos antipsicóticos**.
 
-### Regla de Evaluación:
-Un paciente es candidato a responder el DAI-10 si cumple la condición:
-```json
-{
-  "operator": "exists",
-  "subject": {
-    "entity": "medication_statement",
-    "filter": {
-      "status": "ACTIVE",
-      "code_system": "ATC",
-      "code_prefix": "N05A"
-    }
-  }
-}
-```
-* Fármacos con código ATC que inician con `N05A` (Haloperidol, Risperidona, Olanzapina, Quetiapina, Aripiprazol, Clozapina, Clorpromazina, Flufenazina).
-* Si el medicamento se seleccionó del catálogo de ClickHouse con código ATC `N05A%`, el sistema activa automáticamente el cuestionario DAI-10 sin intervención manual.
+**Regla (funcional):** se habilita si la persona tiene un **medicamento `ACTIVE`** cuyo
+código **ATC empieza con `N05A`** (Haloperidol, Risperidona, Olanzapina, Quetiapina,
+Aripiprazol, Clozapina, Clorpromazina, Flufenazina). Si el medicamento se eligió del
+catálogo (ClickHouse) con ATC `N05A%`, el sistema activa el DAI-10 sin intervención
+manual.
+
+> **Sintaxis AST:** **por definir** — depende de la decisión **H4** sobre cómo el AST
+> lee el dominio: **(a)** entidad `medication_statement` (con selector) vs **(b)**
+> propiedad-arreglo de `person` (`person.medications`). Ver
+> [`OPEN-QUESTIONS.md`](../../../tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md)
+> (H4) y [`expressions/operands.md`](../../questionnaires/expressions/operands.md).
+> **No** se fija aquí una estructura JSON no estándar.

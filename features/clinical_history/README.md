@@ -26,6 +26,12 @@ mapper: su contrato (componente → dominio) se documenta en [`contracts/`](./co
 (ej. [`medication_statement`](./contracts/medication_statement.md)). El resto de endpoints
 responsables está en definición (ver [`sections/README.md`](./sections/README.md)).
 
+> **Desviación FHIR (medicación):** `clinical_history.medication_statement.status` usa un
+> **estado clínico** (`ACTIVE`/`COMPLETED`/`STOPPED`/`ON_HOLD`), **no** el
+> `MedicationStatement.status` de FHIR R5 (`recorded`/`entered-in-error`/`draft`).
+> **Pendiente de revisión posterior** — ver
+> [`contracts/medication_statement.md`](./contracts/medication_statement.md).
+
 **Fuente de los flujos:** `docs/diagrams/0_HISTORIA_CLINICA/` (drawio + `flows/`
 `.mmd` + `activation/` con los anexos).
 
