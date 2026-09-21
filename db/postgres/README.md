@@ -6,7 +6,7 @@ Cada carpeta representa un schema de PostgreSQL.
 |--------|-------------|
 | auth | Autenticacion y sesiones |
 | relationships | Vinculos entre personas (familia, pareja, cuidado) |
-| catalog | Catalogos (paises, estados, municipios, colonias, idiomas, religiones, etc) |
+| catalog | Catalogos gobernados (vocabularios controlados extensibles; owner dh_catalogs) |
 | clinical_history | Historial clinico con trazabilidad temporal (condiciones/enfermedades) |
 | form | Cuestionarios (catalogo de definicion y ejecucion) |
 | storage | Documentos e identificadores (antes expedient) |

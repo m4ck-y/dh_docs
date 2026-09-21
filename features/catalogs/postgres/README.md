@@ -35,8 +35,7 @@ CREATE TABLE religion (
 
 ## Pendiente (fase de BD)
 
-- Modelar el DDL completo con `COMMENT`s e índices en `docs/db/postgres/catalog/`
-  (hoy vacío).
+- **DDL** (`COMMENT`s/índices) — ERD ya en [`db/postgres/catalog/erd.mmd`](../../../db/postgres/catalog/erd.mmd).
 - Decidir cómo el **dominio** referencia el ítem (FK por `value` compuesto, por
   id, `value` global único, o validación en app) — ver
   [ADR 044](../../../decisions/044-catalogos-gobernados.md).

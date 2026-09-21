@@ -1,0 +1,80 @@
+erDiagram
+    %% CATALOG SCHEMA
+    %% Catalogos gobernados (ADR 044); owner: dh_catalogs.
+    %% UNA TABLA POR CATALOGO, MISMA FORMA (= entradas POSTGRES del registro).
+    %% Masivos (CP, CIE-11, Vademecum) -> ClickHouse. BaseModel no se repite.
+
+    ECatalogStatus {
+        String PENDING "PENDING"
+        String VALIDATED "VALIDATED"
+        String MERGED "MERGED"
+        String REJECTED "REJECTED"
+    }
+
+    %% Forma comun: value UNIQUE; merged_into = canonico si status = MERGED.
+
+    %% occupation -> A.1.2.17
+    occupation {
+        Integer id PK
+        UUID uuid
+        String(100) value
+        String(255) label
+        Text description
+        Enum(ECatalogStatus) status
+        Integer merged_into FK
+        Integer order
+    }
+
+    %% religion -> A.1.2.14
+    religion {
+        Integer id PK
+        UUID uuid
+        String(100) value
+        String(255) label
+        Text description
+        Enum(ECatalogStatus) status
+        Integer merged_into FK
+        Integer order
+    }
+
+    %% gender -> A.1.2.12A
+    gender {
+        Integer id PK
+        UUID uuid
+        String(100) value
+        String(255) label
+        Text description
+        Enum(ECatalogStatus) status
+        Integer merged_into FK
+        Integer order
+    }
+
+    %% relationship -> A.1.1.2 (tutor) + A.1.2.9 (emergencia)
+    relationship {
+        Integer id PK
+        UUID uuid
+        String(100) value
+        String(255) label
+        Text description
+        Enum(ECatalogStatus) status
+        Integer merged_into FK
+        Integer order
+    }
+
+    %% housing_type -> C.1.0
+    housing_type {
+        Integer id PK
+        UUID uuid
+        String(100) value
+        String(255) label
+        Text description
+        Enum(ECatalogStatus) status
+        Integer merged_into FK
+        Integer order
+    }
+
+    occupation ||--o{ occupation : "merged_into"
+    religion ||--o{ religion : "merged_into"
+    gender ||--o{ gender : "merged_into"
+    relationship ||--o{ relationship : "merged_into"
+    housing_type ||--o{ housing_type : "merged_into"

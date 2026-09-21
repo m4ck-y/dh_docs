@@ -68,14 +68,15 @@
   (hoy es **propuesta**) → [`features/catalogs/clickhouse/medication.md`](./features/catalogs/clickhouse/medication.md).
 - ⏳ **`medication`**: decidir si se **conserva `atc`** o es **redundante** cuando
   `code_system = "ATC"`.
-- ⏳ **Seeds/registro** de `fuel_type`, `animal_type`, `work_shift`
+- ✅ **Registro/seed** de `gender`, `relationship`, `housing_type`.
+- ⏳ **Seeds/registro** de `fuel_type`, `animal_type`, `work_shift`, `allergy_category`
   → [`features/catalogs/seed/README.md`](./features/catalogs/seed/README.md).
 - ⏳ **Registrar** los catálogos externos (`disease`, `study`, `body_site`, `allergen`, `drug`).
 - ⏳ **`cie11` completo** (masivo) — diferido.
 
 ## Base de datos
 - ⏳ Esquemas **sin adoptar** → [`db/postgres/todo/propuesta_schemes_2.md`](./db/postgres/todo/propuesta_schemes_2.md).
-- ⏳ **`catalog`** (Postgres) — schema pendiente de modelar.
+- ✅ **`catalog`** (Postgres) → [`erd.mmd`](./db/postgres/catalog/erd.mmd). Pendiente: DDL + FK del dominio.
 - ⏳ **ClickHouse / Mongo** sin diseñar (salvo `catalogs/`).
 - ⏳ **`relationships`**: pendientes del README — `friendship`/`follow` (diferidas),
   `power_of_attorney`, `insurance_links` → [`db/postgres/relationships/README.md`](./db/postgres/relationships/README.md).
@@ -86,13 +87,13 @@
 - ⏳ **D `10.0` lesiones**: `Condition` vs `Procedure`.
 - ⏳ **E**: form vs `Condition`/`Encounter`.
 - ✅ **`medication_statement`**: formalizado con `status`, `adherence_code`, ADR 010 IDs y contrato ([`contracts/medication_statement.md`](./features/clinical_history/contracts/medication_statement.md)).
-- ⏳ **`people.emergency_contact`**: unificar enum de relación con `relationships`.
+- ✅ Catálogo `relationship` reemplaza los enums `ERelationship` y `ERelationshipContact`.
 
 ## Consistencia / docs menores
 - ⏳ **`STATUS.md`** desactualizado (2026-07-19).
 - ⏳ `tasks/TASK-017/.../planning/README.md` lista **H4** como abierto (ya "dónde resuelto").
 - ⏳ Encabezado/“Notas” de `OPEN-QUESTIONS.md` (fecha 2026-09-15).
-- ⏳ `features/catalogs/seed/README.md` “Pendientes” (alinear con lo decidido).
+- ✅ `features/catalogs/seed/README.md` — alineado.
 - ✅ **Review commit `5de841a` (`medication_statement`) — corregido**:
   - **I1** índice `db/postgres/README.md` → `medication_statement`.
   - **I2** activador DAI-10 → **texto funcional** + nota *"la sintaxis AST depende de H4"*.

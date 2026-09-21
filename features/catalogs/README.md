@@ -5,8 +5,8 @@ referencia que se ofrecen en selectores de formularios (cuestionarios e historia
 clínica) y que, en algunos casos, **el usuario puede extender** ("Otro /
 Especifique").
 
-**Estado:** Propuesta (decisión en
-[ADR 044](../../decisions/044-catalogos-gobernados.md); modelado de BD diferido).
+**Estado:** Propuesta ([ADR 044](../../decisions/044-catalogos-gobernados.md)). PG
+gobernado modelado ([`db/postgres/catalog/`](../../db/postgres/catalog/)); ClickHouse/Mongo pendientes.
 
 **Usado por:** `questionnaires` y `clinical_history` (referencian los catálogos
 con `config.catalog`).
@@ -29,6 +29,9 @@ con `config.catalog`).
 | **Documental / esquema flexible** | MongoDB | registro del catálogo (`config/`); ítems documentales (pendiente) |
 
 El **dueño** de todos es el microservicio **`dh_catalogs`** (multi-motor).
+
+> **Motor:** masivo + solo lectura → **ClickHouse**; actualizable (gobernado:
+> "Otro"/curaduría + FK) → **PostgreSQL**, aunque sea grande.
 
 ## Catálogos externos
 
@@ -134,13 +137,15 @@ catalogs/
     ├── README.md
     ├── occupation.json
     ├── religion.json
+    ├── gender.json
     ├── relationship.json
-    └── gender.json
+    └── housing_type.json
 ```
 
 ## Pendientes
 
-- Modelar los **schemas por motor** (PG + ClickHouse) — diferido a la fase de BD.
+- Modelar los **schemas por motor** — PG gobernado ✅; **ClickHouse** y **Mongo**
+  pendientes.
 - Definir **C20** (TASK-016): opciones respaldadas por catálogo + flujo de create
   en el modelo de pregunta.
 - Crear el microservicio **`dh_catalogs`** (multi-motor): endpoints list / create /

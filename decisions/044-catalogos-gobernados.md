@@ -18,8 +18,8 @@ problemas:
 
 Los vocabularios de este tipo son **catálogos** (tablas de referencia). El
 schema `catalog` ya está declarado como catálogos globales del sistema y su
-dueño es el microservicio **`dh_catalogs`** (`ARCHITECTURE_OVERVIEW.md`), pero
-hoy está **pendiente de modelar** (`docs/db/postgres/catalog/README.md`).
+dueño es el microservicio **`dh_catalogs`** (`ARCHITECTURE_OVERVIEW.md`); hoy está
+**modelado** (`docs/db/postgres/catalog/erd.mmd`).
 
 ## Decisión
 
@@ -97,8 +97,8 @@ front (selector del catálogo)
 ### Alcance
 
 Aplica a **todos** los campos "Otro/Especifique" (cuestionarios y HC): p. ej. en
-la sección A de la HC — `tutor_relationship`, `religion`, `occupation`, `gender`,
-`emergency_relationship`. Los campos **sin** "Otro" (escolaridad, estado civil,
+la sección A de la HC — `relationship` (tutor + emergencia), `religion`, `occupation`,
+`gender`. Los campos **sin** "Otro" (escolaridad, estado civil,
 sexo al nacer, etc.) siguen siendo **enum** estáticos.
 
 ### Reparto por motor
