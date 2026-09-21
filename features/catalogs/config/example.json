@@ -18,6 +18,15 @@
     "governed": true
   },
   {
+    "key": "gender",
+    "name": "Género",
+    "description": "Identidades de género declaradas por el usuario.",
+    "engine": "POSTGRES",
+    "config": { "schema": "catalog", "table": "gender" },
+    "extensible": true,
+    "governed": true
+  },
+  {
     "key": "housing_type",
     "name": "Tipo de vivienda",
     "description": "Tipos de vivienda declarados por el usuario.",
