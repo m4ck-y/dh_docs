@@ -28,7 +28,7 @@ Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacu
 | Campo | Origen |
 |---|---|
 | 1.0 Tipo de vivienda (1.7 "Otro") | catálogo `housing_type` |
-| 12.0 Combustible (12.8 "Otro") | catálogo `fuel_type` |
+| 12.0 Combustible (12.8 "Otro") | catálogo `heating_fuel` |
 | 14.0A Tipo de animal (14.4A "Otro") | catálogo `animal_type` |
 | 21.0 Turno (21.5 "Otro") | catálogo `work_shift` |
 | Resto (Sí/No/No sabe, escalas, multiselección) | **enum** |
@@ -56,7 +56,7 @@ Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacu
 - **11.0 ¿Usa aire acondicionado?**
   - 11.1 Sí → 11.0A ¿Qué tipo? (11.1A Central / 11.2A Ventana/Pared / 11.3A Portátil)
   - 11.2 No
-- **12.0 ¿Qué combustible usa para calefacción?** _(catálogo `fuel_type`)_
+- **12.0 ¿Qué combustible usa para calefacción?** _(catálogo `heating_fuel`)_
   - 12.1 Gas de tubería · 12.2 Gas LP · 12.3 Electricidad · 12.4 Queroseno ·
     12.5 Carbón · 12.6 Madera · 12.7 Solar · 12.8 Otro · 12.9 Ninguno · 12.10 No sabe
 - **13.0 ¿Tiene calefacción central con ductos?** — Sí / No

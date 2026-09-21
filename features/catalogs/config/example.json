@@ -45,6 +45,15 @@
     "governed": true
   },
   {
+    "key": "heating_fuel",
+    "name": "Combustible de calefacción",
+    "description": "Combustibles para calefacción declarados por el usuario.",
+    "engine": "POSTGRES",
+    "config": { "schema": "catalog", "table": "heating_fuel" },
+    "extensible": true,
+    "governed": true
+  },
+  {
     "key": "postal_code",
     "name": "Código postal",
     "description": "Catálogo masivo de códigos postales (baja mutabilidad).",

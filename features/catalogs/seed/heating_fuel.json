@@ -1,0 +1,9 @@
+[
+  { "value": "PIPED_GAS", "label": "Gas de tubería", "description": null, "status": "VALIDATED", "merged_into": null, "order": 0 },
+  { "value": "LP_GAS", "label": "Gas LP", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 },
+  { "value": "ELECTRICITY", "label": "Electricidad", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 },
+  { "value": "KEROSENE", "label": "Queroseno", "description": null, "status": "VALIDATED", "merged_into": null, "order": 3 },
+  { "value": "COAL", "label": "Carbón", "description": null, "status": "VALIDATED", "merged_into": null, "order": 4 },
+  { "value": "WOOD", "label": "Madera", "description": null, "status": "VALIDATED", "merged_into": null, "order": 5 },
+  { "value": "SOLAR", "label": "Solar", "description": null, "status": "VALIDATED", "merged_into": null, "order": 6 }
+]

@@ -70,7 +70,7 @@
 - ⏳ `[def]` **`medication`**: decidir si se **conserva `atc`** o es **redundante** cuando
   `code_system = "ATC"`.
 - ✅ **Registro/seed** de `gender`, `relationship`, `housing_type`.
-- ⏳ `[def]` **Seeds/registro** de `fuel_type`, `animal_type`, `work_shift`, `allergy_category`
+- ⏳ `[def]` **Seeds/registro** de `animal_type`, `work_shift`, `allergy_category`
   → [`features/catalogs/seed/README.md`](./features/catalogs/seed/README.md).
 - ⏳ `[def]` **Registrar** los catálogos externos (`disease`, `study`, `body_site`, `allergen`, `drug`).
 - ⏳ `[def]` **`cie11` completo** (masivo) — diferido.

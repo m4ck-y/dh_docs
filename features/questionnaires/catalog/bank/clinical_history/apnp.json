@@ -182,7 +182,7 @@
       "order": 13,
       "text": "¿Qué combustible usa para calefacción?",
       "config": { "required": true },
-      "list_options": { "source": "catalog", "catalog": { "key": "fuel_type" } }
+      "list_options": { "source": "catalog", "catalog": { "key": "heating_fuel" } }
     },
     {
       "id": 14,
