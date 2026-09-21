@@ -20,7 +20,7 @@
 ## Historia clínica — TASK-017
 - **Decisiones abiertas (stoppers)**: [`tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md`](./tasks/TASK-017-historia-clinica/planning/OPEN-QUESTIONS.md)
   → **G1** (nombre del tutor → drawio), **G2** (grupo étnico), **H1** (resto:
-  `encounter`), **H4** (resto: entidades de dominio + instrumentos).
+  `encounter`), **H4** (resto: propiedades de dominio (`person.*`) + instrumentos).
 - **Bloqueos / anexos**: [`features/clinical_history/README.md`](./features/clinical_history/README.md).
 
 ### AST / expresiones
