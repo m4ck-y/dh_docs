@@ -69,9 +69,9 @@
   (hoy es **propuesta**) → [`features/catalogs/clickhouse/medication.md`](./features/catalogs/clickhouse/medication.md).
 - ⏳ `[def]` **`medication`**: decidir si se **conserva `atc`** o es **redundante** cuando
   `code_system = "ATC"`.
-- ✅ **Registro/seed** de `gender`, `relationship`, `housing_type`.
-- ⏳ `[def]` **Seeds/registro** de `animal_type`, `allergy_category`
-  → [`features/catalogs/seed/README.md`](./features/catalogs/seed/README.md).
+- ✅ **Registro/seed** de `gender`, `relationship`, `housing_type`, `heating_fuel`, `work_shift`.
+- ⏳ `[def]` **`animal_type`**: seed + registro (sin decisiones) → [`features/catalogs/seed/README.md`](./features/catalogs/seed/README.md).
+- ⏳ `[def]` **`allergy_category`** (D `6.0`): decidir **enum FHIR** (`food`/`medication`/`environment`/`biologic`) **vs catálogo gobernado**; lo consume el **componente** `AllergyIntolerance` (**no** un form) → [`D_antecedentes_pp.md`](./features/clinical_history/sections/D_antecedentes_pp.md).
 - ⏳ `[def]` **Registrar** los catálogos externos (`disease`, `study`, `body_site`, `allergen`, `drug`).
 - ⏳ `[def]` **`cie11` completo** (masivo) — diferido.
 

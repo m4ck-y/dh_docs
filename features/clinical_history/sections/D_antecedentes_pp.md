@@ -110,6 +110,7 @@
 - ¿Padece algún tipo de alergia? Sí → **¿A qué?** (Medicamentos *(Vademecum)* /
   Alimentos / Ambiente / Otro) / No · **registro**: sustancia + categoría.
 - Vademecum = catálogo `medication`.
+- ⏳ **`allergy_category`**: a decidir — **enum FHIR** (`food`/`medication`/`environment`/`biologic`) **vs catálogo**; lo consume el **componente** (no un form).
 
 ### 7.0 Cirugías — `Procedure` (1:N)
 - ¿Ha tenido alguna operación o cirugía? Sí → **registro**: `fecha`; *Agregar otra*
