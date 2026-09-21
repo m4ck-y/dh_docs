@@ -1,0 +1,6 @@
+[
+  { "value": "DAY", "label": "Diurno", "description": null, "status": "VALIDATED", "merged_into": null, "order": 0 },
+  { "value": "EVENING", "label": "Vespertino", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 },
+  { "value": "NIGHT", "label": "Nocturno", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 },
+  { "value": "ROTATING", "label": "Rotativo", "description": null, "status": "VALIDATED", "merged_into": null, "order": 3 }
+]

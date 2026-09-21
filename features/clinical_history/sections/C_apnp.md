@@ -22,6 +22,8 @@ Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacu
 > - La numeración salta de `1.0` a `3.0` (falta el `2.0`).
 > - `18.0 Cepillado` trae opciones redundantes (`18.7 "1 o 2 veces"` repite
 >   `18.2`/`18.3`).
+> - `21.4A/21.4B` (Con/Sin noches) vienen como **sub-opciones** de `21.4`; se
+>   modelan como **subpregunta condicional `21.0A`** (divergencia intencional).
 
 ## Origen de las listas
 
@@ -88,8 +90,10 @@ Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacu
 ## Trabajo
 
 - **21.0 ¿En qué horario o turno trabaja?** _(catálogo `work_shift`)_
-  - 21.1 Diurno · 21.2 Vespertino · 21.3 Nocturno · 21.4 Rotativo
-    (21.4A Con noches / 21.4B Sin noches) · 21.5 Otro
+  - 21.1 Diurno · 21.2 Vespertino · 21.3 Nocturno · 21.4 Rotativo · 21.5 Otro
+- **21.0A ¿El turno rotativo es con noches o sin noches?** _(condicional: `21.0 = Rotativo`)_ _(estático)_ ⚠️ divergencia
+  - 21.0A.1 Con noches
+  - 21.0A.2 Sin noches
 - **22.0 ¿Cuántas horas trabaja al día en promedio?** — 8 o menos / 9 a 12 / Más de 12
 - **23.0 ¿Cuántos días a la semana trabaja?** _(numérica)_
 - **24.0 ¿A cuáles riesgos laborales está expuesto? (seleccione todas)** _(MULTIPLE_CHOICE)_

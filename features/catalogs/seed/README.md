@@ -35,11 +35,12 @@ catálogo.
 | Género | `gender.json` | ✅ |
 | Tipo de vivienda | `housing_type.json` | ✅ |
 | Combustible de calefacción | `heating_fuel.json` | ✅ |
+| Turno laboral | `work_shift.json` | ✅ |
 
 ## Pendientes (mismo patrón)
 
-`work_shift`, `animal_type`, `allergy_category` — mismo formato, a completar
-cuando se definan sus catálogos.
+`animal_type`, `allergy_category` — mismo formato, a completar cuando se definan
+sus catálogos.
 
 > Nota: los `value` se alinean con los enums del dominio (`EOccupationType`,
 > `ERelationship`, `EGenderIdentity`) para facilitar la migración enum → catálogo;

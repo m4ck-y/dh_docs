@@ -54,6 +54,15 @@
     "governed": true
   },
   {
+    "key": "work_shift",
+    "name": "Turno laboral",
+    "description": "Turnos laborales declarados por el usuario.",
+    "engine": "POSTGRES",
+    "config": { "schema": "catalog", "table": "work_shift" },
+    "extensible": true,
+    "governed": true
+  },
+  {
     "key": "postal_code",
     "name": "Código postal",
     "description": "Catálogo masivo de códigos postales (baja mutabilidad).",
