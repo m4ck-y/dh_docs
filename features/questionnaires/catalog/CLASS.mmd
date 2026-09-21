@@ -130,7 +130,8 @@ classDiagram
         +Operand then
     }
 
-    %% Operand: union de los 5 tipos de operando (ver expressions/operands.md).
+    %% Operand: union de los 5 tipos de operando (Subject/Const/Expression/TimeRange/Ref;
+    %% ver expressions/operands.md).
     %% 'expression' permite la recursion: un operando puede contener otra Expression.
     class Operand {
         +Subject subject
@@ -143,6 +144,52 @@ classDiagram
     %% Ref: referencia a una Definition por nombre ({ "ref": "..." }).
     class Ref {
         +string name
+    }
+
+    %% Subject: referencia a datos (entity/property/selector). Ver expressions/operands.md.
+    %% entity ∈ EEntity; property varia por entity; selector solo en question.
+    class Subject {
+        +string property
+        +SubjectSelector selector
+        +Output output
+    }
+
+    %% EEntity: entidad referenciada por el AST (valores del grammar).
+    class EEntity {
+        <<enumeration>>
+        question
+        person
+        form
+    }
+
+    %% SubjectSelector: objeto cuya CLAVE es el tipo de seleccion (sin discriminante).
+    %% Uno de: all | id | range | group | uuid | condition.
+    class SubjectSelector {
+        +bool all
+        +int id
+        +int[] range
+        +string group
+        +string uuid
+        +ConditionSelector condition
+    }
+
+    %% ConditionSelector: filtro por condicion sobre property.
+    class ConditionSelector {
+        +string property
+        +Expression expression
+        +Output output
+    }
+
+    %% Const: valor literal ({ value, type }); type = DataType (number|string|boolean|...).
+    class Const {
+        +number|string|boolean value
+        +string type
+    }
+
+    %% TimeRange: rango temporal (start/end; end null = abierto).
+    class TimeRange {
+        +string start
+        +string end
     }
 
     %% Opciones de la pregunta (ADR 046): union Options -> StaticOptions | CatalogOptions.
@@ -248,3 +295,12 @@ classDiagram
     CaseBranch "1" *-- "0..1" Operand : then
     Operand "1" *-- "0..1" Expression : expression
     Operand "1" *-- "0..1" Ref : ref
+    Operand "1" *-- "0..1" Subject : subject
+    Operand "1" *-- "0..1" Const : const
+    Operand "1" *-- "0..1" TimeRange : time_range
+    Subject --> EEntity : entity
+    Subject "1" *-- "0..1" SubjectSelector : selector
+    Subject "1" *-- "0..1" Output : output
+    SubjectSelector "1" *-- "0..1" ConditionSelector : condition
+    ConditionSelector "1" *-- "0..1" Expression : expression
+    ConditionSelector "1" *-- "0..1" Output : output
