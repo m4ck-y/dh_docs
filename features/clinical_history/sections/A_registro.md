@@ -27,7 +27,7 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
 | 1.2.12A Género | catálogo `gender` |
 | 1.2.14 Religión | catálogo `religion` |
 | 1.2.17 Ocupación | catálogo `occupation` |
-| 1.1.3 Relación · 1.1.17 Depende económicamente · 1.2.11 Sexo al nacer · 1.2.15 Escolaridad · 1.2.16 Estado civil · 1.2.18 Ingresos · 1.2.19 Dependientes | **enum** |
+| 1.1.3 Relación · 1.1.17 Depende económicamente · 1.2.11 Sexo al nacer · 1.2.15 Escolaridad · 1.2.16 Estado civil · 1.2.18 Ingresos · 1.2.19 Dependientes | **estático** |
 
 > **Nota:** el seed `relationship.json` cubre **tutor + emergencia**
 > (madre/padre, pareja, hermano(a), hijo(a), amigo(a), cuidador(a), tutor legal).
@@ -54,11 +54,11 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
   - 1.1.2.4 Tutor legal
   - 1.1.2.6 Otro
     - 1.1.2.6.1 _Especifique_
-- **1.1.3 ¿Cuál es su relación en el cuidado y vida diaria del paciente?** _(condicional)_ _(enum)_
+- **1.1.3 ¿Cuál es su relación en el cuidado y vida diaria del paciente?** _(condicional)_ _(estático)_
   - 1.1.3.1 Vive con el usuario y participa en su cuidado diario
   - 1.1.3.2 Participa en su cuidado, pero no vive con él/ella
   - 1.1.3.3 Sólo brinda apoyo administrativo o legal
-- **1.1.17 ¿El usuario depende económicamente de usted?** _(condicional)_ _(enum)_
+- **1.1.17 ¿El usuario depende económicamente de usted?** _(condicional)_ _(estático)_
   - 1.1.17.1 Sí
   - 1.1.17.2 Parcialmente
   - 1.1.17.3 No
@@ -74,7 +74,7 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
 - **1.2.1 Nombre completo** _(Apellido Paterno, Apellido Materno, Nombre(s))_
 - **1.2.3 Fecha de nacimiento** _(dd, mmm, aaaa)_
 - **1.2.4 Lugar de nacimiento** _(Ciudad, Edo)_
-- **1.2.11 Sexo al nacer** _(enum)_
+- **1.2.11 Sexo al nacer** _(estático)_
   - 1.2.11.1 Mujer
   - 1.2.11.2 Hombre
   - 1.2.11.3 Intersexual
@@ -102,7 +102,7 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
     - _Especifique_
   - 1.2.14.4 Ninguna
   - 1.2.14.5 Prefiere no decirlo
-- **1.2.15 Escolaridad** _(enum)_
+- **1.2.15 Escolaridad** _(estático)_
   - 1.2.15.1 Sin estudios
   - 1.2.15.2 Primaria
   - 1.2.15.3 Secundaria
@@ -110,7 +110,7 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
   - 1.2.15.5 Superior
   - 1.2.15.6 Posgrado
   - Prefiere no decirlo
-- **1.2.16 Estado civil** _(enum)_
+- **1.2.16 Estado civil** _(estático)_
   - 1.2.16.1 Soltero/a
   - 1.2.16.2 Casado/a
   - 1.2.16.3 Unión libre / convivencia
@@ -128,12 +128,12 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
   - 1.2.17.7 Otro
     - _Especifique_
   - 1.2.17.8 Prefiere no decirlo
-- **1.2.18 Ingresos** ⚠️ _(opciones del `.mmd`; la ficha previa usaba rangos de $)_ _(enum)_
+- **1.2.18 Ingresos** ⚠️ _(opciones del `.mmd`; la ficha previa usaba rangos de $)_ _(estático)_
   - 1.2.18.1 Son suficientes para el cuidado de mi salud
   - 1.2.18.2 Cubren parcialmente
   - 1.2.18.3 Frecuentemente dificultan
   - 1.2.18.4 Prefiere no responder
-- **1.2.19 ¿Cuántas personas dependen económicamente de usted?** ⚠️ _(agregado: estaba en el `.mmd`, faltaba en la ficha)_ _(enum)_
+- **1.2.19 ¿Cuántas personas dependen económicamente de usted?** ⚠️ _(agregado: estaba en el `.mmd`, faltaba en la ficha)_ _(estático)_
   - 1.2.19.1 Ninguna
   - 1.2.19.2 1
   - 1.2.19.3 2

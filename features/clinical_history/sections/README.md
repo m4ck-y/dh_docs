@@ -31,19 +31,24 @@ Fuente de los flujos: `docs/diagrams/0_HISTORIA_CLINICA/flows/`.
 > `assignment`. Por eso se modela como **componente/endpoint** y no como `form`
 > (ver [ADR 045](../../../decisions/045-historia-clinica-componentes-vs-formularios.md)).
 
-### ¿Enum o catálogo?
+### ¿Estático o catálogo?
 
 Regla derivada de los `.mmd`, aplicada **por pregunta** al crear cada ficha/bank:
 
 | Se ve así en el `.mmd` | Se modela como |
 |---|---|
-| Opciones **pocas y cerradas** | **enum** → `list_options.items` |
+| Opciones **pocas y cerradas** | **estático** → `list_options.items` |
 | Un **vocabulario** (gobernado/extensible o masivo/estándar: CIE-11, Vademecum, estudios, body, …) | **catálogo** → `list_options.catalog.{key}` |
 
 > La ficha/pregunta **solo apunta al `key`** del catálogo. El **motor**
 > (PostgreSQL/ClickHouse/Mongo) y la **política** (`extensible`/`governed`) los
 > define el **registro** de catálogos ([`../../catalogs/`](../../catalogs/),
 > [ADR 044](../../../decisions/044-catalogos-gobernados.md)), **no** la ficha.
+
+> **Terminología:** **`enum`** se reserva para **tipos de BD** (entidades de
+> dominio, p. ej. `EBiologicalSex`). Las opciones de una **pregunta** son
+> **estáticas** (`list_options.items`) o **de catálogo** (`list_options.catalog`);
+> **no** se crea un `enum` de BD para ellas.
 
 ### Componentes (A/B/D) — qué se documenta
 

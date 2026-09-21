@@ -31,7 +31,7 @@ Vivienda → Higiene → Trabajo → Actividad/alimentación → Sueño → Vacu
 | 12.0 Combustible (12.8 "Otro") | catálogo `heating_fuel` |
 | 14.0A Tipo de animal (14.4A "Otro") | catálogo `animal_type` |
 | 21.0 Turno (21.5 "Otro") | catálogo `work_shift` |
-| Resto (Sí/No/No sabe, escalas, multiselección) | **enum** |
+| Resto (Sí/No/No sabe, escalas, multiselección) | **estático** |
 
 ## Vivienda
 

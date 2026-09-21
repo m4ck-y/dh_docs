@@ -100,7 +100,7 @@ diseño final.
   **componente** (no `list_options` de un form); el motor lo resuelve el registro
   (`catalogs/`).
 - **Parentesco** (Padre/Madre/Hijo/abuelos) → la **arista** `relationships.family`
-  (no un enum en la pregunta).
+  (no una pregunta de opciones).
 - **"Otro"** del `.mmd` = **buscador del CIE-11 completo** (no texto libre).
 
 ## Divergencias de la fuente

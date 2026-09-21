@@ -55,8 +55,8 @@
 | 6.0 `¿A qué?` categoría (Medicamentos/Alimentos/Ambiente/**Otro**) | catálogo `allergy_category` |
 | 6.0 Medicamentos | catálogo `medication` (Vademecum) |
 | 5.1.1 drogas `¿Cuál(es)?` | texto libre (regla por pregunta: ¿catálogo?) |
-| 3.0A.1.1 lugares · 3.0B.1.1 sustancias · 3.0B.1.2 frecuencia · 11 duración/traslado | **enum** |
-| Resto (Sí/No, `Nunca`/`Prefiere no decirlo`) | **enum** |
+| 3.0A.1.1 lugares · 3.0B.1.1 sustancias · 3.0B.1.2 frecuencia · 11 duración/traslado | **estático** |
+| Resto (Sí/No, `Nunca`/`Prefiere no decirlo`) | **estático** |
 
 ---
 

@@ -24,7 +24,7 @@ Motivo → Caracterización del síntoma → Síntomas asociados → Impacto/acc
 | 9.0 Localización (selector corporal) | catálogo `body_site` |
 | 22.1.1 Estudios previos | catálogo `study` |
 | 6.0 Causa real o aparente (`6.8 Otro`) | catálogo (key por definir) |
-| Resto (escalas, Sí/No) | **enum** |
+| Resto (escalas, Sí/No) | **estático** |
 
 ## Motivo
 

@@ -99,7 +99,7 @@ front (selector del catálogo)
 Aplica a **todos** los campos "Otro/Especifique" (cuestionarios y HC): p. ej. en
 la sección A de la HC — `relationship` (tutor + emergencia), `religion`, `occupation`,
 `gender`. Los campos **sin** "Otro" (escolaridad, estado civil,
-sexo al nacer, etc.) siguen siendo **enum** estáticos.
+sexo al nacer, etc.) siguen siendo **opciones estáticas** (no `enum` de BD).
 
 ### Reparto por motor
 
