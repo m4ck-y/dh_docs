@@ -27,6 +27,15 @@
     "governed": true
   },
   {
+    "key": "relationship",
+    "name": "Relación",
+    "description": "Relaciones/parentesco declarados por el usuario (tutor y contacto de emergencia).",
+    "engine": "POSTGRES",
+    "config": { "schema": "catalog", "table": "relationship" },
+    "extensible": true,
+    "governed": true
+  },
+  {
     "key": "housing_type",
     "name": "Tipo de vivienda",
     "description": "Tipos de vivienda declarados por el usuario.",

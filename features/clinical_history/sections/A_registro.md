@@ -29,9 +29,8 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
 | 1.2.17 Ocupación | catálogo `occupation` |
 | 1.1.3 Relación · 1.1.17 Depende económicamente · 1.2.11 Sexo al nacer · 1.2.15 Escolaridad · 1.2.16 Estado civil · 1.2.18 Ingresos · 1.2.19 Dependientes | **enum** |
 
-> **Nota:** el seed `relationship.json` hoy cubre al tutor
-> (madre/padre/cuidador/tutor legal); emergencia añade
-> *Pareja/Hermano(a)/Hijo(a)/Amigo(a)* → **ampliar el seed**.
+> **Nota:** el seed `relationship.json` cubre **tutor + emergencia**
+> (madre/padre, pareja, hermano(a), hijo(a), amigo(a), cuidador(a), tutor legal).
 
 ---
 

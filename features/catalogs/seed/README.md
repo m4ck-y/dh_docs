@@ -31,13 +31,14 @@ catálogo.
 |---|---|---|
 | Ocupación | `occupation.json` | ✅ |
 | Religión | `religion.json` | ✅ |
-| Relación (tutor) | `relationship.json` | ✅ |
+| Relación (tutor + emergencia) | `relationship.json` | ✅ |
 | Género | `gender.json` | ✅ |
+| Tipo de vivienda | `housing_type.json` | ✅ |
 
 ## Pendientes (mismo patrón)
 
-`emergency_relationship`, `housing_type`, `heating_fuel`, `work_shift`,
-`animal_type` — mismo formato, a completar cuando se definan sus catálogos.
+`heating_fuel`, `work_shift`, `animal_type`, `allergy_category` — mismo formato, a
+completar cuando se definan sus catálogos.
 
 > Nota: los `value` se alinean con los enums del dominio (`EOccupationType`,
 > `ERelationship`, `EGenderIdentity`) para facilitar la migración enum → catálogo;

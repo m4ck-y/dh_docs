@@ -1,6 +1,10 @@
 [
   { "value": "MOTHER", "label": "Madre", "description": null, "status": "VALIDATED", "merged_into": null, "order": 0 },
   { "value": "FATHER", "label": "Padre", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 },
-  { "value": "CAREGIVER", "label": "Cuidador(a)", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 },
-  { "value": "LEGAL_GUARDIAN", "label": "Tutor legal", "description": null, "status": "VALIDATED", "merged_into": null, "order": 3 }
+  { "value": "SPOUSE", "label": "Pareja", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 },
+  { "value": "SIBLING", "label": "Hermano(a)", "description": null, "status": "VALIDATED", "merged_into": null, "order": 3 },
+  { "value": "CHILD", "label": "Hijo(a)", "description": null, "status": "VALIDATED", "merged_into": null, "order": 4 },
+  { "value": "FRIEND", "label": "Amigo(a)", "description": null, "status": "VALIDATED", "merged_into": null, "order": 5 },
+  { "value": "CAREGIVER", "label": "Cuidador(a)", "description": null, "status": "VALIDATED", "merged_into": null, "order": 6 },
+  { "value": "LEGAL_GUARDIAN", "label": "Tutor legal", "description": null, "status": "VALIDATED", "merged_into": null, "order": 7 }
 ]

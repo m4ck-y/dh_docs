@@ -1,0 +1,8 @@
+[
+  { "value": "INDEPENDENT_HOUSE", "label": "Casa independiente", "description": null, "status": "VALIDATED", "merged_into": null, "order": 0 },
+  { "value": "DUPLEX_TRIPLEX", "label": "Dúplex / Tríplex", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 },
+  { "value": "ROW_HOUSE", "label": "Casa en hilera", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 },
+  { "value": "APARTMENT", "label": "Departamento (1–3 pisos)", "description": null, "status": "VALIDATED", "merged_into": null, "order": 3 },
+  { "value": "HIGH_RISE", "label": "Edificio alto (>3 pisos)", "description": null, "status": "VALIDATED", "merged_into": null, "order": 4 },
+  { "value": "MOBILE_HOME", "label": "Móvil / Tráiler", "description": null, "status": "VALIDATED", "merged_into": null, "order": 5 }
+]
