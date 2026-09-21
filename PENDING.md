@@ -24,8 +24,14 @@
 - **Bloqueos / anexos**: [`features/clinical_history/README.md`](./features/clinical_history/README.md).
 
 ### AST / expresiones
-- ⏳ **Entidades de dominio en el AST** (`condition`, `medication`) para los
-  activadores de enfermedades/medicamentos → ver **H4**.
+- ⏳ **Propiedades de dominio en el AST** (opción **(b)**: arreglos) — para los
+  activadores de enfermedades/medicamentos:
+  - `person.conditions` → arreglo de **`cie11_code`**.
+  - `person.medications` → arreglo de **códigos**; sub-decisión **ATC**:
+    **(A)** fijar `code_system = ATC` (el arreglo es el ATC) · **(B)** exponer
+    `person.medication_atcs` aparte · **(C)** objetos `{code, atc, group}` (futuro).
+  - **ADR 048** (propiedades de dominio en el AST) — **por escribir**.
+  - Ver **H4**.
 - ✅ Hechos: selector `uuid`; `question.id`/`key`/`uuid` globales; cardinalidad 1:N;
   contexto `person` ([ADR 047](./decisions/047-contexto-evaluacion-expresiones.md)).
 
