@@ -40,9 +40,9 @@ Selección de **varias** opciones. Las opciones viven en `list_options`
   "order": 5,
   "config": { "required": true, "shuffle": false, "min": 1, "max": 3 },
   "list_options": { "source": "static", "items": [
-    { "value": 1, "label": "Dolor de cabeza", "order": 1 },
-    { "value": 2, "label": "Fatiga", "order": 2 },
-    { "value": 3, "label": "Náusea", "order": 3 }
+    { "uuid": "…", "value": 1, "label": "Dolor de cabeza", "order": 1 },
+    { "uuid": "…", "value": 2, "label": "Fatiga", "order": 2 },
+    { "uuid": "…", "value": 3, "label": "Náusea", "order": 3 }
   ] }
 }
 ```

@@ -39,10 +39,10 @@ Selección de **una** opción entre varias. Las opciones viven en
   "order": 4,
   "config": { "required": true, "shuffle": false },
   "list_options": { "source": "static", "items": [
-    { "value": 4, "label": "Excelente", "order": 1 },
-    { "value": 3, "label": "Bueno", "order": 2 },
-    { "value": 2, "label": "Regular", "order": 3 },
-    { "value": 1, "label": "Malo", "order": 4 }
+    { "uuid": "…", "value": 4, "label": "Excelente", "order": 1 },
+    { "uuid": "…", "value": 3, "label": "Bueno", "order": 2 },
+    { "uuid": "…", "value": 2, "label": "Regular", "order": 3 },
+    { "uuid": "…", "value": 1, "label": "Malo", "order": 4 }
   ] }
 }
 ```
