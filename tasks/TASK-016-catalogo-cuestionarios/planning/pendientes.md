@@ -61,7 +61,7 @@
 | C18 | `form.type` (`EFormType`) formalizado | Modelo | ✅ |
 | C19 | Contrato de la pregunta calculada | Modelo | ✅ |
 | C20 | Opciones de pregunta (estáticas o de catálogo) | Modelo | ✅ |
-| C21 | Opción con `uuid` (formato + API sub-recurso) | Modelo | ⏳ |
+| C21 | Opciones: formato de bancos + edición de una opción | Modelo | ⏳ |
 | D12 | Motor frontend (solo 3 tipos) | Frontend | ⏳ |
 | E13 | Ruido `TMP_SQL.*` | Higiene | ✅ |
 | E14 | `docs/db/postgres/README.md` V1 | Doc | ✅ |
@@ -464,32 +464,45 @@
   `catalog/question_types/{README,single_choice,multiple_choice}.md`,
   `catalog/bank/README.md`, `catalog/example.jsonc`.
 
-### C21 — Opción con `uuid` (formato + API sub-recurso) ⏳
+### C21 — Opciones: formato de bancos + edición de una opción ⏳
 
-- **Qué era**: los banks usaban `id` (entero) por opción; los 8 instrumentos
-  además usaban array plano (no unión taggeada) y `text` en vez de `label`.
-- **Decisión (formato)**:
-  - Ítem estático = `{ uuid, value, label, description?, order?, url? }`.
-  - `uuid` = identificador **global y estable** por opción (real, no placeholder).
-  - `order` base **1**.
-  - Unión taggeada (no array plano); `text` → `label`.
-- **Decisión (API)**:
-  - `PATCH /questions/options/{uuid_option}` — sub-recurso, parcial.
-  - Sin padre en el path (ADR 034); `uuid` global.
-  - Guardrail: editar `label`/`order` libre; editar **`value`** solo si el form
-    no está `verified`/sin respuestas (rompe scoring).
-- **Modelo** (ya actualizado en esta sesión):
-  - `decisions/046` → item = `{uuid, value, label, …}`.
-  - `question_types/{README,single_choice,multiple_choice}.md` → item = `{uuid, …}`.
-  - `schema.sql` → COMMENT de `list_options` incluye `uuid`.
-  - `bank/README.md` → convenciones §8.
+- **Contexto**: los bancos usan `id` (entero) por opción; los 7 instrumentos con
+  opciones además usan **array plano** (no unión taggeada) y `text` en vez de
+  `label`.
+- **Parte (a) — FORMATO (decidido)**:
+  - Ítem estático = `{ value, label, description?, order?, url? }` (sin `id`/`uuid`).
+  - `order` base **1**; unión taggeada (no array plano); `text` → `label`.
+  - `ipaq` no tiene opciones → sin cambio. `apnp`/`antecedentes_pp` ya están en
+    unión con `label` → sin cambio de formato.
+- **Parte (b) — EDICIÓN DE UNA OPCIÓN (ABIERTA)**: define si la opción lleva
+  `id`/`uuid`:
+  - **(1) Reemplazo total** `PATCH /questions/{uuid_question}` (manda el
+    `list_options` completo) — **sin** `id`/`uuid`; ADR 024/034/046 limpios; PK de
+    la pregunta.
+  - **(2) Path anidado** `PATCH /questions/{uuid_question}/options/{id_option}` —
+    requiere **`id` local** (entero) por opción; barato (PK de la pregunta + scan
+    del array en memoria), sin GIN; **roza ADR 024** (expone entero en API).
+  - **(3) `uuid` global** `PATCH /questions/options/{uuid_option}` — requiere
+    `uuid` de opción (embebido en el JSONB) + búsqueda por *containment* (GIN +
+    read-modify-write); reintroduce la "consulta por opción" que ADR 046 descartó.
+  - **No decidido.** Según la elección: en (1) el ítem es sin `id`/`uuid`; en (2)
+    se conserva `id` local y se añade a `apnp`/`antecedentes_pp`; en (3) el ítem
+    lleva `uuid`.
+- **Guardrail del `value`** (aplica en cualquier caso): editable solo si el form
+  no está `verified`/sin respuestas (rompe scoring).
+- **Modelo**: sin cambios por ahora (se **revirtió** el `uuid` que se había
+  adelantado en `046`, `question_types/*`, `schema.sql`, `bank/README`,
+  `catalog/README`, `CLASS.mmd`, `ERD.mmd`, `example.jsonc`).
 - **Dónde** (banks, pendientes de corrección):
-  - `bank/instruments/{phq-9,hads,gds,cdi,gad-7,pss,crafft,ipaq}.json` — pasar
-    de array plano a unión taggeada, `text`→`label`, `id`→`uuid`, `order` base 1.
-  - `bank/clinical_history/{apnp,antecedentes_pp}.json` — añadir `uuid` a cada
-    ítem (ya en unión taggeada, pero sin `uuid`).
-- **Aceptación**: toda opción estática tiene `uuid`; ninguna usa `id`.
-- **Estado**: ⏳ — los banks **no** se corrigen ahora.
+  - `bank/instruments/{phq-9,hads,gds,cdi,gad-7,pss,crafft}.json` — array plano →
+    unión `{source:"static", items:[…]}`, `text`→`label`; el `id` de opción se
+    conserva o se elimina según la parte (b).
+  - `bank/instruments/ipaq.json` — sin opciones.
+  - `bank/clinical_history/{apnp,antecedentes_pp}.json` — ya en unión; solo
+    afectados si la parte (b) elige (2) (añadir `id` local).
+- **Aceptación (parte a)**: toda opción estática en unión `{source:"static", items}`;
+  sin `text` ni array plano.
+- **Estado**: ⏳ — los banks **no** se corrigen ahora; parte (b) sin decisión.
 
 ## D. Motor frontend
 

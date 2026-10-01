@@ -184,13 +184,13 @@ opciones en **`list_options`** (JSONB), como **unión taggeada**:
 
 ```jsonc
 // estáticas
-"list_options": { "source": "static", "items": [ { "uuid": "…", "value": 0, "label": "Nunca" } ] }
+"list_options": { "source": "static", "items": [ { "value": 0, "label": "Nunca" } ] }
 // catálogo gobernado (ver features/catalogs)
 "list_options": { "source": "catalog", "catalog": { "key": "countries" } }
 ```
 
 - `source: "static"` → `items` (array **no vacío**) de
-  `{uuid, value, label, description?, order?, url?}`.
+  `{value, label, description?, order?, url?}`.
 - `source: "catalog"` → `catalog.key` (key de un catálogo **existente** en el
   registro); las opciones salen del catálogo gobernado ([ADR 044](../../../decisions/044-catalogos-gobernados.md)).
 - **Obligación (app/Pydantic)**: en choice, exactamente una fuente (`static` no

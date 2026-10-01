@@ -17,13 +17,13 @@ Selección de **varias** opciones. Las opciones viven en `list_options`
 
 ```jsonc
 // estáticas
-"list_options": { "source": "static", "items": [ { "uuid": "…", "value": 1, "label": "Fatiga", "order": 1 } ] }
+"list_options": { "source": "static", "items": [ { "value": 1, "label": "Fatiga", "order": 1 } ] }
 // catálogo gobernado
 "list_options": { "source": "catalog", "catalog": { "key": "countries" } }
 ```
 
 - `source: "static"` → `items` (array **no vacío**) de
-  `{uuid, value, label, description?, order?, url?}`.
+  `{value, label, description?, order?, url?}`.
 - `source: "catalog"` → `catalog.key` (catálogo **existente** en el registro);
   las opciones salen del catálogo gobernado (ver ADR 044/046).
 - `value` es `number` (escalas) o `string` (catálogos).
@@ -40,9 +40,9 @@ Selección de **varias** opciones. Las opciones viven en `list_options`
   "order": 5,
   "config": { "required": true, "shuffle": false, "min": 1, "max": 3 },
   "list_options": { "source": "static", "items": [
-    { "uuid": "…", "value": 1, "label": "Dolor de cabeza", "order": 1 },
-    { "uuid": "…", "value": 2, "label": "Fatiga", "order": 2 },
-    { "uuid": "…", "value": 3, "label": "Náusea", "order": 3 }
+    { "value": 1, "label": "Dolor de cabeza", "order": 1 },
+    { "value": 2, "label": "Fatiga", "order": 2 },
+    { "value": 3, "label": "Náusea", "order": 3 }
   ] }
 }
 ```

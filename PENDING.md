@@ -14,8 +14,14 @@
 ## Cuestionarios — TASK-016
 - **Detalle**: [`tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md`](./tasks/TASK-016-catalogo-cuestionarios/planning/pendientes.md)
   (abiertos: **C15** `[def]`, **C21** `[def]`, **A4** `[back]`, **C10** `[back]`, **F15** `[back]`, **D12** `[front]`).
-- ⏳ `[def]` **C21** — opciones con **`uuid`** (formato `{uuid, value, label, …}` + API sub-recurso
-  `PATCH /questions/options/{uuid_option}`): los **bancos se revisan todos**.
+- ⏳ `[def]` **C21** — **opciones de pregunta**:
+  - **(a) formato (decidido)**: bancos array plano → unión `{source:"static", items:[…]}`,
+    `text`→`label`, sin `id`; `order` base 1. (Los bancos se revisan todos.)
+  - **(b) edición de UNA opción (ABIERTA)** — define si la opción lleva `id`/`uuid`:
+    **(1)** reemplazo total `PATCH /questions/{uuid_question}` (sin `id`/`uuid`) ·
+    **(2)** path anidado `PATCH /questions/{uuid_question}/options/{id_option}` (`id` local) ·
+    **(3)** `uuid` global `PATCH /questions/options/{uuid_option}` (`uuid` + GIN).
+    Trade-offs (ADR 024/034/046) en el detalle de TASK-016.
 - Puntero: [`TODO/cuestionarios.md`](./TODO/cuestionarios.md).
 
 ## Historia clínica — TASK-017
