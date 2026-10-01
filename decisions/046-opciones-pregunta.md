@@ -18,13 +18,13 @@ Las opciones de una pregunta de elección viven en **`question.list_options`**
 
 ```jsonc
 // estáticas
-"list_options": { "source": "static", "items": [ { "value": 0, "label": "Nunca" } ] }
+"list_options": { "source": "static", "items": [ { "uuid": "…", "value": 0, "label": "Nunca" } ] }
 // catálogo gobernado
 "list_options": { "source": "catalog", "catalog": { "key": "countries" } }
 ```
 
 1. **`source: "static"`** → `items` (array **no vacío**) de
-   `{ value, label, description?, order?, url? }`.
+   `{ uuid, value, label, description?, order?, url? }`.
 2. **`source: "catalog"`** → `catalog.key` (key de un catálogo **existente** en el
    registro); las opciones salen del catálogo gobernado.
 3. **`value`** es `number` (escalas/scoring) o `string` (catálogos). La respuesta

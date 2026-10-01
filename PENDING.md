@@ -16,7 +16,7 @@
   (abiertos: **C15** `[def]`, **C21** `[def]`, **A4** `[back]`, **C10** `[back]`, **F15** `[back]`, **D12** `[front]`).
 - ⏳ `[def]` **C21** — **opciones de pregunta**:
   - **(a) formato (decidido)**: bancos array plano → unión `{source:"static", items:[…]}`,
-    `text`→`label`, sin `id`; `order` base 1. (Los bancos se revisan todos.)
+    `text`→`label`, `order` base 1; el ítem lleva `uuid` (sujeto a (b)). (Los bancos se revisan todos.)
   - **(b) edición de UNA opción (ABIERTA)** — define si la opción lleva `id`/`uuid`:
     **(1)** reemplazo total `PATCH /questions/{uuid_question}` (sin `id`/`uuid`) ·
     **(2)** path anidado `PATCH /questions/{uuid_question}/options/{id_option}` (`id` local) ·

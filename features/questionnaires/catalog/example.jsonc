@@ -76,7 +76,7 @@
           "list_options": {
             "source": "static",
             "items": [
-              { "value": 0, "label": "string", "order": 1, "url": { "value": "http://wwww.pinterest.com/image.png", "type": "LINK" } }
+              { "uuid": "…", "value": 0, "label": "string", "order": 1, "url": { "value": "http://wwww.pinterest.com/image.png", "type": "LINK" } }
             ]
             /* o de catálogo:
                "list_options": { "source": "catalog", "catalog": { "key": "countries" } } */

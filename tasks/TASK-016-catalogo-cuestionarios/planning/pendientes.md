@@ -490,9 +490,9 @@
     lleva `uuid`.
 - **Guardrail del `value`** (aplica en cualquier caso): editable solo si el form
   no está `verified`/sin respuestas (rompe scoring).
-- **Modelo**: sin cambios por ahora (se **revirtió** el `uuid` que se había
-  adelantado en `046`, `question_types/*`, `schema.sql`, `bank/README`,
-  `catalog/README`, `CLASS.mmd`, `ERD.mmd`, `example.jsonc`).
+- **Modelo**: el `uuid` de opción **se mantiene** (ya incorporado en `046`,
+  `question_types/*`, `schema.sql`, `bank/README`, `catalog/README`, `CLASS.mmd`,
+  `ERD.mmd`, `example.jsonc`); queda sujeto a la decisión de la parte (b).
 - **Dónde** (banks, pendientes de corrección):
   - `bank/instruments/{phq-9,hads,gds,cdi,gad-7,pss,crafft}.json` — array plano →
     unión `{source:"static", items:[…]}`, `text`→`label`; el `id` de opción se
