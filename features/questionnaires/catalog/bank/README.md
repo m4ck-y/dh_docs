@@ -120,9 +120,6 @@ docs/diagrams/catalog/instruments.csv    (metadata: nombre, descripción, edad, 
 
 ## Pendientes
 
-- Convertir los `.mmd` de `docs/diagrams/` a `<key>.json`.
-- Completar `categories.json` con el vocabulario (columna `LS` del
-  `docs/diagrams/catalog/instruments.csv`).
 - Definir los formularios de historia clínica (`clinical_history/`): **C (`apnp`)** ✅; **D (`antecedentes_pp`, solo el `form`)** ✅; **E** ⏳.
 
 ## Decisiones y dudas
@@ -138,7 +135,6 @@ docs/diagrams/catalog/instruments.csv    (metadata: nombre, descripción, edad, 
 
 **Dudas abiertas** (a resolver en el futuro):
 
-- **`question.config`** ¿también lleva `unit`? (C16).
 - **`target_*`** (`target_sex`, `list_age_groups`, `list_population`) ¿deberían ir
   dentro de `condition`? (C15).
 - **IPAQ**: el drawio **no** define categorías; Alto/Moderado/Bajo vienen del AST

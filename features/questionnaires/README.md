@@ -136,8 +136,6 @@ Lista viva y detallada: [`TASK-016`](../../tasks/TASK-016-catalogo-cuestionarios
 
 - Confirmar el nombre del schema PostgreSQL (`form`) y añadirlo a `ALL_SCHEMAS`
   (`dh_shared/base.py`) — C10 (backend).
-- Generar los JSON del banco (`catalog/bank/`) a partir de
-  `docs/diagrams/<dominio>/flows/*.mmd` — ver `catalog/bank/README.md`.
 - Motor frontend: faltan tipos y migración al AST completo (condición AST,
   `definitions`/`ref`, `time: minutes`, `case` condition-based) y al envelope
   `{value, type}` — D12 (frontend).

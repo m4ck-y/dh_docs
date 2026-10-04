@@ -146,8 +146,6 @@ catalogs/
 
 - Modelar los **schemas por motor** — PG gobernado ✅; **ClickHouse** y **Mongo**
   pendientes.
-- Definir **C20** (TASK-016): opciones respaldadas por catálogo + flujo de create
-  en el modelo de pregunta.
 - Crear el microservicio **`dh_catalogs`** (multi-motor): endpoints list / create /
   validate / merge.
 - Decidir el **criterio** de qué vocabularios migran a catálogo (no todos los "Otro").

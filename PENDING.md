@@ -80,13 +80,16 @@
 - ⏳ `[def]` **`allergy_category`** (D `6.0`): decidir **enum FHIR** (`food`/`medication`/`environment`/`biologic`) **vs catálogo gobernado**; lo consume el **componente** `AllergyIntolerance` (**no** un form) → [`D_antecedentes_pp.md`](./features/clinical_history/sections/D_antecedentes_pp.md).
 - ⏳ `[def]` **Registrar** los catálogos externos (`disease`, `study`, `body_site`, `allergen`, `drug`).
 - ⏳ `[def]` **`cie11` completo** (masivo) — diferido.
+- ⏳ `[back]` **Crear `dh_catalogs`** (multi-motor): endpoints `list`/`create`/`validate`/`merge` → [`features/catalogs/README.md`](./features/catalogs/README.md).
+- ⏳ `[def]` **Criterio** de qué vocabularios migran a catálogo (no todos los "Otro") → [`features/catalogs/README.md`](./features/catalogs/README.md).
 
 ## Base de datos
 - ⏳ `[def]` Esquemas **sin adoptar** → [`db/postgres/todo/propuesta_schemes_2.md`](./db/postgres/todo/propuesta_schemes_2.md).
 - ✅ **`catalog`** (Postgres) → [`erd.mmd`](./db/postgres/catalog/erd.mmd). `[def]` Pendiente: DDL + FK del dominio.
-- ⏳ `[def]` **ClickHouse / Mongo** sin diseñar (salvo `catalogs/`).
+- ⏳ `[def]` **ClickHouse / Mongo** sin diseñar (salvo `catalogs/`): schema + **pipeline seed/sync** + **endpoints** → [`features/catalogs/clickhouse/README.md`](./features/catalogs/clickhouse/README.md).
 - ⏳ `[def]` **`relationships`**: pendientes del README — `friendship`/`follow` (diferidas),
-  `power_of_attorney`, `insurance_links` → [`db/postgres/relationships/README.md`](./db/postgres/relationships/README.md).
+  `power_of_attorney`, `insurance_links`, y **alinear el nombre del schema**
+  (`relationships` vs `care`) → [`db/postgres/relationships/README.md`](./db/postgres/relationships/README.md).
 - ⏳ `[def]` **`health_profile`**: catálogos futuros (`allergy_severity`,
   `allergy_reaction_type`, `vaccine_catalog`) → [`db/postgres/health_profile/README.md`](./db/postgres/health_profile/README.md).
 

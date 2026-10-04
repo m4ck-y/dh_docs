@@ -447,7 +447,7 @@ Instrumentos solo en `banks/` (sin `.mmd` ni referencia JSON): `asrs`, `cth`,
 - [x] `answer.data` canónico = envelope `{value, type}` (ver §8).
 - [x] `question.expression` (valor autocalculado, solo lectura) y origen de la
       `answer` (`source`, ADR 041). Ver §6/§8.
-- [ ] Generar los JSON finales por cuestionario (cuando confluyan las fuentes).
+- [x] Generar los JSON del banco (instruments + historia clínica).
 - [ ] Migrar el `AnswerMap` en memoria del frontend al envelope (fase frontend, D12).
 
 ## 13. Fuera de alcance (por ahora)
