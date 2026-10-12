@@ -37,4 +37,4 @@ Bienvenido al centro de documentación del proyecto. Este directorio sigue el es
 - **[Informes de Auditoría (reports/)](reports/)**: Reportes detallados de sesiones o hitos.
 
 ---
-*Para reglas transversales de agentes en inglés, consulte [AGENTS_GENERAL.md](AGENTS_GENERAL.md).*
+*Para reglas transversales de agentes, consulte [AGENTS.md](AGENTS.md).*

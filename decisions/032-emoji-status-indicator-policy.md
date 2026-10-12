@@ -59,6 +59,6 @@ Se permite un cuarto color (🔵 azul) si se requieren mas estados diferenciados
 ## Referencias
 
 - [WRITING.md](../.agents/rules/WRITING.md) — regla original que prohibe emojis.
-- [AGENTS_GENERAL.md](../AGENTS_GENERAL.md) — politica actualizada con esta excepcion.
+- [AGENTS.md](../AGENTS.md) — politica actualizada con esta excepcion.
 - `docs/STATUS.md` — ejemplo canonico de uso valido (servicios y recursos FHIR).
 - `docs/architecture/deployment-port-mapping.md` — ejemplo de tabla de estado de despliegue.
