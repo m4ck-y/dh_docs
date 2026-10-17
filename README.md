@@ -12,6 +12,7 @@ Bienvenido al centro de documentación del proyecto. Este directorio sigue el es
 - **[Tareas (tasks/)](tasks/)**: Gestión granular del progreso del desarrollo.
 - **[Arquitectura (architecture/)](architecture/)**: Diagramas y especificaciones de alto nivel.
 - **[Módulos (features/)](features/)**: Especificaciones de producto por módulo: modelo de dominio, persistencia (ERDs, DDL) y ejemplos.
+- **[Branding (branding/)](branding/)**: Productos del ecosistema (AVI, ANY, FRANKY, TAMI): qué son y cómo se conectan.
 - **[Pendientes (PENDING.md)](PENDING.md)**: **índice global** de trabajo diferido y decisiones abiertas, por área (enlaza a cada fuente).
 - **[Pendientes por módulo (TODO/)](TODO/)**: punteros de trabajo diferido por módulo, en formato reanudable.
 - **[Gestión (management/)](management/)**: Backlog del proyecto y pautas de comunicación interna. Incluye el flujo de **Onboarding Legacy**.
