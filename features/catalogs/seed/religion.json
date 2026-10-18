@@ -1,4 +1,6 @@
 [
   { "value": "CATHOLIC", "label": "Católica", "description": null, "status": "VALIDATED", "merged_into": null, "order": 0 },
-  { "value": "CHRISTIAN", "label": "Cristiana", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 }
+  { "value": "CHRISTIAN", "label": "Cristiana", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 },
+  { "value": "NONE", "label": "Ninguna", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 },
+  { "value": "PREFERS_NOT_TO_SAY", "label": "Prefiere no decirlo", "description": null, "status": "VALIDATED", "merged_into": null, "order": 3 }
 ]

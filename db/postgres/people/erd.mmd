@@ -29,54 +29,25 @@ erDiagram
     social_platform ||--o{ social_links : "has"
     identifier_type ||--o{ personal_identifier : "has"
 
-    %% ENUMS
+    %% ENUMS (estados y tipos internos)
     %% EVerificationStatus: estado de verificacion (REJECTED, PENDING, APPROVED)
-    %% EGenderIdentity: identidad de genero (NO_ESPECIFICADO=0, MASCULINO=1, FEMENINO=2, TRANSGENERO=3, TRANSEXUAL=4, TRAVESTI=5, INTERSEXUAL=6, OTRO=88)
-    %% EEducationLevel: nivel educativo (NO_STUDIES=0, PRIMARY=1, SECONDARY=2, HIGH_SCHOOL=3, UNIVERSITY=4, POSTGRADUATE=5, PREFERS_NOT_TO_SAY=99)
-    %% EIncomeRange: rango de ingresos (<5000, 5000-9999, 10000-19999, 20000-39999, >=40000, PREFERS_NOT_TO_SAY)
     %% ESocialPlatform: plataformas sociales (twitter, linkedin, github, facebook, instagram, youtube, tiktok, personal_website, other)
     %% EIdentifierType: tipos de identificador (NATIONAL_ID=1, FISCAL_ID=2, SOCIAL_SECURITY_ID=3)
     %% EAddressType: tipos de direccion (HOME=1, WORK=2, BUSINESS=3, OTHER=10)
     %% EEmailType: tipos de email (PERSONAL=2, WORK=3, BUSINESS=4, OTHER=10)
     %% EPhoneType: tipos de telefono (MOBILE=1, WORK=2, HOME=3, BUSINESS=4, OTHER=10)
-    %% ERelationshipContact: tipo de relacion de contacto (SPOUSE, PARENT, SIBLING, CHILD, FRIEND, CAREGIVER, OTHER)
-    %% EOccupationType: tipo de ocupacion (EMPLOYED, SELF_EMPLOYED, FREELANCE, HOMEMAKER, UNEMPLOYED, RETIRED, OTHER, PREFERS_NOT_TO_SAY)
-    %% ECivilStatus: estado civil (SINGLE, MARRIED, COMMON_LAW, SEPARATED, DIVORCED, WIDOWED, PREFERS_NOT_TO_SAY)
+
+    %% VOCABULARIOS DE CAPTURA (ADR 044/049):
+    %%   con "Otro"  -> catalogo, FK en el dominio:
+    %%     gender -> id_gender · occupation -> id_occupation · relationship -> id_relationship
+    %%     religion -> id_religion · orientation -> id_orientation
+    %%   sin "Otro"  -> enum de texto (vocabulario cerrado; la lista de la UI es estatica):
+    %%     EEducationLevel · EIncomeRange · ECivilStatus (bloques abajo)
+    %%   Sentinels ("Otro", "Ninguna", "Prefiere no decirlo") -> NULL en el dominio
     EVerificationStatus {
         String REJECTED "REJECTED"
         String PENDING "PENDING"
         String APPROVED "APPROVED"
-    }
-
-    EGenderIdentity {
-        Integer NO_ESPECIFICADO "0"
-        Integer MASCULINO "1"
-        Integer FEMENINO "2"
-        Integer TRANSGENERO "3"
-        Integer TRANSEXUAL "4"
-        Integer TRAVESTI "5"
-        Integer INTERSEXUAL "6"
-        Integer OTRO "88"
-    }
-
-    EEducationLevel {
-        Integer NO_STUDIES "0"
-        Integer PRIMARY "1"
-        Integer SECONDARY "2"
-        Integer HIGH_SCHOOL "3"
-        Integer UNIVERSITY "4"
-        Integer POSTGRADUATE "5"
-        Integer PREFERS_NOT_TO_SAY "99"
-    }
-
-    EIncomeRange {
-        Integer NO_INCOME "0"
-        Integer UNDER_5000 "1"
-        Integer FROM_5000_TO_9999 "2"
-        Integer FROM_10000_TO_19999 "3"
-        Integer FROM_20000_TO_39999 "4"
-        Integer FROM_40000 "5"
-        Integer PREFERS_NOT_TO_SAY "99"
     }
 
     ESocialPlatform {
@@ -119,41 +90,37 @@ erDiagram
         Integer OTHER "10"
     }
 
-    ERelationshipContact {
-        String SPOUSE "SPOUSE"
-        String PARENT "PARENT"
-        String SIBLING "SIBLING"
-        String CHILD "CHILD"
-        String FRIEND "FRIEND"
-        String CAREGIVER "CAREGIVER"
-        String OTHER "OTHER"
+    EEducationLevel {
+        String NO_STUDIES "NO_STUDIES"
+        String PRIMARY "PRIMARY"
+        String SECONDARY "SECONDARY"
+        String HIGH_SCHOOL "HIGH_SCHOOL"
+        String UNIVERSITY "UNIVERSITY"
+        String POSTGRADUATE "POSTGRADUATE"
     }
 
-    EOccupationType {
-        Integer EMPLOYED "1"
-        Integer SELF_EMPLOYED "2"
-        Integer FREELANCE "3"
-        Integer HOMEMAKER "4"
-        Integer UNEMPLOYED "5"
-        Integer RETIRED "6"
-        Integer OTHER "88"
-        Integer PREFERS_NOT_TO_SAY "99"
+    EIncomeRange {
+        String NO_INCOME "NO_INCOME"
+        String UNDER_5000 "UNDER_5000"
+        String FROM_5000_TO_9999 "FROM_5000_TO_9999"
+        String FROM_10000_TO_19999 "FROM_10000_TO_19999"
+        String FROM_20000_TO_39999 "FROM_20000_TO_39999"
+        String FROM_40000 "FROM_40000"
     }
 
     ECivilStatus {
-        Integer SINGLE "1"
-        Integer MARRIED "2"
-        Integer COMMON_LAW "3"
-        Integer SEPARATED "4"
-        Integer DIVORCED "5"
-        Integer WIDOWED "6"
-        Integer PREFERS_NOT_TO_SAY "99"
+        String SINGLE "SINGLE"
+        String MARRIED "MARRIED"
+        String COMMON_LAW "COMMON_LAW"
+        String SEPARATED "SEPARATED"
+        String DIVORCED "DIVORCED"
+        String WIDOWED "WIDOWED"
     }
 
     %% ENTIDADES
     %% person: tabla central con datos demograficos
     %% verification_status: estado de verificacion del perfil
-    %% type_gender: identidad de genero
+    %% id_gender: identidad de genero (FK a catalog.gender)
     person {
         Integer id PK
         UUID uuid
@@ -162,7 +129,7 @@ erDiagram
         String first_name
         String last_name
         String second_last_name
-        Enum(EGenderIdentity) type_gender "default: NO_ESPECIFICADO"
+        Integer id_gender FK
     }
 
     %% email: correos electronicos de contacto
@@ -233,14 +200,12 @@ erDiagram
     %% known_as: apodo o nombre artistico
     %% education_level: nivel educativo mas alto completado
     %% income_range: rango de ingresos economicos
-    %% occupation_type: categoria de ocupacion (enum)
-    %% occupation_other: descripcion libre si occupation_type = OTHER
+    %% id_occupation: categoria de ocupacion (FK a catalog.occupation)
     profile {
         Integer id PK
         UUID uuid
         Integer id_person FK
-        Enum(EOccupationType) occupation_type
-        String(100) occupation_other
+        Integer id_occupation FK
         String known_as
         Enum(EEducationLevel) education_level
         Enum(EIncomeRange) income_range
@@ -271,14 +236,13 @@ erDiagram
         String(20) key_indigenous_language FK
         Boolean self_considers_migrant
         String(20) key_country_origin FK
-        String(20) key_religion FK
-        String(100) religion_other
+        Integer id_religion FK
         Integer id_orientation FK
     }
 
     %% legal_info: informacion legal
     %% key_nationality: clave de nacionalidad (catalog)
-    %% civil_status: estado civil (enum ECivilStatus, nullable = prefiere no decirlo)
+    %% civil_status: estado civil (enum de texto; NULL = prefiere no decirlo)
     legal_info {
         Integer id PK
         UUID uuid
@@ -332,7 +296,7 @@ erDiagram
     %% id_user_owner: usuario propietario del contacto (FK a auth.user.id)
     %% id_contact_user: si existe, FK a auth.user (nullable)
     %% first_name/last_name: snapshot del contacto (nullable si es user)
-    %% relationship_type: tipo de relacion (enum)
+    %% id_relationship: tipo de relacion (FK a catalog.relationship)
     emergency_contact {
         Integer id PK
         UUID uuid
@@ -342,7 +306,6 @@ erDiagram
         String last_name
         String phone_number
         String email
-        Enum(ERelationshipContact) relationship_type
-        String(100) relationship_other
+        Integer id_relationship FK
         Text notes
     }

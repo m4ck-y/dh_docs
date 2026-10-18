@@ -18,14 +18,7 @@ erDiagram
     person ||--o{ partnership : "is_partner_a"
     person ||--o{ partnership : "is_partner_b"
 
-    %% ENUMS
-    ERelationship {
-        String MOTHER "MOTHER"
-        String FATHER "FATHER"
-        String CAREGIVER "CAREGIVER"
-        String LEGAL_GUARDIAN "LEGAL_GUARDIAN"
-        String OTHER "OTHER"
-    }
+    %% ENUMS (vocabulario cerrado -> enum de texto)
     ECareRole {
         String LIVES_WITH_AND_CARES "LIVES_WITH_AND_CARES"
         String CARES_NOT_LIVING_WITH "CARES_NOT_LIVING_WITH"
@@ -54,10 +47,9 @@ erDiagram
         UUID id PK
         Integer id_dependent FK
         Integer id_responsible FK
-        Enum(ERelationship) type
+        Integer id_relationship FK
         Enum(ECareRole) care_role
         Enum(EEconomicDependence) economic_dependence
-        String(100) relationship_other
     }
 
     %% family: filiacion (dirigido progenitor -> hijo)

@@ -11,13 +11,11 @@ erDiagram
     person ||--o{ vaccination_record : "has_vaccinations"
     person ||--|| death : "has_death"
 
-    %% ENUMS
-    %% EBiologicalSex: sexo biologico (HOMBRE=1, MUJER=2, INTERSEXUAL=3)
-    %% EBloodType: tipo de sangre (A+, A-, B+, B-, AB+, AB-, O+, O-)
+    %% ENUMS (vocabulario cerrado -> enum de texto; la lista de la UI es estatica)
     EBiologicalSex {
-        Integer HOMBRE "1"
-        Integer MUJER "2"
-        Integer INTERSEXUAL "3"
+        String MALE "MALE"
+        String FEMALE "FEMALE"
+        String INTERSEXUAL "INTERSEXUAL"
     }
 
     EBloodType {
@@ -33,8 +31,8 @@ erDiagram
 
     %% ENTIDADES
     %% biological_profile: perfil biologico de la persona
-    %% type_biological_sex: sexo biologico (enum)
-    %% type_blood_type: tipo de sangre (enum)
+    %% type_biological_sex: sexo biologico (enum de texto)
+    %% type_blood_type: tipo de sangre (enum de texto)
     biological_profile {
         UUID id PK
         Integer id_person FK

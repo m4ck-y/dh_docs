@@ -4,5 +4,6 @@
   { "value": "STUDENT", "label": "Estudiante", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 },
   { "value": "HOMEMAKER", "label": "Trabajo del hogar", "description": null, "status": "VALIDATED", "merged_into": null, "order": 3 },
   { "value": "UNEMPLOYED", "label": "Desempleado/a", "description": null, "status": "VALIDATED", "merged_into": null, "order": 4 },
-  { "value": "RETIRED", "label": "Jubilado/a o pensionado/a", "description": null, "status": "VALIDATED", "merged_into": null, "order": 5 }
+  { "value": "RETIRED", "label": "Jubilado/a o pensionado/a", "description": null, "status": "VALIDATED", "merged_into": null, "order": 5 },
+  { "value": "PREFERS_NOT_TO_SAY", "label": "Prefiere no decirlo", "description": null, "status": "VALIDATED", "merged_into": null, "order": 6 }
 ]
