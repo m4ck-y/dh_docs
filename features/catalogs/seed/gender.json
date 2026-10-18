@@ -1,5 +1,6 @@
 [
   { "value": "FEMALE", "label": "Femenino", "description": null, "status": "VALIDATED", "merged_into": null, "order": 0 },
   { "value": "MALE", "label": "Masculino", "description": null, "status": "VALIDATED", "merged_into": null, "order": 1 },
-  { "value": "NON_BINARY", "label": "No binario", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 }
+  { "value": "NON_BINARY", "label": "No binario", "description": null, "status": "VALIDATED", "merged_into": null, "order": 2 },
+  { "value": "PREFERS_NOT_TO_SAY", "label": "Prefiere no decirlo", "description": null, "status": "VALIDATED", "merged_into": null, "order": 3 }
 ]

@@ -25,6 +25,7 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
 | 1.1.2 Parentesco (tutor) | catálogo `relationship` |
 | 1.2.9 Parentesco (emergencia) | catálogo `relationship` |
 | 1.2.12A Género | catálogo `gender` |
+| 1.2.12B Orientación | catálogo `orientation` |
 | 1.2.14 Religión | catálogo `religion` |
 | 1.2.17 Ocupación | catálogo `occupation` |
 | 1.1.3 Relación · 1.1.17 Depende económicamente · 1.2.11 Sexo al nacer · 1.2.15 Escolaridad · 1.2.16 Estado civil · 1.2.18 Ingresos · 1.2.19 Dependientes | **estático** |
@@ -85,6 +86,13 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
   - 1.2.12A.3 No binario
   - 1.2.12A.4 Otro _(especifique)_
   - 1.2.12A.5 Prefiere no decirlo
+- **1.2.12B Orientación** ⚠️ _(agregado: lo captura el registro; no estaba en la ficha)_ _(catálogo `orientation`)_
+  - 1.2.12B.1 Heterosexual
+  - 1.2.12B.2 Homosexual
+  - 1.2.12B.3 Bisexual
+  - 1.2.12B.4 Otra orientación
+    - _Especifique_
+  - 1.2.12B.5 Prefiere no decirlo
 
 ### Domicilio
 - **1.2.2 Domicilio actual** _(Calle, Manzana Lote o # Ext., # Int., Unidad, Colonia o Pueblo, Ciudad o Municipio, Entidad federativa, CP.)_

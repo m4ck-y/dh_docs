@@ -36,6 +36,15 @@
     "governed": true
   },
   {
+    "key": "orientation",
+    "name": "Orientación sexual",
+    "description": "Orientaciones sexuales declaradas por el usuario.",
+    "engine": "POSTGRES",
+    "config": { "schema": "catalog", "table": "orientation" },
+    "extensible": true,
+    "governed": true
+  },
+  {
     "key": "housing_type",
     "name": "Tipo de vivienda",
     "description": "Tipos de vivienda declarados por el usuario.",

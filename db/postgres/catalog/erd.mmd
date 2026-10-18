@@ -61,6 +61,18 @@ erDiagram
         Integer order
     }
 
+    %% orientation -> A.1.2.12B
+    orientation {
+        Integer id PK
+        UUID uuid
+        String(100) value
+        String(255) label
+        Text description
+        Enum(ECatalogStatus) status
+        Integer merged_into FK
+        Integer order
+    }
+
     %% housing_type -> C.1.0
     housing_type {
         Integer id PK
@@ -77,4 +89,5 @@ erDiagram
     religion ||--o{ religion : "merged_into"
     gender ||--o{ gender : "merged_into"
     relationship ||--o{ relationship : "merged_into"
+    orientation ||--o{ orientation : "merged_into"
     housing_type ||--o{ housing_type : "merged_into"
