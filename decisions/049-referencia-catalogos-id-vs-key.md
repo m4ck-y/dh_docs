@@ -44,8 +44,8 @@ Reglas complementarias:
 - Al **fusionar** duplicados (`merged_into`, ADR 044) la curaduría reescribe las
   referencias al `id` canónico; hacia afuera se sigue viendo el `value`.
 - Un vocabulario **con "Otro/Especifique"** es siempre **catálogo** (tabla); los
-  campos **sin "Otro"** son **opciones estáticas** — sin tabla y sin `enum` de
-  BD (ADR 044).
+  campos **sin "Otro"** son **`enum` de BD** con la lista estática en la app
+  (ADR 044 §Alcance).
 
 ## Consecuencias
 

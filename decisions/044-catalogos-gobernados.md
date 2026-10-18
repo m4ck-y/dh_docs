@@ -1,7 +1,7 @@
 # ADR 044: Catálogos con gobernanza (vocabularios controlados extensibles)
 
 ## Estado
-Aceptado
+Aceptado (Alcance enmendado 2026-10-18 — ver §Alcance)
 
 ## Contexto
 
@@ -98,8 +98,28 @@ front (selector del catálogo)
 
 Aplica a **todos** los campos "Otro/Especifique" (cuestionarios y HC): p. ej. en
 la sección A de la HC — `relationship` (tutor + emergencia), `religion`, `occupation`,
-`gender`. Los campos **sin** "Otro" (escolaridad, estado civil,
-sexo al nacer, etc.) siguen siendo **opciones estáticas** (no `enum` de BD).
+`gender`.
+
+La regla tiene **dos capas** que no se confunden:
+
+| Capa | Qué se guarda | Dónde vive la lista |
+|---|---|---|
+| **Cuestionario / registro** | el **`value`** (JSONB en `list_options` / `answer`) | en la **definición de la pregunta** (`list_options`: `static` o `catalog`, [ADR 046](046-opciones-pregunta.md)) |
+| **Dominio** (tablas) | columna **tipada**: `enum` (cerrado) o **FK al catálogo** | declarada en el **ERD / DDL** |
+
+- **Con "Otro"** → la lista puede ser `catalog`; en el dominio es **FK**
+  (`id_<catálogo>`, [ADR 049](049-referencia-catalogos-id-vs-key.md)).
+- **Sin "Otro"** → la lista es **estática en la app** (constantes del proyecto);
+  en el dominio es **`enum` de BD** (valores de texto).
+- **Sentinels** ("Otro", "Ninguna", "Prefiere no decirlo") → en la lista **son
+  opciones**; en el dominio **nunca se persisten** (van a `NULL`), así que los
+  `enum` **no** los incluyen.
+
+> "Opción estática" describe **dónde vive la lista** (en la app, no en una tabla),
+> **no** que la columna no pueda ser un `enum`: un vocabulario cerrado (tipo de
+> sangre, sexo al nacer, estado civil) va como `enum` — integridad y
+> autodocumentado — y agregar un valor es una migración, el camino correcto para
+> lo que no cambia por el usuario.
 
 ### Reparto por motor
 

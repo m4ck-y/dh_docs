@@ -38,5 +38,6 @@ La tabla `person` (schema `people`) es la entidad central del sistema. Los sigui
 - `erd.mmd` = Diagrama ERD (tablas)
 - `views.sql` = Vistas del schema (futuro)
 - Enums como bloques standalone con prefijo `E`
+- **Vocabularios de captura** ([ADR 044](../../decisions/044-catalogos-gobernados.md)): con "Otro/Especifique" → **catálogo** (schema `catalog`) y en el dominio **FK** `id_<catálogo>` ([ADR 049](../../decisions/049-referencia-catalogos-id-vs-key.md)); sin "Otro" → **`enum` de texto** (vocabulario cerrado, lista estática en la app). Los sentinels ("Prefiere no decirlo", "Ninguna") se guardan `NULL`.
 - Referencias a tablas de otros schemas se documentan con comentarios `%%` en el ERD, no se duplican bloques
 - Todas las entidades (excepto intermediarias N:N puras) heredan de `BaseModel` (`id`, `created_at`, `updated_at`, `deleted_at`). Estas columnas no se repiten en los ERDs.

@@ -20,10 +20,12 @@ catálogo.
   [`../CLASS.mmd`](../CLASS.mmd).
 - **Seed** → `status = VALIDATED`, `merged_into = null`; `description` opcional;
   `order` = orden de presentación.
-- **"Otro"** y **"Prefiere no decirlo"/"Ninguna"** **NO** son ítems: son
-  *UI affordances*:
-  - "Otro" dispara el **create** → ítem `PENDING`.
-  - "Prefiere no decirlo"/"Ninguna" → `NULL` en el dominio (no guardan ítem).
+- **"Otro"** es la única *UI affordance*: dispara el **create** → ítem `PENDING`.
+- **"Prefiere no decirlo"** y **"Ninguna"** **sí son ítems** del catálogo
+  (`status = VALIDATED`, con su `value`): el selector los necesita
+  ([ADR 046](../../../decisions/046-opciones-pregunta.md) §6). El **dominio los
+  mapea a `NULL`** — el centinela nunca se persiste, así que los `enum` de
+  dominio **no** lo incluyen.
 
 ## Archivos
 
@@ -32,6 +34,7 @@ catálogo.
 | Ocupación | `occupation.json` | ✅ |
 | Religión | `religion.json` | ✅ |
 | Relación (tutor + emergencia) | `relationship.json` | ✅ |
+| Orientación sexual | `orientation.json` | ✅ |
 | Género | `gender.json` | ✅ |
 | Tipo de vivienda | `housing_type.json` | ✅ |
 | Combustible de calefacción | `heating_fuel.json` | ✅ |
@@ -42,6 +45,6 @@ catálogo.
 `animal_type`, `allergy_category` — mismo formato, a completar cuando se definan
 sus catálogos.
 
-> Nota: los `value` se alinean con los enums del dominio (`EOccupationType`,
-> `ERelationship`, `EGenderIdentity`) para facilitar la migración enum → catálogo;
-> la alineación exacta se cierra en la fase de BD (hallazgos diferidos).
+> Nota: los `value` son los canónicos del dominio. Los enums de captura
+> (`EOccupationType`, `ERelationship`, `EGenderIdentity`) se retiraron del ERD
+> (ADR 044/049) y el dominio los referencia por FK al catálogo.
