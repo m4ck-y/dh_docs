@@ -80,13 +80,13 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
   - 1.2.11.2 Hombre
   - 1.2.11.3 Intersexual
   - 1.2.11.4 Prefiere no decirlo
-- **1.2.12A Género** ⚠️ _(agregado: estaba en el `.mmd`, faltaba en la ficha)_ _(catálogo `gender`)_
+- **1.2.12A Género** _(catálogo `gender`)_
   - 1.2.12A.1 Femenino
   - 1.2.12A.2 Masculino
   - 1.2.12A.3 No binario
   - 1.2.12A.4 Otro _(especifique)_
   - 1.2.12A.5 Prefiere no decirlo
-- **1.2.12B Orientación** ⚠️ _(agregado: lo captura el registro; no estaba en la ficha)_ _(catálogo `orientation`)_
+- **1.2.12B Orientación** _(catálogo `orientation`)_
   - 1.2.12B.1 Heterosexual
   - 1.2.12B.2 Homosexual
   - 1.2.12B.3 Bisexual
@@ -136,12 +136,12 @@ El componente agrupa la captura en **3 bloques condicionables** (no `form.sectio
   - 1.2.17.7 Otro
     - _Especifique_
   - 1.2.17.8 Prefiere no decirlo
-- **1.2.18 Ingresos** ⚠️ _(opciones del `.mmd`; la ficha previa usaba rangos de $)_ _(estático)_
+- **1.2.18 Ingresos** _(estático)_
   - 1.2.18.1 Son suficientes para el cuidado de mi salud
   - 1.2.18.2 Cubren parcialmente
   - 1.2.18.3 Frecuentemente dificultan
   - 1.2.18.4 Prefiere no responder
-- **1.2.19 ¿Cuántas personas dependen económicamente de usted?** ⚠️ _(agregado: estaba en el `.mmd`, faltaba en la ficha)_ _(estático)_
+- **1.2.19 ¿Cuántas personas dependen económicamente de usted?** _(estático)_
   - 1.2.19.1 Ninguna
   - 1.2.19.2 1
   - 1.2.19.3 2
