@@ -1,0 +1,25 @@
+**Proyecto o Apartado:** Infraestructura — Entorno de desarrollo (`docs_devops` y repositorios frontend)
+
+**Título de la actividad o tarea:** Eje host en el entorno DEV: un subdominio por micro-frontend bajo un certificado multi-SAN
+
+**Descripción de la actividad o tarea:** El entorno de desarrollo dejó de servir los micro-frontends como sub-rutas del dominio raíz (`libersalus.dev/signin/`, `/signup/`, `/app/`) y pasó a servir cada uno desde su propio subdominio (`account.libersalus.dev/signin/`, `app.libersalus.dev/`, `tami.libersalus.dev/`, …), con la landing en el raíz. El objetivo de negocio es que cada aplicación tenga una URL estable y reconocible desde las etapas tempranas —la misma que tendrá en QA y PROD, cambiando solo el TLD— y que ese mapa no se reescriba en cada ambiente. El acceso al entorno sigue restringido a la VPN (`1194/UDP` pública, `22`/`80`/`443` cerrados).
+
+La actividad abarcó cinco frentes y un hallazgo operativo:
+
+1. **nginx (`scripts/01_web/00-nginx.sh`).** La fuente única pasó de una lista de sub-rutas a una lista de hosts (`HOSTS = "host|paths"`). Por host se generan: el docroot (`/var/www/<host>/`), un *placeholder* cuando no existe build, un snippet de `location` regenerable (`snippets/<host>-mf.conf`) y un `server` block HTTP que **no se reescribe si ya existe**, de modo que el bloque TLS que agrega Certbot queda intacto. Un `nginx -t` fallido revierte los `server` blocks escritos en la corrida.
+2. **Certificado.** Se emitió **un solo certificado multi-SAN** para los ocho nombres (apex + siete subdominios). El apex va primero para conservar la *lineage* (`/etc/letsencrypt/live/libersalus.dev/`) y `--expand` permite ampliarla: las rutas que usan los `server` blocks no cambian. La emisión se hizo por **HTTP-01** con el puerto `80` abierto de forma temporal; la vía DNS-01 con wildcard quedó descartada por requerir un plugin de Hostinger.
+3. **DNS.** Se registraron los ocho nombres `A` → `100.60.76.232` en Hostinger. Dentro de la VPN el DNS es otro: `dnsmasq` resuelve `*.libersalus.dev` → `10.8.0.1`.
+4. **Frontend.** La base de despliegue, las URLs cruzadas entre micro-frontends y la base de la API se resuelven **por ambiente** en el código del proyecto (`vite.config.ts` e `infrastructure/config.ts`), no en los workflows: en MOCK (GitHub Pages) todos comparten origen y las rutas son relativas; en DEV/PROD cada aplicación tiene su host, así que los enlaces que cruzan de host son absolutos. La base de `app` es el único caso que cambia de sub-ruta a raíz. Se agregó además una salvaguarda: la base de la API dejó de tener como valor por defecto el gateway de **producción** en todos los modos.
+5. **Despliegue.** Los workflows `deploy_vps_dev.yml` de signin, signup y app ahora copian su `dist` al docroot de su host (`/var/www/account.libersalus.dev/signin/`, `…/signup/`, `/var/www/app.libersalus.dev/`); el de la landing ya apuntaba al raíz correcto. El modelo sigue siendo build-in-CI + `rsync` por VPN, sin Node ni clon en el VPS.
+
+**Hallazgo operativo documentado.** El cliente de OpenVPN por línea de comandos en versión **≤ 2.6 no aplica** el DNS que el servidor empuja (`dhcp-option DNS 10.8.0.1`): el nombre del entorno no resuelve y el navegador no alcanza el sitio, aunque el servidor y nginx respondan correctamente. La versión **2.7** aplica el DNS de forma nativa (API `--dns` con el hook `dns-updown`) y NetworkManager también; el cliente anterior requiere un script `--up` o una entrada en `hosts`. El hallazgo se documentó como bug del sistema operativo en el repositorio de notas de Linux (`~/Documents/linux/bugs/`).
+
+**Estado de la actividad o tarea:** Concluido
+
+**Avances de la actividad:**
+- **nginx:** ocho `server` blocks con su docroot, snippet y placeholder; `nginx -t` válido; el bloque TLS del apex preservado. Se retiró la migración de configuración heredada de los scripts (queda como limpieza manual documentada) y se corrigió el rollback para descartar `server` blocks nuevos cuando la validación falla.
+- **TLS:** certificado multi-SAN vigente que cubre los ocho nombres; verificación por túnel con ocho respuestas `HTTP 200` (landing, `/signin/`, `/signup/` y los seis subdominios restantes).
+- **Certbot:** respaldo completo de `/etc/nginx` y `/etc/letsencrypt` antes de cada emisión, con restauración automática si `nginx -t` falla.
+- **Frontend:** seis commits distribuidos en cuatro repositorios (API por modo, URLs cruzadas por modo, base por modo en `app`, corrección del QR del landing y destinos `rsync` por host); los cuatro despliegues de MOCK (GitHub Pages) verificados en verde.
+- **Documentación:** ADR 048 del workspace, ADR 040 del frontend, actualización de las guías de CI/CD, topología, configuración de entorno y espejos, más la corrección del mapa de pendientes del entorno.
+- **Pendiente:** disparar los cuatro workflows de DEV (dispatch manual) para publicar los builds en sus hosts; crear la rama `dev` si se desea el auto-despliegue por push; reabrir el `80` en la próxima renovación del certificado o migrar a DNS-01; y desplegar los servicios `api`/`fhir` en la fase `06_backend`.

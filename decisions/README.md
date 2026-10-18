@@ -53,6 +53,7 @@ Cada decision tecnica importante debe documentarse siguiendo el formato de **ADR
 - **[045: Historia clínica — componentes/endpoints de dominio vs formularios](045-historia-clinica-componentes-vs-formularios.md)**
 - **[046: Opciones de pregunta — estáticas o de catálogo (`question.list_options`)](046-opciones-pregunta.md)**
 - **[047: Contexto de evaluación de expresiones — `question.value` por la `person`](047-contexto-evaluacion-expresiones.md)**
+- **[048: Eje host en DEV — un subdominio por micro-frontend](048-eje-host-subdominios-dev.md)**
 
 ---
 *Para crear una nueva decision, utiliza la plantilla `_template.md` (proximamente).*
