@@ -4,6 +4,11 @@ Diccionario del formulario de autorregistro: **qué captura el front** y **dónd
 guarda**. Fuente del front: `frontend/dh_frontend_signup/src/domain/schemas.ts`
 (origen) y los ERDs por esquema (destino).
 
+**Completitud:** los **41 campos** del front están inventariados ✓; de ellos **3 no
+tienen destino** ✗ y **8 tienen algún desajuste** (parcial, dato perdido, catálogo
+faltante, semántica o duplicidad) ✗ — ver [Gaps](#gaps). Otros **4 son efímeros o
+derivados** por diseño ✓.
+
 ## Cómo se lee
 
 | Columna | Regla |
@@ -75,7 +80,7 @@ las referencias a catálogos cruzan motor como `key_*` y dentro de PostgreSQL co
 | `escolaridad` | `people.profile.education_level` | `Enum(EEducationLevel)` | `[NO_STUDIES · PRIMARY · SECONDARY · HIGH_SCHOOL · UNIVERSITY · POSTGRADUATE]` · sentinel → `NULL` | sí |
 | `ocupacion` | `people.profile.id_occupation` | `Int FK` | Catálogo `occupation` | sí |
 | `ocupacionEspecificacion` | — (ítem nuevo del catálogo) | — | Solo si `ocupacion = otro` | condicional |
-| `discapacidad` | — | — | 🔴 sin destino en el modelo | sí |
+| `discapacidad` | `health_profile.person_disability.type_disability` | `Enum(EDisabilityType)` | `[PHYSICAL · SENSORY · INTELLECTUAL · PSYCHOSOCIAL · MULTIPLE]` · *"Ninguna"* / *"Prefiere no decirlo"* → sin filas | sí |
 | `sangre` | `health_profile.biological_profile.type_blood_type` | `Enum(EBloodType)` | `[A+ · A- · B+ · B- · AB+ · AB- · O+ · O-]` · sentinel → `NULL` | sí |
 | `lenguaIndigena` | `people.sociocultural_identity.self_considers_indigenous` | `Bool` | 🔴 el front pregunta *"¿habla lengua indígena?"* y el modelo *"¿se considera indígena?"* | sí |
 | `lenguaIndigenaNombre` | `people.sociocultural_identity.key_indigenous_language` | `String(20) FK` | 🔴 el front trae lista estática (`indigenousLanguages.ts`): falta el catálogo (ADR 044) | condicional |
@@ -113,18 +118,21 @@ la **contraseña** en claro (solo el `password_hash`).
 
 | # | Gap | Tipo | Estado |
 |---|---|---|---|
-| G1 | `discapacidad` — el front lo pide, el modelo no tiene destino | sin destino | 🔴 |
-| G2 | `referencias` (domicilio) | sin destino | 🔴 |
-| G3 | 2º teléfono del contacto de emergencia | sin destino | 🔴 |
-| G4 | Ciudad de nacimiento (`people.birth` no tiene municipio de nacimiento) | modelo | 🔴 |
-| G5 | Catálogo de **lenguas indígenas** (hoy lista estática en el front) | catálogo (ADR 044) | 🔴 |
-| G6 | `is_primary` en teléfonos: el front distingue principal/otro y el modelo no | modelo | 🔴 |
-| G7 | `numeroExterior` / `numeroInterior` fusionados en `address_complement` | modelo | 🔴 |
-| G8 | `viveContigo` no se guarda (mismo domicilio que el tutor) | modelo | 🔴 |
-| G9 | `lenguaIndigena`: *"¿habla?"* (front) vs *"¿se considera?"* (modelo) | semántica | 🔴 |
-| G10 | `legal_info.type_national_id_sex` vs `biological_profile.type_biological_sex` (¿mismo dato?) | duplicidad | 🔴 |
-| G11 | El correo de la cuenta: ¿solo `auth.user.username` o también `people.email`? | duplicidad | 🔴 |
-| G12 | El OTP: `dh_mfa.otp_challenges` (Mongo) y `mfa.otp_challenge` (PG) | duplicidad | 🔴 |
+| G1 | `referencias` (domicilio) — sin columna | sin destino | 🔴 |
+| G2 | 2º teléfono del contacto de emergencia | sin destino | 🔴 |
+| G3 | `viveContigo` (mismo domicilio que el tutor) | sin destino | 🔴 |
+| G4 | Ciudad de nacimiento (`people.birth` no tiene municipio de nacimiento) | destino parcial | 🔴 |
+| G5 | Catálogo de **lenguas indígenas** (hoy lista estática en el front) | falta catálogo (ADR 044) | 🔴 |
+| G6 | `is_primary` en teléfonos: el front distingue principal/otro y el modelo no | dato perdido | 🔴 |
+| G7 | `numeroExterior` / `numeroInterior` fusionados en `address_complement` | destino parcial | 🔴 |
+| G8 | `lenguaIndigena`: *"¿habla?"* (front) vs *"¿se considera?"* (modelo) | semántica | 🔴 |
+| G9 | `legal_info.type_national_id_sex` vs `biological_profile.type_biological_sex` (¿mismo dato?) | duplicidad | 🔴 |
+| G10 | El correo de la cuenta: ¿solo `auth.user.username` o también `people.email`? | duplicidad | 🔴 |
+| G11 | El OTP: `dh_mfa.otp_challenges` (Mongo) y `mfa.otp_challenge` (PG) | duplicidad | 🔴 |
+
+> `discapacidad` (antes G1) quedó **resuelta** ✓: `health_profile.person_disability`
+> (enum `EDisabilityType`; si el vocabulario crece, pasa a catálogo y esta tabla
+> queda como intermedia — ver el comentario en el ERD de `health_profile` ✓).
 
 ## Campos del modelo (o de la HC) que el signup **no** captura
 

@@ -10,6 +10,7 @@ erDiagram
     person ||--o{ person_allergy : "has_allergies"
     person ||--o{ vaccination_record : "has_vaccinations"
     person ||--|| death : "has_death"
+    person ||--o{ person_disability : "has_disabilities"
 
     %% ENUMS (vocabulario cerrado -> enum de texto; la lista de la UI es estatica)
     EBiologicalSex {
@@ -27,6 +28,16 @@ erDiagram
         String AB_NEGATIVE "AB-"
         String O_POSITIVE "O+"
         String O_NEGATIVE "O-"
+    }
+
+    %% EDisabilityType: tipo de discapacidad (vocabulario cerrado, sin "Otro" -> enum).
+    %% "Ninguna" y "Prefiere no decirlo" son sentinels -> sin filas (NULL en el dominio).
+    EDisabilityType {
+        String PHYSICAL "PHYSICAL"
+        String SENSORY "SENSORY"
+        String INTELLECTUAL "INTELLECTUAL"
+        String PSYCHOSOCIAL "PSYCHOSOCIAL"
+        String MULTIPLE "MULTIPLE"
     }
 
     %% ENTIDADES
@@ -48,6 +59,20 @@ erDiagram
         String severity
         String reaction_type
         Text notes
+    }
+
+    %% person_disability: discapacidades declaradas (1:N, igual que person_allergy).
+    %% El formulario de registro captura una sola -> escribe 0 o 1 fila.
+    %% MULTIPLE se conserva: el front lo manda como valor.
+    %% Evolucion: el vocabulario es CERRADO y sin "Otro" -> enum (ADR 044).
+    %% Si se espera que crezca (aparece "Otro", o se quiere curar o mapear a CIE),
+    %% "disability" pasa a CATALOGO (catalog.disability) y esta tabla queda como
+    %% INTERMEDIA (N:M), cambiando el enum por id_disability FK. La forma
+    %% (id_person + tipo) no cambia.
+    person_disability {
+        UUID id PK
+        Integer id_person FK
+        Enum(EDisabilityType) type_disability
     }
 
     %% vaccination_record: historial de vacunacion
