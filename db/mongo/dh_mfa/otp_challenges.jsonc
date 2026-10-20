@@ -1,0 +1,26 @@
+{
+  // Base: MongoDB `dh_mfa` · colección `otp_challenges` (beanie: OtpChallenge).
+  // Desafío de segundo factor: un documento por código emitido.
+
+  "_id": "6710c3d4e5f60718293a4b5c",          // auto — ObjectId
+  "uuid_person": "550e8400-e29b-41d4-a716-446655440000",  // people.person.uuid — SIN FK · Indexed
+  "channel": "EMAIL",                         // SMS | EMAIL | TOTP  (EOtpChannel)
+  "purpose": "LOGIN",                         // LOGIN | RESET_PASSWORD | SENSITIVE_ACTION | ONBOARDING
+  "destination": "juan.perez@example.com",    // email o teléfono destino
+  "code_hash": "9f2c4d…",                     // SHA-256 del código — ficticio y truncado; NUNCA en claro
+  "status": "CREATED",                        // CREATED | EXPIRED | CONSUMED | BLOCKED  (EOtpStatus)
+
+  "verify_attempts": 0,                       // intentos de verificación del código actual
+  "verify_max_attempts": 5,                   // al llegar: status BLOCKED
+  "resend_attempts": 0,                       // reenvíos pedidos (rate limiting)
+  "resend_max_attempts": 3,                   // al llegar: TOO_MANY_RESENDS
+
+  "created_at": "2026-10-18T09:15:00Z",       // UTC
+  "expires_at": "2026-10-18T09:25:00Z",       // UTC — created_at + OTP_TTL_MINUTES (10 min)
+  "consumed_at": null                         // UTC — se llena al verificar; null si aún no
+
+  // Índices (implementados en el modelo, no solo documentados):
+  //   { expires_at: 1 } TTL                          — borra 24 h después de `expires_at`
+  //   { uuid_person: 1, purpose: 1, status: 1 }      — expire() + find_active()
+  //   { uuid_person: 1, purpose: 1, destination: 1 } — find_active() con filtro de destino
+}
