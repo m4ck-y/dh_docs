@@ -1,0 +1,100 @@
+classDiagram
+    %% ===============================================================
+    %% MONGODB — base: dh_legal  ·  servicio: `dh_legal` (propuesto)
+    %% Estado: PROPUESTA — decisión: ADR 050.
+    %%
+    %% Una clase por colección:
+    %%   legal_documents    → LegalDocument    la EVIDENCIA del texto legal versionado
+    %%   legal_acceptances  → LegalAcceptance  la ACEPTACIÓN (evento append-only)
+    %%
+    %% El texto NO vive en la base: es un ARCHIVO (.md/.html) con ruta versionada
+    %% en object storage (bucket privado). `legal_documents` guarda la evidencia:
+    %% url interno + mime_type + hash + vigencia. Convención de archivo tomada del
+    %% dominio storage (url, mime_type, size_bytes — db/postgres/storage/erd.mmd).
+    %%
+    %% Vínculo con PostgreSQL: uuid_person = people.person.uuid (identificador
+    %% externo, SIN FK — ADR 017 · ADR 049); no es un ObjectId de Mongo.
+    %% El vínculo texto ↔ aceptación es LÓGICO (key + version, con hash que ata
+    %% lo aceptado con lo servido): no es una FK.
+    %%
+    %% Gobernanza y sentinels: ADR 044 · UTC: ADR 008.
+    %% Contrato HTTP: ../../../features/legal/README.md
+    %% Motor: ../README.md · Matriz: ../../service_database_access_matrix.md
+    %% ===============================================================
+
+    class LegalDocument {
+        +ObjectId _id
+        +ELegalDocKey key "tipo de documento legal"
+        +String version "nombre lógico de la versión — YYYY-MM"
+        +String url "archivo en object storage — ruta versionada, INTERNA, nunca se expone"
+        +String mime_type "text/markdown | text/html — convención del dominio storage"
+        +String hash "sha256 de los BYTES del archivo publicado"
+        +Long size_bytes "tamaño del archivo publicado"
+        +ELegalDocStatus status
+        +DateTime effective_from "UTC — desde cuándo rige"
+        +DateTime retired_at "UTC — null si está vigente"
+        +String created_by "uuid del usuario que publica — auditoría"
+    }
+
+    class LegalAcceptance {
+        +ObjectId _id
+        +String uuid_person "UUID — ref a people.person.uuid en PostgreSQL"
+        +ELegalDocKey key "tipo de documento aceptado"
+        +String version "versión aceptada"
+        +String hash "hash de la versión aceptada"
+        +DateTime accepted_at "UTC"
+        +EAcceptanceMethod method
+        +String source "origen: signup, onboarding, telemedicine, ..."
+        +String ip
+        +String user_agent
+        +DateTime revoked_at "UTC — retiro del consentimiento; fila nueva"
+    }
+
+    class ELegalDocKey {
+        <<enumeration>>
+        TERMS
+        PRIVACY
+    }
+
+    class ELegalDocStatus {
+        <<enumeration>>
+        DRAFT
+        PUBLISHED
+        RETIRED
+    }
+
+    class EAcceptanceMethod {
+        <<enumeration>>
+        CHECKBOX
+        SIGNATURE
+        IMPLICIT
+    }
+
+    LegalDocument --> ELegalDocKey : key
+    LegalDocument --> ELegalDocStatus : status
+    LegalAcceptance --> ELegalDocKey : key
+    LegalAcceptance --> EAcceptanceMethod : method
+
+    LegalDocument "1" --> "*" LegalAcceptance : "aceptada como (key + version) — lógico"
+
+    %% ── Reglas ────────────────────────────────────────────────────────────────
+    %%
+    %% Inmutabilidad  Ni el archivo ni el documento se editan: un cambio = versión
+    %%                NUEVA (`version` = YYYY-MM). La ruta publicada nunca se
+    %%                sobrescribe. El candado es el índice único (key, version).
+    %% Vigente        La versión vigente = la PUBLISHED con mayor effective_from
+    %%                (no hay índice ni documento aparte).
+    %% Retiro         Retirar un consentimiento = insertar fila nueva con revoked_at,
+    %%                nunca un update (el historial es evidencia). Las versiones
+    %%                RETIRED se siguen sirviendo; las DRAFT no existen para el cliente.
+    %% Integridad     `hash` = sha256 de los BYTES publicados; el servicio lo
+    %%                verifica al servir y lo expone como ETag.
+    %% Binario        Un PDF firmado (si algún día existe) va al mismo storage y se
+    %%                referencia desde acá: no entra a Mongo.
+    %% Analítica      LegalAcceptance es un evento → candidato a ETL hacia ClickHouse.
+
+    %% ── Índices recomendados ──────────────────────────────────────────────────
+    %%
+    %% { key: 1, version: 1 }                       unique — candado de inmutabilidad
+    %% { key: 1, status: 1, effective_from: -1 }    — resolver la versión vigente
+    %% { uuid_person: 1, key: 1 }                   — historial de consentimientos

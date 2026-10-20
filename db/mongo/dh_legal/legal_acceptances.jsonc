@@ -1,0 +1,20 @@
+{
+  // Base: MongoDB `dh_legal` · colección `legal_acceptances` (propuesta — ADR 050).
+  // La ACEPTACIÓN — evento append-only: quién, qué versión, cuándo y desde dónde.
+
+  "_id": "6710b2c3d4e5f60718293a4b",          // auto — ObjectId
+  "uuid_person": "550e8400-e29b-41d4-a716-446655440000",  // people.person.uuid — SIN FK (ADR 017 · 049)
+
+  "key": "TERMS",                             // qué documento se acepta (ELegalDocKey)
+  "version": "2026-10",                       // versión aceptada
+  "hash": "9f2c4d…",                          // hash de esa versión — vínculo lógico, ficticio y truncado
+
+  "accepted_at": "2026-10-18T09:15:00Z",      // UTC
+  "method": "CHECKBOX",                       // CHECKBOX | SIGNATURE | IMPLICIT  (EAcceptanceMethod)
+  "source": "signup",                         // origen: signup, onboarding, telemedicine…
+
+  "ip": "203.0.113.42",
+  "user_agent": "Mozilla/5.0",
+
+  "revoked_at": null                          // UTC — el retiro se registra como FILA NUEVA, nunca update
+}
