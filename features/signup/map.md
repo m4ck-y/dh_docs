@@ -4,8 +4,8 @@ Diccionario del formulario de autorregistro: **qué captura el front** y **dónd
 guarda**. Fuente del front: `frontend/dh_frontend_signup/src/domain/schemas.ts`
 (origen) y los ERDs por esquema (destino).
 
-**Completitud:** los **41 campos** del front están inventariados ✓; de ellos **2 no
-tienen destino** ✗ y **7 tienen algún desajuste** (parcial, dato perdido, catálogo
+**Completitud:** los **41 campos** del front están inventariados ✓; de ellos **1 no
+tiene destino** ✗ y **6 tienen algún desajuste** (parcial, dato perdido, catálogo
 faltante, semántica o duplicidad) ✗ — ver [Gaps](#gaps). Otros **4 son efímeros o
 derivados** por diseño ✓.
 
@@ -109,19 +109,19 @@ cruzan motor como `key_*` y dentro de PostgreSQL como `id_*`
 
 ## 6. Contacto de emergencia
 
-> **Paso del front:** Contacto de emergencia · **Destino:** `people.emergency_contact`.
+> **Paso del front:** Contacto de emergencia · **Destinos:** `people.person` (el
+> contacto **es** una person) · `people.phone` · `people.emergency_contact` (arista).
 
 | Campo (front) | Destino BD | Type | Description | ¿Obligatorio? |
 |---|---|---|---|---|
-| `contactos[]` | `people.emergency_contact` (una fila por contacto) | — | `1..2` contactos (el front corta en 2) | sí |
-| `nombre` | `people.emergency_contact.first_name` · `last_name` | `String` | Snapshot del contacto: **no** es una fila de `person` | sí |
+| `contactos[]` | `people.emergency_contact` (arista: `id_owner_person` + `id_contact_person`) | — | `1..2` contactos · `unique (id_owner_person, id_contact_person)` | sí |
+| `nombre` | `people.person.first_name` · `last_name` | `String` | El contacto se crea como `person` (o se reutiliza; dedupe por teléfono/email) · 🔴 el front pide un solo nombre: falta partirlo | sí |
 | `parentesco` | `people.emergency_contact.id_relationship` | `Int FK` | Catálogo `relationship` | sí |
 | `parentescoEspecificacion` | — (ítem nuevo del catálogo) | — | Solo si `parentesco = otro` | condicional |
-| `telefonoPrincipal` | `people.emergency_contact.phone_number` | `String` | — | sí |
-| `telefonoOtro` | — | — | 🔴 sin destino: el modelo guarda un solo teléfono del contacto (G2) | no |
+| `telefonoPrincipal` | `people.phone.number` (`is_primary = true`) | `String(10)` | + `code = +52` y `type_phone = MOBILE` (backend) | sí |
+| `telefonoOtro` | `people.phone.number` (`is_primary = false`) | `String(10)` | Segunda fila del mismo contacto | no |
 | `id` | — | — | Efímero: clave de la lista en la UI ✗ | sí |
-| — | `people.emergency_contact.id_user_owner` | `Int FK` | 🔴 lo debe llenar el backend (`auth.user.id` del titular) | — |
-| — | `people.emergency_contact.email` · `notes` | `String` · `Text` | 🔴 el front no los captura | — |
+| — | `people.emergency_contact.notes` | `Text` | 🔴 el front no lo captura | — |
 
 ## 7. Tutor / responsable
 
@@ -155,11 +155,9 @@ la **contraseña** en claro (solo el `password_hash`).
 
 | # | Gap | Tipo | Estado |
 |---|---|---|---|
-| G2 | 2º teléfono del contacto de emergencia | sin destino | 🔴 |
 | G3 | `viveContigo` (mismo domicilio que el tutor) | sin destino | 🔴 |
 | G4 | Ciudad de nacimiento (`people.birth` no tiene municipio de nacimiento) | destino parcial | 🔴 |
 | G5 | Catálogo de **lenguas indígenas** (hoy lista estática en el front) | falta catálogo (ADR 044) | 🔴 |
-| G6 | `is_primary` en teléfonos: el front distingue principal/otro y el modelo no | dato perdido | 🔴 |
 | G8 | `lenguaIndigena`: *"¿habla?"* (front) vs *"¿se considera?"* (modelo) | semántica | 🔴 |
 | G9 | `legal_info.type_national_id_sex` vs `biological_profile.type_biological_sex` (¿mismo dato?) | duplicidad | 🔴 |
 | G10 | El correo de la cuenta: ¿solo `auth.user.username` o también `people.email`? | duplicidad | 🔴 |
@@ -167,7 +165,9 @@ la **contraseña** en claro (solo el `password_hash`).
 
 > **Resueltas:** `discapacidad` → `health_profile.person_disability` ✓ ·
 > `referencias` → `people.address.address_complement` ✓ ·
-> `numeroExterior`/`numeroInterior` → `people.address.ext_number`/`int_number` ✓.
+> `numeroExterior`/`numeroInterior` → `people.address.ext_number`/`int_number` ✓ ·
+> 2º teléfono del contacto y `is_primary` → `people.phone` (el contacto es una
+> `person` y `emergency_contact` quedó como arista) ✓.
 > Los IDs de los gaps restantes **no se renumeran** (quedan estables).
 
 ## Campos del modelo (o de la HC) que el signup **no** captura
@@ -178,3 +178,21 @@ la **contraseña** en claro (solo el `password_hash`).
 (la HC los pide en 1.2.18–1.2.19: `EIncomeRange` está en **rangos de $** mientras la
 HC pregunta por **suficiencia** — desalineado 🔴) · `profile.id_occupation` de la
 persona asociada.
+
+## Pendientes de implementación
+
+Lo que este diccionario ya define pero **falta del lado del código** ✗ (solo docs
+por ahora):
+
+| # | Capa | Punto | Estado |
+|---|---|---|---|
+| P1 | backend | `people.phone.is_primary` + índice único parcial (un principal por person) | 🔴 |
+| P2 | backend | `people.emergency_contact`: `id_user_owner` → **`id_owner_person`** y `id_contact_user` → **`id_contact_person`** | 🔴 |
+| P3 | backend | quitar el snapshot de `emergency_contact` (`first_name`, `last_name`, `phone_number`, `email`, `relationship_type`, `relationship_other`) | 🔴 |
+| P4 | backend | `relationship_type` (enum) → **`id_relationship` FK** al catálogo `relationship` (ADR 044 · 049) | 🔴 |
+| P5 | backend | `people.address`: `ext_number` · `int_number` (+ `address_complement` como referencias) | 🔴 |
+| P6 | backend | `health_profile.person_disability` (+ enum `EDisabilityType`) | 🔴 |
+| P7 | backend | el contacto de emergencia se crea como **`person`** (dedupe por teléfono/email) | 🔴 |
+| P8 | front | el contacto: `nombre` → `nombre` + `apellidoPaterno` + `apellidoMaterno` | 🔴 |
+| P9 | backend | deriva: `person.type_gender` (enum) → `id_gender` FK al catálogo `gender` | 🔴 |
+| P10 | docs | deriva: `EVerificationStatus` real tiene **5** valores (PENDING · SUBMITTED · UNDER_REVIEW · APPROVED · REJECTED) | 🔴 |

@@ -21,7 +21,8 @@ erDiagram
     person ||--|| sociocultural_identity : "has_sociocultural_identity"
     person ||--|| legal_info : "has_legal_info"
     person ||--o{ personal_identifier : "has"
-    person ||--o{ emergency_contact : "has_emergency"
+    person ||--o{ emergency_contact : "owns"
+    person ||--o{ emergency_contact : "is_contact"
 
     person ||--|| photo : "has_photo"
 
@@ -145,6 +146,8 @@ erDiagram
     %% phone: telefonos de contacto
     %% code: codigo de pais + lada (ej: +52)
     %% number: numero sin codigo
+    %% is_primary: telefono principal de la persona (uno solo por person;
+    %%   indice unico parcial sobre id_person donde is_primary = true)
     phone {
         Integer id PK
         UUID uuid
@@ -152,6 +155,7 @@ erDiagram
         String code
         String number
         Enum(EPhoneType) type_phone
+        Boolean is_primary
     }
 
     %% address: direcciones geograficas
@@ -297,20 +301,18 @@ erDiagram
         String(5) country_code
     }
 
-    %% emergency_contact: contactos de emergencia
-    %% id_user_owner: usuario propietario del contacto (FK a auth.user.id)
-    %% id_contact_user: si existe, FK a auth.user (nullable)
-    %% first_name/last_name: snapshot del contacto (nullable si es user)
+    %% emergency_contact: contactos de emergencia (arista N:M entre persons)
+    %%   El contacto ES una people.person: sus nombres, telefonos (is_primary) y
+    %%   email viven en sus propias tablas; aqui solo se guarda el vinculo.
+    %% id_owner_person: person titular del contacto (paciente / usuario)
+    %% id_contact_person: person del contacto
     %% id_relationship: tipo de relacion (FK a catalog.relationship)
+    %%   unique (id_owner_person, id_contact_person); maximo 2 contactos por titular
     emergency_contact {
         Integer id PK
         UUID uuid
-        Integer id_user_owner FK
-        Integer id_contact_user FK
-        String first_name
-        String last_name
-        String phone_number
-        String email
+        Integer id_owner_person FK
+        Integer id_contact_person FK
         Integer id_relationship FK
         Text notes
     }
