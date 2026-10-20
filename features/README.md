@@ -21,6 +21,8 @@ su modelo de datos (ERDs, diagramas de clases, DDL) y sus decisiones.
 | 2 | [`clinical_history/`](./clinical_history/) | Dominio de la historia clínica: estructura de secciones A-E y propuestas UI. | `questionnaires` | Propuesta |
 | 3 | [`mapper/`](./mapper/) | Vincula preguntas (cuestionarios/HC) con propiedades del dominio físico; prefill (read) + write-through (write). | `questionnaires`, `clinical_history` | Propuesta |
 | 4 | [`catalogs/`](./catalogs/) | Vocabularios controlados: catálogos gobernados/extensibles (PostgreSQL), masivos (ClickHouse) y documentales (MongoDB). **Base**: lo consumen `questionnaires` y `clinical_history`. | — | Propuesta |
+| 5 | [`legal/`](./legal/) | Textos legales versionados (términos, aviso de privacidad) y sus aceptaciones: archivo en object storage + evidencia en MongoDB. | — | Propuesta |
+| 6 | [`signup/`](./signup/) | Flujo de autorregistro: pasos del formulario y el **destino de cada dato** en la BD (diccionario de datos). | `legal`, `catalogs` | 🟡 Parcial |
 
 > La numeración marca el orden base → consumidor (`clinical_history` se almacena
 > con el modelo de `questionnaires`). `catalogs` es una **base** (los formularios
