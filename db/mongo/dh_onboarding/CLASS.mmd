@@ -1,0 +1,97 @@
+classDiagram
+    %% ===============================================================
+    %% MONGODB — base: dh_onboarding  ·  servicio: `dh_onboarding`
+    %% Estado: 🟡 parcial — registro e invitación implementados; la
+    %% conversión (CONVERTED) aún no (campos reservados).
+    %%
+    %% Colección única: `waitlist` (beanie: WaitlistLead).
+    %% `metadata`, `timestamps` y `onboarding` van EMBEBIDOS en el documento
+    %% del lead — no son colecciones (por eso se dibujan por composición).
+    %%
+    %% Vínculo con PostgreSQL: onboarding.uuid_person_postgres =
+    %% people.person.uuid (identificador externo, SIN FK — ADR 017 · ADR 049).
+    %%
+    %% Flujo completo (estados, invitación y conversión):
+    %% backend/dh_onboarding/docs/WAITLIST_LIFECYCLE.md
+    %% Motor: ../README.md · Matriz: ../../service_database_access_matrix.md
+    %% ===============================================================
+
+    class WaitlistLead {
+        +ObjectId _id
+        +String client_name "persona o empresa"
+        +String email "índice único implementado — Indexed unique"
+        +EWaitlistStatus status "default ACTIVE"
+        +String source "canal de origen — vocabulario sin cerrar, ver pendientes"
+        +WaitlistMetadata metadata "embebido"
+        +WaitlistTimestamps timestamps "embebido"
+        +WaitlistOnboarding onboarding "embebido"
+    }
+
+    class WaitlistMetadata {
+        +String ip "opcional"
+        +String user_agent "opcional"
+        +String referral_code "opcional"
+    }
+
+    class WaitlistTimestamps {
+        +DateTime created_at "UTC — default now, al registrar"
+        +DateTime updated_at "UTC — default now"
+        +DateTime invited_at "UTC — opcional, al invitar"
+        +DateTime converted_at "UTC — opcional, al convertir"
+    }
+
+    class WaitlistOnboarding {
+        +String invite_token "opcional — hoy EN CLARO, ver pendientes"
+        +DateTime token_expires_at "UTC — opcional; vigencia 7 días"
+        +String uuid_person_postgres "UUID — ref a people.person.uuid, SIN FK"
+    }
+
+    class EWaitlistStatus {
+        <<enumeration>>
+        ACTIVE
+        INVITED
+        CONVERTED
+        BLOCKED
+        EXPIRED
+    }
+
+    WaitlistLead --> EWaitlistStatus : status
+    WaitlistLead "1" *-- "1" WaitlistMetadata : metadata
+    WaitlistLead "1" *-- "1" WaitlistTimestamps : timestamps
+    WaitlistLead "1" *-- "1" WaitlistOnboarding : onboarding
+
+    %% ── Estados y transiciones ────────────────────────────────────────────────
+    %%
+    %% ACTIVE ──► INVITED ──► CONVERTED        CONVERTED = terminal positivo
+    %%   ├──────► CONVERTED                    registro abierto, sin token
+    %%   ├──────► BLOCKED                      admin; terminal
+    %%   └──────► EXPIRED                      token vencido; terminal
+    %% INVITED ─► CONVERTED | EXPIRED
+    %%
+    %% Registrar   POST /v1/waitlist                 → status ACTIVE  [implementado]
+    %% Invitar     POST /v1/waitlist/{email}/invite  → status INVITED [implementado]
+    %%               genera invite_token + token_expires_at y registra invited_at
+    %% Convertir   el lead inicia el onboarding y se crea la person en
+    %%             PostgreSQL (dh_core) → escribe 3 campos: status CONVERTED,
+    %%             timestamps.converted_at y onboarding.uuid_person_postgres
+    %%             [NO implementado: campos reservados]
+
+    %% ── Índices ───────────────────────────────────────────────────────────────
+    %%
+    %% IMPLEMENTADO
+    %% { email: 1 }  unique      — Indexed(unique=True) en el modelo beanie
+    %%
+    %% PROPUESTOS — documentados, aún NO en código (no hay IndexModel):
+    %% { status: 1 }                 — filtrado del panel de administración
+    %% { timestamps.created_at: 1 }  — análisis de cohortes
+    %% { onboarding.invite_token: 1 } — validación al iniciar el onboarding
+    %%   cambia si el token se hashea, ver pendientes
+
+    %% ── Pendientes de decisión ────────────────────────────────────────────────
+    %%
+    %% source         Optional[str] libre; los examples enumeran landing_page,
+    %%                referral, ads, partner y waitlist_form. ADR 044 pide cerrar
+    %%                el vocabulario: enum de texto o catálogo cuando lleva "Otro".
+    %% invite_token   se guarda en claro y es la credencial que abre el onboarding.
+    %%                Precedente dh_mfa: guardar el hash SHA-256 y buscar por el
+    %%                hash; implicaría renombrar el campo y ajustar el índice.
