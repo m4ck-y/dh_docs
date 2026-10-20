@@ -19,24 +19,32 @@ derivados** por diseño ✓.
 | **Description** | para qué es + `[posibles valores]` + constraints (`unique`, longitud, `CHECK`) |
 | **¿Obligatorio?** | lo que exige **el front** (zod); si la BD difiere se marca 🔴 |
 
-Convenciones: los sentinels de la UI (*"Prefiere no decirlo"*, *"Ninguna"*, *"Otro"*)
-se guardan como `NULL` en el dominio ([ADR 044](../../decisions/044-catalogos-gobernados.md));
-las referencias a catálogos cruzan motor como `key_*` y dentro de PostgreSQL como
-`id_*` ([ADR 049](../../decisions/049-referencia-catalogos-id-vs-key.md)).
+Los bloques están agrupados por **destino** (el dominio donde termina el dato); cada
+uno indica de qué **paso del front** viene. Convenciones: los sentinels de la UI
+(*"Prefiere no decirlo"*, *"Ninguna"*, *"Otro"*) se guardan como `NULL` en el dominio
+([ADR 044](../../decisions/044-catalogos-gobernados.md)); las referencias a catálogos
+cruzan motor como `key_*` y dentro de PostgreSQL como `id_*`
+([ADR 049](../../decisions/049-referencia-catalogos-id-vs-key.md)).
 
 ---
 
-## Cuenta (paso previo)
+## 1. Registro / cuenta
+
+> **Pasos del front:** Cuenta → verificación OTP.
+> **Destinos:** `auth` · `dh_legal` · `dh_mfa`.
 
 | Campo (front) | Destino BD | Type | Description | ¿Obligatorio? |
 |---|---|---|---|---|
-| `correo` | `auth.user.username` | `String` | Identidad de login (= el correo). **unique** · 🔴 definir si además se guarda en `people.email` | sí |
+| `correo` | `auth.user.username` | `String` | Identidad de login (= el correo). **unique** · 🔴 definir si además se guarda en `people.email` (G10) | sí |
 | `contrasena` | `auth.user.password_hash` | `String` | Nunca en claro. `[8+ · 1 mayúscula · 1 dígito · 1 especial]` | sí |
 | `confirmarContrasena` | — | — | Solo validación en el front ✗ | sí |
 | `aceptaTerminos` | `dh_legal.legal_acceptances` (`key=TERMS`) | `Bool` → evento | No se guarda el texto ni un booleano: evento con `version` + `hash` ([ADR 050](../../decisions/050-contenido-legal-en-mongodb.md)) | sí |
-| `codigo` (`VerifyOtpView`) | `dh_mfa.otp_challenges` | `String` (Mongo) | Verificación del destino (efímero, append-only) · 🔴 el esquema PG `mfa.otp_challenge` duplica esto | sí |
+| `codigo` (`VerifyOtpView`) | `dh_mfa.otp_challenges` | `String` (Mongo) | Verificación del destino (efímero, append-only) · 🔴 el esquema PG `mfa.otp_challenge` duplica esto (G11) | sí |
 
-## Datos personales
+## 2. Datos generales (identidad)
+
+> **Paso del front:** Datos personales · **Destinos:** `people.person` ·
+> `people.personal_identifier` · `people.birth` · `health_profile.biological_profile`.
 
 | Campo (front) | Destino BD | Type | Description | ¿Obligatorio? |
 |---|---|---|---|---|
@@ -45,13 +53,23 @@ las referencias a catálogos cruzan motor como `key_*` y dentro de PostgreSQL co
 | `apellidoMaterno` | `people.person.second_last_name` | `String` | — | sí |
 | `curp` | `people.personal_identifier.identifier_value` | `String` | `id_identifier_type = NATIONAL_ID` · `[A-Z0-9]{18}` · 🔴 no existe columna `person.curp` | sí |
 | `fechaNacimiento` | `people.birth.birth_date` | `Date` | Se prellena desde el CURP | sí |
-| `lugarNacimiento` | `people.birth.key_birth_country` · `key_state_birth` | `String(20) FK` | 🔴 el front captura **ciudad** y el modelo no tiene municipio de nacimiento | sí |
-| `sexoNacimiento` | `health_profile.biological_profile.type_biological_sex` | `Enum(EBiologicalSex)` | `[MALE · FEMALE · INTERSEXUAL]` · *"Prefiere no decirlo"* → `NULL` · 🔴 revisar `people.legal_info.type_national_id_sex` (String) | sí |
-| `telefonoPrincipal` | `people.phone.number` | `String(10)` | `code = +52` y `type_phone = MOBILE` los rellena el backend · 🔴 el modelo no tiene `is_primary` | sí |
-| `telefonoOtro` | `people.phone.number` (2ª fila) | `String(10)` | 🔴 sin `is_primary` solo se distingue por orden | no |
-| `parentesco` | `relationships.person_responsible.id_relationship` | `Int FK` | Catálogo `relationship` (solo flujo *asociado*); el tutor además es una fila de `people.person` | condicional |
+| `lugarNacimiento` | `people.birth.key_birth_country` · `key_state_birth` | `String(20) FK` | 🔴 el front captura **ciudad** y el modelo no tiene municipio de nacimiento (G4) | sí |
+| `sexoNacimiento` | `health_profile.biological_profile.type_biological_sex` | `Enum(EBiologicalSex)` | `[MALE · FEMALE · INTERSEXUAL]` · *"Prefiere no decirlo"* → `NULL` · 🔴 revisar `people.legal_info.type_national_id_sex` (G9) | sí |
 
-## Domicilio
+## 3. Información de contacto
+
+> **Paso del front:** Datos personales · **Destino:** `people.phone`.
+> El correo de la persona viene de la cuenta (`auth.user.username`); si se guarda
+> también en `people.email` está por definir (G10).
+
+| Campo (front) | Destino BD | Type | Description | ¿Obligatorio? |
+|---|---|---|---|---|
+| `telefonoPrincipal` | `people.phone.number` | `String(10)` | `code = +52` y `type_phone = MOBILE` los rellena el backend · 🔴 el modelo no tiene `is_primary` (G6) | sí |
+| `telefonoOtro` | `people.phone.number` (2ª fila) | `String(10)` | 🔴 sin `is_primary` solo se distingue por orden (G6) | no |
+
+## 4. Domicilio
+
+> **Paso del front:** Domicilio · **Destino:** `people.address`.
 
 | Campo (front) | Destino BD | Type | Description | ¿Obligatorio? |
 |---|---|---|---|---|
@@ -60,13 +78,17 @@ las referencias a catálogos cruzan motor como `key_*` y dentro de PostgreSQL co
 | `municipio` | `people.address.key_municipality` | `String(20) FK` | idem | sí |
 | `colonia` | `people.address.key_colony` | `String(20) FK` | idem (`coloniaNombre` es solo el label ✗) | sí |
 | `calle` | `people.address.address` | `String(191)` | Vía y número | no |
-| `numeroExterior` | `people.address.address_complement` | `String(191)` | 🔴 exterior e interior fusionados en un campo | no |
-| `numeroInterior` | `people.address.address_complement` | `String(191)` | 🔴 idem | no |
-| `referencias` | — | — | 🔴 sin destino | no |
-| `viveContigo` | — | — | 🔴 sin destino (solo flujo *asociado*): "mismo domicilio que el tutor" no se guarda | condicional |
+| `numeroExterior` | `people.address.address_complement` | `String(191)` | 🔴 exterior e interior fusionados en un campo (G7) | no |
+| `numeroInterior` | `people.address.address_complement` | `String(191)` | 🔴 idem (G7) | no |
+| `referencias` | — | — | 🔴 sin destino (G1) | no |
+| `viveContigo` | — | — | 🔴 sin destino (G3) · solo flujo *asociado*: "mismo domicilio que el tutor" no se guarda | condicional |
 | `coloniasDisponibles` | — | — | Efímero: opciones del selector ✗ | no |
 
-## Información complementaria
+## 5. Información complementaria
+
+> **Paso del front:** Información complementaria · **Destinos:** `people.person` ·
+> `people.profile` · `people.sociocultural_identity` · `people.legal_info` ·
+> `health_profile.biological_profile` · `health_profile.person_disability`.
 
 | Campo (front) | Destino BD | Type | Description | ¿Obligatorio? |
 |---|---|---|---|---|
@@ -82,10 +104,12 @@ las referencias a catálogos cruzan motor como `key_*` y dentro de PostgreSQL co
 | `ocupacionEspecificacion` | — (ítem nuevo del catálogo) | — | Solo si `ocupacion = otro` | condicional |
 | `discapacidad` | `health_profile.person_disability.type_disability` | `Enum(EDisabilityType)` | `[PHYSICAL · SENSORY · INTELLECTUAL · PSYCHOSOCIAL · MULTIPLE]` · *"Ninguna"* / *"Prefiere no decirlo"* → sin filas | sí |
 | `sangre` | `health_profile.biological_profile.type_blood_type` | `Enum(EBloodType)` | `[A+ · A- · B+ · B- · AB+ · AB- · O+ · O-]` · sentinel → `NULL` | sí |
-| `lenguaIndigena` | `people.sociocultural_identity.self_considers_indigenous` | `Bool` | 🔴 el front pregunta *"¿habla lengua indígena?"* y el modelo *"¿se considera indígena?"* | sí |
-| `lenguaIndigenaNombre` | `people.sociocultural_identity.key_indigenous_language` | `String(20) FK` | 🔴 el front trae lista estática (`indigenousLanguages.ts`): falta el catálogo (ADR 044) | condicional |
+| `lenguaIndigena` | `people.sociocultural_identity.self_considers_indigenous` | `Bool` | 🔴 el front pregunta *"¿habla lengua indígena?"* y el modelo *"¿se considera indígena?"* (G8) | sí |
+| `lenguaIndigenaNombre` | `people.sociocultural_identity.key_indigenous_language` | `String(20) FK` | 🔴 el front trae lista estática (`indigenousLanguages.ts`): falta el catálogo (G5) | condicional |
 
-## Contacto de emergencia
+## 6. Contacto de emergencia
+
+> **Paso del front:** Contacto de emergencia · **Destino:** `people.emergency_contact`.
 
 | Campo (front) | Destino BD | Type | Description | ¿Obligatorio? |
 |---|---|---|---|---|
@@ -94,10 +118,23 @@ las referencias a catálogos cruzan motor como `key_*` y dentro de PostgreSQL co
 | `parentesco` | `people.emergency_contact.id_relationship` | `Int FK` | Catálogo `relationship` | sí |
 | `parentescoEspecificacion` | — (ítem nuevo del catálogo) | — | Solo si `parentesco = otro` | condicional |
 | `telefonoPrincipal` | `people.emergency_contact.phone_number` | `String` | — | sí |
-| `telefonoOtro` | — | — | 🔴 sin destino: el modelo guarda un solo teléfono del contacto | no |
+| `telefonoOtro` | — | — | 🔴 sin destino: el modelo guarda un solo teléfono del contacto (G2) | no |
 | `id` | — | — | Efímero: clave de la lista en la UI ✗ | sí |
 | — | `people.emergency_contact.id_user_owner` | `Int FK` | 🔴 lo debe llenar el backend (`auth.user.id` del titular) | — |
 | — | `people.emergency_contact.email` · `notes` | `String` · `Text` | 🔴 el front no los captura | — |
+
+## 7. Tutor / responsable
+
+> **Paso del front:** Datos personales (solo la variante *asociada*) ·
+> **Destino:** `relationships.person_responsible`.
+
+| Campo (front) | Destino BD | Type | Description | ¿Obligatorio? |
+|---|---|---|---|---|
+| `parentesco` | `relationships.person_responsible.id_relationship` | `Int FK` | Catálogo `relationship` · enlaza `id_responsible` (titular) con `id_dependent` (la persona creada) | condicional |
+
+> El signup **no** captura `care_role` ni `economic_dependence` (los pide la HC en
+> 1.1.3 y 1.1.17) ✗; el tutor no se crea como `person` propia en este flujo (se
+> asume la cuenta del titular) ✓.
 
 ---
 
