@@ -71,7 +71,7 @@ se referencian como `id_*` (FK dentro de PostgreSQL) y los geográficos como
 | # | Punto | Estado |
 |---|---|---|
 | 1 | Orquestación del alta (cuenta + perfil + aceptación) en `dh_onboarding` | 🔴 |
-| 2 | Los **11 gaps** del mapa (sin destino, duplicidades, desalineados) | 🔴 ver [map.md](./map.md#gaps) |
+| 2 | Los **9 gaps** del mapa (sin destino, duplicidades, desalineados) | 🔴 ver [map.md](./map.md#gaps) |
 | 3 | Columna **servicio objetivo** por destino | 🔴 |
 | 4 | **Reutilización con la HC**: resolver por `schema.tabla.columna` (que el componente de la HC lea el perfil en vez de volver a preguntar) | 🔴 |
 | 5 | `payload` de ejemplo del paso *Verifica tus datos* (`example.jsonc`) | 🔴 opcional |

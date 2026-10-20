@@ -4,8 +4,8 @@ Diccionario del formulario de autorregistro: **qué captura el front** y **dónd
 guarda**. Fuente del front: `frontend/dh_frontend_signup/src/domain/schemas.ts`
 (origen) y los ERDs por esquema (destino).
 
-**Completitud:** los **41 campos** del front están inventariados ✓; de ellos **3 no
-tienen destino** ✗ y **8 tienen algún desajuste** (parcial, dato perdido, catálogo
+**Completitud:** los **41 campos** del front están inventariados ✓; de ellos **2 no
+tienen destino** ✗ y **7 tienen algún desajuste** (parcial, dato perdido, catálogo
 faltante, semántica o duplicidad) ✗ — ver [Gaps](#gaps). Otros **4 son efímeros o
 derivados** por diseño ✓.
 
@@ -77,10 +77,10 @@ cruzan motor como `key_*` y dentro de PostgreSQL como `id_*`
 | `estado` | `people.address.key_state` | `String(20) FK` | `key_*` cross-motor (ADR 049) | sí |
 | `municipio` | `people.address.key_municipality` | `String(20) FK` | idem | sí |
 | `colonia` | `people.address.key_colony` | `String(20) FK` | idem (`coloniaNombre` es solo el label ✗) | sí |
-| `calle` | `people.address.address` | `String(191)` | Vía y número | no |
-| `numeroExterior` | `people.address.address_complement` | `String(191)` | 🔴 exterior e interior fusionados en un campo (G7) | no |
-| `numeroInterior` | `people.address.address_complement` | `String(191)` | 🔴 idem (G7) | no |
-| `referencias` | — | — | 🔴 sin destino (G1) | no |
+| `calle` | `people.address.address` | `String(191)` | Calle | no |
+| `numeroExterior` | `people.address.ext_number` | `String(20)` | No. Ext. | no |
+| `numeroInterior` | `people.address.int_number` | `String(20)` | No. Int. | no |
+| `referencias` | `people.address.address_complement` | `String(191)` | Complemento y referencias del domicilio: entre calles / señas particulares | no |
 | `viveContigo` | — | — | 🔴 sin destino (G3) · solo flujo *asociado*: "mismo domicilio que el tutor" no se guarda | condicional |
 | `coloniasDisponibles` | — | — | Efímero: opciones del selector ✗ | no |
 
@@ -155,21 +155,20 @@ la **contraseña** en claro (solo el `password_hash`).
 
 | # | Gap | Tipo | Estado |
 |---|---|---|---|
-| G1 | `referencias` (domicilio) — sin columna | sin destino | 🔴 |
 | G2 | 2º teléfono del contacto de emergencia | sin destino | 🔴 |
 | G3 | `viveContigo` (mismo domicilio que el tutor) | sin destino | 🔴 |
 | G4 | Ciudad de nacimiento (`people.birth` no tiene municipio de nacimiento) | destino parcial | 🔴 |
 | G5 | Catálogo de **lenguas indígenas** (hoy lista estática en el front) | falta catálogo (ADR 044) | 🔴 |
 | G6 | `is_primary` en teléfonos: el front distingue principal/otro y el modelo no | dato perdido | 🔴 |
-| G7 | `numeroExterior` / `numeroInterior` fusionados en `address_complement` | destino parcial | 🔴 |
 | G8 | `lenguaIndigena`: *"¿habla?"* (front) vs *"¿se considera?"* (modelo) | semántica | 🔴 |
 | G9 | `legal_info.type_national_id_sex` vs `biological_profile.type_biological_sex` (¿mismo dato?) | duplicidad | 🔴 |
 | G10 | El correo de la cuenta: ¿solo `auth.user.username` o también `people.email`? | duplicidad | 🔴 |
 | G11 | El OTP: `dh_mfa.otp_challenges` (Mongo) y `mfa.otp_challenge` (PG) | duplicidad | 🔴 |
 
-> `discapacidad` (antes G1) quedó **resuelta** ✓: `health_profile.person_disability`
-> (enum `EDisabilityType`; si el vocabulario crece, pasa a catálogo y esta tabla
-> queda como intermedia — ver el comentario en el ERD de `health_profile` ✓).
+> **Resueltas:** `discapacidad` → `health_profile.person_disability` ✓ ·
+> `referencias` → `people.address.address_complement` ✓ ·
+> `numeroExterior`/`numeroInterior` → `people.address.ext_number`/`int_number` ✓.
+> Los IDs de los gaps restantes **no se renumeran** (quedan estables).
 
 ## Campos del modelo (o de la HC) que el signup **no** captura
 

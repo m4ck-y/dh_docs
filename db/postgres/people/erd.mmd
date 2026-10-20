@@ -157,6 +157,9 @@ erDiagram
     %% address: direcciones geograficas
     %% type_address: tipo de direccion (HOME, WORK, BUSINESS, OTHER)
     %% key_country/state/municipality/colony: claves geograficas (catalog)
+    %% ext_number/int_number: numero exterior / interior (No. Ext. / No. Int.)
+    %% address_complement: complemento y REFERENCIAS del domicilio
+    %%   (depto/unidad, entre calles, senas particulares)
     address {
         Integer id PK
         UUID uuid
@@ -167,6 +170,8 @@ erDiagram
         String(20) key_municipality FK
         String(20) key_colony FK
         String(191) address
+        String(20) ext_number
+        String(20) int_number
         String(191) address_complement
         String(10) postal_code
         Float latitude
