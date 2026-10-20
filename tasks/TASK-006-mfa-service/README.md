@@ -16,7 +16,7 @@ tags: [mfa, otp, mongodb, beanie, security]
 
 Servicio `dh_mfa` responsable del ciclo de vida de desafíos OTP. Almacena los challenges en MongoDB con TTL automático. Despacha los códigos vía PulseCore y los loggea a VitalTrace.
 
-Ver diseño de colección: `docs/db/mongo/mfa/DC.mmd`
+Ver diseño de colección: `docs/db/mongo/dh_mfa/CLASS.mmd`
 
 ## Fase 1 — OTP Challenge (completada)
 

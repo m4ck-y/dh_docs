@@ -9,7 +9,7 @@ Cada subcarpeta corresponde a un motor de base de datos distinto.
 | Carpeta | Motor | Descripción |
 |---|---|---|
 | [postgres/](./postgres/) | PostgreSQL | Base de datos relacional principal — datos demográficos, expediente, relaciones de cuidado, catálogos gobernados (`catalog`) |
-| [mongo/](./mongo/) | MongoDB | Pendiente de diseño |
+| [mongo/](./mongo/) | MongoDB | Bases documentales por servicio (`dh_mfa`, `dh_onboarding`, `dh_legal`…) — diagrama de clases (`CLASS.mmd`) por base |
 | [click_house/](./click_house/) | ClickHouse | Pendiente de diseño — orientado a analítica y eventos |
 
 ## Estándares Transversales
